@@ -8,7 +8,7 @@ import type {
 
 function readJSON<T>(filename: string): T {
   const filePath = path.join(process.cwd(), 'content', filename);
-  return JSON.parse(readFileSync(filePath, 'utf-8')) as T;
+  return JSON.parse(readFileSync(filePath, 'utf-8').replace(/^﻿/, '')) as T;
 }
 
 const ALL_VITALS = ['Vigor', 'Intuition', 'Talent', 'Awareness', 'Lore', 'Social'];

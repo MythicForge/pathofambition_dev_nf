@@ -32,7 +32,7 @@ export interface RulesData {
 
 export function getRules(): RulesSection[] {
   const filePath = path.join(process.cwd(), 'content', 'rules_sections.json');
-  const raw = fs.readFileSync(filePath, 'utf-8');
+  const raw = fs.readFileSync(filePath, 'utf-8').replace(/^﻿/, '');
   const data = JSON.parse(raw) as RulesData;
   return data.sections.sort((a, b) => a.order - b.order);
 }
