@@ -10,7 +10,9 @@ import {
   calcWillDefense, calcMaxWounds, calcCarryWeight, calcReservoir, calcSpellDC,
   calcAmbition, calcArmorDefense, calcTierFromFeatsPurchased,
   calcSpellcastingThreshold, calcSpellcastingTier, calcKnownSpells, calcPreparedSpells,
+  calcSkillPool, calcSkillAttrValue, calcBaseDiceFromAttr, BASE_SKILL_DIE_FACES,
 } from '@/lib/characterCalc';
+import type { SkillPoolInfo, ProficiencyRank } from '@/lib/characterCalc';
 import type {
   Character, BuilderProfession, BuilderOrigin, BuilderFeat, BuilderSpell,
   InventoryItem, InventoryCategory, InventorySlot, ChoiceFeature, AttributeKey,
@@ -580,8 +582,20 @@ export default function CharacterSheetPage({ id, professions, origins, professio
       const newSelected = [...c.selectedFeatIds, feat.id];
       const newFeatsPurchased = (c.featsPurchased ?? 0) + 1;
       const newTier = Math.max(c.tier, calcTierFromFeatsPurchased(newFeatsPurchased));
-      persist({ selectedFeatIds: newSelected, renown: renown - tierCost, featsPurchased: newFeatsPurchased, tier: newTier });
-      // Queue any on_gain choices for this feat
+
+      const newUnspentAttr = (c.unspentAttributePoints ?? 0) + 1;
+      const isEvenFeat = newFeatsPurchased % 2 === 0;
+      const newUnspentSkill = (c.unspentSkillPoints ?? 0) + (isEvenFeat ? 2 : 0);
+
+      persist({
+        selectedFeatIds: newSelected,
+        renown: renown - tierCost,
+        featsPurchased: newFeatsPurchased,
+        tier: newTier,
+        unspentAttributePoints: newUnspentAttr,
+        unspentSkillPoints: newUnspentSkill,
+      });
+
       const onGainChoices = choiceFeatures.filter(
         (cf) => cf.feature_name === feat.name && cf.entity_name === feat.ownerName && cf.selection_timing === 'on_gain' && !c.choiceSelections?.[`${feat.ownerName}__${feat.name}`],
       );
@@ -1769,15 +1783,40 @@ export default function CharacterSheetPage({ id, professions, origins, professio
 
       {/* Attributes */}
       <Section title="Attributes">
+        {(c.unspentAttributePoints ?? 0) > 0 && (
+          <div style={{ marginBottom: '0.75rem', padding: '0.5rem 0.875rem', backgroundColor: 'var(--accent-light)', border: '1px solid #FCD34D', borderRadius: '0.5rem', fontSize: '0.82rem', color: '#92400E', fontFamily: 'var(--font-heading)', fontWeight: 700 }}>
+            ⚠ {c.unspentAttributePoints} unspent Attribute point{(c.unspentAttributePoints ?? 0) !== 1 ? 's' : ''} — allocate below
+          </div>
+        )}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem' }}>
           {(['body', 'mind', 'will'] as const).map((attr) => {
             const base = c.baseAttributes[attr];
             const voc = c.vocationAttributeBonus.attribute === attr ? c.vocationAttributeBonus.value : 0;
+            const totalAvailableBase = 4 + (c.featsPurchased ?? 0);
+            const currentTotalBase = c.baseAttributes.body + c.baseAttributes.mind + c.baseAttributes.will;
+            const canIncrease = (c.unspentAttributePoints ?? 0) > 0 && currentTotalBase < totalAvailableBase;
+            const canDecrease = base > 0;
+            function adjustAttr(delta: number) {
+              const newBase = base + delta;
+              if (newBase < 0) return;
+              if (delta > 0 && !canIncrease) return;
+              const newUnspent = (c.unspentAttributePoints ?? 0) - delta;
+              if (newUnspent < 0) return;
+              persist({
+                baseAttributes: { ...c.baseAttributes, [attr]: newBase },
+                unspentAttributePoints: newUnspent,
+              });
+            }
             return (
               <div key={attr} style={{ padding: '0.875rem', backgroundColor: 'var(--bg-nav)', border: '1px solid var(--border)', borderRadius: '0.5rem', textAlign: 'center' }}>
                 <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.7rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)', marginBottom: '0.375rem' }}>{attr.charAt(0).toUpperCase() + attr.slice(1)}</div>
-                <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '2rem', color: 'var(--primary)', lineHeight: 1 }}>{fmtAttr(attrs[attr])}</div>
-                <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)', marginTop: '0.375rem' }}>{fmtAttr(base)} base{voc > 0 ? ` + ${voc} (${c.vocationName})` : ''}</div>
+                <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '2rem', color: 'var(--primary)', lineHeight: 1, marginBottom: '0.375rem' }}>{fmtAttr(attrs[attr])}</div>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', marginBottom: '0.35rem' }}>
+                  <button onClick={() => adjustAttr(-1)} disabled={!canDecrease} style={{ width: '24px', height: '24px', borderRadius: '50%', border: '1px solid var(--border)', backgroundColor: 'var(--bg-card)', cursor: canDecrease ? 'pointer' : 'not-allowed', fontWeight: 700, color: 'var(--text-muted)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
+                  <span style={{ fontFamily: 'var(--font-heading)', fontSize: '0.85rem', fontWeight: 600, minWidth: '24px', textAlign: 'center' }}>{fmtAttr(base)}</span>
+                  <button onClick={() => adjustAttr(1)} disabled={!canIncrease} style={{ width: '24px', height: '24px', borderRadius: '50%', border: '1px solid var(--border)', backgroundColor: 'var(--bg-card)', cursor: canIncrease ? 'pointer' : 'not-allowed', fontWeight: 700, color: 'var(--text-muted)', fontSize: '0.9rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+                </div>
+                <div style={{ fontSize: '0.65rem', color: 'var(--text-muted)' }}>{fmtAttr(base)} base{voc > 0 ? ` + ${voc} (${c.vocationName})` : ''}</div>
               </div>
             );
           })}
@@ -1788,11 +1827,47 @@ export default function CharacterSheetPage({ id, professions, origins, professio
       <Section title="Proficiencies">
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
           <div>
-            <div style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)', marginBottom: '0.375rem' }}>V.I.T.A.L.S.</div>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+            {(c.unspentSkillPoints ?? 0) > 0 && (
+              <div style={{ marginBottom: '0.625rem', padding: '0.4rem 0.75rem', backgroundColor: 'var(--accent-light)', border: '1px solid #FCD34D', borderRadius: '0.375rem', fontSize: '0.8rem', color: '#92400E', fontFamily: 'var(--font-heading)', fontWeight: 700 }}>
+                ⚡ {c.unspentSkillPoints} unspent Skill Point{(c.unspentSkillPoints ?? 0) !== 1 ? 's' : ''} — allocate below
+              </div>
+            )}
+            <div style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)', marginBottom: '0.5rem' }}>V.I.T.A.L.S.</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {['Vigor', 'Intuition', 'Talent', 'Awareness', 'Lore', 'Social'].map((skill) => {
-                const proficient = c.vitalsProficiencies.includes(skill);
-                return <span key={skill} style={{ fontSize: '0.8rem', padding: '0.2rem 0.625rem', borderRadius: '9999px', fontFamily: 'var(--font-heading)', fontWeight: 600, border: `1.5px solid ${proficient ? 'var(--primary)' : 'var(--border)'}`, backgroundColor: proficient ? 'var(--primary-light)' : 'var(--bg-nav)', color: proficient ? 'var(--primary)' : 'var(--text-muted)' }}>{proficient ? '✓ ' : ''}{skill}</span>;
+                const pool = calcSkillPool(skill, attrs, c.vitalsProficiencies, c.vitalsExpertiseBumps ?? {}, c.skillPoints ?? {});
+                const invested = c.skillPoints?.[skill] ?? 0;
+                const canAdd = (c.unspentSkillPoints ?? 0) > 0 && invested < 10;
+                const canRemove = invested > 0;
+                const RANK_COLORS: Record<string, string> = { Untrained: 'var(--text-muted)', Trained: 'var(--primary)', Expert: 'var(--accent)', Mastery: '#7C3AED' };
+                return (
+                  <div key={skill} style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', padding: '0.5rem 0.75rem', backgroundColor: 'var(--bg-nav)', border: '1px solid var(--border)', borderRadius: '0.375rem' }}>
+                    <div style={{ flex: 1, minWidth: 0 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', flexWrap: 'wrap' }}>
+                        <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.85rem', color: 'var(--text)' }}>{skill}</span>
+                        <span style={{ fontSize: '0.6rem', fontWeight: 700, fontFamily: 'var(--font-heading)', padding: '0.1rem 0.35rem', borderRadius: '9999px', border: `1px solid ${RANK_COLORS[pool.rank]}`, color: RANK_COLORS[pool.rank] }}>{pool.rank}</span>
+                      </div>
+                      <div style={{ fontSize: '0.78rem', fontFamily: 'var(--font-heading)', color: 'var(--primary)', marginTop: '0.1rem' }}>{pool.display}</div>
+                    </div>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', flexShrink: 0 }}>
+                      <button
+                        onClick={() => {
+                          if (!canRemove) return;
+                          persist({ skillPoints: { ...(c.skillPoints ?? {}), [skill]: invested - 1 }, unspentSkillPoints: (c.unspentSkillPoints ?? 0) + 1 });
+                        }}
+                        disabled={!canRemove}
+                        style={{ width: '22px', height: '22px', borderRadius: '50%', border: '1px solid var(--border)', backgroundColor: 'var(--bg-card)', cursor: canRemove ? 'pointer' : 'not-allowed', fontWeight: 700, color: 'var(--text-muted)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
+                      <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.9rem', minWidth: '18px', textAlign: 'center', color: 'var(--primary)' }}>{invested}</span>
+                      <button
+                        onClick={() => {
+                          if (!canAdd) return;
+                          persist({ skillPoints: { ...(c.skillPoints ?? {}), [skill]: invested + 1 }, unspentSkillPoints: (c.unspentSkillPoints ?? 0) - 1 });
+                        }}
+                        disabled={!canAdd}
+                        style={{ width: '22px', height: '22px', borderRadius: '50%', border: '1px solid var(--border)', backgroundColor: 'var(--bg-card)', cursor: canAdd ? 'pointer' : 'not-allowed', fontWeight: 700, color: 'var(--text-muted)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+                    </div>
+                  </div>
+                );
               })}
             </div>
           </div>

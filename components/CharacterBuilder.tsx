@@ -545,6 +545,10 @@ export default function CharacterBuilder({ professions, origins, professionFeats
       currentAdrenaline: draft.professionName === 'Fighter' ? (totalAttributes.body + draft.tier) : undefined,
       currentResonance: draft.professionName === 'Eidolon' ? startingSpellThreshold : undefined,
       currentSoulTokens: draft.professionName === 'Vescent' ? 1 : undefined,
+      unspentAttributePoints: 0,
+      skillPoints: {},
+      unspentSkillPoints: 3,
+      vitalsExpertiseBumps: {},
     };
     const saved = saveCharacter(charData);
     router.push(`/characters/${saved.id}`);
