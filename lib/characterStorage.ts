@@ -52,6 +52,17 @@ export function getCharacter(id: string): Character | null {
   if (!found.choiceSelections) (found as Character).choiceSelections = {};
   if (!found.activeFeedSpellIds) (found as Character).activeFeedSpellIds = (found as Character).knownSpellIds ?? [];
   if (!found.armamentProficiencyTags) (found as Character).armamentProficiencyTags = [];
+  if (found.unspentAttributePoints === undefined) {
+    const fp = found.featsPurchased ?? 0;
+    (found as Character).unspentAttributePoints = fp;
+  }
+  if (!found.skillPoints) (found as Character).skillPoints = {};
+  if (found.unspentSkillPoints === undefined) {
+    const fp = found.featsPurchased ?? 0;
+    const fromFeats = Math.floor(fp / 2) * 2;
+    (found as Character).unspentSkillPoints = 3 + fromFeats;
+  }
+  if (!found.vitalsExpertiseBumps) (found as Character).vitalsExpertiseBumps = {};
   // Backfill slot/equipped/traits on inventory items
   (found as Character).inventory = ((found as Character).inventory ?? []).map((item) => {
     // Parse legacy damageDice string (e.g. "2d6") into count/size

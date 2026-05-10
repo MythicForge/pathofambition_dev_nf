@@ -133,6 +133,77 @@ export function calcPreparedSpells(modifierValue: number, characterTier: number)
   return modifierValue + characterTier;
 }
 
+export const BASE_SKILL_DIE_FACES = 6;
+
+export type ProficiencyRank = 'Untrained' | 'Trained' | 'Expert' | 'Mastery';
+
+export function calcBaseDiceFromAttr(attrValue: number): number {
+  if (attrValue >= 12) return 4;
+  if (attrValue >= 8) return 3;
+  if (attrValue >= 4) return 2;
+  return 1;
+}
+
+export function calcSkillAttrValue(skill: string, attrs: CharacterAttributes): number {
+  switch (skill) {
+    case 'Vigor': return attrs.body;
+    case 'Intuition': return attrs.mind;
+    case 'Talent': return Math.max(attrs.body, attrs.mind);
+    case 'Awareness': return attrs.mind;
+    case 'Lore': return Math.max(attrs.mind, attrs.will);
+    case 'Social': return attrs.will;
+    default: return 0;
+  }
+}
+
+export function calcSkillRank(skill: string, vitalsProficiencies: string[], vitalsExpertiseBumps: Record<string, number>): ProficiencyRank {
+  if (!vitalsProficiencies.includes(skill)) return 'Untrained';
+  const bumps = vitalsExpertiseBumps?.[skill] ?? 0;
+  if (bumps >= 2) return 'Mastery';
+  if (bumps >= 1) return 'Expert';
+  return 'Trained';
+}
+
+export function calcProficiencyDieSize(rank: ProficiencyRank): number | null {
+  if (rank === 'Untrained') return null;
+  if (rank === 'Trained') return 8;
+  if (rank === 'Expert') return 10;
+  return 12;
+}
+
+export interface SkillPoolInfo {
+  rank: ProficiencyRank;
+  baseDiceCount: number;
+  profDieFaces: number | null;
+  skillDiceCount: number;
+  display: string;
+}
+
+export function calcSkillPool(
+  skill: string,
+  attrs: CharacterAttributes,
+  vitalsProficiencies: string[],
+  vitalsExpertiseBumps: Record<string, number>,
+  skillPoints: Record<string, number>,
+): SkillPoolInfo {
+  const attrValue = calcSkillAttrValue(skill, attrs);
+  const baseDiceCount = calcBaseDiceFromAttr(attrValue);
+  const rank = calcSkillRank(skill, vitalsProficiencies, vitalsExpertiseBumps);
+  const profDieFaces = calcProficiencyDieSize(rank);
+  const skillDiceCount = skillPoints?.[skill] ?? 0;
+  let display: string;
+  if (profDieFaces !== null) {
+    // Proficient: all dice upgrade to proficiency die size
+    const total = baseDiceCount + skillDiceCount;
+    display = `${total}d${profDieFaces}`;
+  } else {
+    const parts: string[] = [`${baseDiceCount}d${BASE_SKILL_DIE_FACES}`];
+    if (skillDiceCount > 0) parts.push(`${skillDiceCount}d${BASE_SKILL_DIE_FACES}`);
+    display = parts.join(' + ');
+  }
+  return { rank, baseDiceCount, profDieFaces, skillDiceCount, display };
+}
+
 /** Returns the Ambition dice type and max pool.
  *  Die is the higher of the Will-based or Tier-based die (spec: take higher when both apply). */
 export function calcAmbition(will: number, tier: number = 1): { dice: string; max: number } {

@@ -119,6 +119,12 @@ export interface Character {
   currentAdrenaline?: number;   // Fighter — starting pool = Body + Tier, max = Body + Tier
   currentResonance?: number;    // Eidolon — starting pool = Spellcasting Threshold, no max
   currentSoulTokens?: number;   // Vescent — starting = 1, max = 3
+
+  // V.I.T.A.L.S. skill points & attribute system
+  unspentAttributePoints: number;
+  skillPoints: Record<string, number>;
+  unspentSkillPoints: number;
+  vitalsExpertiseBumps: Record<string, number>;
 }
 
 // ─── Choice feature resolution ────────────────────────────────────────────────
