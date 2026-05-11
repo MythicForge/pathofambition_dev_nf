@@ -132,6 +132,9 @@ export interface Character {
   // Reduction Pool (FEATURE-02): character-level pools; shieldReductionPool lives on the shield InventoryItem
   spellReductionPool?: number;
   featReductionPool?: number;
+
+  // BUG-09: Spell Armor active state
+  spellArmorActive?: boolean;
 }
 
 // ─── Choice feature resolution ────────────────────────────────────────────────
@@ -194,6 +197,7 @@ export interface BuilderProfession {
   flavor: string;
   startingVitality: string;
   vitalityPerTier: string;
+  bodyModifierBonus: string;
   pathOptions: string[];
   vitalsChoiceCount: number;
   vitalsOptions: string[];

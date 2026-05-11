@@ -150,7 +150,7 @@ export function getBuilderProfessions(): BuilderProfession[] {
   return data.professions.map((p) => {
     const prof = p as {
       id: string; name: string; role: string; flavor: string;
-      starting_vitality: string; vitality_gained_per_tier: string;
+      starting_vitality: string; vitality_gained_per_tier: string; body_modifier_bonus: string;
       path_options: string[];
       proficiencies: { vitals_skills: string[]; armaments: string[]; protection: string[]; tool_kits: string[] };
       features: Array<{ id?: string; name?: string; description_markdown?: string; traits?: string[]; activation?: { raw?: string } }>;
@@ -167,6 +167,7 @@ export function getBuilderProfessions(): BuilderProfession[] {
       flavor: prof.flavor ?? '',
       startingVitality: prof.starting_vitality ?? '10 + Body',
       vitalityPerTier: prof.vitality_gained_per_tier ?? '2d8',
+      bodyModifierBonus: prof.body_modifier_bonus ?? '1d6 per 5 Body',
       pathOptions: prof.path_options ?? [],
       vitalsChoiceCount: count,
       vitalsOptions: options,

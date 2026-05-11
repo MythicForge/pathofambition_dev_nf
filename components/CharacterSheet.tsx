@@ -11,6 +11,7 @@ import {
   calcAmbition, calcArmorDefense, calcTierFromFeatsPurchased,
   calcSpellcastingThreshold, calcSpellcastingTier, calcKnownSpells, calcPreparedSpells,
   calcSkillPool, calcSkillAttrValue, calcBaseDiceFromAttr, BASE_SKILL_DIE_FACES,
+  calcFullMaxVitality,
 } from '@/lib/characterCalc';
 import type { SkillPoolInfo, ProficiencyRank } from '@/lib/characterCalc';
 import type {
@@ -293,7 +294,14 @@ export default function CharacterSheetPage({ id, professions, origins, professio
   const featCaster = allFeats.find((f) => c.selectedFeatIds.includes(f.id) && f.casterInfo)?.casterInfo ?? null;
   const casterInfo = prof?.casterType ? { casterType: prof.casterType, casterSource: prof.casterSource ?? '', casterModifierOptions: prof.casterModifierOptions } : c.vocationCaster ?? featCaster;
   const isCaster = !!casterInfo;
-  const modKey = (casterInfo?.casterModifierOptions?.length === 1 ? casterInfo.casterModifierOptions[0] : c.spellcastingModifier) ?? 'mind';
+  // BUG-10: Multi-option casters (Mesmer/Warden/Oathbound/Drifter) auto-resolve to max(Mind, Will)
+  const modKey: AttributeKey = (() => {
+    if (!casterInfo?.casterModifierOptions?.length) return c.spellcastingModifier ?? 'mind';
+    if (casterInfo.casterModifierOptions.length === 1) return casterInfo.casterModifierOptions[0];
+    return casterInfo.casterModifierOptions.reduce((best, key) =>
+      attrs[key] >= attrs[best] ? key : best
+    );
+  })();
   const modVal = attrs[modKey];
 
   // Spellcasting-specific derived values
@@ -313,6 +321,11 @@ export default function CharacterSheetPage({ id, professions, origins, professio
   const ambition = calcAmbition(attrs.will, effectiveTier);
   const maxAmbition = c.maxAmbition ?? ambition.max;
   const ambitionDice = c.ambitionDice ?? ambition.dice;
+
+  // BUG-11: Derive max vitality reactively from profession formula + tier + attrs + feats
+  const derivedMaxVitality = prof
+    ? calcFullMaxVitality(prof, attrs, effectiveTier, c.selectedFeatIds ?? [], allFeats)
+    : (c.maxVitality ?? 0);
 
   const selectedFeats = [
     ...professionFeats.filter((f) => c.selectedFeatIds.includes(f.id)),
@@ -355,7 +368,7 @@ export default function CharacterSheetPage({ id, professions, origins, professio
     const ambRestore = Math.max(4, attrs.will);
     persist({
       currentRespites: currentRespites - 1,
-      currentVitality: Math.min(c.maxVitality ?? 999, (c.currentVitality ?? 0) + vitRestore),
+      currentVitality: Math.min(derivedMaxVitality, (c.currentVitality ?? 0) + vitRestore),
       currentAmbition: Math.min(maxAmbition, (c.currentAmbition ?? 0) + ambRestore),
     });
   }
@@ -366,7 +379,7 @@ export default function CharacterSheetPage({ id, professions, origins, professio
     const resRestore = isCaster ? Math.max(9, modVal * 2) : 0;
     persist({
       currentRespites: Math.min(3, currentRespites + 1),
-      currentVitality: Math.min(c.maxVitality ?? 999, (c.currentVitality ?? 0) + vitRestore),
+      currentVitality: Math.min(derivedMaxVitality, (c.currentVitality ?? 0) + vitRestore),
       currentAmbition: Math.min(maxAmbition, (c.currentAmbition ?? 0) + ambRestore),
       currentReservoir: Math.min(maxReservoir, currentReservoir + resRestore),
     });
@@ -376,7 +389,7 @@ export default function CharacterSheetPage({ id, professions, origins, professio
     const resRestore = isCaster ? Math.max(18, modVal * 3) : 0;
     persist({
       currentRespites: 3,
-      currentVitality: c.maxVitality ?? (c.currentVitality ?? 0),
+      currentVitality: derivedMaxVitality,
       currentAmbition: maxAmbition,
       currentReservoir: Math.min(maxReservoir, currentReservoir + resRestore),
       currentWounds: Math.max(0, (c.currentWounds ?? 0) - 1),
@@ -542,7 +555,9 @@ export default function CharacterSheetPage({ id, professions, origins, professio
   const equippedTwoHands = inventory.find((i) => i.equipped && i.slot === 'Two Hands') ?? null;
   const equippedBody = inventory.find((i) => i.equipped && i.slot === 'Body') ?? null;
   const equippedShield = inventory.find((i) => i.equipped && i.slot === 'Off Hand' && i.category === 'Shield') ?? null;
-  const armorDefense = calcArmorDefense(equippedBody, equippedShield, attrs, hasAgile, hasUnarmoredDefense, effectiveTier);
+  const baseArmorDefense = calcArmorDefense(equippedBody, equippedShield, attrs, hasAgile, hasUnarmoredDefense, effectiveTier);
+  // BUG-09: Spell Armor overrides armor defense when active
+  const armorDefense = (c.spellArmorActive && isCaster) ? 11 + modVal : baseArmorDefense;
 
   // AMEND-05: Armor proficiency check
   const isArmorProficient: boolean = (() => {
@@ -691,6 +706,7 @@ export default function CharacterSheetPage({ id, professions, origins, professio
     const shopAllFeats = [...professionFeats, ...originFeats];
     const shopProfFeats = professionFeats.filter((f) => f.ownerId === c.professionId);
     const shopOriginFeats = originFeats.filter((f) => f.ownerId === c.originId);
+    const shopUniversalFeats = originFeats.filter((f) => f.ownerId === 'universal' || f.ownerName === 'Universal');
 
     function purchaseFeat(feat: BuilderFeat) {
       const renown = c.renown ?? 0;
@@ -748,16 +764,12 @@ export default function CharacterSheetPage({ id, professions, origins, professio
       const oldKey = `${oldFeat.ownerName}__${oldFeat.name}`;
       const updatedSelections = { ...(c.choiceSelections ?? {}) };
       delete updatedSelections[oldKey];
-      // Recalculate maxVitality without old feat bonus, with new feat bonus
-      const newFeatBonus = calcFeatVitalityBonus(newSelected, shopAllFeats, effectiveTier);
-      const newMaxVit = prof ? calcStartingVitality(prof, attrs) + newFeatBonus : (c.maxVitality ?? 0);
       // Post-swap checks: +1 attr point; +2 skill if even-numbered slot
       const slotIdx = c.selectedFeatIds.indexOf(swapSourceFeatId);
       const isEvenSlot = slotIdx >= 0 && (slotIdx + 1) % 2 === 0;
       persist({
         selectedFeatIds: newSelected,
         choiceSelections: updatedSelections,
-        maxVitality: newMaxVit,
         unspentAttributePoints: (c.unspentAttributePoints ?? 0) + 1,
         unspentSkillPoints: (c.unspentSkillPoints ?? 0) + (isEvenSlot ? 2 : 0),
       });
@@ -1080,7 +1092,8 @@ export default function CharacterSheetPage({ id, professions, origins, professio
                 )}
                 {renderShopFeatGroup(shopProfFeats, `${c.professionName} Feats`)}
                 {renderShopFeatGroup(shopOriginFeats, `${c.originName} Feats`)}
-                {shopProfFeats.length === 0 && shopOriginFeats.length === 0 && (
+                {renderShopFeatGroup(shopUniversalFeats, 'Universal Feats')}
+                {shopProfFeats.length === 0 && shopOriginFeats.length === 0 && shopUniversalFeats.length === 0 && (
                   <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>No feats available for your profession and origin.</p>
                 )}
               </div>
@@ -1847,9 +1860,13 @@ export default function CharacterSheetPage({ id, professions, origins, professio
     ].filter(Boolean) as string[]));
 
     const allSearchable = spellManagerSearch.trim()
-      ? spells.filter((s) => s.name.toLowerCase().includes(spellManagerSearch.toLowerCase()) || s.school.toLowerCase().includes(spellManagerSearch.toLowerCase()))
+      ? spells.filter((s) => s.name.toLowerCase().includes(spellManagerSearch.toLowerCase()) || s.school.toLowerCase().includes(spellManagerSearch.toLowerCase()) || s.sources.some((src) => src.toLowerCase().includes(spellManagerSearch.toLowerCase())))
       : spells;
-    const unknownSpells = allSearchable.filter((s) => !c.knownSpellIds.includes(s.id));
+    // Filter by accessible spheres; Universal sphere spells always available to all casters
+    const sphereFiltered = accessibleSpheres.length > 0
+      ? allSearchable.filter((s) => s.sources.includes('Universal') || s.sources.some((src) => accessibleSpheres.includes(src)))
+      : allSearchable;
+    const unknownSpells = sphereFiltered.filter((s) => !c.knownSpellIds.includes(s.id));
 
     return (
       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.875rem' }}>
@@ -1865,7 +1882,7 @@ export default function CharacterSheetPage({ id, professions, origins, professio
             </div>
           </div>
           <StatCard label="Spell DC" value={spellDC ?? '—'} sub={`Spell Tier ${spellTier}`} />
-          <StatCard label="Modifier" value={fmtAttr(modVal)} sub={modKey} />
+          <StatCard label="Modifier" value={fmtAttr(modVal)} sub={(casterInfo?.casterModifierOptions?.length ?? 0) > 1 ? `${modKey} (auto)` : modKey} />
         </div>
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem' }}>
           <StatCard label="Spell Threshold" value={spellThreshold} sub={`${c.featsPurchased ?? 0} feats bought`} />
@@ -2141,25 +2158,26 @@ export default function CharacterSheetPage({ id, professions, origins, professio
       <Section title="Combat Stats">
         {(() => {
           const tempHp = c.tempHp ?? 0;
-          const effectiveMax = (c.maxVitality ?? 0) + tempHp;
+          // BUG-11: Use derived max vitality (reactive to tier/attrs/feats/profession)
+          const effectiveMax = derivedMaxVitality + tempHp;
           return (
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', marginBottom: '0.75rem' }}>
-              <DeltaNumber label={`Vitality / ${c.maxVitality ?? '?'}${tempHp !== 0 ? (tempHp > 0 ? ` +${tempHp}` : ` ${tempHp}`) : ''}`} value={c.currentVitality ?? 0} min={0} max={effectiveMax || undefined} onChange={(v) => persist({ currentVitality: v })} />
-              <div style={{ padding: '0.625rem 0.5rem', backgroundColor: 'var(--bg-nav)', border: '1px solid var(--border)', borderRadius: '0.5rem' }}>
-                <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '0.6rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)', marginBottom: '0.2rem', textAlign: 'center' }}>Max Vitality</div>
-                <div style={{ textAlign: 'center', marginBottom: '0.3rem' }}>
-                  <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.3rem', color: 'var(--primary)' }}>{c.maxVitality ?? '—'}</span>
-                  {tempHp !== 0 && <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.85rem', color: tempHp > 0 ? 'var(--primary)' : 'var(--text-muted)', marginLeft: '0.3rem' }}>{tempHp > 0 ? `+${tempHp}` : tempHp}</span>}
-                </div>
-                {prof && <div style={{ fontSize: '0.6rem', color: 'var(--text-muted)', textAlign: 'center', marginBottom: '0.35rem' }}>{prof.startingVitality}</div>}
-                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
-                  <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)', fontWeight: 600 }}>Temp</span>
-                  <button onClick={() => { const next = tempHp - 1; const newMax = (c.maxVitality ?? 0) + next; const patch: Partial<typeof c> = { tempHp: next }; if ((c.currentVitality ?? 0) > newMax) patch.currentVitality = Math.max(0, newMax); persist(patch); }} style={{ width: '18px', height: '18px', borderRadius: '50%', border: '1px solid var(--border)', backgroundColor: 'var(--bg-card)', cursor: 'pointer', fontWeight: 700, color: 'var(--text-muted)', fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
-                  <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.9rem', color: 'var(--text)', minWidth: '24px', textAlign: 'center' }}>{tempHp}</span>
-                  <button onClick={() => persist({ tempHp: tempHp + 1 })} style={{ width: '18px', height: '18px', borderRadius: '50%', border: '1px solid var(--border)', backgroundColor: 'var(--bg-card)', cursor: 'pointer', fontWeight: 700, color: 'var(--text-muted)', fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
-                  {tempHp !== 0 && <button onClick={() => { const newMax = c.maxVitality ?? 0; const patch: Partial<typeof c> = { tempHp: 0 }; if ((c.currentVitality ?? 0) > newMax) patch.currentVitality = Math.max(0, newMax); persist(patch); }} style={{ fontSize: '0.6rem', color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-heading)' }}>✕</button>}
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', marginBottom: '0.75rem', alignItems: 'center' }}>
+              {/* Vitality — DeltaNumber + temp counter stacked */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                <DeltaNumber label={`Vitality / ${derivedMaxVitality}${tempHp !== 0 ? (tempHp > 0 ? ` +${tempHp}` : ` ${tempHp}`) : ''}`} value={c.currentVitality ?? 0} min={0} max={effectiveMax || undefined} onChange={(v) => persist({ currentVitality: v })} />
+                {/* Temp HP strip */}
+                <div style={{ textAlign: 'center', padding: '0.3rem 0.5rem', backgroundColor: 'var(--bg-nav)', border: '1px solid var(--border)', borderRadius: '0.375rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.3rem' }}>
+                    <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)', fontWeight: 600 }}>Temp</span>
+                    <button onClick={() => { const next = tempHp - 1; const newMax = derivedMaxVitality + next; const patch: Partial<typeof c> = { tempHp: next }; if ((c.currentVitality ?? 0) > newMax) patch.currentVitality = Math.max(0, newMax); persist(patch); }} style={{ width: '18px', height: '18px', borderRadius: '50%', border: '1px solid var(--border)', backgroundColor: 'var(--bg-card)', cursor: 'pointer', fontWeight: 700, color: 'var(--text-muted)', fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
+                    <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.9rem', color: 'var(--text)', minWidth: '24px', textAlign: 'center' }}>{tempHp}</span>
+                    <button onClick={() => persist({ tempHp: tempHp + 1 })} style={{ width: '18px', height: '18px', borderRadius: '50%', border: '1px solid var(--border)', backgroundColor: 'var(--bg-card)', cursor: 'pointer', fontWeight: 700, color: 'var(--text-muted)', fontSize: '0.75rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
+                    {tempHp !== 0 && <button onClick={() => { const newMax = derivedMaxVitality; const patch: Partial<typeof c> = { tempHp: 0 }; if ((c.currentVitality ?? 0) > newMax) patch.currentVitality = Math.max(0, newMax); persist(patch); }} style={{ fontSize: '0.6rem', color: 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', fontFamily: 'var(--font-heading)' }}>✕</button>}
+                  </div>
                 </div>
               </div>
+              {/* Wounds — moved here from the 3-col row below */}
+              <EditableNumber label={`Wounds / ${maxWounds}`} value={c.currentWounds ?? 0} min={0} max={maxWounds} onChange={(v) => persist({ currentWounds: v })} />
             </div>
           );
         })()}
@@ -2234,8 +2252,7 @@ export default function CharacterSheetPage({ id, professions, origins, professio
           );
         })()}
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginBottom: '0.75rem' }}>
-          <EditableNumber label={`Wounds / ${maxWounds}`} value={c.currentWounds ?? 0} min={0} max={maxWounds} onChange={(v) => persist({ currentWounds: v })} />
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.75rem', marginBottom: '0.75rem' }}>
           <EditableNumber label="Renown" value={c.renown ?? 0} min={0} onChange={(v) => persist({ renown: v })} />
           <div style={{ textAlign: 'center', padding: '0.625rem 0.5rem', backgroundColor: 'var(--bg-nav)', border: '1px solid var(--border)', borderRadius: '0.5rem' }}>
             <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.6rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)', marginBottom: '0.2rem' }}>Ambition</div>
@@ -2251,14 +2268,22 @@ export default function CharacterSheetPage({ id, professions, origins, professio
           {(() => {
             const tempAD = c.tempArmorDef ?? 0;
             const totalAD = armorDefense + tempAD;
-            const subLabel = hasUnarmoredDefense && !equippedBody ? 'Unarmored Def' : hasAgile && !equippedShield && (!equippedBody || equippedBody.armorCategory === 'Light' || !equippedBody.armorCategory) ? 'Agile' : equippedBody ? `${equippedBody.name} +${equippedBody.armorBonus}` : 'Base';
+            const spellArmorOn = !!(c.spellArmorActive && isCaster);
+            const subLabel = spellArmorOn ? `Spell Armor (11+${modKey})` : hasUnarmoredDefense && !equippedBody ? 'Unarmored Def' : hasAgile && !equippedShield && (!equippedBody || equippedBody.armorCategory === 'Light' || !equippedBody.armorCategory) ? 'Agile' : equippedBody ? `${equippedBody.name} +${equippedBody.armorBonus}` : 'Base';
             return (
-              <div style={{ textAlign: 'center', padding: '0.5rem 0.35rem', backgroundColor: 'var(--bg-nav)', border: '1px solid var(--border)', borderRadius: '0.5rem' }}>
+              <div style={{ textAlign: 'center', padding: '0.5rem 0.35rem', backgroundColor: spellArmorOn ? 'var(--primary-light)' : 'var(--bg-nav)', border: `1px solid ${spellArmorOn ? 'var(--primary)' : 'var(--border)'}`, borderRadius: '0.5rem' }}>
                 <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.55rem', textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)', marginBottom: '0.15rem' }}>Armor Def</div>
                 <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.25rem', color: 'var(--primary)', lineHeight: 1 }}>
                   {totalAD}{tempAD !== 0 && <span style={{ fontSize: '0.7rem', color: tempAD > 0 ? 'var(--primary)' : 'var(--text-muted)', marginLeft: '0.15rem' }}>{tempAD > 0 ? `+${tempAD}` : tempAD}</span>}
                 </div>
-                {subLabel && <div style={{ fontSize: '0.55rem', color: 'var(--text-muted)', marginTop: '0.1rem', marginBottom: '0.25rem' }}>{subLabel}</div>}
+                {subLabel && <div style={{ fontSize: '0.55rem', color: spellArmorOn ? 'var(--primary)' : 'var(--text-muted)', marginTop: '0.1rem', marginBottom: '0.2rem' }}>{subLabel}</div>}
+                {/* BUG-09: Spell Armor toggle (casters only) */}
+                {isCaster && (
+                  <button
+                    onClick={() => persist({ spellArmorActive: !c.spellArmorActive })}
+                    style={{ fontSize: '0.5rem', fontFamily: 'var(--font-heading)', fontWeight: 700, padding: '0.1rem 0.3rem', borderRadius: '0.25rem', border: `1px solid ${spellArmorOn ? 'var(--primary)' : 'var(--border)'}`, backgroundColor: spellArmorOn ? 'var(--primary)' : 'var(--bg-card)', color: spellArmorOn ? '#fff' : 'var(--text-muted)', cursor: 'pointer', marginBottom: '0.2rem' }}
+                  >{spellArmorOn ? 'Spell Armor ON' : 'Spell Armor'}</button>
+                )}
                 <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.2rem' }}>
                   <button onClick={() => persist({ tempArmorDef: tempAD - 1 })} style={{ width: '16px', height: '16px', borderRadius: '50%', border: '1px solid var(--border)', backgroundColor: 'var(--bg-card)', cursor: 'pointer', fontWeight: 700, color: 'var(--text-muted)', fontSize: '0.7rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
                   <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)', minWidth: '14px', textAlign: 'center' }}>{tempAD === 0 ? 'tmp' : tempAD}</span>

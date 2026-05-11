@@ -110,7 +110,7 @@ export function calcMaxWounds(
   attrs: CharacterAttributes,
   tier: number,
 ): number {
-  return Math.max(2, attrs.body / 2) + tier;
+  return Math.floor(Math.max(2, attrs.body / 2)) + tier;
 }
 export function calcCarryWeight(
   attrs: CharacterAttributes,
@@ -285,6 +285,44 @@ export function calcSkillPool(
 
 /** Returns the Ambition dice type and max pool.
  *  Die is the higher of the Will-based or Tier-based die (spec: take higher when both apply). */
+/** Parse "XdY" or "XdY + Z" or "XdY - Z" → average expected value (rounded). */
+export function parseAvgDiceExpr(formula: string): number {
+  const m = formula.match(/(\d+)d(\d+)\s*([+-]\s*\d+)?/i);
+  if (!m) return 0;
+  const count = parseInt(m[1], 10);
+  const faces = parseInt(m[2], 10);
+  const flat = m[3] ? parseInt(m[3].replace(/\s/g, ''), 10) : 0;
+  return Math.round(count * (faces + 1) / 2 + flat);
+}
+
+/** Parse "XdY per N Attr" → average bonus given attr value. Attr key auto-detected from string. */
+export function parseBodyModifierBonusValue(formula: string, attrs: CharacterAttributes): number {
+  const m = formula.match(/(\d+)d(\d+)\s+per\s+(\d+)\s+(Body|Mind|Will)/i);
+  if (!m) return 0;
+  const count = parseInt(m[1], 10);
+  const faces = parseInt(m[2], 10);
+  const perN = parseInt(m[3], 10);
+  const attr = m[4].toLowerCase() as keyof CharacterAttributes;
+  const groups = Math.floor((attrs[attr] ?? 0) / perN);
+  return Math.round(count * (faces + 1) / 2 * groups);
+}
+
+/** Full max vitality: Tier 1 base + per-tier gains + body modifier bonus + feat bonus. */
+export function calcFullMaxVitality(
+  prof: { startingVitality: string; vitalityPerTier: string; bodyModifierBonus: string },
+  attrs: CharacterAttributes,
+  tier: number,
+  selectedFeatIds: string[],
+  allFeats: BuilderFeat[],
+): number {
+  const base = calcStartingVitality(prof, attrs);
+  const perTierAvg = parseAvgDiceExpr(prof.vitalityPerTier);
+  const tierGain = (tier - 1) * perTierAvg;
+  const modBonus = parseBodyModifierBonusValue(prof.bodyModifierBonus, attrs);
+  const featBonus = calcFeatVitalityBonus(selectedFeatIds, allFeats, tier);
+  return base + tierGain + modBonus + featBonus;
+}
+
 export function calcAmbition(
   will: number,
   tier: number = 1,
