@@ -146,6 +146,12 @@ export default function CharacterSheetPage({ id, professions, origins, professio
   // Equipment slot picker
   const [pickingSlot, setPickingSlot] = useState<InventorySlot>(null);
 
+  // Item notes popover
+  const [notePopoverItemId, setNotePopoverItemId] = useState<string | null>(null);
+
+  // Traits editing input
+  const [traitInputVal, setTraitInputVal] = useState('');
+
   const filteredCatalog = useMemo(() => {
     const q = catalogSearch.toLowerCase().trim();
     if (!q) return catalog;
@@ -165,6 +171,12 @@ export default function CharacterSheetPage({ id, professions, origins, professio
   const [shopChoiceQueue, setShopChoiceQueue] = useState<ChoiceFeature[]>([]);
   const [shopChoiceIdx, setShopChoiceIdx] = useState(0);
   const [shopCurrentSels, setShopCurrentSels] = useState<string[]>([]);
+
+  // AMEND-07: Feat swap / choice edit state
+  const [swapSourceFeatId, setSwapSourceFeatId] = useState<string | null>(null);
+  const [swapSearch, setSwapSearch] = useState('');
+  const [editChoiceFeatId, setEditChoiceFeatId] = useState<string | null>(null);
+  const [editChoiceSels, setEditChoiceSels] = useState<string[]>([]);
 
   useEffect(() => {
     const loaded = getCharacter(id);
@@ -222,7 +234,7 @@ export default function CharacterSheetPage({ id, professions, origins, professio
         const loadedAllFeats = [...professionFeats, ...originFeats];
         const loadedAttrs = getTotalAttributes(loaded);
         if (loadedProf) {
-          const featBonus = calcFeatVitalityBonus(loaded.selectedFeatIds ?? [], loadedAllFeats);
+          const featBonus = calcFeatVitalityBonus(loaded.selectedFeatIds ?? [], loadedAllFeats, loaded.tier);
           resolvedMaxVit = calcStartingVitality(loadedProf, loadedAttrs) + featBonus;
           updateCharacter(loaded.id, { maxVitality: resolvedMaxVit });
         }
@@ -458,6 +470,14 @@ export default function CharacterSheetPage({ id, professions, origins, professio
   const equippedShield = inventory.find((i) => i.equipped && i.slot === 'Off Hand' && i.category === 'Shield') ?? null;
   const armorDefense = calcArmorDefense(equippedBody, equippedShield, attrs, hasAgile, hasUnarmoredDefense, effectiveTier);
 
+  // AMEND-05: Armor proficiency check
+  const isArmorProficient: boolean = (() => {
+    if (!equippedBody || equippedBody.category !== 'Armor' || !equippedBody.armorCategory) return true;
+    const protection = prof?.protection ?? [];
+    const cat = equippedBody.armorCategory.toLowerCase();
+    return protection.some((p) => p.toLowerCase().includes(cat));
+  })();
+
   const DAMAGE_TYPE_LABEL: Record<string, string> = { puncture: 'Puncture', slash: 'Slash', blunt: 'Blunt' };
 
   // Weapon combat stats — all derived from structured tag fields only
@@ -515,12 +535,13 @@ export default function CharacterSheetPage({ id, professions, origins, professio
       return cf.options.filter((o) => selected.includes(o.name)).map((o) => ({ name: o.name, effectText: o.effect_text }));
     }
 
-    function FeatRow({ id, name, tier, activationRaw, traits, descriptionMarkdown, required, pathInvestment, resolvedOptions }: {
+    function FeatRow({ id, name, tier, activationRaw, traits, descriptionMarkdown, required, pathInvestment, resolvedOptions, ownerName }: {
       id: string; name: string; tier?: number; activationRaw?: string | null; traits?: string[];
       descriptionMarkdown: string; required?: string | null; pathInvestment?: string | null;
-      resolvedOptions?: { name: string; effectText: string }[] | null;
+      resolvedOptions?: { name: string; effectText: string }[] | null; ownerName?: string;
     }) {
       const expanded = expandedFeats.has(id);
+      const isPurchasedFeat = tier !== undefined && ownerName !== undefined;
       return (
         <div style={{ border: '1px solid var(--border)', borderRadius: '0.5rem', overflow: 'hidden' }}>
           <button
@@ -564,6 +585,27 @@ export default function CharacterSheetPage({ id, professions, origins, professio
               })()}
               {pathInvestment && <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginBottom: '0.25rem' }}>Investment: {pathInvestment}</div>}
               <MarkdownContent content={descriptionMarkdown} />
+              {/* AMEND-07: Edit choices + Swap controls for purchased feats */}
+              {isPurchasedFeat && (
+                <div style={{ display: 'flex', gap: '0.5rem', marginTop: '0.75rem', borderTop: '1px solid var(--border)', paddingTop: '0.625rem' }}>
+                  {choiceFeatures.some((cf) => cf.feature_name === name && cf.entity_name === ownerName) && (
+                    <button
+                      onClick={() => {
+                        const cf = choiceFeatures.find((cf) => cf.feature_name === name && cf.entity_name === ownerName);
+                        if (!cf) return;
+                        const key = `${ownerName}__${name}`;
+                        setEditChoiceFeatId(id);
+                        setEditChoiceSels(c.choiceSelections?.[key] ?? []);
+                      }}
+                      style={{ padding: '0.25rem 0.625rem', border: '1px solid var(--primary)', borderRadius: '0.25rem', backgroundColor: 'transparent', cursor: 'pointer', color: 'var(--primary)', fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '0.75rem' }}
+                    >✎ Edit Choice</button>
+                  )}
+                  <button
+                    onClick={() => { setSwapSourceFeatId(id); setSwapSearch(''); }}
+                    style={{ padding: '0.25rem 0.625rem', border: '1px solid var(--border)', borderRadius: '0.25rem', backgroundColor: 'transparent', cursor: 'pointer', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '0.75rem' }}
+                  >⇄ Swap Feat</button>
+                </div>
+              )}
             </div>
           )}
         </div>
@@ -620,6 +662,45 @@ export default function CharacterSheetPage({ id, professions, origins, professio
         setShopChoiceIdx(0);
         setShopCurrentSels([]);
       }
+    }
+
+    // AMEND-07: Swap feat — replace old feat with new, clear old choice selections, recalc maxVitality
+    function confirmSwap(newFeat: BuilderFeat) {
+      if (!swapSourceFeatId) return;
+      const oldFeat = shopAllFeats.find((f) => f.id === swapSourceFeatId);
+      if (!oldFeat) return;
+      const newSelected = c.selectedFeatIds.map((id) => id === swapSourceFeatId ? newFeat.id : id);
+      // Clear old feat's choice selections
+      const oldKey = `${oldFeat.ownerName}__${oldFeat.name}`;
+      const updatedSelections = { ...(c.choiceSelections ?? {}) };
+      delete updatedSelections[oldKey];
+      // Recalculate maxVitality without old feat bonus, with new feat bonus
+      const newFeatBonus = calcFeatVitalityBonus(newSelected, shopAllFeats, effectiveTier);
+      const newMaxVit = prof ? calcStartingVitality(prof, attrs) + newFeatBonus : (c.maxVitality ?? 0);
+      persist({ selectedFeatIds: newSelected, choiceSelections: updatedSelections, maxVitality: newMaxVit });
+      setSwapSourceFeatId(null);
+      setSwapSearch('');
+      // Trigger choice resolution for new feat if needed
+      const onGainChoices = choiceFeatures.filter(
+        (cf) => cf.feature_name === newFeat.name && cf.entity_name === newFeat.ownerName && cf.selection_timing === 'on_gain',
+      );
+      if (onGainChoices.length > 0) {
+        setShopChoiceQueue(onGainChoices);
+        setShopChoiceIdx(0);
+        setShopCurrentSels([]);
+        setShowFeatShop(true);
+      }
+    }
+
+    // AMEND-07: Edit choice for existing feat
+    function confirmEditChoice() {
+      if (!editChoiceFeatId) return;
+      const feat = shopAllFeats.find((f) => f.id === editChoiceFeatId);
+      if (!feat) return;
+      const key = `${feat.ownerName}__${feat.name}`;
+      persist({ choiceSelections: { ...(c.choiceSelections ?? {}), [key]: editChoiceSels } });
+      setEditChoiceFeatId(null);
+      setEditChoiceSels([]);
     }
 
     function renderShopFeatGroup(feats: BuilderFeat[], title: string) {
@@ -878,6 +959,12 @@ export default function CharacterSheetPage({ id, professions, origins, professio
             </div>
           );
         })()}
+        {/* AMEND-05: Non-proficiency armor penalty banner */}
+        {!isArmorProficient && equippedBody && (
+          <div style={{ marginBottom: '0.75rem', padding: '0.5rem 0.875rem', backgroundColor: '#fff0f0', border: '1px solid #ff7979', borderRadius: '0.5rem', fontSize: '0.82rem', color: '#cc2222', fontFamily: 'var(--font-heading)', fontWeight: 700 }}>
+            ⚠ Non-Proficient Armor ({equippedBody.armorCategory}) — All Actions cost −1 AP · Skill dice reduced one step (min d4)
+          </div>
+        )}
         {/* Equipped gear */}
         <div style={{ marginBottom: '1.25rem' }}>
           <div style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)', marginBottom: '0.5rem' }}>Equipped Gear</div>
@@ -888,11 +975,13 @@ export default function CharacterSheetPage({ id, professions, origins, professio
               const stats = displayItem ? weaponStats(displayItem) : null;
               const pickerOpen = pickingSlot === slot && !displayItem;
               const eligible = pickerOpen ? getPickerItems(slot) : [];
+              // AMEND-05: non-proficient armor penalty applies to Body, Main Hand, Off Hand
+              const penaltySlot = !isArmorProficient && ['Main Hand', 'Off Hand', 'Body'].includes(slot);
               return (
                 <div key={label}>
-                  <div style={{ padding: '0.625rem 0.75rem', backgroundColor: displayItem ? 'var(--primary-light)' : 'var(--bg-nav)', border: `1.5px solid ${displayItem ? 'var(--primary)' : pickerOpen ? 'var(--primary)' : 'var(--border)'}`, borderRadius: pickerOpen ? '0.5rem 0.5rem 0 0' : '0.5rem' }}>
-                    <div style={{ fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: displayItem ? 'var(--primary)' : 'var(--text-muted)', fontFamily: 'var(--font-heading)', marginBottom: '0.3rem' }}>
-                      {label}{isTwoHandedOccupied ? ' (2H)' : ''}
+                  <div style={{ padding: '0.625rem 0.75rem', backgroundColor: penaltySlot ? '#fff0f0' : displayItem ? 'var(--primary-light)' : 'var(--bg-nav)', border: `1.5px solid ${penaltySlot ? '#ff7979' : displayItem ? 'var(--primary)' : pickerOpen ? 'var(--primary)' : 'var(--border)'}`, borderRadius: pickerOpen ? '0.5rem 0.5rem 0 0' : '0.5rem' }}>
+                    <div style={{ fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: penaltySlot ? '#ff7979' : displayItem ? 'var(--primary)' : 'var(--text-muted)', fontFamily: 'var(--font-heading)', marginBottom: '0.3rem' }}>
+                      {label}{isTwoHandedOccupied ? ' (2H)' : ''}{penaltySlot ? ' ⚠' : ''}
                     </div>
                     {displayItem ? (
                       <div>
@@ -958,13 +1047,21 @@ export default function CharacterSheetPage({ id, professions, origins, professio
               return (
                 <div key={item.id}>
                   {/* Main row */}
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', padding: '0.4rem 0.625rem', backgroundColor: item.equipped ? 'var(--primary-light)' : 'var(--bg-nav)', border: `1px solid ${item.equipped ? 'var(--primary)' : 'var(--border)'}`, borderRadius: isEditing ? '0.375rem 0.375rem 0 0' : '0.375rem' }}>
-                    {/* Name + weapon stats inline */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap', padding: '0.4rem 0.625rem', backgroundColor: item.equipped ? 'var(--primary-light)' : 'var(--bg-nav)', border: `1px solid ${item.equipped ? 'var(--primary)' : 'var(--border)'}`, borderRadius: isEditing ? '0.375rem 0.375rem 0 0' : notePopoverItemId === item.id ? '0.375rem 0.375rem 0 0' : '0.375rem' }}>
+                    {/* Name + weapon stats + traits inline */}
                     <div style={{ display: 'flex', flexDirection: 'column', flex: 1, minWidth: '80px' }}>
                       <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.85rem', color: 'var(--text)' }}>{item.name}</span>
                       {(() => { const ws = weaponStats(item); return ws ? <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)' }}>{ws.toHit} · {ws.damage} <span style={{ opacity: 0.7 }}>({ws.modStat})</span></span> : null; })()}
                       {item.category === 'Armor' && (item.armorBonus ?? 0) > 0 && <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)' }}>+{item.armorBonus} Armor Def{item.armorCategory ? ` · ${item.armorCategory}` : ''}</span>}
                       {item.category === 'Shield' && (item.armorBonus ?? 0) > 0 && <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)' }}>+{item.armorBonus} Shield Def</span>}
+                      {/* Traits badges — BUG-06 */}
+                      {['Weapon', 'Armor', 'Shield'].includes(item.category) && (item.traits ?? []).length > 0 && (
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.2rem', marginTop: '0.2rem' }}>
+                          {(item.traits ?? []).map((t) => (
+                            <span key={t} style={{ fontSize: '0.58rem', padding: '0.05rem 0.3rem', borderRadius: '9999px', backgroundColor: 'var(--bg-card)', color: 'var(--text-muted)', border: '1px solid var(--border)', fontFamily: 'var(--font-heading)', fontWeight: 600 }}>{t}</span>
+                          ))}
+                        </div>
+                      )}
                     </div>
                     {/* Category badge */}
                     <span style={{ fontSize: '0.6rem', padding: '0.1rem 0.3rem', borderRadius: '9999px', backgroundColor: 'var(--bg-card)', color: 'var(--text-muted)', border: '1px solid var(--border)', fontFamily: 'var(--font-heading)', fontWeight: 600, whiteSpace: 'nowrap' }}>{item.category}</span>
@@ -983,6 +1080,10 @@ export default function CharacterSheetPage({ id, professions, origins, professio
                     })()}
                     {/* Weight */}
                     {item.weight > 0 && <span style={{ fontSize: '0.68rem', color: 'var(--text-muted)', whiteSpace: 'nowrap' }}>{item.weight}wt</span>}
+                    {/* Notes icon — BUG-07 */}
+                    {item.notes && (
+                      <button onClick={() => setNotePopoverItemId(notePopoverItemId === item.id ? null : item.id)} title="Show notes" style={{ padding: '0.1rem 0.25rem', border: `1px solid ${notePopoverItemId === item.id ? 'var(--primary)' : 'var(--border)'}`, borderRadius: '0.25rem', backgroundColor: notePopoverItemId === item.id ? 'var(--primary-light)' : 'transparent', cursor: 'pointer', color: notePopoverItemId === item.id ? 'var(--primary)' : 'var(--text-muted)', fontSize: '0.68rem' }}>📋</button>
+                    )}
                     {/* Equip slot pills */}
                     {equipOpts.length > 0 && (
                       <div style={{ display: 'flex', gap: '0.2rem' }}>
@@ -997,9 +1098,16 @@ export default function CharacterSheetPage({ id, professions, origins, professio
                       </div>
                     )}
                     {/* Edit + delete */}
-                    <button onClick={() => { setEditingItemId(isEditing ? null : item.id); setEditFields({ ...item }); }} style={{ padding: '0.15rem 0.3rem', border: '1px solid var(--border)', borderRadius: '0.25rem', backgroundColor: isEditing ? 'var(--primary-light)' : 'transparent', cursor: 'pointer', color: isEditing ? 'var(--primary)' : 'var(--text-muted)', fontSize: '0.7rem' }}>✎</button>
+                    <button onClick={() => { setEditingItemId(isEditing ? null : item.id); setEditFields({ ...item }); setTraitInputVal(''); }} style={{ padding: '0.15rem 0.3rem', border: '1px solid var(--border)', borderRadius: '0.25rem', backgroundColor: isEditing ? 'var(--primary-light)' : 'transparent', cursor: 'pointer', color: isEditing ? 'var(--primary)' : 'var(--text-muted)', fontSize: '0.7rem' }}>✎</button>
                     <button onClick={() => removeItem(item.id)} style={{ padding: '0.15rem 0.3rem', border: '1px solid var(--border)', borderRadius: '0.25rem', backgroundColor: 'transparent', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '0.7rem' }}>✕</button>
                   </div>
+                  {/* Notes popover — BUG-07 */}
+                  {notePopoverItemId === item.id && item.notes && (
+                    <div style={{ padding: '0.5rem 0.75rem', border: '1px solid var(--primary)', borderTop: 'none', borderRadius: '0 0 0.375rem 0.375rem', backgroundColor: 'var(--primary-light)', fontSize: '0.82rem', color: 'var(--text)', whiteSpace: 'pre-wrap', lineHeight: 1.5 }}>
+                      <span style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--primary)', fontFamily: 'var(--font-heading)', display: 'block', marginBottom: '0.2rem' }}>Notes</span>
+                      {item.notes}
+                    </div>
+                  )}
                   {/* Edit form */}
                   {isEditing && (
                     <div style={{ padding: '0.75rem', border: '1px solid var(--primary)', borderTop: 'none', borderRadius: '0 0 0.375rem 0.375rem', backgroundColor: 'var(--bg-nav)' }}>
@@ -1128,6 +1236,56 @@ export default function CharacterSheetPage({ id, professions, origins, professio
                                     })}
                                   </div>
                                 </div>
+                              </div>
+                            </div>
+                          )}
+                          {/* Shield-specific fields — BUG-06 */}
+                          {editFields.category === 'Shield' && (
+                            <div style={{ display: 'flex', gap: '0.5rem', alignItems: 'end' }}>
+                              <div>
+                                <div style={{ fontSize: '0.6rem', color: 'var(--text-muted)', marginBottom: '0.15rem' }}>Shield Bonus</div>
+                                <input type="number" value={editFields.armorBonus ?? 0} min={0} max={10} onChange={(e) => setEditFields((f) => ({ ...f, armorBonus: parseInt(e.target.value) || 0 }))} style={{ ...inputStyle, width: '60px' }} />
+                              </div>
+                            </div>
+                          )}
+                          {/* Traits editor for Weapon/Armor/Shield — BUG-06 */}
+                          {['Weapon', 'Armor', 'Shield'].includes(editFields.category ?? '') && (
+                            <div>
+                              <div style={{ fontSize: '0.6rem', color: 'var(--text-muted)', marginBottom: '0.2rem' }}>Traits</div>
+                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.25rem', marginBottom: '0.3rem' }}>
+                                {(editFields.traits ?? []).length === 0 && <span style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>No traits</span>}
+                                {(editFields.traits ?? []).map((t) => (
+                                  <span key={t} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.2rem', fontSize: '0.65rem', padding: '0.1rem 0.35rem', borderRadius: '9999px', backgroundColor: 'var(--bg-nav)', color: 'var(--text)', border: '1px solid var(--border)', fontFamily: 'var(--font-heading)', fontWeight: 600 }}>
+                                    {t}
+                                    <button type="button" onClick={() => setEditFields((f) => ({ ...f, traits: (f.traits ?? []).filter((x) => x !== t) }))} style={{ background: 'none', border: 'none', cursor: 'pointer', color: 'var(--text-muted)', fontSize: '0.6rem', padding: 0, lineHeight: 1 }}>✕</button>
+                                  </span>
+                                ))}
+                              </div>
+                              <div style={{ display: 'flex', gap: '0.3rem' }}>
+                                <input
+                                  value={traitInputVal}
+                                  onChange={(e) => setTraitInputVal(e.target.value)}
+                                  onKeyDown={(e) => {
+                                    if (e.key === 'Enter' && traitInputVal.trim()) {
+                                      e.preventDefault();
+                                      const t = traitInputVal.trim();
+                                      setEditFields((f) => ({ ...f, traits: [...new Set([...(f.traits ?? []), t])] }));
+                                      setTraitInputVal('');
+                                    }
+                                  }}
+                                  placeholder="Add trait…"
+                                  style={{ ...inputStyle, flex: 1, fontSize: '0.75rem' }}
+                                />
+                                <button
+                                  type="button"
+                                  onClick={() => {
+                                    const t = traitInputVal.trim();
+                                    if (!t) return;
+                                    setEditFields((f) => ({ ...f, traits: [...new Set([...(f.traits ?? []), t])] }));
+                                    setTraitInputVal('');
+                                  }}
+                                  style={{ padding: '0.3rem 0.6rem', border: 'none', borderRadius: '0.25rem', backgroundColor: 'var(--primary)', color: '#fff', cursor: 'pointer', fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '0.72rem' }}
+                                >+ Add</button>
                               </div>
                             </div>
                           )}
@@ -1446,6 +1604,16 @@ export default function CharacterSheetPage({ id, professions, origins, professio
     }
 
     // ─── Known Spells Manager Modal ─────────────────────────────────────────
+    const cantripCap = isCaster ? (casterInfo!.casterType === 'full' ? 3 : 2) : 0;
+    const myCantripsAll = mySpells.filter((s) => s.isCantrip);
+    const cantripAtCap = myCantripsAll.length >= cantripCap;
+
+    // Sphere access: from casterInfo + any feat-granted caster spheres
+    const accessibleSpheres = Array.from(new Set([
+      casterInfo?.casterSource,
+      ...allFeats.filter((f) => c.selectedFeatIds.includes(f.id) && f.casterInfo?.casterSource).map((f) => f.casterInfo!.casterSource!),
+    ].filter(Boolean) as string[]));
+
     const allSearchable = spellManagerSearch.trim()
       ? spells.filter((s) => s.name.toLowerCase().includes(spellManagerSearch.toLowerCase()) || s.school.toLowerCase().includes(spellManagerSearch.toLowerCase()))
       : spells;
@@ -1467,11 +1635,24 @@ export default function CharacterSheetPage({ id, professions, origins, professio
           <StatCard label="Spell DC" value={spellDC ?? '—'} sub={`Spell Tier ${spellTier}`} />
           <StatCard label="Modifier" value={fmtAttr(modVal)} sub={modKey} />
         </div>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '0.5rem' }}>
           <StatCard label="Spell Threshold" value={spellThreshold} sub={`${c.featsPurchased ?? 0} feats bought`} />
-          <StatCard label="Known Spells" value={knownSpellsMax} sub={`${mySpells.length} known`} />
+          <StatCard label="Known Spells" value={knownSpellsMax} sub={`${mySpells.filter(s => !s.isCantrip).length} known`} />
           <StatCard label="Prepared" value={preparedSpellsMax} sub="Mod + Tier" />
+          <StatCard label="Cantrips" value={`${myCantripsAll.length}/${cantripCap}`} sub={cantripAtCap ? 'at cap' : 'available'} />
         </div>
+
+        {/* Sphere access */}
+        {accessibleSpheres.length > 0 && (
+          <div>
+            <div style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)', marginBottom: '0.375rem' }}>Spell Spheres</div>
+            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.35rem' }}>
+              {accessibleSpheres.map((sphere) => (
+                <span key={sphere} style={{ fontSize: '0.78rem', padding: '0.2rem 0.625rem', borderRadius: '9999px', backgroundColor: 'var(--primary-light)', border: '1px solid var(--primary)', color: 'var(--primary)', fontFamily: 'var(--font-heading)', fontWeight: 600 }}>{sphere}</span>
+              ))}
+            </div>
+          </div>
+        )}
 
         {/* Known Spells button */}
         <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
@@ -1490,7 +1671,10 @@ export default function CharacterSheetPage({ id, professions, origins, professio
 
         {cantrips.length > 0 && (
           <div>
-            <div style={{ fontSize: '0.63rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)', marginBottom: '0.375rem' }}>Cantrips</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.375rem' }}>
+              <div style={{ fontSize: '0.63rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)' }}>Cantrips</div>
+              <span style={{ fontSize: '0.62rem', fontWeight: 700, fontFamily: 'var(--font-heading)', padding: '0.05rem 0.3rem', borderRadius: '9999px', border: `1px solid ${cantripAtCap ? '#EF4444' : 'var(--primary)'}`, color: cantripAtCap ? '#EF4444' : 'var(--primary)' }}>{myCantripsAll.length}/{cantripCap}</span>
+            </div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
               {cantrips.map((s) => <SpellCard key={s.id} spell={s} />)}
             </div>
@@ -1512,8 +1696,14 @@ export default function CharacterSheetPage({ id, professions, origins, professio
             onClick={(e) => { if (e.target === e.currentTarget) setShowSpellManager(false); }}
           >
             <div style={{ width: '100%', maxWidth: '600px', backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '0.75rem', overflow: 'hidden' }}>
-              <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h3 style={{ margin: 0, fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1rem', color: 'var(--text)' }}>Known Spells</h3>
+              <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap' }}>
+                <div>
+                  <h3 style={{ margin: 0, fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1rem', color: 'var(--text)' }}>Known Spells</h3>
+                  <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.15rem' }}>
+                    Spells: {mySpells.filter(s => !s.isCantrip).length} · Cantrips: {myCantripsAll.length}/{cantripCap}
+                    {accessibleSpheres.length > 0 && <> · Sphere{accessibleSpheres.length > 1 ? 's' : ''}: {accessibleSpheres.join(', ')}</>}
+                  </div>
+                </div>
                 <button onClick={() => setShowSpellManager(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', color: 'var(--text-muted)', padding: '0.2rem 0.4rem' }}>✕</button>
               </div>
 
@@ -1551,7 +1741,15 @@ export default function CharacterSheetPage({ id, professions, origins, professio
 
                 {/* Add spell search */}
                 <div>
-                  <div style={{ fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)', marginBottom: '0.5rem' }}>Add Spell</div>
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.5rem' }}>
+                    <div style={{ fontSize: '0.62rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)' }}>Add Spell</div>
+                    <span style={{ fontSize: '0.62rem', fontFamily: 'var(--font-heading)', fontWeight: 700, color: cantripAtCap ? '#EF4444' : 'var(--text-muted)' }}>Cantrips: {myCantripsAll.length}/{cantripCap}</span>
+                  </div>
+                  {cantripAtCap && (
+                    <div style={{ padding: '0.3rem 0.625rem', backgroundColor: '#FEF2F2', border: '1px solid #FCA5A5', borderRadius: '0.375rem', fontSize: '0.75rem', color: '#EF4444', marginBottom: '0.375rem', fontFamily: 'var(--font-heading)' }}>
+                      Cantrip cap reached ({cantripCap}). Remove a cantrip to add another.
+                    </div>
+                  )}
                   <input
                     value={spellManagerSearch}
                     onChange={(e) => setSpellManagerSearch(e.target.value)}
@@ -1562,17 +1760,22 @@ export default function CharacterSheetPage({ id, professions, origins, professio
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', maxHeight: '220px', overflowY: 'auto' }}>
                       {unknownSpells.length === 0 ? (
                         <p style={{ fontSize: '0.8rem', color: 'var(--text-muted)', fontStyle: 'italic', margin: 0 }}>No results.</p>
-                      ) : unknownSpells.map((s) => (
-                        <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.35rem 0.625rem', backgroundColor: 'var(--bg-nav)', border: '1px solid var(--border)', borderRadius: '0.375rem' }}>
-                          <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '0.82rem', color: 'var(--text)', flex: 1 }}>{s.name}</span>
-                          <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)' }}>{s.isCantrip ? 'Cantrip' : `Tier ${s.tier}`}</span>
-                          <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)' }}>{s.school}</span>
-                          <button
-                            onClick={() => addToKnown(s.id)}
-                            style={{ padding: '0.15rem 0.5rem', border: 'none', borderRadius: '0.25rem', backgroundColor: 'var(--primary)', color: '#fff', cursor: 'pointer', fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '0.72rem', flexShrink: 0 }}
-                          >+ Add</button>
-                        </div>
-                      ))}
+                      ) : unknownSpells.map((s) => {
+                        const blocked = s.isCantrip && cantripAtCap;
+                        return (
+                          <div key={s.id} style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', padding: '0.35rem 0.625rem', backgroundColor: 'var(--bg-nav)', border: '1px solid var(--border)', borderRadius: '0.375rem', opacity: blocked ? 0.55 : 1 }}>
+                            <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '0.82rem', color: 'var(--text)', flex: 1 }}>{s.name}</span>
+                            <span style={{ fontSize: '0.62rem', color: s.isCantrip ? 'var(--accent)' : 'var(--text-muted)' }}>{s.isCantrip ? 'Cantrip' : `Tier ${s.tier}`}</span>
+                            <span style={{ fontSize: '0.6rem', color: 'var(--text-muted)' }}>{s.school}</span>
+                            <button
+                              onClick={() => { if (!blocked) addToKnown(s.id); }}
+                              disabled={blocked}
+                              title={blocked ? `Cantrip cap (${cantripCap}) reached` : undefined}
+                              style={{ padding: '0.15rem 0.5rem', border: 'none', borderRadius: '0.25rem', backgroundColor: blocked ? 'var(--border)' : 'var(--primary)', color: '#fff', cursor: blocked ? 'not-allowed' : 'pointer', fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '0.72rem', flexShrink: 0 }}
+                            >+ Add</button>
+                          </div>
+                        );
+                      })}
                     </div>
                   )}
                 </div>
@@ -1783,28 +1986,33 @@ export default function CharacterSheetPage({ id, professions, origins, professio
 
       {/* Attributes */}
       <Section title="Attributes">
-        {(c.unspentAttributePoints ?? 0) > 0 && (
-          <div style={{ marginBottom: '0.75rem', padding: '0.5rem 0.875rem', backgroundColor: 'var(--accent-light)', border: '1px solid #FCD34D', borderRadius: '0.5rem', fontSize: '0.82rem', color: '#92400E', fontFamily: 'var(--font-heading)', fontWeight: 700 }}>
-            ⚠ {c.unspentAttributePoints} unspent Attribute point{(c.unspentAttributePoints ?? 0) !== 1 ? 's' : ''} — allocate below
-          </div>
-        )}
+        {(() => {
+          const totalAvailableBase = Math.min(12, 4 + (c.featsPurchased ?? 0));
+          const currentTotalBase = c.baseAttributes.body + c.baseAttributes.mind + c.baseAttributes.will;
+          const dynamicUnspent = totalAvailableBase - currentTotalBase;
+          return dynamicUnspent > 0 ? (
+            <div style={{ marginBottom: '0.75rem', padding: '0.5rem 0.875rem', backgroundColor: 'var(--accent-light)', border: '1px solid #FCD34D', borderRadius: '0.5rem', fontSize: '0.82rem', color: '#92400E', fontFamily: 'var(--font-heading)', fontWeight: 700 }}>
+              ⚠ {dynamicUnspent} unspent Attribute point{dynamicUnspent !== 1 ? 's' : ''} — allocate below
+              <span style={{ fontWeight: 400, marginLeft: '0.5rem' }}>({currentTotalBase} / {totalAvailableBase} spent)</span>
+            </div>
+          ) : null;
+        })()}
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem' }}>
           {(['body', 'mind', 'will'] as const).map((attr) => {
             const base = c.baseAttributes[attr];
             const voc = c.vocationAttributeBonus.attribute === attr ? c.vocationAttributeBonus.value : 0;
-            const totalAvailableBase = 4 + (c.featsPurchased ?? 0);
+            const totalAvailableBase = Math.min(12, 4 + (c.featsPurchased ?? 0));
             const currentTotalBase = c.baseAttributes.body + c.baseAttributes.mind + c.baseAttributes.will;
-            const canIncrease = (c.unspentAttributePoints ?? 0) > 0 && currentTotalBase < totalAvailableBase;
+            const dynamicUnspent = totalAvailableBase - currentTotalBase;
+            const canIncrease = dynamicUnspent > 0;
             const canDecrease = base > 0;
             function adjustAttr(delta: number) {
               const newBase = base + delta;
               if (newBase < 0) return;
               if (delta > 0 && !canIncrease) return;
-              const newUnspent = (c.unspentAttributePoints ?? 0) - delta;
-              if (newUnspent < 0) return;
               persist({
                 baseAttributes: { ...c.baseAttributes, [attr]: newBase },
-                unspentAttributePoints: newUnspent,
+                unspentAttributePoints: Math.max(0, dynamicUnspent - delta),
               });
             }
             return (
@@ -1827,19 +2035,44 @@ export default function CharacterSheetPage({ id, professions, origins, professio
       <Section title="Proficiencies">
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
           <div>
-            {(c.unspentSkillPoints ?? 0) > 0 && (
-              <div style={{ marginBottom: '0.625rem', padding: '0.4rem 0.75rem', backgroundColor: 'var(--accent-light)', border: '1px solid #FCD34D', borderRadius: '0.375rem', fontSize: '0.8rem', color: '#92400E', fontFamily: 'var(--font-heading)', fontWeight: 700 }}>
-                ⚡ {c.unspentSkillPoints} unspent Skill Point{(c.unspentSkillPoints ?? 0) !== 1 ? 's' : ''} — allocate below
+            {!isArmorProficient && (
+              <div style={{ marginBottom: '0.625rem', padding: '0.4rem 0.75rem', backgroundColor: '#fff0f0', border: '1px solid #ff7979', borderRadius: '0.375rem', fontSize: '0.78rem', color: '#cc2222', fontFamily: 'var(--font-heading)', fontWeight: 700 }}>
+                ⚠ Armor Penalty active — all skill dice reduced one step (min d4)
               </div>
             )}
+            {(() => {
+              const totalAvailableSkill = 4 + 2 * Math.floor((c.featsPurchased ?? 0) / 2);
+              const totalSpentSkill = Object.values(c.skillPoints ?? {}).reduce((s, v) => s + v, 0);
+              const dynUnspentSkill = totalAvailableSkill - totalSpentSkill;
+              return dynUnspentSkill > 0 ? (
+                <div style={{ marginBottom: '0.625rem', padding: '0.4rem 0.75rem', backgroundColor: 'var(--accent-light)', border: '1px solid #FCD34D', borderRadius: '0.375rem', fontSize: '0.8rem', color: '#92400E', fontFamily: 'var(--font-heading)', fontWeight: 700 }}>
+                  ⚡ {dynUnspentSkill} unspent Skill Point{dynUnspentSkill !== 1 ? 's' : ''} — allocate below
+                  <span style={{ fontWeight: 400, marginLeft: '0.5rem' }}>({totalSpentSkill} / {totalAvailableSkill} spent)</span>
+                </div>
+              ) : null;
+            })()}
             <div style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)', marginBottom: '0.5rem' }}>V.I.T.A.L.S.</div>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
               {['Vigor', 'Intuition', 'Talent', 'Awareness', 'Lore', 'Social'].map((skill) => {
                 const pool = calcSkillPool(skill, attrs, c.vitalsProficiencies, c.vitalsExpertiseBumps ?? {}, c.skillPoints ?? {});
                 const invested = c.skillPoints?.[skill] ?? 0;
-                const canAdd = (c.unspentSkillPoints ?? 0) > 0 && invested < 10;
+                const totalAvailableSkill = 4 + 2 * Math.floor((c.featsPurchased ?? 0) / 2);
+                const totalSpentSkill = Object.values(c.skillPoints ?? {}).reduce((s, v) => s + v, 0);
+                const dynUnspentSkill = totalAvailableSkill - totalSpentSkill;
+                const canAdd = dynUnspentSkill > 0 && invested < 12;
                 const canRemove = invested > 0;
                 const RANK_COLORS: Record<string, string> = { Untrained: 'var(--text-muted)', Trained: 'var(--primary)', Expert: 'var(--accent)', Mastery: '#7C3AED' };
+                // AMEND-05: armor penalty — step down all die sizes by one (min d4)
+                const DIE_STEP = [4, 6, 8, 10, 12] as const;
+                function stepDown(faces: number): number { const i = DIE_STEP.indexOf(faces as typeof DIE_STEP[number]); return i > 0 ? DIE_STEP[i - 1] : 4; }
+                const penalizedDisplay = (() => {
+                  if (pool.profDieFaces !== null) {
+                    return `${pool.baseDiceCount + pool.skillDiceCount}d${stepDown(pool.profDieFaces)}`;
+                  }
+                  const parts = [`${pool.baseDiceCount}d4`];
+                  if (pool.skillDiceCount > 0) parts.push(`${pool.skillDiceCount}d4`);
+                  return parts.join(' + ');
+                })();
                 return (
                   <div key={skill} style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', padding: '0.5rem 0.75rem', backgroundColor: 'var(--bg-nav)', border: '1px solid var(--border)', borderRadius: '0.375rem' }}>
                     <div style={{ flex: 1, minWidth: 0 }}>
@@ -1847,13 +2080,18 @@ export default function CharacterSheetPage({ id, professions, origins, professio
                         <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.85rem', color: 'var(--text)' }}>{skill}</span>
                         <span style={{ fontSize: '0.6rem', fontWeight: 700, fontFamily: 'var(--font-heading)', padding: '0.1rem 0.35rem', borderRadius: '9999px', border: `1px solid ${RANK_COLORS[pool.rank]}`, color: RANK_COLORS[pool.rank] }}>{pool.rank}</span>
                       </div>
-                      <div style={{ fontSize: '0.78rem', fontFamily: 'var(--font-heading)', color: 'var(--primary)', marginTop: '0.1rem' }}>{pool.display}</div>
+                      {isArmorProficient
+                        ? <div style={{ fontSize: '0.78rem', fontFamily: 'var(--font-heading)', color: 'var(--primary)', marginTop: '0.1rem' }}>{pool.display}</div>
+                        : <div style={{ fontSize: '0.78rem', fontFamily: 'var(--font-heading)', marginTop: '0.1rem' }}><span style={{ color: 'var(--text-muted)', textDecoration: 'line-through', marginRight: '0.3rem' }}>{pool.display}</span><span style={{ color: '#cc2222' }}>{penalizedDisplay}</span></div>
+                      }
                     </div>
                     <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', flexShrink: 0 }}>
                       <button
                         onClick={() => {
                           if (!canRemove) return;
-                          persist({ skillPoints: { ...(c.skillPoints ?? {}), [skill]: invested - 1 }, unspentSkillPoints: (c.unspentSkillPoints ?? 0) + 1 });
+                          const newSkillPts = { ...(c.skillPoints ?? {}), [skill]: invested - 1 };
+                          const newTotalSpent = totalSpentSkill - 1;
+                          persist({ skillPoints: newSkillPts, unspentSkillPoints: totalAvailableSkill - newTotalSpent });
                         }}
                         disabled={!canRemove}
                         style={{ width: '22px', height: '22px', borderRadius: '50%', border: '1px solid var(--border)', backgroundColor: 'var(--bg-card)', cursor: canRemove ? 'pointer' : 'not-allowed', fontWeight: 700, color: 'var(--text-muted)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>−</button>
@@ -1861,7 +2099,9 @@ export default function CharacterSheetPage({ id, professions, origins, professio
                       <button
                         onClick={() => {
                           if (!canAdd) return;
-                          persist({ skillPoints: { ...(c.skillPoints ?? {}), [skill]: invested + 1 }, unspentSkillPoints: (c.unspentSkillPoints ?? 0) - 1 });
+                          const newSkillPts = { ...(c.skillPoints ?? {}), [skill]: invested + 1 };
+                          const newTotalSpent = totalSpentSkill + 1;
+                          persist({ skillPoints: newSkillPts, unspentSkillPoints: totalAvailableSkill - newTotalSpent });
                         }}
                         disabled={!canAdd}
                         style={{ width: '22px', height: '22px', borderRadius: '50%', border: '1px solid var(--border)', backgroundColor: 'var(--bg-card)', cursor: canAdd ? 'pointer' : 'not-allowed', fontWeight: 700, color: 'var(--text-muted)', fontSize: '0.85rem', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>+</button>
@@ -1871,24 +2111,23 @@ export default function CharacterSheetPage({ id, professions, origins, professio
               })}
             </div>
           </div>
-          {prof && prof.armaments.length > 0 && (
-            <div>
-              <div style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)', marginBottom: '0.375rem' }}>Armaments</div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>{prof.armaments.map((a) => <span key={a} style={{ fontSize: '0.8rem', padding: '0.2rem 0.6rem', borderRadius: '9999px', backgroundColor: 'var(--bg-nav)', border: '1px solid var(--border)', color: 'var(--text)' }}>{a}</span>)}</div>
+          {[
+            { label: 'Armaments', items: prof?.armaments ?? [] },
+            { label: 'Protection', items: prof?.protection ?? [] },
+            { label: 'Tool Kits', items: (prof?.toolKits ?? []).filter((t) => t !== '-') },
+          ].filter((g) => g.items.length > 0).map((group) => (
+            <div key={group.label}>
+              <div style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)', marginBottom: '0.375rem' }}>{group.label}</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
+                {group.items.map((item) => (
+                  <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', padding: '0.45rem 0.75rem', backgroundColor: 'var(--bg-nav)', border: '1px solid var(--border)', borderRadius: '0.375rem' }}>
+                    <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.85rem', color: 'var(--text)', flex: 1 }}>{item}</span>
+                    <span style={{ fontSize: '0.6rem', fontWeight: 700, fontFamily: 'var(--font-heading)', padding: '0.1rem 0.35rem', borderRadius: '9999px', border: '1px solid var(--primary)', color: 'var(--primary)' }}>Proficient</span>
+                  </div>
+                ))}
+              </div>
             </div>
-          )}
-          {prof && prof.protection.length > 0 && (
-            <div>
-              <div style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)', marginBottom: '0.375rem' }}>Protection</div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>{prof.protection.map((p) => <span key={p} style={{ fontSize: '0.8rem', padding: '0.2rem 0.6rem', borderRadius: '9999px', backgroundColor: 'var(--bg-nav)', border: '1px solid var(--border)', color: 'var(--text)' }}>{p}</span>)}</div>
-            </div>
-          )}
-          {prof && prof.toolKits.filter((t) => t !== '-').length > 0 && (
-            <div>
-              <div style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)', marginBottom: '0.375rem' }}>Tool Kits</div>
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>{prof.toolKits.filter((t) => t !== '-').map((t) => <span key={t} style={{ fontSize: '0.8rem', padding: '0.2rem 0.6rem', borderRadius: '9999px', backgroundColor: 'var(--bg-nav)', border: '1px solid var(--border)', color: 'var(--text)' }}>{t}</span>)}</div>
-            </div>
-          )}
+          ))}
         </div>
       </Section>
 

@@ -46,14 +46,16 @@ export function parseFeatVitalityBonus(feat: BuilderFeat): number {
   return match ? parseInt(match[1], 10) : 0;
 }
 
-/** Sum all vitality bonuses from the feats whose IDs are in selectedFeatIds. */
+/** Sum all vitality bonuses from the feats whose IDs are in selectedFeatIds.
+ *  Each feat's raw bonus applies 2× per Tier: `bonus * tier * 2`. */
 export function calcFeatVitalityBonus(
   selectedFeatIds: string[],
   allFeats: BuilderFeat[],
+  tier: number = 1,
 ): number {
   return selectedFeatIds.reduce((sum, id) => {
     const feat = allFeats.find((f) => f.id === id);
-    return sum + (feat ? parseFeatVitalityBonus(feat) : 0);
+    return sum + (feat ? parseFeatVitalityBonus(feat) * tier * 2 : 0);
   }, 0);
 }
 

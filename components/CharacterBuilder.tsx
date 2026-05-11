@@ -189,7 +189,7 @@ export default function CharacterBuilder({ professions, origins, professionFeats
   const myProfFeats = professionFeats.filter((f) => f.ownerId === draft.professionId);
   const myOriginFeats = originFeats.filter((f) => f.ownerId === draft.originId);
 
-  const featVitalityBonus = calcFeatVitalityBonus(draft.selectedFeatIds, allFeats);
+  const featVitalityBonus = calcFeatVitalityBonus(draft.selectedFeatIds, allFeats, draft.tier);
   const atFeatCap = draft.selectedFeatIds.length >= draft.featAllowance && draft.featAllowance > 0;
 
   // Effective caster: profession, vocation, OR a selected feat that grants spellcasting
@@ -1303,9 +1303,12 @@ export default function CharacterBuilder({ professions, origins, professionFeats
         ].filter((g) => g.items.length > 0).map((group) => (
           <div key={group.label}>
             <SectionLabel>{group.label}</SectionLabel>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.4rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
               {group.items.map((item) => (
-                <span key={item} style={{ fontSize: '0.8rem', padding: '0.2rem 0.6rem', borderRadius: '9999px', backgroundColor: 'var(--bg-nav)', border: '1px solid var(--border)', color: 'var(--text)' }}>{item}</span>
+                <div key={item} style={{ display: 'flex', alignItems: 'center', gap: '0.625rem', padding: '0.45rem 0.75rem', backgroundColor: 'var(--bg-nav)', border: '1px solid var(--border)', borderRadius: '0.375rem' }}>
+                  <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.85rem', color: 'var(--text)', flex: 1 }}>{item}</span>
+                  <span style={{ fontSize: '0.6rem', fontWeight: 700, fontFamily: 'var(--font-heading)', padding: '0.1rem 0.35rem', borderRadius: '9999px', border: '1px solid var(--primary)', color: 'var(--primary)' }}>Proficient</span>
+                </div>
               ))}
             </div>
           </div>
