@@ -791,12 +791,99 @@ export default function CharacterSheetPage({ id, professions, origins, professio
         {selectedFeats.length > 0 && (
           <>
             <div style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.08em', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)', marginTop: '0.5rem', marginBottom: '0.2rem' }}>Selected Feats</div>
-            {selectedFeats.map((f) => <FeatRow key={`feat-${f.id}`} id={f.id} name={f.name} tier={f.tier} activationRaw={f.activationRaw} traits={f.traits} descriptionMarkdown={f.descriptionMarkdown} required={f.required} pathInvestment={f.pathInvestment} resolvedOptions={getResolvedOptions(f.name, f.ownerName)} />)}
+            {selectedFeats.map((f) => <FeatRow key={`feat-${f.id}`} id={f.id} name={f.name} tier={f.tier} activationRaw={f.activationRaw} traits={f.traits} descriptionMarkdown={f.descriptionMarkdown} required={f.required} pathInvestment={f.pathInvestment} resolvedOptions={getResolvedOptions(f.name, f.ownerName)} ownerName={f.ownerName} />)}
           </>
         )}
         {baseFeatures.length === 0 && vocationFeatures.length === 0 && selectedFeats.length === 0 && (
           <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>No feats or features yet.</p>
         )}
+
+        {/* AMEND-07: Edit Choice Modal */}
+        {editChoiceFeatId && (() => {
+          const feat = shopAllFeats.find((f) => f.id === editChoiceFeatId);
+          if (!feat) return null;
+          const cf = choiceFeatures.find((c2) => c2.feature_name === feat.name && c2.entity_name === feat.ownerName);
+          if (!cf) return null;
+          const canConfirm = editChoiceSels.length >= cf.min_choices;
+          return (
+            <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.55)', zIndex: 60, display: 'flex', alignItems: 'center', justifyContent: 'center', padding: '2rem 1rem' }} onClick={(e) => { if (e.target === e.currentTarget) { setEditChoiceFeatId(null); setEditChoiceSels([]); } }}>
+              <div style={{ width: '100%', maxWidth: '500px', backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '0.75rem', overflow: 'hidden' }}>
+                <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', backgroundColor: 'var(--bg-nav)' }}>
+                  <div>
+                    <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1rem', color: 'var(--text)' }}>Edit Choice: {feat.name}</div>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>Select {cf.min_choices === cf.max_choices ? cf.min_choices : `${cf.min_choices}–${cf.max_choices}`} option{cf.max_choices !== 1 ? 's' : ''}</div>
+                  </div>
+                  <button onClick={() => { setEditChoiceFeatId(null); setEditChoiceSels([]); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', color: 'var(--text-muted)', padding: '0.2rem 0.4rem' }}>✕</button>
+                </div>
+                <div style={{ padding: '1rem 1.25rem' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.375rem', marginBottom: '0.75rem' }}>
+                    {cf.options.map((opt) => {
+                      const sel = editChoiceSels.includes(opt.name);
+                      return (
+                        <button key={opt.name} onClick={() => { setEditChoiceSels((prev) => { if (sel) return prev.filter((n) => n !== opt.name); if (prev.length >= cf.max_choices) return [...prev.slice(1), opt.name]; return [...prev, opt.name]; }); }} style={{ padding: '0.5rem 0.875rem', border: `2px solid ${sel ? 'var(--primary)' : 'var(--border)'}`, borderRadius: '0.375rem', backgroundColor: sel ? 'var(--primary-light)' : 'var(--bg-card)', cursor: 'pointer', textAlign: 'left' }}>
+                          <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.85rem', color: sel ? 'var(--primary)' : 'var(--text)' }}>{opt.name}</span>
+                          {opt.effect_text && <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>{opt.effect_text}</div>}
+                        </button>
+                      );
+                    })}
+                  </div>
+                  <button onClick={confirmEditChoice} disabled={!canConfirm} style={{ padding: '0.375rem 0.875rem', border: 'none', borderRadius: '0.375rem', backgroundColor: canConfirm ? 'var(--primary)' : 'var(--border)', color: '#fff', cursor: canConfirm ? 'pointer' : 'not-allowed', fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.8rem' }}>Save Choice</button>
+                </div>
+              </div>
+            </div>
+          );
+        })()}
+
+        {/* AMEND-07: Swap Feat Modal */}
+        {swapSourceFeatId && (() => {
+          const sourceFeat = shopAllFeats.find((f) => f.id === swapSourceFeatId);
+          if (!sourceFeat) return null;
+          const eligibleForSwap = shopAllFeats.filter((f) => {
+            if (f.id === swapSourceFeatId) return false;
+            if (c.selectedFeatIds.includes(f.id)) return false;
+            const s = getFeatStatus(f, c.selectedFeatIds.filter((id) => id !== swapSourceFeatId), shopAllFeats, false);
+            return !s.blocked;
+          });
+          const filtered = swapSearch.trim()
+            ? eligibleForSwap.filter((f) => f.name.toLowerCase().includes(swapSearch.toLowerCase()))
+            : eligibleForSwap;
+          const grouped: Record<string, BuilderFeat[]> = {};
+          filtered.forEach((f) => { const k = f.ownerName; if (!grouped[k]) grouped[k] = []; grouped[k].push(f); });
+          return (
+            <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.55)', zIndex: 60, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '2rem 1rem', overflowY: 'auto' }} onClick={(e) => { if (e.target === e.currentTarget) { setSwapSourceFeatId(null); setSwapSearch(''); } }}>
+              <div style={{ width: '100%', maxWidth: '620px', backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '0.75rem', overflow: 'hidden' }}>
+                <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', backgroundColor: 'var(--bg-nav)' }}>
+                  <div>
+                    <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1rem', color: 'var(--text)' }}>Swap: {sourceFeat.name}</div>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>Choose replacement feat. Old feat effects removed, new applied immediately.</div>
+                  </div>
+                  <button onClick={() => { setSwapSourceFeatId(null); setSwapSearch(''); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', color: 'var(--text-muted)', padding: '0.2rem 0.4rem' }}>✕</button>
+                </div>
+                <div style={{ padding: '1rem 1.25rem', maxHeight: '65vh', overflowY: 'auto' }}>
+                  <input value={swapSearch} onChange={(e) => setSwapSearch(e.target.value)} placeholder="Search feats…" style={{ width: '100%', padding: '0.375rem 0.625rem', fontSize: '0.825rem', fontFamily: 'var(--font-body)', border: '1px solid var(--border)', borderRadius: '0.375rem', backgroundColor: 'var(--bg-nav)', color: 'var(--text)', outline: 'none', marginBottom: '0.75rem', boxSizing: 'border-box' }} />
+                  {filtered.length === 0 && <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>No eligible feats.</p>}
+                  {Object.entries(grouped).map(([owner, feats]) => (
+                    <div key={owner} style={{ marginBottom: '1rem' }}>
+                      <div style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)', marginBottom: '0.375rem' }}>{owner}</div>
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                        {feats.map((f) => (
+                          <div key={f.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', padding: '0.5rem 0.75rem', backgroundColor: 'var(--bg-nav)', border: '1px solid var(--border)', borderRadius: '0.375rem' }}>
+                            <div style={{ flex: 1, minWidth: 0 }}>
+                              <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.875rem', color: 'var(--text)' }}>{f.name}</div>
+                              {f.required && <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>Req: {f.required}</div>}
+                              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{f.descriptionMarkdown.replace(/[*#_`]/g, '').slice(0, 120)}…</div>
+                            </div>
+                            <button onClick={() => confirmSwap(f)} style={{ padding: '0.25rem 0.75rem', border: 'none', borderRadius: '0.25rem', backgroundColor: 'var(--primary)', color: '#fff', cursor: 'pointer', fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.75rem', flexShrink: 0, whiteSpace: 'nowrap' }}>Swap ⇄</button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          );
+        })()}
 
         {/* Feat Shop Modal */}
         {showFeatShop && (
