@@ -1,7 +1,18 @@
-export type AttributeKey = 'body' | 'mind' | 'will';
+export type AttributeKey = "body" | "mind" | "will";
 
-export type InventoryCategory = 'Weapon' | 'Armor' | 'Shield' | 'Kit' | 'Consumable' | 'Misc';
-export type InventorySlot = 'Main Hand' | 'Off Hand' | 'Two Hands' | 'Body' | null;
+export type InventoryCategory =
+  | "Weapon"
+  | "Armor"
+  | "Shield"
+  | "Kit"
+  | "Consumable"
+  | "Misc";
+export type InventorySlot =
+  | "Main Hand"
+  | "Off Hand"
+  | "Two Hands"
+  | "Body"
+  | null;
 
 export interface InventoryItem {
   id: string;
@@ -10,26 +21,29 @@ export interface InventoryItem {
   quantity: number;
   weight: number;
   notes: string;
-  source: 'creation' | 'manual' | 'catalog';
+  source: "creation" | "manual" | "catalog";
   slot: InventorySlot;
   equipped: boolean;
   traits: string[];
   catalogItemId: string | null;
   // Armor fields
   armorBonus: number;
-  armorCategory: 'Light' | 'Medium' | 'Heavy' | null;
+  armorCategory: "Light" | "Medium" | "Heavy" | null;
   // Weapon fields — all rules logic must use these structured fields, never display strings
-  armamentTags: string[];         // e.g. ["simple", "finesse"] — used for proficiency matching
+  armamentTags: string[]; // e.g. ["simple", "finesse"] — used for proficiency matching
   modifierStat: AttributeKey | null; // "body" | "mind" | "will"
   isRanged: boolean;
   damageDiceCount: number;
   damageDiceSize: number;
-  damageTypeTags: string[];       // e.g. ["puncture", "slash", "blunt"]
-  equipSlots: string[];           // e.g. ["main_hand", "off_hand"] — slots this item can go in
+  damageTypeTags: string[]; // e.g. ["puncture", "slash", "blunt"]
+  equipSlots: string[]; // e.g. ["main_hand", "off_hand"] — slots this item can go in
   // Masterwork
   masterworkBonus: number;
   // Equippable
   equippable: boolean;
+  // Shield Reduction Pool (FEATURE-02)
+  reductionPoolMax?: number;
+  reductionPoolCurrent?: number;
 }
 
 export interface CharacterAttributes {
@@ -115,16 +129,23 @@ export interface Character {
   featsPurchased: number;
 
   // Profession-specific resources (undefined if not applicable)
-  currentCadence?: number;      // Duelist — starting pool = Tier, no max
-  currentAdrenaline?: number;   // Fighter — starting pool = Body + Tier, max = Body + Tier
-  currentResonance?: number;    // Eidolon — starting pool = Spellcasting Threshold, no max
-  currentSoulTokens?: number;   // Vescent — starting = 1, max = 3
+  currentCadence?: number; // Duelist — starting pool = Tier, no max
+  currentAdrenaline?: number; // Fighter — starting pool = Body + Tier, max = Body + Tier
+  currentResonance?: number; // Eidolon — starting pool = Spellcasting Threshold, no max
+  currentSoulTokens?: number; // Stygian — starting = 1, max = 3
 
   // V.I.T.A.L.S. skill points & attribute system
   unspentAttributePoints: number;
   skillPoints: Record<string, number>;
   unspentSkillPoints: number;
   vitalsExpertiseBumps: Record<string, number>;
+
+  // Reduction Pool (FEATURE-02): character-level pools; shieldReductionPool lives on the shield InventoryItem
+  spellReductionPool?: number;
+  featReductionPool?: number;
+
+  // BUG-09: Spell Armor active state
+  spellArmorActive?: boolean;
 }
 
 // ─── Choice feature resolution ────────────────────────────────────────────────
@@ -142,10 +163,10 @@ export interface ChoiceFeature {
   tier: number | null;
   path: string | null;
   choice_type: string;
-  selection_rule: 'single' | 'fixed_count';
+  selection_rule: "single" | "fixed_count";
   min_choices: number;
   max_choices: number;
-  selection_timing: 'on_gain' | 'on_rest' | 'on_use' | 'on_activation';
+  selection_timing: "on_gain" | "on_rest" | "on_use" | "on_activation";
   branches_from_feature: string | null;
   notes: string | null;
   options: ChoiceFeatureOption[];
@@ -154,7 +175,7 @@ export interface ChoiceFeature {
 // ─── Builder data shapes (passed from server to client) ──────────────────────
 
 export interface BuilderVocationCaster {
-  casterType: 'full' | 'half' | 'limited';
+  casterType: "full" | "half" | "limited";
   casterSource: string;
   casterModifierOptions: AttributeKey[];
 }
@@ -187,13 +208,14 @@ export interface BuilderProfession {
   flavor: string;
   startingVitality: string;
   vitalityPerTier: string;
+  bodyModifierBonus: string;
   pathOptions: string[];
   vitalsChoiceCount: number;
   vitalsOptions: string[];
   armaments: string[];
   protection: string[];
   toolKits: string[];
-  casterType: 'full' | 'half' | 'limited' | null;
+  casterType: "full" | "half" | "limited" | null;
   casterSource: string | null;
   casterModifierOptions: AttributeKey[];
   startingPack: BuilderStartingPack;
@@ -224,7 +246,7 @@ export interface BuilderFeat {
   name: string;
   ownerId: string;
   ownerName: string;
-  ownerType: 'profession' | 'origin';
+  ownerType: "profession" | "origin";
   tier: number;
   tag: string | null;
   required: string | null;

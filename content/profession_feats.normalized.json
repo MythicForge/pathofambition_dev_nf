@@ -47,7 +47,7 @@
     },
     {
       "id": "phagite",
-      "name": "Vescent"
+      "name": "Stygian"
     },
     {
       "id": "warden",
@@ -66,9 +66,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -90,9 +88,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -115,9 +111,7 @@
       "required": "Fade Away",
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": [
-        "Offensive"
-      ],
+      "traits": ["Offensive"],
       "activation": {
         "raw": "2 AP",
         "resources": {
@@ -141,9 +135,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -165,9 +157,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -189,9 +179,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -214,9 +202,7 @@
       "required": "Concoction Kit",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -238,9 +224,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -263,9 +247,7 @@
       "required": "Lethal Precision",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -288,9 +270,7 @@
       "path_investment": "One Infiltrator Feat",
       "trait_label": "Trait",
       "trait_raw": "Maneuver",
-      "traits": [
-        "Maneuver"
-      ],
+      "traits": ["Maneuver"],
       "activation": {
         "raw": "1 AP",
         "resources": {
@@ -315,9 +295,7 @@
       "path_investment": "Three Infiltrator Feats",
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": [
-        "Offensive"
-      ],
+      "traits": ["Offensive"],
       "activation": {
         "raw": "2 AP",
         "resources": {
@@ -342,9 +320,7 @@
       "path_investment": "Two Alchemist Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -368,9 +344,7 @@
       "path_investment": "One Alchemist Feat",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -393,9 +367,7 @@
       "path_investment": "Three Alchemist Feats",
       "trait_label": "Trait",
       "trait_raw": "Maneuver",
-      "traits": [
-        "Maneuver"
-      ],
+      "traits": ["Maneuver"],
       "activation": {
         "raw": "2 Ambition",
         "resources": {
@@ -420,9 +392,7 @@
       "required": "Deft Hands and Grand Luck",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -445,9 +415,7 @@
       "path_investment": "Two Infiltrator Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -470,9 +438,7 @@
       "path_investment": "Three Infiltrator Feats",
       "trait_label": "Trait",
       "trait_raw": "Maneuver",
-      "traits": [
-        "Maneuver"
-      ],
+      "traits": ["Maneuver"],
       "activation": {
         "raw": "1 AP",
         "resources": {
@@ -498,9 +464,7 @@
       "path_investment": "Four Infiltrator Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -522,9 +486,7 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -546,9 +508,7 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": [
-        "Offensive"
-      ],
+      "traits": ["Offensive"],
       "activation": {
         "raw": "3 AP (once per respite)",
         "resources": {
@@ -573,9 +533,7 @@
       "path_investment": "Four Alchemist Feats",
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": [
-        "Narrative"
-      ],
+      "traits": ["Narrative"],
       "activation": {
         "raw": "1 AP",
         "resources": {
@@ -599,9 +557,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -623,9 +579,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Narrative | Costs 2 AP",
-      "traits": [
-        "Narrative | Costs 2 AP"
-      ],
+      "traits": ["Narrative | Costs 2 AP"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -648,9 +602,7 @@
       "required": "Frenzied Rage",
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": [
-        "Offensive"
-      ],
+      "traits": ["Offensive"],
       "activation": {
         "raw": "1 AP & 1 Ambition",
         "resources": {
@@ -675,9 +627,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -699,9 +649,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": [
-        "Narrative"
-      ],
+      "traits": ["Narrative"],
       "activation": {
         "raw": "2 AP",
         "resources": {
@@ -726,9 +674,7 @@
       "required": "Titan's Rage",
       "trait_label": "Trait",
       "trait_raw": "Maneuver",
-      "traits": [
-        "Maneuver"
-      ],
+      "traits": ["Maneuver"],
       "activation": {
         "raw": "2 AP",
         "resources": {
@@ -752,9 +698,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": [
-        "Offensive"
-      ],
+      "traits": ["Offensive"],
       "activation": {
         "raw": "2 AP",
         "resources": {
@@ -778,9 +722,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -803,9 +745,7 @@
       "path_investment": "One Frenzied Feat",
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -828,9 +768,7 @@
       "required": "Frenzied Rage",
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -852,9 +790,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": [
-        "Offensive"
-      ],
+      "traits": ["Offensive"],
       "activation": {
         "raw": "3 AP and 3 Ambition",
         "resources": {
@@ -880,9 +816,7 @@
       "required": "Titan's Charge",
       "trait_label": "Trait",
       "trait_raw": "Maneuver",
-      "traits": [
-        "Maneuver"
-      ],
+      "traits": ["Maneuver"],
       "activation": {
         "raw": "3 AP and 2 Ambition",
         "resources": {
@@ -907,9 +841,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": [
-        "Narrative"
-      ],
+      "traits": ["Narrative"],
       "activation": {
         "raw": "1 Ambition",
         "resources": {
@@ -934,9 +866,7 @@
       "path_investment": "Two Titan Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -959,9 +889,7 @@
       "required": "Brazen Attack",
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -985,9 +913,7 @@
       "path_investment": "Two Titan Feats",
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": [
-        "Offensive"
-      ],
+      "traits": ["Offensive"],
       "activation": {
         "raw": "3 AP",
         "resources": {
@@ -1012,9 +938,7 @@
       "required": "Indomitable Presence, Titan’s Stride",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -1037,9 +961,7 @@
       "required": "Thrill of Killing",
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "3 Ambition",
         "resources": {
@@ -1064,9 +986,7 @@
       "required": "Vicious Swing, Frenzied Rush",
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": [
-        "Offensive"
-      ],
+      "traits": ["Offensive"],
       "activation": {
         "raw": "3 AP (once per long rest)",
         "resources": {
@@ -1090,9 +1010,7 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Trigger (once per respite)",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -1117,9 +1035,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Maneuver",
-      "traits": [
-        "Maneuver"
-      ],
+      "traits": ["Maneuver"],
       "activation": {
         "raw": "2 AP and 2 Cadence",
         "resources": {
@@ -1144,9 +1060,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -1169,9 +1083,7 @@
       "required": "Valiant Stance",
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "2 Cadence",
         "resources": {
@@ -1195,9 +1107,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": [
-        "Narrative"
-      ],
+      "traits": ["Narrative"],
       "activation": {
         "raw": "1 AP",
         "resources": {
@@ -1221,9 +1131,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -1246,9 +1154,7 @@
       "required": "Warmonger's Stance",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "2 Cadence",
         "resources": {
@@ -1273,9 +1179,7 @@
       "required": "Warmonger Rhythm",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -1297,9 +1201,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "2 Cadence",
         "resources": {
@@ -1324,16 +1226,12 @@
       "path_investment": "Two Gladiator Feats",
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "Using Cadence",
         "resources": {},
         "properties": {},
-        "notes": [
-          "Using Cadence"
-        ]
+        "notes": ["Using Cadence"]
       },
       "description_markdown": "When you spend **Cadence**, you may reduce **dash** or **disengage** by **1 AP**.",
       "raw_markdown": "**Required** - | **Path Investment**  *Two Gladiator Feats* \n**Trait** Trigger  | **Cost** Using Cadence\n\nWhen you spend **Cadence**, you may reduce **dash** or **disengage** by **1 AP**.",
@@ -1352,9 +1250,7 @@
       "path_investment": "Two Gladiator Feats",
       "trait_label": "Trait",
       "trait_raw": "Maneuver",
-      "traits": [
-        "Maneuver"
-      ],
+      "traits": ["Maneuver"],
       "activation": {
         "raw": "2 AP and 2 Cadence",
         "resources": {
@@ -1379,9 +1275,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -1403,9 +1297,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "1 Cadence",
         "resources": {
@@ -1430,9 +1322,7 @@
       "path_investment": "Three Marauder Feats",
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -1454,9 +1344,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Maneuver",
-      "traits": [
-        "Maneuver"
-      ],
+      "traits": ["Maneuver"],
       "activation": {
         "raw": "1 AP and 2 Cadence",
         "resources": {
@@ -1481,9 +1369,7 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": [
-        "Offensive"
-      ],
+      "traits": ["Offensive"],
       "activation": {
         "raw": "3 Cadence",
         "resources": {
@@ -1508,9 +1394,7 @@
       "path_investment": "Four Gladiator Feats",
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "2 Cadence",
         "resources": {
@@ -1535,9 +1419,7 @@
       "path_investment": "Two Gladiator Feats",
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "1 AP + 5 Cadence",
         "resources": {
@@ -1564,9 +1446,7 @@
       "path_investment": "Four Gladiator Feats",
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": [
-        "Offensive"
-      ],
+      "traits": ["Offensive"],
       "activation": {
         "raw": "3 AP + 6 Cadence",
         "resources": {
@@ -1593,9 +1473,7 @@
       "path_investment": "Two Marauder Feats",
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": [
-        "Offensive"
-      ],
+      "traits": ["Offensive"],
       "activation": {
         "raw": "3 AP + 5 Cadence",
         "resources": {
@@ -1622,9 +1500,7 @@
       "path_investment": "Four Marauder Feats",
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": [
-        "Offensive"
-      ],
+      "traits": ["Offensive"],
       "activation": {
         "raw": "3 AP + 6 Cadence",
         "resources": {
@@ -1650,9 +1526,7 @@
       "path_investment": "Four Marauder Feats",
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -1674,9 +1548,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Utility Costs 2 AP",
-      "traits": [
-        "Utility Costs 2 AP"
-      ],
+      "traits": ["Utility Costs 2 AP"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -1699,9 +1571,7 @@
       "required": "Cannot have feat Harmonious Existence",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -1896,9 +1766,7 @@
             "raw_markdown": "**Trait** Passive  | Cost -\nYou add your **Tier** to your **armor defense** when not wearing armor, and you **armor** bonus is effected by your **spellcasting modifier** instead of **Body**.",
             "trait_label": "Trait",
             "trait_raw": "Passive  | Cost -",
-            "traits": [
-              "Passive  | Cost -"
-            ],
+            "traits": ["Passive  | Cost -"],
             "description_markdown": "You add your **Tier** to your **armor defense** when not wearing armor, and you **armor** bonus is effected by your **spellcasting modifier** instead of **Body**."
           }
         ]
@@ -1916,9 +1784,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": [
-        "Narrative"
-      ],
+      "traits": ["Narrative"],
       "activation": {
         "raw": "1 AP + 1 Reservoir per Tier",
         "resources": {
@@ -1943,9 +1809,7 @@
       "required": "Primal Origins",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -1968,9 +1832,7 @@
       "required": "Cannot have feat Primal Origins",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -2142,9 +2004,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -2154,9 +2014,7 @@
       "description_markdown": "You gain *commune with animals* as a **cantrip** and may cast spells through your **Vessels**.",
       "raw_markdown": "**Trait** Passive  \nYou gain *commune with animals* as a **cantrip** and may cast spells through your **Vessels**.",
       "legacy_extra": {
-        "granted_cantrip_refs": [
-          "Passive You gain"
-        ]
+        "granted_cantrip_refs": ["Passive You gain"]
       },
       "collection_type": "profession_feat"
     },
@@ -2172,9 +2030,7 @@
       "required": "Harmonious Existence",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -2196,9 +2052,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "1 AP | Range Close",
         "resources": {
@@ -2246,9 +2100,7 @@
       "path_investment": "2 Conduit Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -2258,9 +2110,7 @@
       "description_markdown": "You gain the spell *augmented façade* as a **cantrip**, gain access to the **Sphere of Magic** in **Augmentation**, gain an additional **Altered Skin**, and limbs can be severed or broken, but will heal in 1 day's time per limb lost. However, you cannot escape death.",
       "raw_markdown": "**Required** *Altered Skin*  | **Path Investment** *2 Conduit Feats*\n**Trait** Passive\nYou gain the spell *augmented façade* as a **cantrip**, gain access to the **Sphere of Magic** in **Augmentation**, gain an additional **Altered Skin**, and limbs can be severed or broken, but will heal in 1 day's time per limb lost. However, you cannot escape death.",
       "legacy_extra": {
-        "granted_cantrip_refs": [
-          "Passive You gain the spell"
-        ]
+        "granted_cantrip_refs": ["Passive You gain the spell"]
       },
       "collection_type": "profession_feat"
     },
@@ -2275,9 +2125,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "2 Ambition",
         "resources": {
@@ -2303,9 +2151,7 @@
       "path_investment": "1 Channeler Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -2327,9 +2173,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Maneuver",
-      "traits": [
-        "Maneuver"
-      ],
+      "traits": ["Maneuver"],
       "activation": {
         "raw": "2 AP + 2 Reservoir | Range Nearby",
         "resources": {
@@ -2357,9 +2201,7 @@
       "path_investment": "2 Channeler Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -2381,9 +2223,7 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Passive| Range Nearby",
-      "traits": [
-        "Passive| Range Nearby"
-      ],
+      "traits": ["Passive| Range Nearby"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -2407,9 +2247,7 @@
       "path_investment": "4 Conduit Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "5 Ambition",
         "resources": {
@@ -2454,9 +2292,7 @@
       "required": "Evolved Form, Adaptive Mutation, Primal Instinct",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -2479,9 +2315,7 @@
       "required": "Mantle of Elements",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -2504,9 +2338,7 @@
       "path_investment": "4 Channeler Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -2529,9 +2361,7 @@
       "required": "Spiritbound",
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": [
-        "Narrative"
-      ],
+      "traits": ["Narrative"],
       "activation": {
         "raw": "2 AP | Range Touch",
         "resources": {
@@ -2557,9 +2387,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -2581,9 +2409,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -2605,9 +2431,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": [
-        "Narrative"
-      ],
+      "traits": ["Narrative"],
       "activation": {
         "raw": "2 Resonance",
         "resources": {
@@ -2632,9 +2456,7 @@
       "required": "Arcane Linguistics, Focused Channeling",
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "2 Resonance",
         "resources": {
@@ -2658,9 +2480,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -2682,9 +2502,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "2 AP + 2 Resonance |",
         "resources": {
@@ -2710,9 +2528,7 @@
       "required": "Demi-Mortal",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -2734,9 +2550,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -2758,9 +2572,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "2 AP",
         "resources": {
@@ -2785,9 +2597,7 @@
       "path_investment": "2 Spellshaper Feats",
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -2810,9 +2620,7 @@
       "path_investment": "3 Spellshaper Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -2836,9 +2644,7 @@
       "path_investment": "2 Prodigy Feats",
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2862,9 +2668,7 @@
       "path_investment": "1 Prodigy Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -2886,9 +2690,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "3 AP + 3 Resonance",
         "resources": {
@@ -2914,9 +2716,7 @@
       "required": "Expanded Shapes, Magical Resonance",
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "1 AP",
         "resources": {
@@ -2941,9 +2741,7 @@
       "required": "Demi-Mortal & Linage Detection",
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "2 Resonance",
         "resources": {
@@ -2967,9 +2765,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": [
-        "Narrative"
-      ],
+      "traits": ["Narrative"],
       "activation": {
         "raw": "4 Adrenaline",
         "resources": {
@@ -2994,9 +2790,7 @@
       "required": "Expert Armorer",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -3018,9 +2812,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Manuever",
-      "traits": [
-        "Manuever"
-      ],
+      "traits": ["Manuever"],
       "activation": {
         "raw": "1 AP",
         "resources": {
@@ -3045,9 +2837,7 @@
       "path_investment": "2 Sentinel Feats",
       "trait_label": "Trait",
       "trait_raw": "Maneuver",
-      "traits": [
-        "Maneuver"
-      ],
+      "traits": ["Maneuver"],
       "activation": {
         "raw": "1 AP + 2 Adrenaline",
         "resources": {
@@ -3072,9 +2862,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": [
-        "Narrative"
-      ],
+      "traits": ["Narrative"],
       "activation": {
         "raw": "2 AP + 2 Adrenaline",
         "resources": {
@@ -3099,9 +2887,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -3124,9 +2910,7 @@
       "path_investment": "2 Reaver Feats",
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": [
-        "Offensive"
-      ],
+      "traits": ["Offensive"],
       "activation": {
         "raw": "2 AP + 2 Adrenaline",
         "resources": {
@@ -3151,9 +2935,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -3175,9 +2957,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -3221,9 +3001,7 @@
       "path_investment": "1 Sentinel Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -3246,9 +3024,7 @@
       "path_investment": "2 Reaver Feats",
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "1 AP + 2 Adrenaline",
         "resources": {
@@ -3273,9 +3049,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "1 AP",
         "resources": {
@@ -3320,9 +3094,7 @@
       "required": "Adrenaline Rush",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -3345,9 +3117,7 @@
       "required": "Sentinel Armor",
       "trait_label": "Trait",
       "trait_raw": "Maneuver",
-      "traits": [
-        "Maneuver"
-      ],
+      "traits": ["Maneuver"],
       "activation": {
         "raw": "3 AP (",
         "resources": {
@@ -3373,9 +3143,7 @@
       "path_investment": "4 Sentinel Feats",
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": ": 4 Adrenaline",
         "resources": {
@@ -3401,16 +3169,12 @@
       "path_investment": "4 Sentinel Feats",
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "Free Action (once per respite)",
         "resources": {},
         "properties": {},
-        "notes": [
-          "Free Action (once per respite)"
-        ]
+        "notes": ["Free Action (once per respite)"]
       },
       "description_markdown": "As a free action at the start of any round, instantly switch your **sentinel armor’s** form,  reconfigure your signature armor’s resistance, even outside normal daily preparation.",
       "raw_markdown": "**Required** *Sentinel Armor* | **Path Investment** *4 Sentinel Feats*\n**Trait** Utility |**Cost** Free Action (*once per respite*)\nAs a free action at the start of any round, instantly switch your **sentinel armor’s** form,  reconfigure your signature armor’s resistance, even outside normal daily preparation.",
@@ -3429,16 +3193,12 @@
       "path_investment": "4 Reaver Feats",
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "- (once per respite)",
         "resources": {},
         "properties": {},
-        "notes": [
-          "- (once per respite)"
-        ]
+        "notes": ["- (once per respite)"]
       },
       "description_markdown": "Your critical strikes are feared. When you score a **critical hit** with a weapon of your **Signature School**, choose one:\n- Immediately gain **dodge**, **disengage**, or **dash**.\n- Restore 1d4 **Adrenaline** or 1d4 **Wounds**.\n- Apply **frightened** to one target in **close** range.",
       "raw_markdown": "**Required** *Weapon Mastery* | **Path Investment** *4 Reaver Feats*\n**Trait** Trigger | **Cost** - (*once per respite*)\nYour critical strikes are feared. When you score a **critical hit** with a weapon of your **Signature School**, choose one:\n- Immediately gain **dodge**, **disengage**, or **dash**.\n- Restore 1d4 **Adrenaline** or 1d4 **Wounds**.\n- Apply **frightened** to one target in **close** range.",
@@ -3456,9 +3216,7 @@
       "path_investment": "3 Reaver Feats",
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": [
-        "Offensive"
-      ],
+      "traits": ["Offensive"],
       "activation": {
         "raw": "3 AP",
         "resources": {
@@ -3483,9 +3241,7 @@
       "required": "Flurry, Weapon Mastery",
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": [
-        "Offensive"
-      ],
+      "traits": ["Offensive"],
       "activation": {
         "raw": "2 AP + 2 Adrenaline",
         "resources": {
@@ -3510,9 +3266,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -3522,9 +3276,7 @@
       "description_markdown": "You learn one **universal tier 1 spell** as a **cantrip**, which costs no **mana** to use.",
       "raw_markdown": "**Trait** Passive  \nYou learn one **universal tier 1 spell** as a **cantrip**, which costs no **mana** to use.",
       "legacy_extra": {
-        "granted_cantrip_refs": [
-          "Passive You learn one"
-        ]
+        "granted_cantrip_refs": ["Passive You learn one"]
       },
       "collection_type": "profession_feat"
     },
@@ -3539,9 +3291,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -3564,9 +3314,7 @@
       "required": "Arcane Author",
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -3589,9 +3337,7 @@
       "required": "Arcane Author",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -3613,9 +3359,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -3625,9 +3369,7 @@
       "description_markdown": "You gain *summon familiar* as a **cantrip** (if not already known). Duration becomes **until dispelled**.",
       "raw_markdown": "**Trait** Passive  \nYou gain *summon familiar* as a **cantrip** (if not already known). Duration becomes **until dispelled**.",
       "legacy_extra": {
-        "granted_cantrip_refs": [
-          "Passive You gain"
-        ]
+        "granted_cantrip_refs": ["Passive You gain"]
       },
       "collection_type": "profession_feat"
     },
@@ -3643,9 +3385,7 @@
       "required": "Skilled Summoner",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -3668,9 +3408,7 @@
       "required": "Tailored Conjuration",
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": [
-        "Narrative"
-      ],
+      "traits": ["Narrative"],
       "activation": {
         "raw": "2 AP",
         "resources": {
@@ -3694,9 +3432,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -3720,9 +3456,7 @@
       "path_investment": "1 Enchanter Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -3749,9 +3483,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -3775,9 +3507,7 @@
       "path_investment": "3 Enchanter Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -3799,9 +3529,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -3825,16 +3553,12 @@
       "path_investment": "2 Artificer Feats",
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "Free Action",
         "resources": {},
         "properties": {},
-        "notes": [
-          "Free Action"
-        ]
+        "notes": ["Free Action"]
       },
       "description_markdown": "Once per **respite**, your **forgecast** acts independently for one round without needing to expend **1 AP**.",
       "raw_markdown": "**Required** *Arcane Forgecast*  | **Path Investment** *2 Artificer Feats*\n**Trait** Utility |**Cost** Free Action\nOnce per **respite**, your **forgecast** acts independently for one round without needing to expend **1 AP**.",
@@ -3852,9 +3576,7 @@
       "path_investment": "1 Artificer Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -3877,9 +3599,7 @@
       "required": "Pragmatic Utility",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -3901,9 +3621,7 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -3925,9 +3643,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -3949,9 +3665,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": [
-        "Offensive"
-      ],
+      "traits": ["Offensive"],
       "activation": {
         "raw": "2 AP + 2 Ambition",
         "resources": {
@@ -3976,9 +3690,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -4001,9 +3713,7 @@
       "required": "Blood Mettle",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -4025,9 +3735,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "(1 AP + 1 Ambition) per ally | Range Close",
         "resources": {
@@ -4078,9 +3786,7 @@
       "required": "Rallied",
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": [
-        "Offensive"
-      ],
+      "traits": ["Offensive"],
       "activation": {
         "raw": "1 AP + 1 Ambition | Range Adjacent",
         "resources": {
@@ -4107,9 +3813,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -4132,9 +3836,7 @@
       "path_investment": "2 Freelancer Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -4156,9 +3858,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -4180,9 +3880,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": [
-        "Narrative"
-      ],
+      "traits": ["Narrative"],
       "activation": {
         "raw": "1 AP | Range Close",
         "resources": {
@@ -4208,9 +3906,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "1 Ambition",
         "resources": {
@@ -4235,9 +3931,7 @@
       "path_investment": "3 Commander Feats",
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "3 AP + 3 Ambition",
         "resources": {
@@ -4263,9 +3957,7 @@
       "path_investment": "2 Commander Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -4288,9 +3980,7 @@
       "required": "New Manuscript",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -4312,9 +4002,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "1 AP + 1 Ambition | Range Close",
         "resources": {
@@ -4341,9 +4029,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "2 AP | Range Close",
         "resources": {
@@ -4369,9 +4055,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": [
-        "Narrative"
-      ],
+      "traits": ["Narrative"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -4394,9 +4078,7 @@
       "path_investment": "2 Weaver Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -4418,9 +4100,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "2 AP | Range Close",
         "resources": {
@@ -4447,9 +4127,7 @@
       "required": "Invasive Mind",
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "2 AP | Range Close | Duration 1 Minute",
         "resources": {
@@ -4477,9 +4155,7 @@
       "required": "Manifest Phantasm",
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "1 AP",
         "resources": {
@@ -4503,9 +4179,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -4527,18 +4201,14 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "- | Range Engagement",
         "resources": {},
         "properties": {
           "range": "Engagement"
         },
-        "notes": [
-          "-"
-        ]
+        "notes": ["-"]
       },
       "description_markdown": "You are practiced in weaving falsehoods and unraveling the fabric of others’ stories.  \nYou and allies within range gain **Resolve** on checks made to end the following conditions affecting you:\n- **Frightened**\n- **Charmed**\n- **Compelled**",
       "raw_markdown": "**Trait** Passive | **Cost** - | **Range** Engagement\nYou are practiced in weaving falsehoods and unraveling the fabric of others’ stories.  \nYou and allies within range gain **Resolve** on checks made to end the following conditions affecting you:\n- **Frightened**\n- **Charmed**\n- **Compelled**",
@@ -4556,9 +4226,7 @@
       "path_investment": "2 Weaver Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -4581,9 +4249,7 @@
       "required": "Thread Weaving",
       "trait_label": "Activation",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "1 AP + 2 Threads | Range Nearby",
         "resources": {
@@ -4610,9 +4276,7 @@
       "path_investment": "3 Spectre Feats",
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "1 AP + 1 Phantasm | Range Close",
         "resources": {
@@ -4638,9 +4302,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -4663,9 +4325,7 @@
       "path_investment": "2 Spectre Feats",
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "1 AP | Duration 1 Round",
         "resources": {
@@ -4691,16 +4351,12 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": [
-        "Narrative"
-      ],
+      "traits": ["Narrative"],
       "activation": {
         "raw": "Free Action",
         "resources": {},
         "properties": {},
-        "notes": [
-          "Free Action"
-        ]
+        "notes": ["Free Action"]
       },
       "description_markdown": "Once per **Long Rest**, you may invoke your **Creed** to manifest an **Ascendant Boon**. This **Boon** lasts lasts for 1 minute.\n\n\n| Creeds       | Ascendant Boon                                                                                                                                                                                                                           |\n| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| **Honor**    | You emit an aura of **Ambition**, once per round any allies within your **engagement** or range of **touch**, add your **Ambition** die to check rolls.                                                                                  |\n| **Serenity** | Energy of healing radiates from your hands, when restoring **vitality** you heal an ally within **close** range for 1d4 **vitality**, up to a total of targets or times equal to your **Tier**.                                          |\n| **Dominion** | You choose a target with **nearby** range, all attack and spell attack rolls on this target are made with **Resolve**.                                                                                                                   |\n| **Entropy**  | You emit an aura that deepens wounds of **close** targets. When you damage a target already damaged you deal an additional 1d4 **void** or **ether**.                                                                                    |\n| **Paradox**  | When you damage a target make a **Mind** check, on **success** it's next attack against a target other than you is made with **Strain**, on a **critical success** it suffers **Strain** on all attack rolls until the end of it's turn. |",
       "raw_markdown": "**Trait** Narrative | **Cost** Free Action\nOnce per **Long Rest**, you may invoke your **Creed** to manifest an **Ascendant Boon**. This **Boon** lasts lasts for 1 minute.\n\n\n| Creeds       | Ascendant Boon                                                                                                                                                                                                                           |\n| ------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| **Honor**    | You emit an aura of **Ambition**, once per round any allies within your **engagement** or range of **touch**, add your **Ambition** die to check rolls.                                                                                  |\n| **Serenity** | Energy of healing radiates from your hands, when restoring **vitality** you heal an ally within **close** range for 1d4 **vitality**, up to a total of targets or times equal to your **Tier**.                                          |\n| **Dominion** | You choose a target with **nearby** range, all attack and spell attack rolls on this target are made with **Resolve**.                                                                                                                   |\n| **Entropy**  | You emit an aura that deepens wounds of **close** targets. When you damage a target already damaged you deal an additional 1d4 **void** or **ether**.                                                                                    |\n| **Paradox**  | When you damage a target make a **Mind** check, on **success** it's next attack against a target other than you is made with **Strain**, on a **critical success** it suffers **Strain** on all attack rolls until the end of it's turn. |",
@@ -4718,9 +4374,7 @@
       "required": "Cannot take or have Ardent Retribution",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -4743,9 +4397,7 @@
       "required": "Covenant's Herald",
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "1 AP | Range Close",
         "resources": {
@@ -4771,9 +4423,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "2 AP",
         "resources": {
@@ -4797,9 +4447,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -4822,9 +4470,7 @@
       "required": "Cannot take or have Covenant's Herald",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -4847,16 +4493,12 @@
       "required": "Ardent Retribution",
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": [
-        "Narrative"
-      ],
+      "traits": ["Narrative"],
       "activation": {
         "raw": "Free Action",
         "resources": {},
         "properties": {},
-        "notes": [
-          "Free Action"
-        ]
+        "notes": ["Free Action"]
       },
       "description_markdown": "You permeate an **Aura** that provides strength to allies within **10ft** of you or within your **engagement**. Those affected add your tier to their **Will** and **Mind**.\n\nYou may have multiple **Arbiter Auras** active at the same time, and is active while you are **conscious**.",
       "raw_markdown": "**Required** *Ardent Retribution*\n**Trait** Narrative | **Cost** Free Action\n\nYou permeate an **Aura** that provides strength to allies within **10ft** of you or within your **engagement**. Those affected add your tier to their **Will** and **Mind**.\n\nYou may have multiple **Arbiter Auras** active at the same time, and is active while you are **conscious**.",
@@ -4873,9 +4515,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -4898,9 +4538,7 @@
       "required": "Covenant's Herald",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -4923,9 +4561,7 @@
       "path_investment": "1 Herald Feats",
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": [
-        "Narrative"
-      ],
+      "traits": ["Narrative"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -4948,9 +4584,7 @@
       "path_investment": "3 Herald Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -4982,9 +4616,7 @@
       "path_investment": "1 Arbiter Feats",
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": [
-        "Narrative"
-      ],
+      "traits": ["Narrative"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -5007,9 +4639,7 @@
       "path_investment": "2 Arbiter Feats",
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "1 AP + 1 Reservoir per condition removed",
         "resources": {
@@ -5034,16 +4664,12 @@
       "required": "Aura of Resolve | Path Investment 2 Arbiter Feats",
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "Free Action",
         "resources": {},
         "properties": {},
-        "notes": [
-          "Free Action"
-        ]
+        "notes": ["Free Action"]
       },
       "description_markdown": "Based upon your Creed, you gain a new **Aura**. These Auras effect those within **10ft** of you or within your **engagement**.\n\nYour Aura is active while you are **conscious**.\n\n| **Creed**    | **Aura Effect**                                                                                                                                                                                                          |\n| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |\n| **Honor**    | Allies within your Aura gain **Resolve** against checks to resist or break **emotional** conditions. Enemies within your Aura suffer **Strain** on checks to inflict **emotional** conditions.                           |\n| **Serenity** | Once per turn, when an ally within your Aura takes damage, split the damage: you take half (rounded up), and the ally takes half (rounded down). The damage taken may be reduced by any **Reduction Pool** possessed.    |\n| **Dominion** | Allies who **start their turn** within your Aura gain a **Reduction Pool** equal to **1d4 + your Tier**. This Reduction Pool fades at the start of your next turn.                                                       |\n| **Entropy**  | When an enemy within your Aura takes damage, once per turn they must make a **Mind** check against your **Spell DC**. On a failure, all **Maneuver** trait actions cost them **+1 AP** until the end of their next turn. |\n| **Paradox**  | Once per turn, when an ally within your Aura would suffer a **Critical Hit**, you may choose to reduce it to a **normal hit**. When you do, you gain **Resolve** on your next attack roll.                               |",
       "raw_markdown": "**Required** *Aura of Resolve* **| Path Investment** *2 Arbiter Feats*\n**Trait** Utility | **Cost** Free Action\nBased upon your Creed, you gain a new **Aura**. These Auras effect those within **10ft** of you or within your **engagement**.\n\nYour Aura is active while you are **conscious**.\n\n| **Creed**    | **Aura Effect**                                                                                                                                                                                                          |\n| ------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |\n| **Honor**    | Allies within your Aura gain **Resolve** against checks to resist or break **emotional** conditions. Enemies within your Aura suffer **Strain** on checks to inflict **emotional** conditions.                           |\n| **Serenity** | Once per turn, when an ally within your Aura takes damage, split the damage: you take half (rounded up), and the ally takes half (rounded down). The damage taken may be reduced by any **Reduction Pool** possessed.    |\n| **Dominion** | Allies who **start their turn** within your Aura gain a **Reduction Pool** equal to **1d4 + your Tier**. This Reduction Pool fades at the start of your next turn.                                                       |\n| **Entropy**  | When an enemy within your Aura takes damage, once per turn they must make a **Mind** check against your **Spell DC**. On a failure, all **Maneuver** trait actions cost them **+1 AP** until the end of their next turn. |\n| **Paradox**  | Once per turn, when an ally within your Aura would suffer a **Critical Hit**, you may choose to reduce it to a **normal hit**. When you do, you gain **Resolve** on your next attack roll.                               |",
@@ -5062,9 +4688,7 @@
       "path_investment": "Four Herald Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -5087,9 +4711,7 @@
       "path_investment": "Three Herald Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -5112,9 +4734,7 @@
       "path_investment": "3 Arbiter Feats",
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "2 AP | Range Close",
         "resources": {
@@ -5142,9 +4762,7 @@
       "path_investment": "3 Arbiter Feats",
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "1 AP",
         "resources": {
@@ -5163,22 +4781,17 @@
       "slug": "painful-bond",
       "owner_type": "profession",
       "owner_id": "phagite",
-      "owner_name": "Vescent",
-      "tag": "Vescent",
+      "owner_name": "Stygian",
+      "tag": "Stygian",
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Trigger, 1 AP",
-      "traits": [
-        "Trigger",
-        "1 AP"
-      ],
+      "traits": ["Trigger", "1 AP"],
       "activation": {
         "raw": "2 Soul",
         "resources": {},
         "properties": {},
-        "notes": [
-          "2 Soul"
-        ]
+        "notes": ["2 Soul"]
       },
       "description_markdown": "Your bond with your enemy creates pain when you are in pain. When you take damage expend 2 **Reservoir** to activate the effects of your **Soulglyph** on a marked target. \nCadence",
       "raw_markdown": "**Trait** Trigger, 1 AP \n**Cost** 2 Soul  \nYour bond with your enemy creates pain when you are in pain. When you take damage expend 2 **Reservoir** to activate the effects of your **Soulglyph** on a marked target. \nCadence",
@@ -5190,16 +4803,13 @@
       "slug": "life-siphon",
       "owner_type": "profession",
       "owner_id": "phagite",
-      "owner_name": "Vescent",
+      "owner_name": "Stygian",
       "tag": "Animus",
       "tier": 1,
       "required": "Painful Bond",
       "trait_label": "Trait",
       "trait_raw": "Trigger, 1 AP",
-      "traits": [
-        "Trigger",
-        "1 AP"
-      ],
+      "traits": ["Trigger", "1 AP"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -5216,15 +4826,13 @@
       "slug": "ruinous-spike",
       "owner_type": "profession",
       "owner_id": "phagite",
-      "owner_name": "Vescent",
+      "owner_name": "Stygian",
       "tag": "Animus",
       "tier": 1,
       "required": "Painful Bond",
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": [
-        "Offensive"
-      ],
+      "traits": ["Offensive"],
       "activation": {
         "raw": "1 AP | Range Far",
         "resources": {
@@ -5245,14 +4853,12 @@
       "slug": "determined-soul",
       "owner_type": "profession",
       "owner_id": "phagite",
-      "owner_name": "Vescent",
+      "owner_name": "Stygian",
       "tag": "Animus",
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -5269,14 +4875,12 @@
       "slug": "familiar-with-death",
       "owner_type": "profession",
       "owner_id": "phagite",
-      "owner_name": "Vescent",
+      "owner_name": "Stygian",
       "tag": "Anima",
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -5293,7 +4897,7 @@
       "slug": "reclaimed-vessels",
       "owner_type": "profession",
       "owner_id": "phagite",
-      "owner_name": "Vescent",
+      "owner_name": "Stygian",
       "tag": "Anima",
       "tier": 1,
       "required": "Familiar with Death",
@@ -5313,15 +4917,13 @@
       "slug": "resting-decay",
       "owner_type": "profession",
       "owner_id": "phagite",
-      "owner_name": "Vescent",
+      "owner_name": "Stygian",
       "tag": "Anima",
       "tier": 1,
       "required": "Painful Bond",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -5338,21 +4940,17 @@
       "slug": "branded-for-failure",
       "owner_type": "profession",
       "owner_id": "phagite",
-      "owner_name": "Vescent",
-      "tag": "Vescent",
+      "owner_name": "Stygian",
+      "tag": "Stygian",
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": "1 Soul",
         "resources": {},
         "properties": {},
-        "notes": [
-          "1 Soul"
-        ]
+        "notes": ["1 Soul"]
       },
       "description_markdown": "**Duration** Until brand is dismissed\nDamage for **soul brand** increases to 1d6. Your bond now inflicts atrophy upon your target. When a target is marked with your **soul brand** you may choose to reduce their **body**, **mind** or **will** by -3. \nCadence",
       "raw_markdown": "**Trait** Passive\n**Duration** Until brand is dismissed\n**Cost** 1 Soul\nDamage for **soul brand** increases to 1d6. Your bond now inflicts atrophy upon your target. When a target is marked with your **soul brand** you may choose to reduce their **body**, **mind** or **will** by -3. \nCadence",
@@ -5364,14 +4962,12 @@
       "slug": "soul-harvest",
       "owner_type": "profession",
       "owner_id": "phagite",
-      "owner_name": "Vescent",
+      "owner_name": "Stygian",
       "tag": "Animus",
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -5388,16 +4984,13 @@
       "slug": "hollowing-curse",
       "owner_type": "profession",
       "owner_id": "phagite",
-      "owner_name": "Vescent",
+      "owner_name": "Stygian",
       "tag": "Animus",
       "tier": 2,
       "path_investment": "3 Animus Feats",
       "trait_label": "Trait",
       "trait_raw": "Trigger, 1 AP",
-      "traits": [
-        "Trigger",
-        "1 AP"
-      ],
+      "traits": ["Trigger", "1 AP"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -5414,15 +5007,13 @@
       "slug": "torrid-veins",
       "owner_type": "profession",
       "owner_id": "phagite",
-      "owner_name": "Vescent",
+      "owner_name": "Stygian",
       "tag": "Animus",
       "tier": 2,
       "path_investment": "3 Animus Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -5439,15 +5030,13 @@
       "slug": "icy-veins",
       "owner_type": "profession",
       "owner_id": "phagite",
-      "owner_name": "Vescent",
+      "owner_name": "Stygian",
       "tag": "Anima",
       "tier": 2,
       "path_investment": "3 Anima Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -5464,15 +5053,13 @@
       "slug": "carrion-eruption",
       "owner_type": "profession",
       "owner_id": "phagite",
-      "owner_name": "Vescent",
+      "owner_name": "Stygian",
       "tag": "Anima",
       "tier": 2,
       "required": "Awakend Vessel",
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": [
-        "Offensive"
-      ],
+      "traits": ["Offensive"],
       "activation": {
         "raw": "1 AP",
         "resources": {
@@ -5491,15 +5078,13 @@
       "slug": "awakend-vessel",
       "owner_type": "profession",
       "owner_id": "phagite",
-      "owner_name": "Vescent",
+      "owner_name": "Stygian",
       "tag": "Anima",
       "tier": 2,
       "path_investment": "2 Anima Feats",
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "1 AP + Soul Token",
         "resources": {
@@ -5523,9 +5108,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -5547,9 +5130,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -5571,9 +5152,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -5595,9 +5174,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -5619,9 +5196,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -5643,9 +5218,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "1 AP",
         "resources": {
@@ -5670,9 +5243,7 @@
       "required": "Watcher's Gaze",
       "trait_label": "Trait",
       "trait_raw": "Manuever",
-      "traits": [
-        "Manuever"
-      ],
+      "traits": ["Manuever"],
       "activation": {
         "raw": "1 AP & 1 Reservoir",
         "resources": {
@@ -5697,9 +5268,7 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": [
-        "Narrative"
-      ],
+      "traits": ["Narrative"],
       "activation": {
         "raw": "1 AP + Reservoir equal to the spell’s tier",
         "resources": {
@@ -5724,9 +5293,7 @@
       "required": "Mana Strike",
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "2 Reservoir | Duration 1 Minute",
         "resources": {
@@ -5753,16 +5320,12 @@
       "path_investment": "2 Vanguard Feats",
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "Reservoir equal to the spell’s Tier",
         "resources": {},
         "properties": {},
-        "notes": [
-          "Reservoir equal to the spell’s Tier"
-        ]
+        "notes": ["Reservoir equal to the spell’s Tier"]
       },
       "description_markdown": "When a **spell** targets or affects you, you may raise your **Bound Armament** to intercept the arcane force.\n\nReduce the spell’s damage by: \n- ***Spellcasting Modifier** + (**Tier** × 3) + (2 × **Spell Tier**)*\n\nIf this reduces the damage to **0**, you ignore any secondary or additional effects of the spell.\n\nYou also gain proficiency with **shields**.",
       "raw_markdown": "**Path Investment** *2 Vanguard Feats*\n**Trait** Trigger | **Cost** Reservoir equal to the spell’s **Tier**\nWhen a **spell** targets or affects you, you may raise your **Bound Armament** to intercept the arcane force.\n\nReduce the spell’s damage by: \n- ***Spellcasting Modifier** + (**Tier** × 3) + (2 × **Spell Tier**)*\n\nIf this reduces the damage to **0**, you ignore any secondary or additional effects of the spell.\n\nYou also gain proficiency with **shields**.",
@@ -5779,16 +5342,12 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "Once per Respite",
         "resources": {},
         "properties": {},
-        "notes": [
-          "Once per Respite"
-        ]
+        "notes": ["Once per Respite"]
       },
       "description_markdown": "When you resist damage from *Arcane Shelter*, you gain a temporary arcane ward. You gain a **reduction pool** equal **Tier x 2** + 2d6. When this ward is destroyed, it explodes dealing 2d6 **arcane** damage within range of **self**.",
       "raw_markdown": "**Trait** Trigger | **Cost** Once per Respite\nWhen you resist damage from *Arcane Shelter*, you gain a temporary arcane ward. You gain a **reduction pool** equal **Tier x 2** + 2d6. When this ward is destroyed, it explodes dealing 2d6 **arcane** damage within range of **self**.",
@@ -5806,9 +5365,7 @@
       "path_investment": "2 Watcher Feats",
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "1 AP",
         "resources": {
@@ -5833,9 +5390,7 @@
       "required": "Mystic Charge",
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -5857,9 +5412,7 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -5882,9 +5435,7 @@
       "required": "Mana Strike",
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": [
-        "Utility"
-      ],
+      "traits": ["Utility"],
       "activation": {
         "raw": "1 AP",
         "resources": {
@@ -5909,9 +5460,7 @@
       "path_investment": "3 Vanguard Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -5934,9 +5483,7 @@
       "path_investment": "2 Vanguard Feats",
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -5958,9 +5505,7 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": [
-        "Passive"
-      ],
+      "traits": ["Passive"],
       "activation": {
         "raw": null,
         "resources": {},
@@ -5982,9 +5527,7 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": [
-        "Trigger"
-      ],
+      "traits": ["Trigger"],
       "activation": {
         "raw": "1 AP + Reservoir equal to spell's Tier | Range Close",
         "resources": {
