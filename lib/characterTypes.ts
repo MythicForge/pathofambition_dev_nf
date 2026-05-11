@@ -30,6 +30,9 @@ export interface InventoryItem {
   masterworkBonus: number;
   // Equippable
   equippable: boolean;
+  // Shield Reduction Pool (FEATURE-02)
+  reductionPoolMax?: number;
+  reductionPoolCurrent?: number;
 }
 
 export interface CharacterAttributes {
@@ -125,6 +128,10 @@ export interface Character {
   skillPoints: Record<string, number>;
   unspentSkillPoints: number;
   vitalsExpertiseBumps: Record<string, number>;
+
+  // Reduction Pool (FEATURE-02): character-level pools; shieldReductionPool lives on the shield InventoryItem
+  spellReductionPool?: number;
+  featReductionPool?: number;
 }
 
 // ─── Choice feature resolution ────────────────────────────────────────────────

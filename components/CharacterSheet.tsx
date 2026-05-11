@@ -172,9 +172,16 @@ export default function CharacterSheetPage({ id, professions, origins, professio
   const [shopChoiceIdx, setShopChoiceIdx] = useState(0);
   const [shopCurrentSels, setShopCurrentSels] = useState<string[]>([]);
 
+  // FEATURE-01: Ref sidebar
+  const [showRefSidebar, setShowRefSidebar] = useState(false);
+
+  // FEATURE-02: Apply Damage pipeline
+  const [damageInput, setDamageInput] = useState('');
+
   // AMEND-07: Feat swap / choice edit state
   const [swapSourceFeatId, setSwapSourceFeatId] = useState<string | null>(null);
   const [swapSearch, setSwapSearch] = useState('');
+  const [swapPendingFeat, setSwapPendingFeat] = useState<BuilderFeat | null>(null);
   const [editChoiceFeatId, setEditChoiceFeatId] = useState<string | null>(null);
   const [editChoiceSels, setEditChoiceSels] = useState<string[]>([]);
 
@@ -440,18 +447,85 @@ export default function CharacterSheetPage({ id, professions, origins, professio
     persist({ inventory: inventory.map((i) => i.id === itemId ? { ...i, ...updates } : i) });
   }
 
+  // FEATURE-02: default shield reduction pool by shield name
+  const SHIELD_POOL_DEFAULTS: Record<string, number> = {
+    'improvised shield': 10,
+    'buckler': 10,
+    'shield': 15,
+    'reinforced shield': 25,
+    'tower shield': 40,
+    'colossus shield': 50,
+  };
+
+  function getShieldPoolDefault(name: string): number {
+    const key = name.toLowerCase().trim();
+    return SHIELD_POOL_DEFAULTS[key] ?? 15;
+  }
+
   function equipItem(itemId: string, slot: InventorySlot) {
     const item = inventory.find((i) => i.id === itemId);
     if (!item) return;
     const isTwoHanded = item.traits.includes('Two-Handed') || slot === 'Two Hands';
-    // Unequip anything in conflicting slots
     const updated = inventory.map((i) => {
-      if (i.id === itemId) return { ...i, equipped: true, slot };
+      if (i.id === itemId) {
+        const base: InventoryItem = { ...i, equipped: true, slot };
+        if (i.category === 'Shield' && i.reductionPoolMax == null) {
+          const pool = getShieldPoolDefault(i.name);
+          base.reductionPoolMax = pool;
+          base.reductionPoolCurrent = pool;
+        }
+        return base;
+      }
       if (isTwoHanded && (i.slot === 'Main Hand' || i.slot === 'Off Hand' || i.slot === 'Two Hands') && i.equipped) return { ...i, equipped: false };
       if (!isTwoHanded && i.slot === slot && i.equipped && i.id !== itemId) return { ...i, equipped: false };
       return i;
     });
     persist({ inventory: updated });
+  }
+
+  // FEATURE-02: priority-order damage pipeline — Spell > Feat > Shield > Vitality
+  function applyDamage(incoming: number) {
+    if (incoming <= 0) return;
+    let remaining = incoming;
+    const patch: Partial<Character> = {};
+    let updatedInventory = [...inventory];
+
+    // Step 1 — Spell pool
+    const spellPool = c.spellReductionPool ?? 0;
+    if (spellPool > 0 && remaining > 0) {
+      const absorbed = Math.min(remaining, spellPool);
+      patch.spellReductionPool = spellPool - absorbed;
+      remaining -= absorbed;
+    }
+
+    // Step 2 — Feat pool
+    const featPool = c.featReductionPool ?? 0;
+    if (featPool > 0 && remaining > 0) {
+      const absorbed = Math.min(remaining, featPool);
+      patch.featReductionPool = featPool - absorbed;
+      remaining -= absorbed;
+    }
+
+    // Step 3 — Shield pool
+    if (equippedShield && remaining > 0) {
+      const shieldPool = equippedShield.reductionPoolCurrent ?? 0;
+      if (shieldPool > 0) {
+        const absorbed = Math.min(remaining, shieldPool);
+        const newPool = shieldPool - absorbed;
+        updatedInventory = updatedInventory.map((i) =>
+          i.id === equippedShield.id ? { ...i, reductionPoolCurrent: newPool } : i
+        );
+        remaining -= absorbed;
+      }
+    }
+
+    // Step 4 — Remaining hits Vitality
+    if (remaining > 0) {
+      patch.currentVitality = Math.max(0, (c.currentVitality ?? 0) - remaining);
+    }
+
+    patch.inventory = updatedInventory;
+    persist(patch);
   }
 
   const fmtAttr = (v: number) => v >= 0 ? `+${v}` : String(v);
@@ -677,9 +751,19 @@ export default function CharacterSheetPage({ id, professions, origins, professio
       // Recalculate maxVitality without old feat bonus, with new feat bonus
       const newFeatBonus = calcFeatVitalityBonus(newSelected, shopAllFeats, effectiveTier);
       const newMaxVit = prof ? calcStartingVitality(prof, attrs) + newFeatBonus : (c.maxVitality ?? 0);
-      persist({ selectedFeatIds: newSelected, choiceSelections: updatedSelections, maxVitality: newMaxVit });
+      // Post-swap checks: +1 attr point; +2 skill if even-numbered slot
+      const slotIdx = c.selectedFeatIds.indexOf(swapSourceFeatId);
+      const isEvenSlot = slotIdx >= 0 && (slotIdx + 1) % 2 === 0;
+      persist({
+        selectedFeatIds: newSelected,
+        choiceSelections: updatedSelections,
+        maxVitality: newMaxVit,
+        unspentAttributePoints: (c.unspentAttributePoints ?? 0) + 1,
+        unspentSkillPoints: (c.unspentSkillPoints ?? 0) + (isEvenSlot ? 2 : 0),
+      });
       setSwapSourceFeatId(null);
       setSwapSearch('');
+      setSwapPendingFeat(null);
       // Trigger choice resolution for new feat if needed
       const onGainChoices = choiceFeatures.filter(
         (cf) => cf.feature_name === newFeat.name && cf.entity_name === newFeat.ownerName && cf.selection_timing === 'on_gain',
@@ -827,6 +911,9 @@ export default function CharacterSheetPage({ id, professions, origins, professio
                       );
                     })}
                   </div>
+                  <div style={{ fontSize: '0.72rem', color: '#856404', backgroundColor: '#fff3cd', border: '1px solid #ffc107', borderRadius: '0.375rem', padding: '0.375rem 0.625rem', marginBottom: '0.625rem' }}>
+                    Saving will update any passive effects this feat applies.
+                  </div>
                   <button onClick={confirmEditChoice} disabled={!canConfirm} style={{ padding: '0.375rem 0.875rem', border: 'none', borderRadius: '0.375rem', backgroundColor: canConfirm ? 'var(--primary)' : 'var(--border)', color: '#fff', cursor: canConfirm ? 'pointer' : 'not-allowed', fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.8rem' }}>Save Choice</button>
                 </div>
               </div>
@@ -838,6 +925,7 @@ export default function CharacterSheetPage({ id, professions, origins, professio
         {swapSourceFeatId && (() => {
           const sourceFeat = shopAllFeats.find((f) => f.id === swapSourceFeatId);
           if (!sourceFeat) return null;
+          const closeSwap = () => { setSwapSourceFeatId(null); setSwapSearch(''); setSwapPendingFeat(null); };
           const eligibleForSwap = shopAllFeats.filter((f) => {
             if (f.id === swapSourceFeatId) return false;
             if (c.selectedFeatIds.includes(f.id)) return false;
@@ -849,37 +937,71 @@ export default function CharacterSheetPage({ id, professions, origins, professio
             : eligibleForSwap;
           const grouped: Record<string, BuilderFeat[]> = {};
           filtered.forEach((f) => { const k = f.ownerName; if (!grouped[k]) grouped[k] = []; grouped[k].push(f); });
+          const slotIdx = c.selectedFeatIds.indexOf(swapSourceFeatId);
+          const isEvenSlot = slotIdx >= 0 && (slotIdx + 1) % 2 === 0;
           return (
-            <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.55)', zIndex: 60, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '2rem 1rem', overflowY: 'auto' }} onClick={(e) => { if (e.target === e.currentTarget) { setSwapSourceFeatId(null); setSwapSearch(''); } }}>
+            <div style={{ position: 'fixed', inset: 0, backgroundColor: 'rgba(0,0,0,0.55)', zIndex: 60, display: 'flex', alignItems: 'flex-start', justifyContent: 'center', padding: '2rem 1rem', overflowY: 'auto' }} onClick={(e) => { if (e.target === e.currentTarget) closeSwap(); }}>
               <div style={{ width: '100%', maxWidth: '620px', backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '0.75rem', overflow: 'hidden' }}>
                 <div style={{ padding: '1rem 1.25rem', borderBottom: '1px solid var(--border)', display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', backgroundColor: 'var(--bg-nav)' }}>
                   <div>
-                    <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1rem', color: 'var(--text)' }}>Swap: {sourceFeat.name}</div>
-                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>Choose replacement feat. Old feat effects removed, new applied immediately.</div>
+                    <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1rem', color: 'var(--text)' }}>{swapPendingFeat ? `Confirm Swap: ${sourceFeat.name}` : `Swap: ${sourceFeat.name}`}</div>
+                    <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>{swapPendingFeat ? 'Review changes below before confirming.' : 'Choose replacement feat. Old feat effects removed, new applied immediately.'}</div>
                   </div>
-                  <button onClick={() => { setSwapSourceFeatId(null); setSwapSearch(''); }} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', color: 'var(--text-muted)', padding: '0.2rem 0.4rem' }}>✕</button>
+                  <button onClick={closeSwap} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.1rem', color: 'var(--text-muted)', padding: '0.2rem 0.4rem' }}>✕</button>
                 </div>
-                <div style={{ padding: '1rem 1.25rem', maxHeight: '65vh', overflowY: 'auto' }}>
-                  <input value={swapSearch} onChange={(e) => setSwapSearch(e.target.value)} placeholder="Search feats…" style={{ width: '100%', padding: '0.375rem 0.625rem', fontSize: '0.825rem', fontFamily: 'var(--font-body)', border: '1px solid var(--border)', borderRadius: '0.375rem', backgroundColor: 'var(--bg-nav)', color: 'var(--text)', outline: 'none', marginBottom: '0.75rem', boxSizing: 'border-box' }} />
-                  {filtered.length === 0 && <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>No eligible feats.</p>}
-                  {Object.entries(grouped).map(([owner, feats]) => (
-                    <div key={owner} style={{ marginBottom: '1rem' }}>
-                      <div style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)', marginBottom: '0.375rem' }}>{owner}</div>
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
-                        {feats.map((f) => (
-                          <div key={f.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', padding: '0.5rem 0.75rem', backgroundColor: 'var(--bg-nav)', border: '1px solid var(--border)', borderRadius: '0.375rem' }}>
-                            <div style={{ flex: 1, minWidth: 0 }}>
-                              <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.875rem', color: 'var(--text)' }}>{f.name}</div>
-                              {f.required && <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>Req: {f.required}</div>}
-                              <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{f.descriptionMarkdown.replace(/[*#_`]/g, '').slice(0, 120)}…</div>
-                            </div>
-                            <button onClick={() => confirmSwap(f)} style={{ padding: '0.25rem 0.75rem', border: 'none', borderRadius: '0.25rem', backgroundColor: 'var(--primary)', color: '#fff', cursor: 'pointer', fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.75rem', flexShrink: 0, whiteSpace: 'nowrap' }}>Swap ⇄</button>
+
+                {swapPendingFeat ? (
+                  /* Confirmation view */
+                  <div style={{ padding: '1.25rem' }}>
+                    <div style={{ padding: '0.75rem 1rem', backgroundColor: 'var(--bg-nav)', border: '1px solid var(--border)', borderRadius: '0.5rem', marginBottom: '1rem' }}>
+                      <div style={{ fontSize: '0.65rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)', marginBottom: '0.5rem' }}>Changes</div>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.375rem' }}>
+                        <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.85rem', color: 'var(--text)', textDecoration: 'line-through', opacity: 0.6 }}>{sourceFeat.name}</span>
+                        <span style={{ fontSize: '0.8rem', color: 'var(--text-muted)' }}>→</span>
+                        <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.85rem', color: 'var(--primary)' }}>{swapPendingFeat.name}</span>
+                      </div>
+                      <div style={{ fontSize: '0.75rem', color: 'var(--text-muted)', display: 'flex', flexDirection: 'column', gap: '0.15rem', marginTop: '0.375rem' }}>
+                        <span>+1 Attribute Point</span>
+                        {isEvenSlot && <span>+2 Skill Points (even-numbered feat slot)</span>}
+                        {swapPendingFeat.descriptionMarkdown && (
+                          <div style={{ marginTop: '0.35rem', fontSize: '0.72rem', color: 'var(--text-muted)', borderTop: '1px solid var(--border)', paddingTop: '0.35rem' }}>
+                            {swapPendingFeat.descriptionMarkdown.replace(/[*#_`]/g, '').slice(0, 160)}…
                           </div>
-                        ))}
+                        )}
                       </div>
                     </div>
-                  ))}
-                </div>
+                    <div style={{ padding: '0.5rem 0.75rem', backgroundColor: '#fff3cd', border: '1px solid #ffc107', borderRadius: '0.375rem', fontSize: '0.75rem', color: '#856404', marginBottom: '1rem' }}>
+                      All passive effects from <strong>{sourceFeat.name}</strong> will be removed and replaced with <strong>{swapPendingFeat.name}</strong>. This cannot be undone automatically.
+                    </div>
+                    <div style={{ display: 'flex', gap: '0.5rem' }}>
+                      <button onClick={() => confirmSwap(swapPendingFeat)} style={{ padding: '0.375rem 0.875rem', border: 'none', borderRadius: '0.375rem', backgroundColor: 'var(--primary)', color: '#fff', cursor: 'pointer', fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.8rem' }}>Confirm Swap ⇄</button>
+                      <button onClick={() => setSwapPendingFeat(null)} style={{ padding: '0.375rem 0.875rem', border: '1px solid var(--border)', borderRadius: '0.375rem', backgroundColor: 'transparent', color: 'var(--text)', cursor: 'pointer', fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '0.8rem' }}>Back</button>
+                    </div>
+                  </div>
+                ) : (
+                  /* Feat selection list */
+                  <div style={{ padding: '1rem 1.25rem', maxHeight: '65vh', overflowY: 'auto' }}>
+                    <input value={swapSearch} onChange={(e) => setSwapSearch(e.target.value)} placeholder="Search feats…" style={{ width: '100%', padding: '0.375rem 0.625rem', fontSize: '0.825rem', fontFamily: 'var(--font-body)', border: '1px solid var(--border)', borderRadius: '0.375rem', backgroundColor: 'var(--bg-nav)', color: 'var(--text)', outline: 'none', marginBottom: '0.75rem', boxSizing: 'border-box' }} />
+                    {filtered.length === 0 && <p style={{ color: 'var(--text-muted)', fontSize: '0.875rem' }}>No eligible feats.</p>}
+                    {Object.entries(grouped).map(([owner, feats]) => (
+                      <div key={owner} style={{ marginBottom: '1rem' }}>
+                        <div style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)', marginBottom: '0.375rem' }}>{owner}</div>
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.3rem' }}>
+                          {feats.map((f) => (
+                            <div key={f.id} style={{ display: 'flex', alignItems: 'flex-start', gap: '0.5rem', padding: '0.5rem 0.75rem', backgroundColor: 'var(--bg-nav)', border: '1px solid var(--border)', borderRadius: '0.375rem' }}>
+                              <div style={{ flex: 1, minWidth: 0 }}>
+                                <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.875rem', color: 'var(--text)' }}>{f.name}</div>
+                                {f.required && <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', marginTop: '0.1rem' }}>Req: {f.required}</div>}
+                                <div style={{ fontSize: '0.72rem', color: 'var(--text-muted)', marginTop: '0.2rem', display: '-webkit-box', WebkitLineClamp: 2, WebkitBoxOrient: 'vertical', overflow: 'hidden' }}>{f.descriptionMarkdown.replace(/[*#_`]/g, '').slice(0, 120)}…</div>
+                              </div>
+                              <button onClick={() => setSwapPendingFeat(f)} style={{ padding: '0.25rem 0.75rem', border: 'none', borderRadius: '0.25rem', backgroundColor: 'var(--primary)', color: '#fff', cursor: 'pointer', fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.75rem', flexShrink: 0, whiteSpace: 'nowrap' }}>Select ⇄</button>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
               </div>
             </div>
           );
@@ -1064,11 +1186,15 @@ export default function CharacterSheetPage({ id, professions, origins, professio
               const eligible = pickerOpen ? getPickerItems(slot) : [];
               // AMEND-05: non-proficient armor penalty applies to Body, Main Hand, Off Hand
               const penaltySlot = !isArmorProficient && ['Main Hand', 'Off Hand', 'Body'].includes(slot);
+              // FEATURE-02: shield broken = pool depleted
+              const isShieldSlot = slot === 'Off Hand' && displayItem?.category === 'Shield';
+              const shieldBroken = isShieldSlot && (displayItem?.reductionPoolCurrent ?? 1) === 0;
+              const slotAlert = penaltySlot || shieldBroken;
               return (
                 <div key={label}>
-                  <div style={{ padding: '0.625rem 0.75rem', backgroundColor: penaltySlot ? '#fff0f0' : displayItem ? 'var(--primary-light)' : 'var(--bg-nav)', border: `1.5px solid ${penaltySlot ? '#ff7979' : displayItem ? 'var(--primary)' : pickerOpen ? 'var(--primary)' : 'var(--border)'}`, borderRadius: pickerOpen ? '0.5rem 0.5rem 0 0' : '0.5rem' }}>
-                    <div style={{ fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: penaltySlot ? '#ff7979' : displayItem ? 'var(--primary)' : 'var(--text-muted)', fontFamily: 'var(--font-heading)', marginBottom: '0.3rem' }}>
-                      {label}{isTwoHandedOccupied ? ' (2H)' : ''}{penaltySlot ? ' ⚠' : ''}
+                  <div style={{ padding: '0.625rem 0.75rem', backgroundColor: slotAlert ? '#fff0f0' : displayItem ? 'var(--primary-light)' : 'var(--bg-nav)', border: `1.5px solid ${slotAlert ? '#ff7979' : displayItem ? 'var(--primary)' : pickerOpen ? 'var(--primary)' : 'var(--border)'}`, borderRadius: pickerOpen ? '0.5rem 0.5rem 0 0' : '0.5rem' }}>
+                    <div style={{ fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: slotAlert ? '#ff7979' : displayItem ? 'var(--primary)' : 'var(--text-muted)', fontFamily: 'var(--font-heading)', marginBottom: '0.3rem' }}>
+                      {label}{isTwoHandedOccupied ? ' (2H)' : ''}{penaltySlot ? ' ⚠' : ''}{shieldBroken ? ' ✕ Broken' : ''}
                     </div>
                     {displayItem ? (
                       <div>
@@ -1080,7 +1206,26 @@ export default function CharacterSheetPage({ id, professions, origins, professio
                         </div>
                         {stats && <div style={{ fontSize: '0.7rem', color: 'var(--primary)', fontFamily: 'var(--font-heading)', fontWeight: 600, marginTop: '0.2rem' }}>{stats.toHit}{(c.tempToHit ?? 0) !== 0 && <span style={{ opacity: 0.8 }}>{(c.tempToHit ?? 0) > 0 ? `+${c.tempToHit}` : c.tempToHit}</span>} · {stats.damage}{(c.tempDamage ?? 0) !== 0 && <span style={{ opacity: 0.8 }}>{(c.tempDamage ?? 0) > 0 ? `+${c.tempDamage}` : c.tempDamage}</span>}</div>}
                         {!stats && displayItem.category === 'Armor' && <div style={{ fontSize: '0.7rem', color: 'var(--primary)', fontFamily: 'var(--font-heading)', fontWeight: 600, marginTop: '0.2rem' }}>+{displayItem.armorBonus} Armor Def{displayItem.armorCategory ? ` · ${displayItem.armorCategory}` : ''}</div>}
-                        {!stats && displayItem.category === 'Shield' && <div style={{ fontSize: '0.7rem', color: 'var(--primary)', fontFamily: 'var(--font-heading)', fontWeight: 600, marginTop: '0.2rem' }}>+{displayItem.armorBonus ?? 0} Shield Def</div>}
+                        {!stats && displayItem.category === 'Shield' && (
+                          <div style={{ marginTop: '0.2rem' }}>
+                            <div style={{ fontSize: '0.7rem', color: shieldBroken ? '#ff7979' : 'var(--primary)', fontFamily: 'var(--font-heading)', fontWeight: 600 }}>
+                              +{displayItem.armorBonus ?? 0} Shield Def{shieldBroken ? ' (broken)' : ''}
+                            </div>
+                            {displayItem.reductionPoolMax != null && (
+                              <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', marginTop: '0.15rem' }}>
+                                <span style={{ fontSize: '0.62rem', color: shieldBroken ? '#ff7979' : 'var(--text-muted)', fontFamily: 'var(--font-heading)' }}>
+                                  Pool: {displayItem.reductionPoolCurrent ?? 0} / {displayItem.reductionPoolMax}
+                                </span>
+                                {shieldBroken && (
+                                  <button
+                                    onClick={() => updateItem(displayItem.id, { reductionPoolCurrent: displayItem.reductionPoolMax })}
+                                    style={{ fontSize: '0.55rem', padding: '0.05rem 0.35rem', border: '1px solid #ff7979', borderRadius: '0.2rem', backgroundColor: 'transparent', color: '#ff7979', cursor: 'pointer', fontFamily: 'var(--font-heading)', fontWeight: 700 }}
+                                  >Repair</button>
+                                )}
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                     ) : (
                       <button onClick={() => setPickingSlot(pickerOpen ? null : slot)} style={{ fontSize: '0.75rem', color: pickerOpen ? 'var(--primary)' : 'var(--text-muted)', background: 'none', border: 'none', cursor: 'pointer', padding: 0, fontFamily: 'var(--font-heading)', fontWeight: 600 }}>
@@ -1894,8 +2039,86 @@ export default function CharacterSheetPage({ id, professions, origins, professio
     { id: 'notes', label: 'Notes' },
   ];
 
+  // FEATURE-01: Ref sidebar content
+  const REF_SECTIONS = [
+    {
+      name: 'Offensive', color: '#FEE2E2',
+      subs: [
+        { name: 'Weapon', actions: [{ n: 'Quick Scrape', ap: '1 AP', d: 'Hit: half weapon dmg. Bash w/ shield. Crit: full dmg, no mods.' }, { n: 'Strike', ap: '2 AP', d: 'Hit: weapon dice + mods. Crit: +half max dmg. DW: two rolls, mod once.' }, { n: 'Power Strike', ap: '3 AP', d: '−5 to roll. Hit: double dice + mods. DW: one roll both weapons.' }] },
+        { name: 'Magic', actions: [{ n: 'Cast a Spell', ap: '2 AP', d: 'Prepared spell or cantrip. Crit/crit-fail: trigger crit effects; min half dmg.' }, { n: 'Charged Cantrip', ap: '3 AP', d: 'Damaging cantrip. Hit: double dice + mods. Crit: +half max dmg.' }] },
+      ],
+    },
+    {
+      name: 'Maneuver', color: '#DBEAFE',
+      subs: [
+        { name: 'Movement', actions: [{ n: 'Dash', ap: '2 AP', d: 'Move to adjacent zone.' }, { n: 'Disengage', ap: '1 AP', d: 'Break Engagement, regain movement.' }, { n: 'Flank', ap: '1 AP', d: 'Give ally Resolve on next attack in Engagement.' }, { n: 'Go Prone / Stand', ap: '1 AP', d: 'Toggle Prone / Standing.' }] },
+        { name: 'Control', actions: [{ n: 'Shove', ap: '1 AP', d: 'Push target out or into hazard. Body vs Body Def.' }, { n: 'Trip', ap: '2 AP', d: 'Inflict Prone. Body vs Body Def.' }, { n: 'Grapple', ap: '2 AP', d: 'Inflict Restrained. Body vs Body Def.' }] },
+      ],
+    },
+    {
+      name: 'Utility', color: '#D1FAE5',
+      subs: [
+        { name: 'Preservation', actions: [{ n: 'Dodge', ap: '2 AP', d: 'Gain Strain on incoming attacks until next turn.' }, { n: 'Hide', ap: '2 AP', d: 'Stealth check. Combat: Obscured. Out of combat: Hidden.' }, { n: 'Cover', ap: '1 AP', d: '+2 Armor vs ranged or attacks from outside zone.' }, { n: 'Distract', ap: '1 AP', d: 'Next attack vs chosen ally has Strain.' }] },
+        { name: 'Interact', actions: [{ n: 'Assist / Aid', ap: '1 AP', d: 'Remove Burning/Bleeding or grant skill bonus dice.' }, { n: 'Interact', ap: '0→1 AP', d: 'Free first use; 1 AP each subsequent use per turn.' }, { n: 'Scan / Perception', ap: '1 AP', d: 'Mind check to reveal Hidden / Obscured.' }, { n: 'Hold Action', ap: 'Action-based', d: 'Declare action + trigger. Act when trigger occurs.' }, { n: 'Alchemical Item', ap: '2 AP', d: 'Use on self or target in range.' }, { n: 'Command', ap: '1→3 AP', d: 'Command summoned creature/pet. Cost rises each use.' }, { n: 'Brace', ap: '1 AP', d: '+2 attack (weapon) or +2 Armor Def (shield/armor).' }] },
+      ],
+    },
+  ];
+
   return (
     <div style={{ maxWidth: '800px' }}>
+      {/* FEATURE-01: Fixed Ref button */}
+      <button
+        onClick={() => setShowRefSidebar((v) => !v)}
+        style={{ position: 'fixed', right: '1rem', top: '50%', transform: 'translateY(-50%)', zIndex: 70, display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.2rem', padding: '0.5rem 0.4rem', backgroundColor: showRefSidebar ? 'var(--primary)' : 'var(--bg-card)', border: `1.5px solid ${showRefSidebar ? 'var(--primary)' : 'var(--border)'}`, borderRadius: '0.5rem', cursor: 'pointer', boxShadow: '0 2px 8px rgba(0,0,0,0.15)', writingMode: 'vertical-rl' }}
+      >
+        <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '0.72rem', color: showRefSidebar ? '#fff' : 'var(--primary)', letterSpacing: '0.06em' }}>❖ Ref</span>
+      </button>
+
+      {/* FEATURE-01: Ref sidebar overlay */}
+      {showRefSidebar && (
+        <div
+          onClick={(e) => { if (e.target === e.currentTarget) setShowRefSidebar(false); }}
+          style={{ position: 'fixed', inset: 0, zIndex: 65, backgroundColor: 'rgba(0,0,0,0.3)' }}
+        >
+          <div style={{ position: 'absolute', right: 0, top: 0, bottom: 0, width: '360px', maxWidth: '95vw', backgroundColor: 'var(--bg-card)', borderLeft: '1px solid var(--border)', overflowY: 'auto', padding: '1rem 1rem 2rem' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem', paddingBottom: '0.5rem', borderBottom: '2px solid var(--primary)' }}>
+              <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 800, fontSize: '0.95rem', color: 'var(--text)' }}>❖ Action Reference</span>
+              <button onClick={() => setShowRefSidebar(false)} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1rem', color: 'var(--text-muted)', padding: '0.1rem 0.3rem' }}>✕</button>
+            </div>
+            {REF_SECTIONS.map((sec) => (
+              <div key={sec.name} style={{ marginBottom: '1rem' }}>
+                <div style={{ padding: '0.3rem 0.625rem', backgroundColor: sec.color, borderRadius: '0.375rem', fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.78rem', color: 'var(--text)', marginBottom: '0.375rem' }}>{sec.name}</div>
+                {sec.subs.map((sub) => (
+                  <div key={sub.name} style={{ marginBottom: '0.5rem', paddingLeft: '0.375rem' }}>
+                    <div style={{ fontSize: '0.58rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.07em', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)', marginBottom: '0.2rem' }}>{sub.name}</div>
+                    {sub.actions.map((a) => (
+                      <div key={a.n} style={{ display: 'flex', gap: '0.375rem', alignItems: 'flex-start', marginBottom: '0.2rem' }}>
+                        <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.7rem', color: 'var(--primary)', flexShrink: 0, paddingTop: '0.05rem' }}>❖</span>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <span style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.75rem', color: 'var(--text)' }}>{a.n}</span>
+                          <span style={{ fontSize: '0.62rem', color: 'var(--accent)', fontFamily: 'var(--font-heading)', fontWeight: 700, marginLeft: '0.3rem', padding: '0.05rem 0.3rem', backgroundColor: 'var(--accent-light)', borderRadius: '9999px' }}>{a.ap}</span>
+                          <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', lineHeight: 1.45, marginTop: '0.05rem' }}>{a.d}</div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                ))}
+              </div>
+            ))}
+            {/* Complexity scale */}
+            <div style={{ marginTop: '0.5rem', paddingTop: '0.625rem', borderTop: '1px solid var(--border)' }}>
+              <div style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.78rem', color: 'var(--text)', marginBottom: '0.375rem' }}>When in Doubt</div>
+              {[{ l: 'Simple / Easy', ap: '1 AP' }, { l: 'Advanced / Medium', ap: '2 AP' }, { l: 'Complex / Hard', ap: '3 AP' }, { l: 'Elaborate / Arduous', ap: '4 AP' }].map((r) => (
+                <div key={r.l} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', padding: '0.2rem 0', borderBottom: '1px solid var(--border)' }}>
+                  <span style={{ fontSize: '0.72rem', color: 'var(--text)', fontFamily: 'var(--font-heading)' }}>{r.l}</span>
+                  <span style={{ fontSize: '0.65rem', color: 'var(--accent)', fontFamily: 'var(--font-heading)', fontWeight: 700, padding: '0.05rem 0.35rem', backgroundColor: 'var(--accent-light)', borderRadius: '9999px' }}>{r.ap}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      )}
+
       {/* Header */}
       <div style={{ marginBottom: '2rem', padding: '1.25rem 1.5rem', backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '0.75rem' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem', flexWrap: 'wrap', marginBottom: '0.5rem' }}>
@@ -1940,6 +2163,77 @@ export default function CharacterSheetPage({ id, professions, origins, professio
             </div>
           );
         })()}
+
+        {/* FEATURE-02: Apply Damage pipeline + Reduction Pool tracker */}
+        {(() => {
+          const spellPool = c.spellReductionPool ?? 0;
+          const featPool = c.featReductionPool ?? 0;
+          const shieldPool = equippedShield?.reductionPoolCurrent ?? null;
+          const shieldPoolMax = equippedShield?.reductionPoolMax ?? null;
+          const hasAnyPool = spellPool > 0 || featPool > 0 || shieldPool != null;
+          return (
+            <div style={{ marginBottom: '0.75rem' }}>
+              {/* Apply Damage row */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: hasAnyPool ? '0.375rem' : 0 }}>
+                <span style={{ fontSize: '0.6rem', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.06em', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)', whiteSpace: 'nowrap' }}>Apply Dmg</span>
+                <input
+                  type="number"
+                  min={1}
+                  value={damageInput}
+                  onChange={(e) => setDamageInput(e.target.value)}
+                  onKeyDown={(e) => { if (e.key === 'Enter') { const n = parseInt(damageInput); if (n > 0) { applyDamage(n); setDamageInput(''); } } }}
+                  placeholder="0"
+                  style={{ ...inputStyle, width: '60px', textAlign: 'center' }}
+                />
+                <button
+                  onClick={() => { const n = parseInt(damageInput); if (n > 0) { applyDamage(n); setDamageInput(''); } }}
+                  style={{ padding: '0.25rem 0.625rem', border: 'none', borderRadius: '0.25rem', backgroundColor: '#EF4444', color: '#fff', cursor: 'pointer', fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '0.75rem' }}
+                >Hit</button>
+                <span style={{ fontSize: '0.62rem', color: 'var(--text-muted)', fontStyle: 'italic' }}>Spell → Feat → Shield → Vitality</span>
+              </div>
+              {/* Pool tracker */}
+              {hasAnyPool && (
+                <div style={{ display: 'flex', gap: '0.375rem', flexWrap: 'wrap' }}>
+                  {spellPool > 0 && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', padding: '0.2rem 0.5rem', backgroundColor: 'var(--primary-light)', border: '1px solid var(--primary)', borderRadius: '9999px', fontSize: '0.62rem', fontFamily: 'var(--font-heading)', color: 'var(--primary)', fontWeight: 700 }}>
+                      ✦ Spell Pool: {spellPool}
+                      <button onClick={() => persist({ spellReductionPool: Math.max(0, spellPool - 1) })} style={{ marginLeft: '0.15rem', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.6rem', color: 'var(--primary)', padding: 0 }}>−</button>
+                      <button onClick={() => persist({ spellReductionPool: spellPool + 1 })} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.6rem', color: 'var(--primary)', padding: 0 }}>+</button>
+                      <button onClick={() => persist({ spellReductionPool: 0 })} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.55rem', color: 'var(--text-muted)', padding: 0 }}>✕</button>
+                    </div>
+                  )}
+                  {featPool > 0 && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', padding: '0.2rem 0.5rem', backgroundColor: 'var(--accent-light)', border: '1px solid #FCD34D', borderRadius: '9999px', fontSize: '0.62rem', fontFamily: 'var(--font-heading)', color: 'var(--accent)', fontWeight: 700 }}>
+                      ✦ Feat Pool: {featPool}
+                      <button onClick={() => persist({ featReductionPool: Math.max(0, featPool - 1) })} style={{ marginLeft: '0.15rem', background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.6rem', color: 'var(--accent)', padding: 0 }}>−</button>
+                      <button onClick={() => persist({ featReductionPool: featPool + 1 })} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.6rem', color: 'var(--accent)', padding: 0 }}>+</button>
+                      <button onClick={() => persist({ featReductionPool: 0 })} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '0.55rem', color: 'var(--text-muted)', padding: 0 }}>✕</button>
+                    </div>
+                  )}
+                  {shieldPool != null && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', padding: '0.2rem 0.5rem', backgroundColor: shieldPool === 0 ? '#fff0f0' : 'var(--bg-nav)', border: `1px solid ${shieldPool === 0 ? '#ff7979' : 'var(--border)'}`, borderRadius: '9999px', fontSize: '0.62rem', fontFamily: 'var(--font-heading)', color: shieldPool === 0 ? '#ff7979' : 'var(--text-muted)', fontWeight: 700 }}>
+                      🛡 Shield: {shieldPool} / {shieldPoolMax}
+                      {shieldPool === 0 && <span style={{ marginLeft: '0.2rem', opacity: 0.8 }}>(broken)</span>}
+                    </div>
+                  )}
+                  {spellPool === 0 && featPool === 0 && (
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '0.375rem' }}>
+                      <button onClick={() => persist({ spellReductionPool: 1 })} style={{ fontSize: '0.6rem', padding: '0.15rem 0.4rem', border: '1px dashed var(--border)', borderRadius: '9999px', backgroundColor: 'transparent', cursor: 'pointer', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)' }}>+ Spell Pool</button>
+                      <button onClick={() => persist({ featReductionPool: 1 })} style={{ fontSize: '0.6rem', padding: '0.15rem 0.4rem', border: '1px dashed var(--border)', borderRadius: '9999px', backgroundColor: 'transparent', cursor: 'pointer', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)' }}>+ Feat Pool</button>
+                    </div>
+                  )}
+                </div>
+              )}
+              {!hasAnyPool && (
+                <div style={{ display: 'flex', gap: '0.375rem' }}>
+                  <button onClick={() => persist({ spellReductionPool: 1 })} style={{ fontSize: '0.6rem', padding: '0.15rem 0.4rem', border: '1px dashed var(--border)', borderRadius: '9999px', backgroundColor: 'transparent', cursor: 'pointer', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)' }}>+ Spell Pool</button>
+                  <button onClick={() => persist({ featReductionPool: 1 })} style={{ fontSize: '0.6rem', padding: '0.15rem 0.4rem', border: '1px dashed var(--border)', borderRadius: '9999px', backgroundColor: 'transparent', cursor: 'pointer', color: 'var(--text-muted)', fontFamily: 'var(--font-heading)' }}>+ Feat Pool</button>
+                </div>
+              )}
+            </div>
+          );
+        })()}
+
         <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.75rem', marginBottom: '0.75rem' }}>
           <EditableNumber label={`Wounds / ${maxWounds}`} value={c.currentWounds ?? 0} min={0} max={maxWounds} onChange={(v) => persist({ currentWounds: v })} />
           <EditableNumber label="Renown" value={c.renown ?? 0} min={0} onChange={(v) => persist({ renown: v })} />
