@@ -859,7 +859,7 @@ export default function CharacterBuilder({
           : undefined,
       currentResonance:
         draft.professionName === "Eidolon" ? startingSpellThreshold : undefined,
-      currentSoulTokens: draft.professionName === "Vescent" ? 1 : undefined,
+      currentSoulTokens: draft.professionName === "Stygian" ? 1 : undefined,
       unspentAttributePoints: 0,
       skillPoints: {},
       unspentSkillPoints: 3,

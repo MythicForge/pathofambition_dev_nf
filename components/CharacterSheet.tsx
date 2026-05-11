@@ -7834,8 +7834,8 @@ export default function CharacterSheetPage({
           const isDuelist = c.professionName === "Duelist";
           const isFighter = c.professionName === "Fighter";
           const isEidolon = c.professionName === "Eidolon";
-          const isVescent = c.professionName === "Vescent";
-          if (!isDuelist && !isFighter && !isEidolon && !isVescent) return null;
+          const isStygian = c.professionName === "Stygian";
+          if (!isDuelist && !isFighter && !isEidolon && !isStygian) return null;
           const maxAdrenaline = attrs.body + effectiveTier;
           const maxSoulTokens = 3;
           return (
@@ -8166,7 +8166,7 @@ export default function CharacterSheetPage({
                   </div>
                 </div>
               )}
-              {isVescent && (
+              {isStygian && (
                 <div
                   style={{
                     textAlign: "center",

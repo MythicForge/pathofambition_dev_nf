@@ -23,15 +23,9 @@
           "Intuition,",
           "or Social"
         ],
-        "armaments": [
-          "Finesse"
-        ],
-        "protection": [
-          "Light"
-        ],
-        "tool_kits": [
-          "-"
-        ],
+        "armaments": ["Finesse"],
+        "protection": ["Light"],
+        "tool_kits": ["-"],
         "raw": "**V.I.T.A.L.S. Skills** Choose two: Talent, Awareness, Intuition, or Social\n**Armaments** Finesse\n**Protection** Light\n**Tool Kit** -"
       },
       "starting_pack": {
@@ -54,10 +48,7 @@
         "starting_currency": null,
         "raw": "Two daggers, Light bow with quiver (20 arrows), Thieves' tools, Grappling hook with 50 ft rope, 3 smoke pellets, Dark clothing set"
       },
-      "path_options": [
-        "Alchemist",
-        "Infiltrator"
-      ],
+      "path_options": ["Alchemist", "Infiltrator"],
       "features": [
         {
           "id": "professions-agent-base-undercut",
@@ -69,9 +60,7 @@
           "tag": "Agent",
           "trait_label": "Trait",
           "trait_raw": "Trigger",
-          "traits": [
-            "Trigger"
-          ],
+          "traits": ["Trigger"],
           "activation": {
             "raw": "-",
             "resources": {},
@@ -91,9 +80,7 @@
           "tag": "Agent",
           "trait_label": "Trait",
           "trait_raw": "Passive",
-          "traits": [
-            "Passive"
-          ],
+          "traits": ["Passive"],
           "activation": {
             "raw": "-",
             "resources": {},
@@ -113,9 +100,7 @@
           "tag": "Agent",
           "trait_label": "Trait",
           "trait_raw": "Maneuver",
-          "traits": [
-            "Maneuver"
-          ],
+          "traits": ["Maneuver"],
           "activation": {
             "raw": "1 AP",
             "resources": {
@@ -140,23 +125,10 @@
       "vitality_gained_per_tier": "2d12 + 2",
       "body_modifier_bonus": "1d12  per 5 Body",
       "proficiencies": {
-        "vitals_skills": [
-          "Choose one",
-          "Vigor",
-          "Awareness",
-          "or Social"
-        ],
-        "armaments": [
-          "Martial",
-          "Simple",
-          "and Defensive"
-        ],
-        "protection": [
-          "Light"
-        ],
-        "tool_kits": [
-          "-"
-        ],
+        "vitals_skills": ["Choose one", "Vigor", "Awareness", "or Social"],
+        "armaments": ["Martial", "Simple", "and Defensive"],
+        "protection": ["Light"],
+        "tool_kits": ["-"],
         "raw": "**V.I.T.A.L.S. Skills** Choose one, Vigor, Awareness, or Social\n**Armaments** Martial, Simple, and Defensive\n**Protection** Light\n**Tool Kit** -"
       },
       "starting_pack": {
@@ -170,30 +142,20 @@
         },
         "armor": {
           "raw": "medium armor",
-          "items": [
-            "medium armor"
-          ]
+          "items": ["medium armor"]
         },
         "kit": {
           "raw": "Tribal tattoo kit",
-          "items": [
-            "Tribal tattoo kit"
-          ]
+          "items": ["Tribal tattoo kit"]
         },
         "inventory": {
           "raw": "Bone trophies from previous victories, Drinking horn",
-          "items": [
-            "Bone trophies from previous victories",
-            "Drinking horn"
-          ]
+          "items": ["Bone trophies from previous victories", "Drinking horn"]
         },
         "starting_currency": "5 gold",
         "raw": "**Weapons:** Great axe or maul (player's choice), Two throwing axes, Survival knife\n**Armor:** medium armor\n**Kit:** Tribal tattoo kit\n**Inventory:** Bone trophies from previous victories, Drinking horn\n**Starting Currency:** 5 gold"
       },
-      "path_options": [
-        "Frenzied",
-        "Titan"
-      ],
+      "path_options": ["Frenzied", "Titan"],
       "features": [
         {
           "id": "professions-berserker-base-berserker-rage",
@@ -205,9 +167,7 @@
           "tag": "Berserker",
           "trait_label": "Trait",
           "trait_raw": "Narrative",
-          "traits": [
-            "Narrative"
-          ],
+          "traits": ["Narrative"],
           "activation": {
             "raw": "1 AP",
             "resources": {
@@ -229,9 +189,7 @@
           "tag": "Berserker",
           "trait_label": "Trait",
           "trait_raw": "Passive",
-          "traits": [
-            "Passive"
-          ],
+          "traits": ["Passive"],
           "activation": {
             "raw": "-",
             "resources": {},
@@ -251,9 +209,7 @@
           "tag": "Berserker",
           "trait_label": "Trait",
           "trait_raw": "Passive",
-          "traits": [
-            "Passive"
-          ],
+          "traits": ["Passive"],
           "activation": {
             "raw": "-",
             "resources": {},
@@ -276,44 +232,24 @@
       "vitality_gained_per_tier": "2d10",
       "body_modifier_bonus": "1d6  per 5 Body",
       "proficiencies": {
-        "vitals_skills": [
-          "Choose one",
-          "Vigor",
-          "Awareness",
-          "or Lore"
-        ],
-        "armaments": [
-          "Primeval Form",
-          "Simple",
-          "Catalysts"
-        ],
-        "protection": [
-          "Light"
-        ],
-        "tool_kits": [
-          "Medicine or Alchemy"
-        ],
+        "vitals_skills": ["Choose one", "Vigor", "Awareness", "or Lore"],
+        "armaments": ["Primeval Form", "Simple", "Catalysts"],
+        "protection": ["Light"],
+        "tool_kits": ["Medicine or Alchemy"],
         "raw": "**V.I.T.A.L.S. Skills** Choose one, Vigor, Awareness, or Lore\n**Armaments** Primeval Form, Simple, Catalysts\n**Protection** Light\n**Tool Kit** Medicine or Alchemy"
       },
       "starting_pack": {
         "weapons": {
           "raw": "Quarterstaff, Two daggers",
-          "items": [
-            "Quarterstaff",
-            "Two daggers"
-          ]
+          "items": ["Quarterstaff", "Two daggers"]
         },
         "armor": {
           "raw": "tribal vestments",
-          "items": [
-            "tribal vestments"
-          ]
+          "items": ["tribal vestments"]
         },
         "kit": {
           "raw": "Wilderness survival kit",
-          "items": [
-            "Wilderness survival kit"
-          ]
+          "items": ["Wilderness survival kit"]
         },
         "inventory": {
           "raw": "Component pouch, Weather-resistant cloak, Wooden spirit mask",
@@ -326,10 +262,7 @@
         "starting_currency": "8 gold",
         "raw": "**Weapons:** Quarterstaff, Two daggers\n**Armor:** tribal vestments\n**Kit:** Wilderness survival kit\n**Inventory:** Component pouch, Weather-resistant cloak, Wooden spirit mask\n**Starting Currency:** 8 gold"
       },
-      "path_options": [
-        "Conduit",
-        "Channeler"
-      ],
+      "path_options": ["Conduit", "Channeler"],
       "features": [
         {
           "id": "professions-drifter-base-primeval-form",
@@ -341,9 +274,7 @@
           "tag": "Drifter",
           "trait_label": "Trait",
           "trait_raw": "Passive",
-          "traits": [
-            "Passive"
-          ],
+          "traits": ["Passive"],
           "activation": {
             "raw": "-",
             "resources": {},
@@ -363,9 +294,7 @@
           "tag": "Drifter",
           "trait_label": "Trait",
           "trait_raw": "Passive",
-          "traits": [
-            "Passive"
-          ],
+          "traits": ["Passive"],
           "activation": {
             "raw": "-",
             "resources": {},
@@ -488,9 +417,7 @@
           "tag": "Drifter",
           "trait_label": "Trait",
           "trait_raw": "Narrative",
-          "traits": [
-            "Narrative"
-          ],
+          "traits": ["Narrative"],
           "activation": {
             "raw": "2 AP + 2 Ambition",
             "resources": {
@@ -516,46 +443,24 @@
       "vitality_gained_per_tier": "2d10",
       "body_modifier_bonus": "1d6  per 5 Body",
       "proficiencies": {
-        "vitals_skills": [
-          "Choose one",
-          "Talent",
-          "Awareness",
-          "or Intuition"
-        ],
-        "armaments": [
-          "Finesse",
-          "Simple",
-          "and Ranged"
-        ],
-        "protection": [
-          "Light",
-          "Bucklers"
-        ],
-        "tool_kits": [
-          "-"
-        ],
+        "vitals_skills": ["Choose one", "Talent", "Awareness", "or Intuition"],
+        "armaments": ["Finesse", "Simple", "and Ranged"],
+        "protection": ["Light", "Bucklers"],
+        "tool_kits": ["-"],
         "raw": "**V.I.T.A.L.S. Skills** Choose one, Talent, Awareness, or Intuition\n**Armaments** Finesse, Simple, and Ranged\n**Protection** Light, Bucklers\n**Tool Kit** -"
       },
       "starting_pack": {
         "weapons": {
           "raw": "Rapier or longsword, Short sword or cestus,",
-          "items": [
-            "Rapier or longsword",
-            "Short sword or cestus"
-          ]
+          "items": ["Rapier or longsword", "Short sword or cestus"]
         },
         "armor": {
           "raw": "Light armor, or Duelist clothing and buckler",
-          "items": [
-            "Light armor",
-            "or Duelist clothing and buckler"
-          ]
+          "items": ["Light armor", "or Duelist clothing and buckler"]
         },
         "kit": {
           "raw": "Polishing kit",
-          "items": [
-            "Polishing kit"
-          ]
+          "items": ["Polishing kit"]
         },
         "inventory": {
           "raw": "Dueling gloves, Formal attire, Stylish hat with feather",
@@ -568,10 +473,7 @@
         "starting_currency": "15 gold",
         "raw": "**Weapons:** Rapier or longsword, Short sword or cestus,\n**Armor:** Light armor, or Duelist clothing and buckler\n**Kit:** Polishing kit\n**Inventory:** Dueling gloves, Formal attire, Stylish hat with feather\n**Starting Currency:** 15 gold"
       },
-      "path_options": [
-        "Gladiator",
-        "Marauder"
-      ],
+      "path_options": ["Gladiator", "Marauder"],
       "features": [
         {
           "id": "professions-duelist-base-cadence",
@@ -583,9 +485,7 @@
           "tag": "Duelist",
           "trait_label": "Trait",
           "trait_raw": "Maneuver (Resource)",
-          "traits": [
-            "Maneuver"
-          ],
+          "traits": ["Maneuver"],
           "activation": {
             "raw": "-",
             "resources": {},
@@ -608,9 +508,7 @@
           "tag": "Duelist",
           "trait_label": "Trait",
           "trait_raw": "Passive",
-          "traits": [
-            "Passive"
-          ],
+          "traits": ["Passive"],
           "activation": {
             "raw": "-",
             "resources": {},
@@ -630,9 +528,7 @@
           "tag": "Duelist",
           "trait_label": "Trait",
           "trait_raw": "Narrative",
-          "traits": [
-            "Narrative"
-          ],
+          "traits": ["Narrative"],
           "activation": {
             "raw": "1 Cadence",
             "resources": {
@@ -654,9 +550,7 @@
           "tag": "Duelist",
           "trait_label": "Trait",
           "trait_raw": "Trigger Cost 1 AP and 2 Cadence",
-          "traits": [
-            "Trigger Cost 1 AP and 2 Cadence"
-          ],
+          "traits": ["Trigger Cost 1 AP and 2 Cadence"],
           "activation": {
             "raw": null,
             "resources": {},
@@ -676,16 +570,12 @@
           "tag": "Duelist",
           "trait_label": "Trait",
           "trait_raw": "Trigger",
-          "traits": [
-            "Trigger"
-          ],
+          "traits": ["Trigger"],
           "activation": {
             "raw": "1 Cadence per Die added",
             "resources": {},
             "properties": {},
-            "notes": [
-              "1 Cadence per Die added"
-            ]
+            "notes": ["1 Cadence per Die added"]
           },
           "description_markdown": "Add extra damage die to a successful attack against a **living** creature.\n\n| Tier | Die |\n| ---- | --- |\n| 1-2  | d4  |\n| 3-4  | d6  |\n| 5    | d8    |",
           "raw_markdown": "**Trait** Trigger | **Costs** 1 Cadence per Die added\nAdd extra damage die to a successful attack against a **living** creature.\n\n| Tier | Die |\n| ---- | --- |\n| 1-2  | d4  |\n| 3-4  | d6  |\n| 5    | d8    |"
@@ -703,44 +593,24 @@
       "vitality_gained_per_tier": "2d8",
       "body_modifier_bonus": "1d6 per 5 Body",
       "proficiencies": {
-        "vitals_skills": [
-          "Choose one",
-          "Awareness",
-          "Lore",
-          "or Social"
-        ],
-        "armaments": [
-          "Catalysts",
-          "one of choice"
-        ],
-        "protection": [
-          "None"
-        ],
-        "tool_kits": [
-          "Crafting",
-          "Engineering or Medicine"
-        ],
+        "vitals_skills": ["Choose one", "Awareness", "Lore", "or Social"],
+        "armaments": ["Catalysts", "one of choice"],
+        "protection": ["None"],
+        "tool_kits": ["Crafting", "Engineering or Medicine"],
         "raw": "**V.I.T.A.L.S. Skills** Choose one, Awareness, Lore, or Social\n**Armaments** Catalysts, one of choice\n**Protection** None\n**Tool Kit** Crafting, Engineering or Medicine"
       },
       "starting_pack": {
         "weapons": {
           "raw": "Magic wand, Dagger or light weapon of choice",
-          "items": [
-            "Magic wand",
-            "Dagger or light weapon of choice"
-          ]
+          "items": ["Magic wand", "Dagger or light weapon of choice"]
         },
         "armor": {
           "raw": "Heritage clothing",
-          "items": [
-            "Heritage clothing"
-          ]
+          "items": ["Heritage clothing"]
         },
         "kit": {
           "raw": "None",
-          "items": [
-            "None"
-          ]
+          "items": ["None"]
         },
         "inventory": {
           "raw": "Family heirloom with minor enchantment, Noble's signet ring, Fine clothing, Journal of lineage records",
@@ -754,10 +624,7 @@
         "starting_currency": "25 gold",
         "raw": "**Weapons:** Magic wand, Dagger or light weapon of choice\n**Armor:** Heritage clothing \n**Kit:** None\n**Inventory:** Family heirloom with minor enchantment, Noble's signet ring, Fine clothing, Journal of lineage records\n**Starting Currency:** 25 gold"
       },
-      "path_options": [
-        "Spellshaper",
-        "Prodigy"
-      ],
+      "path_options": ["Spellshaper", "Prodigy"],
       "features": [
         {
           "id": "professions-eidolon-base-resonance",
@@ -769,9 +636,7 @@
           "tag": "Eidolon",
           "trait_label": "Trait",
           "trait_raw": "Maneuver (Resource)",
-          "traits": [
-            "Maneuver"
-          ],
+          "traits": ["Maneuver"],
           "activation": {
             "raw": "1 AP",
             "resources": {
@@ -796,9 +661,7 @@
           "tag": "Eidolon",
           "trait_label": "Trait",
           "trait_raw": "Passive",
-          "traits": [
-            "Passive"
-          ],
+          "traits": ["Passive"],
           "activation": {
             "raw": "-",
             "resources": {},
@@ -818,9 +681,7 @@
           "tag": "Eidolon",
           "trait_label": "Trait",
           "trait_raw": "Passive",
-          "traits": [
-            "Passive"
-          ],
+          "traits": ["Passive"],
           "activation": {
             "raw": "-",
             "resources": {},
@@ -943,12 +804,7 @@
       "vitality_gained_per_tier": "2d12",
       "body_modifier_bonus": "1d8 per 5 Body",
       "proficiencies": {
-        "vitals_skills": [
-          "Choose one",
-          "Vigor",
-          "Talent",
-          "or Awareness"
-        ],
+        "vitals_skills": ["Choose one", "Vigor", "Talent", "or Awareness"],
         "armaments": [
           "Simple",
           "Martial",
@@ -956,14 +812,8 @@
           "Ranged",
           "and Defensive"
         ],
-        "protection": [
-          "Light",
-          "Medium",
-          "Heavy and Shields"
-        ],
-        "tool_kits": [
-          "-"
-        ],
+        "protection": ["Light", "Medium", "Heavy and Shields"],
+        "tool_kits": ["-"],
         "raw": "**V.I.T.A.L.S. Skills** Choose one, Vigor, Talent, or Awareness\n**Armaments** Simple, Martial, Finesse, Ranged, and Defensive\n**Protection** Light, Medium, Heavy and Shields\n**Tool Kit** -"
       },
       "starting_pack": {
@@ -976,16 +826,11 @@
         },
         "armor": {
           "raw": "medium armor, Shield",
-          "items": [
-            "medium armor",
-            "Shield"
-          ]
+          "items": ["medium armor", "Shield"]
         },
         "kit": {
           "raw": "Polishing kit",
-          "items": [
-            "Polishing kit"
-          ]
+          "items": ["Polishing kit"]
         },
         "inventory": {
           "raw": "Soldier's rations (1 week), Banner or insignia of previous allegiance",
@@ -997,10 +842,7 @@
         "starting_currency": "12 gold",
         "raw": "**Weapons:** two melee weapons of choice, one ranged weapon of choice or shield\n**Armor:** medium armor, Shield\n**Kit:** Polishing kit\n**Inventory:** Soldier's rations (1 week), Banner or insignia of previous allegiance\n**Starting Currency:** 12 gold"
       },
-      "path_options": [
-        "Sentinel",
-        "Reaver"
-      ],
+      "path_options": ["Sentinel", "Reaver"],
       "features": [
         {
           "id": "professions-fighter-base-signature-school",
@@ -1012,9 +854,7 @@
           "tag": "Fighter",
           "trait_label": "Trait",
           "trait_raw": "Passive",
-          "traits": [
-            "Passive"
-          ],
+          "traits": ["Passive"],
           "activation": {
             "raw": "-",
             "resources": {},
@@ -1034,9 +874,7 @@
           "tag": "Fighter",
           "trait_label": "Trait",
           "trait_raw": "Utility (Resource)",
-          "traits": [
-            "Utility"
-          ],
+          "traits": ["Utility"],
           "activation": {
             "raw": "-",
             "resources": {},
@@ -1059,9 +897,7 @@
           "tag": "Fighter",
           "trait_label": "Trait",
           "trait_raw": "Narrative",
-          "traits": [
-            "Narrative"
-          ],
+          "traits": ["Narrative"],
           "activation": {
             "raw": "1 AP",
             "resources": {
@@ -1086,43 +922,24 @@
       "vitality_gained_per_tier": "2d8",
       "body_modifier_bonus": "1d6 per 5 Body",
       "proficiencies": {
-        "vitals_skills": [
-          "Choose one",
-          "Intuition",
-          "Awareness",
-          "or Lore"
-        ],
-        "armaments": [
-          "Simple",
-          "Catalysts"
-        ],
-        "protection": [
-          "None"
-        ],
-        "tool_kits": [
-          "Crafting or Alchemy"
-        ],
+        "vitals_skills": ["Choose one", "Intuition", "Awareness", "or Lore"],
+        "armaments": ["Simple", "Catalysts"],
+        "protection": ["None"],
+        "tool_kits": ["Crafting or Alchemy"],
         "raw": "**V.I.T.A.L.S. Skills** Choose one, Intuition, Awareness, or Lore\n**Armaments** Simple, Catalysts\n**Protection** None\n**Tool Kit** Crafting or Alchemy"
       },
       "starting_pack": {
         "weapons": {
           "raw": "Magic stave, Dagger",
-          "items": [
-            "Magic stave",
-            "Dagger"
-          ]
+          "items": ["Magic stave", "Dagger"]
         },
         "armor": {
           "raw": "Mage robes",
-          "items": [
-            "Mage robes"
-          ]
+          "items": ["Mage robes"]
         },
         "kit": {
           "raw": "None",
-          "items": [
-            "None"
-          ]
+          "items": ["None"]
         },
         "inventory": {
           "raw": "Spellbook or arcane focus, Component pouch, Scroll case with blank parchments, Ink and quill, 3 candles",
@@ -1137,10 +954,7 @@
         "starting_currency": "10 gold",
         "raw": "**Weapons:** Magic stave, Dagger\n**Armor:** Mage robes\n**Kit:** None\n**Inventory:** Spellbook or arcane focus, Component pouch, Scroll case with blank parchments, Ink and quill, 3 candles\n**Starting Currency:** 10 gold"
       },
-      "path_options": [
-        "Enchanter",
-        "Artificer"
-      ],
+      "path_options": ["Enchanter", "Artificer"],
       "features": [
         {
           "id": "professions-mage-base-magic-adept",
@@ -1152,9 +966,7 @@
           "tag": "Mage",
           "trait_label": "Trait",
           "trait_raw": "Passive",
-          "traits": [
-            "Passive"
-          ],
+          "traits": ["Passive"],
           "activation": {
             "raw": "-",
             "resources": {},
@@ -1179,9 +991,7 @@
           "tag": "Mage",
           "trait_label": "Trait",
           "trait_raw": "Narrative",
-          "traits": [
-            "Narrative"
-          ],
+          "traits": ["Narrative"],
           "activation": {
             "raw": "4 AP",
             "resources": {
@@ -1203,9 +1013,7 @@
           "tag": "Mage",
           "trait_label": "Trait",
           "trait_raw": "Passive",
-          "traits": [
-            "Passive"
-          ],
+          "traits": ["Passive"],
           "activation": {
             "raw": "-",
             "resources": {},
@@ -1412,42 +1220,24 @@
       "vitality_gained_per_tier": "2d10",
       "body_modifier_bonus": "1d6 per 5 Body",
       "proficiencies": {
-        "vitals_skills": [
-          "Choose two of any V.I.T.A.L.S."
-        ],
-        "armaments": [
-          "Simple",
-          "and two of choice"
-        ],
-        "protection": [
-          "Light",
-          "Medium",
-          "Shields"
-        ],
-        "tool_kits": [
-          "One of choice"
-        ],
+        "vitals_skills": ["Choose two of any V.I.T.A.L.S."],
+        "armaments": ["Simple", "and two of choice"],
+        "protection": ["Light", "Medium", "Shields"],
+        "tool_kits": ["One of choice"],
         "raw": "**V.I.T.A.L.S. Skills** Choose two of any V.I.T.A.L.S.\n**Armaments** Simple, and two of choice\n**Protection** Light, Medium, Shields\n**Tool Kit** One of choice"
       },
       "starting_pack": {
         "weapons": {
           "raw": "Two weapons of choice",
-          "items": [
-            "Two weapons of choice"
-          ]
+          "items": ["Two weapons of choice"]
         },
         "armor": {
           "raw": "Light or medium armor (player's choice), Shield",
-          "items": [
-            "Light or medium armor (player's choice)",
-            "Shield"
-          ]
+          "items": ["Light or medium armor (player's choice)", "Shield"]
         },
         "kit": {
           "raw": "None",
-          "items": [
-            "None"
-          ]
+          "items": ["None"]
         },
         "inventory": {
           "raw": "Contract logbook, Mercenary badge or token, Mess kit, Bedroll",
@@ -1461,10 +1251,7 @@
         "starting_currency": "20 gold",
         "raw": "**Weapons:** Two weapons of choice\n**Armor:** Light or medium armor (player's choice), Shield\n**Kit:** None\n**Inventory:** Contract logbook, Mercenary badge or token, Mess kit, Bedroll\n**Starting Currency:** 20 gold"
       },
-      "path_options": [
-        "Freelancer",
-        "Commander"
-      ],
+      "path_options": ["Freelancer", "Commander"],
       "features": [
         {
           "id": "professions-mercenary-base-field-kit",
@@ -1476,9 +1263,7 @@
           "tag": "Mercenary",
           "trait_label": "Trait",
           "trait_raw": "Passive",
-          "traits": [
-            "Passive"
-          ],
+          "traits": ["Passive"],
           "activation": {
             "raw": "-",
             "resources": {},
@@ -1498,17 +1283,15 @@
           "tag": "Mercenary",
           "trait_label": "Trait",
           "trait_raw": "Passive",
-          "traits": [
-            "Passive"
-          ],
+          "traits": ["Passive"],
           "activation": {
             "raw": "-",
             "resources": {},
             "properties": {},
             "notes": []
           },
-          "description_markdown": "You have trained under a wide variety of fighting styles, magical formulas, and esoteric disciplines. Choose **one** _signature feature_ from the list below as a **manuscript**. You gain the feature, and any scaling uses your **Mercenary tier**.\n\n| Class          | Manuscript                    |\n| -------------- | ----------------------------- |\n| **Agent**      | *Undercut*                    |\n| **Berserker**  | *Berserker Rage*              |\n| **Duelist**    | *Cadence, Precision Strike*   |\n| **Fighter**    | *Adrenaline, Second Breath*   |\n| **Vescent**    | *Soulglyph*                   |\n| **Warden**     | *Spell Scourge*               |",
-          "raw_markdown": "**Trait** Passive | **Cost** -\nYou have trained under a wide variety of fighting styles, magical formulas, and esoteric disciplines. Choose **one** _signature feature_ from the list below as a **manuscript**. You gain the feature, and any scaling uses your **Mercenary tier**.\n\n| Class          | Manuscript                    |\n| -------------- | ----------------------------- |\n| **Agent**      | *Undercut*                    |\n| **Berserker**  | *Berserker Rage*              |\n| **Duelist**    | *Cadence, Precision Strike*   |\n| **Fighter**    | *Adrenaline, Second Breath*   |\n| **Vescent**    | *Soulglyph*                   |\n| **Warden**     | *Spell Scourge*               |"
+          "description_markdown": "You have trained under a wide variety of fighting styles, magical formulas, and esoteric disciplines. Choose **one** _signature feature_ from the list below as a **manuscript**. You gain the feature, and any scaling uses your **Mercenary tier**.\n\n| Class          | Manuscript                    |\n| -------------- | ----------------------------- |\n| **Agent**      | *Undercut*                    |\n| **Berserker**  | *Berserker Rage*              |\n| **Duelist**    | *Cadence, Precision Strike*   |\n| **Fighter**    | *Adrenaline, Second Breath*   |\n| **Stygian**    | *Soulglyph*                   |\n| **Warden**     | *Spell Scourge*               |",
+          "raw_markdown": "**Trait** Passive | **Cost** -\nYou have trained under a wide variety of fighting styles, magical formulas, and esoteric disciplines. Choose **one** _signature feature_ from the list below as a **manuscript**. You gain the feature, and any scaling uses your **Mercenary tier**.\n\n| Class          | Manuscript                    |\n| -------------- | ----------------------------- |\n| **Agent**      | *Undercut*                    |\n| **Berserker**  | *Berserker Rage*              |\n| **Duelist**    | *Cadence, Precision Strike*   |\n| **Fighter**    | *Adrenaline, Second Breath*   |\n| **Stygian**    | *Soulglyph*                   |\n| **Warden**     | *Spell Scourge*               |"
         },
         {
           "id": "professions-mercenary-base-skilled-improvisation",
@@ -1520,9 +1303,7 @@
           "tag": "Mercenary",
           "trait_label": "Trait",
           "trait_raw": "passive | -",
-          "traits": [
-            "passive | -"
-          ],
+          "traits": ["passive | -"],
           "activation": {
             "raw": null,
             "resources": {},
@@ -1545,41 +1326,24 @@
       "vitality_gained_per_tier": "2d8",
       "body_modifier_bonus": "1d6 per 5 Body",
       "proficiencies": {
-        "vitals_skills": [
-          "Choose one — Intuition",
-          "Awareness",
-          "or Social"
-        ],
-        "armaments": [
-          "Catalysts",
-          "Finesse"
-        ],
-        "protection": [
-          "Light"
-        ],
-        "tool_kits": [
-          "None"
-        ],
+        "vitals_skills": ["Choose one — Intuition", "Awareness", "or Social"],
+        "armaments": ["Catalysts", "Finesse"],
+        "protection": ["Light"],
+        "tool_kits": ["None"],
         "raw": "**V.I.T.A.L.S.:** Choose one — Intuition, Awareness, or Social  \n**Armaments:** Catalysts, Finesse  \n**Protection:** Light  \n**Tool Kit:** None"
       },
       "starting_pack": {
         "weapons": {
           "raw": "Focus crystal or light weapon of choice",
-          "items": [
-            "Focus crystal or light weapon of choice"
-          ]
+          "items": ["Focus crystal or light weapon of choice"]
         },
         "armor": {
           "raw": "Fineweave robes or psionic garb",
-          "items": [
-            "Fineweave robes or psionic garb"
-          ]
+          "items": ["Fineweave robes or psionic garb"]
         },
         "kit": {
           "raw": "None",
-          "items": [
-            "None"
-          ]
+          "items": ["None"]
         },
         "inventory": {
           "raw": "Fragmented mirror, crystalline focus, journal of reflections, ornate pendant",
@@ -1593,10 +1357,7 @@
         "starting_currency": "15 gold",
         "raw": "**Weapons:** Focus crystal or light weapon of choice  \n**Armor:** Fineweave robes or psionic garb  \n**Kit:** None  \n**Inventory:** Fragmented mirror, crystalline focus, journal of reflections, ornate pendant  \n**Starting Currency:** 15 gold"
       },
-      "path_options": [
-        "Spectre",
-        "Weaver"
-      ],
+      "path_options": ["Spectre", "Weaver"],
       "features": [
         {
           "id": "professions-mesmer-base-tethers",
@@ -1608,9 +1369,7 @@
           "tag": "Mesmer",
           "trait_label": "Trait",
           "trait_raw": "Narrative | 2 AP",
-          "traits": [
-            "Narrative | 2 AP"
-          ],
+          "traits": ["Narrative | 2 AP"],
           "activation": {
             "raw": null,
             "resources": {},
@@ -1630,9 +1389,7 @@
           "tag": "Mesmer",
           "trait_label": "Trait",
           "trait_raw": "Narrative",
-          "traits": [
-            "Narrative"
-          ],
+          "traits": ["Narrative"],
           "activation": {
             "raw": "1 AP",
             "resources": {
@@ -1654,9 +1411,7 @@
           "tag": "Mesmer",
           "trait_label": "Trait",
           "trait_raw": "Passive",
-          "traits": [
-            "Passive"
-          ],
+          "traits": ["Passive"],
           "activation": {
             "raw": "-",
             "resources": {},
@@ -1689,9 +1444,7 @@
           "tag": "Mesmer",
           "trait_label": "Trait",
           "trait_raw": "Offensive | Range Close",
-          "traits": [
-            "Offensive | Range Close"
-          ],
+          "traits": ["Offensive | Range Close"],
           "activation": {
             "raw": null,
             "resources": {},
@@ -1721,40 +1474,23 @@
           "Lore",
           "or Social"
         ],
-        "armaments": [
-          "Simple",
-          "Catalysts",
-          "Light Crossbow"
-        ],
-        "protection": [
-          "Light",
-          "Shield"
-        ],
-        "tool_kits": [
-          "Alchemy or Medicine"
-        ],
+        "armaments": ["Simple", "Catalysts", "Light Crossbow"],
+        "protection": ["Light", "Shield"],
+        "tool_kits": ["Alchemy or Medicine"],
         "raw": "**V.I.T.A.L.S. Skills** Choose one, Intuition, Awareness, Lore, or Social\n**Armaments** Simple, Catalysts, Light Crossbow\n**Protection** Light, Shield\n**Tool Kit** Alchemy or Medicine"
       },
       "starting_pack": {
         "weapons": {
           "raw": "Simple Weapon of choice, and Magic Staff or Talisman",
-          "items": [
-            "Simple Weapon of choice",
-            "and Magic Staff or Talisman"
-          ]
+          "items": ["Simple Weapon of choice", "and Magic Staff or Talisman"]
         },
         "armor": {
           "raw": "light armor, Shield",
-          "items": [
-            "light armor",
-            "Shield"
-          ]
+          "items": ["light armor", "Shield"]
         },
         "kit": {
           "raw": "None",
-          "items": [
-            "None"
-          ]
+          "items": ["None"]
         },
         "inventory": {
           "raw": "Holy symbol, Prayer book, Holy water (2 vials), Healer's kit",
@@ -1768,10 +1504,7 @@
         "starting_currency": "7 gold",
         "raw": "**Weapons:** Simple Weapon of choice, and Magic Staff or Talisman\n**Armor:** light armor, Shield\n**Kit:** None\n**Inventory:** Holy symbol, Prayer book, Holy water (2 vials), Healer's kit\n**Starting Currency:** 7 gold"
       },
-      "path_options": [
-        "Herald",
-        "Arbiter"
-      ],
+      "path_options": ["Herald", "Arbiter"],
       "features": [
         {
           "id": "professions-oathbound-base-creed",
@@ -1783,9 +1516,7 @@
           "tag": "Oathbound",
           "trait_label": "Trait",
           "trait_raw": "Passive",
-          "traits": [
-            "Passive"
-          ],
+          "traits": ["Passive"],
           "activation": {
             "raw": null,
             "resources": {},
@@ -1805,9 +1536,7 @@
           "tag": "Oathbound",
           "trait_label": "Trait",
           "trait_raw": "Passive",
-          "traits": [
-            "Passive"
-          ],
+          "traits": ["Passive"],
           "activation": {
             "raw": "-",
             "resources": {},
@@ -1825,12 +1554,8 @@
             "prepared_spells": "your Spellcasting Modifier",
             "spell_dc": "10 + Spell Tier + Spellcasting Modifier.",
             "respite_recovery": "Each Respite restores spell points equal to your Spellcasting Modifier (minimum 3).",
-            "cantrip_notes": [
-              "You gain three Cantrips listed from bellow"
-            ],
-            "extra_bullets": [
-              ""
-            ]
+            "cantrip_notes": ["You gain three Cantrips listed from bellow"],
+            "extra_bullets": [""]
           },
           "granted_cantrips": [
             {
@@ -1867,9 +1592,7 @@
           "tag": "Oathbound",
           "trait_label": "Trait",
           "trait_raw": "Passive",
-          "traits": [
-            "Passive"
-          ],
+          "traits": ["Passive"],
           "activation": {
             "raw": null,
             "resources": {},
@@ -1883,49 +1606,33 @@
     },
     {
       "id": "phagite",
-      "name": "Vescent",
+      "name": "Stygian",
       "slug": "phagite",
-      "role": "The Vescent is a wielder of magic who draws power from personal sacrifice and souls. They excel at debuffing enemies, manipulating life force, and controlling the battlefield through supernatural means. The two paths of the Vescent are the Animus and the Anima.",
-      "flavor": "*Practitioners of the vital cycle, Vescents draw strength from the exchange between life and loss. Where others treat Vitality as sacred and inviolable, they recognize it as a current — ever flowing, ever consumed. By offering pieces of themselves, they command the same forces that bind blood, breath, and spirit. Some pursue this art as healers who trade their own vigor for another’s survival; others wield it as a weapon, turning the act of decay into dominion. To the Vescent, sacrifice is not corruption — it is currency.*",
+      "role": "The Stygian is a wielder of magic who draws power from personal sacrifice and souls. They excel at debuffing enemies, manipulating life force, and controlling the battlefield through supernatural means. The two paths of the Stygian are the Animus and the Anima.",
+      "flavor": "*Practitioners of the vital cycle, Stygians draw strength from the exchange between life and loss. Where others treat Vitality as sacred and inviolable, they recognize it as a current — ever flowing, ever consumed. By offering pieces of themselves, they command the same forces that bind blood, breath, and spirit. Some pursue this art as healers who trade their own vigor for another’s survival; others wield it as a weapon, turning the act of decay into dominion. To the Stygian, sacrifice is not corruption — it is currency.*",
       "favored_attributes_raw": "Will",
       "starting_vitality": "8 + Will",
       "vitality_gained_per_tier": "2d8",
       "body_modifier_bonus": "1d8 per 5 Will",
       "proficiencies": {
-        "vitals_skills": [
-          "Choose any one V.I.T.A.L.S."
-        ],
-        "armaments": [
-          "Simple",
-          "Catalysts"
-        ],
-        "protection": [
-          "None"
-        ],
-        "tool_kits": [
-          "Scouting or Thievery"
-        ],
+        "vitals_skills": ["Choose any one V.I.T.A.L.S."],
+        "armaments": ["Simple", "Catalysts"],
+        "protection": ["None"],
+        "tool_kits": ["Scouting or Thievery"],
         "raw": "**V.I.T.A.L.S. Skills** Choose any one V.I.T.A.L.S.\n**Armaments** Simple, Catalysts\n**Protection**  None\n**Tool Kit** Scouting or Thievery"
       },
       "starting_pack": {
         "weapons": {
           "raw": "Ritual dagger, Occult staff or wand",
-          "items": [
-            "Ritual dagger",
-            "Occult staff or wand"
-          ]
+          "items": ["Ritual dagger", "Occult staff or wand"]
         },
         "armor": {
           "raw": "Travel robes",
-          "items": [
-            "Travel robes"
-          ]
+          "items": ["Travel robes"]
         },
         "kit": {
           "raw": "None",
-          "items": [
-            "None"
-          ]
+          "items": ["None"]
         },
         "inventory": {
           "raw": "Blood vial (empty), Forbidden tome (locked), Component pouch, Chalk (for ritual circles), Incense burner",
@@ -1940,10 +1647,7 @@
         "starting_currency": "8 gold",
         "raw": "**Weapons:** Ritual dagger, Occult staff or wand\n**Armor:** Travel robes\n**Kit:** None\n**Inventory:** Blood vial (empty), Forbidden tome (locked), Component pouch, Chalk (for ritual circles), Incense burner\n**Starting Currency:** 8 gold"
       },
-      "path_options": [
-        "Animus",
-        "Anima"
-      ],
+      "path_options": ["Animus", "Anima"],
       "features": [
         {
           "id": "professions-phagite-base-lifeblood",
@@ -1951,13 +1655,11 @@
           "slug": "lifeblood",
           "owner_type": "profession",
           "owner_id": "phagite",
-          "owner_name": "Vescent",
-          "tag": "Vescent",
+          "owner_name": "Stygian",
+          "tag": "Stygian",
           "trait_label": "Trait",
           "trait_raw": "Passive",
-          "traits": [
-            "Passive"
-          ],
+          "traits": ["Passive"],
           "activation": {
             "raw": "-",
             "resources": {},
@@ -1973,13 +1675,11 @@
           "slug": "soulglyph",
           "owner_type": "profession",
           "owner_id": "phagite",
-          "owner_name": "Vescent",
-          "tag": "Vescent",
+          "owner_name": "Stygian",
+          "tag": "Stygian",
           "trait_label": "Trait",
           "trait_raw": "Narrative (Resource)",
-          "traits": [
-            "Narrative"
-          ],
+          "traits": ["Narrative"],
           "activation": {
             "raw": "1 AP",
             "resources": {
@@ -2000,20 +1700,16 @@
           "slug": "spellcasting",
           "owner_type": "profession",
           "owner_id": "phagite",
-          "owner_name": "Vescent",
-          "tag": "Vescent",
+          "owner_name": "Stygian",
+          "tag": "Stygian",
           "trait_label": "Trait",
           "trait_raw": "Passive",
-          "traits": [
-            "Passive"
-          ],
+          "traits": ["Passive"],
           "activation": {
             "raw": "–",
             "resources": {},
             "properties": {},
-            "notes": [
-              "–"
-            ]
+            "notes": ["–"]
           },
           "description_markdown": "Your life force serves as the conduit of your magic.\n\n- You are a **Full-Caster**\n- Your **Source** is **Soul**\n- Your **Spellcasting Modifier** is **Will**.\n- Your total **reservoir** equals _(2 × Tier) + Spellcasting Modifier_.\n- Start with Four **Known Spells** at Tier 1\n- Your **prepared spells** equal your **Spellcasting Modifier**.\n- Your **Spell DC** = 10 + Spell Tier + Spellcasting Modifier.\n- Each **Respite** restores spell points equal to your **Spellcasting Modifier** (minimum 3).\n- **Sphere Access:** Conjuration",
           "raw_markdown": "**Trait** Passive | **Cost** –  \nYour life force serves as the conduit of your magic.\n\n- You are a **Full-Caster**\n- Your **Source** is **Soul**\n- Your **Spellcasting Modifier** is **Will**.\n- Your total **reservoir** equals _(2 × Tier) + Spellcasting Modifier_.\n- Start with Four **Known Spells** at Tier 1\n- Your **prepared spells** equal your **Spellcasting Modifier**.\n- Your **Spell DC** = 10 + Spell Tier + Spellcasting Modifier.\n- Each **Respite** restores spell points equal to your **Spellcasting Modifier** (minimum 3).\n- **Sphere Access:** Conjuration",
@@ -2048,40 +1744,23 @@
           "Talent",
           "or Awareness"
         ],
-        "armaments": [
-          "Catalysts",
-          "Simple",
-          "Finesse"
-        ],
-        "protection": [
-          "Medium",
-          "Light"
-        ],
-        "tool_kits": [
-          "Medicine or Scouting"
-        ],
+        "armaments": ["Catalysts", "Simple", "Finesse"],
+        "protection": ["Medium", "Light"],
+        "tool_kits": ["Medicine or Scouting"],
         "raw": "**V.I.T.A.L.S. Skills** Choose two, Vigor, Intuition, Talent, or Awareness\n**Armaments** Catalysts, Simple, Finesse\n**Protection** Medium, Light\n**Tool Kit** Medicine or Scouting"
       },
       "starting_pack": {
         "weapons": {
           "raw": "Simple Melee of choice, Arcane Implement",
-          "items": [
-            "Simple Melee of choice",
-            "Arcane Implement"
-          ]
+          "items": ["Simple Melee of choice", "Arcane Implement"]
         },
         "armor": {
           "raw": "Light, Shield",
-          "items": [
-            "Light",
-            "Shield"
-          ]
+          "items": ["Light", "Shield"]
         },
         "kit": {
           "raw": "None",
-          "items": [
-            "None"
-          ]
+          "items": ["None"]
         },
         "inventory": {
           "raw": "Magic dampening shackles, Spell detection amulet, Warding chalk, Anti-magic vials (2)",
@@ -2095,10 +1774,7 @@
         "starting_currency": "15 gold",
         "raw": "**Weapons:** Simple Melee of choice, Arcane Implement\n**Armor:** Medium armor, Shield\n**Kit:** None\n**Inventory:** Magic dampening shackles, Spell detection amulet, Warding chalk, Anti-magic vials (2)\n**Starting Currency:** 15 gold"
       },
-      "path_options": [
-        "Watcher",
-        "Vanguard"
-      ],
+      "path_options": ["Watcher", "Vanguard"],
       "features": [
         {
           "id": "professions-warden-base-bound-armament",
@@ -2110,9 +1786,7 @@
           "tag": "Warden",
           "trait_label": "Trait",
           "trait_raw": "Passive",
-          "traits": [
-            "Passive"
-          ],
+          "traits": ["Passive"],
           "activation": {
             "raw": "-",
             "resources": {},
@@ -2132,9 +1806,7 @@
           "tag": "Warden",
           "trait_label": "Trait",
           "trait_raw": "Offensive",
-          "traits": [
-            "Offensive"
-          ],
+          "traits": ["Offensive"],
           "activation": {
             "raw": "2 AP",
             "resources": {
