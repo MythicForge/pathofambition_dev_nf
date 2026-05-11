@@ -5,6 +5,7 @@ import type {
   AttributeKey, BuilderVocationCaster, BuilderStartingPack, BuilderOriginPackCategory,
   ChoiceFeature,
 } from './characterTypes';
+import { getProfessionFeats } from './data';
 
 function readJSON<T>(filename: string): T {
   const filePath = path.join(process.cwd(), 'content', filename);
@@ -246,7 +247,7 @@ export function getBuilderOrigins(): BuilderOrigin[] {
 }
 
 export function getBuilderFeats(): { professionFeats: BuilderFeat[]; originFeats: BuilderFeat[] } {
-  const pf = readJSON<{ feats: Record<string, unknown>[] }>('profession_feats.normalized.json');
+  const { feats: pfFeats } = getProfessionFeats();
   const of_ = readJSON<{ feats: Record<string, unknown>[] }>('origin_feats.normalized.json');
 
   function mapFeat(f: Record<string, unknown>, ownerType: 'profession' | 'origin'): BuilderFeat {
@@ -273,7 +274,7 @@ export function getBuilderFeats(): { professionFeats: BuilderFeat[]; originFeats
   }
 
   return {
-    professionFeats: (pf.feats ?? []).map((f) => mapFeat(f, 'profession')),
+    professionFeats: pfFeats.map((f) => mapFeat(f as unknown as Record<string, unknown>, 'profession')),
     originFeats: (of_.feats ?? []).map((f) => mapFeat(f, 'origin')),
   };
 }
