@@ -54,10 +54,10 @@ function detectCasterFromMarkdown(md: string): CasterInfo {
                       normalized.match(/source\*\* is \*\*(.*?)\*\*/i);
   const casterSource = sourceMatch ? sourceMatch[1].trim() : null;
 
-  const modMatch = normalized.match(/Spellcasting Modifier\*\*\s+is\s+\*\*(.*?)\*\*/i) ||
+  const modMatch = normalized.match(/Spellcasting Modifier\*\*\s+is\s+(.*?)(?:\n|$)/i) ||
                    normalized.match(/Spellcasting Modifier\*\*:\s*_?(.*?)_?[\n.]/i) ||
-                   normalized.match(/spell casting modifier\*\* is \*\*(.*?)\*\*/i) ||
-                   normalized.match(/spellcasting modifier\*\* is \*\*(.*?)\*\*/i);
+                   normalized.match(/spell casting modifier\*\* is\s+(.*?)(?:\n|$)/i) ||
+                   normalized.match(/spellcasting modifier\*\* is\s+(.*?)(?:\n|$)/i);
   const modRaw = modMatch ? modMatch[1].trim() : '';
 
   const casterModifierOptions: AttributeKey[] = [];
