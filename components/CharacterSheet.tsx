@@ -3112,6 +3112,7 @@ export default function CharacterSheetPage({
               // AMEND-05: non-proficient armor penalty applies to Body, Main Hand, Off Hand
               const penaltySlot =
                 !isArmorProficient &&
+                slot !== null &&
                 ["Main Hand", "Off Hand", "Body"].includes(slot);
               // FEATURE-02: shield broken = pool depleted
               const isShieldSlot =

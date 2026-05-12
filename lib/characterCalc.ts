@@ -309,7 +309,7 @@ export function parseBodyModifierBonusValue(formula: string, attrs: CharacterAtt
 
 /** Full max vitality: Tier 1 base + per-tier gains + body modifier bonus + feat bonus. */
 export function calcFullMaxVitality(
-  prof: { startingVitality: string; vitalityPerTier: string; bodyModifierBonus: string },
+  prof: BuilderProfession,
   attrs: CharacterAttributes,
   tier: number,
   selectedFeatIds: string[],
