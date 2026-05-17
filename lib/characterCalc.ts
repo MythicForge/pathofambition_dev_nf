@@ -29,7 +29,7 @@ export function parseStartingVitality(formula: string): {
 }
 
 export function calcStartingVitality(
-  prof: BuilderProfession,
+  prof: Pick<BuilderProfession, "startingVitality">,
   attrs: CharacterAttributes,
 ): number {
   const { base, attribute } = parseStartingVitality(prof.startingVitality);
@@ -309,7 +309,7 @@ export function parseBodyModifierBonusValue(formula: string, attrs: CharacterAtt
 
 /** Full max vitality: Tier 1 base + per-tier gains + body modifier bonus + feat bonus. */
 export function calcFullMaxVitality(
-  prof: BuilderProfession,
+  prof: { startingVitality: string; vitalityPerTier: string; bodyModifierBonus: string },
   attrs: CharacterAttributes,
   tier: number,
   selectedFeatIds: string[],
