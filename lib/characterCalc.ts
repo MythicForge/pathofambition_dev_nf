@@ -29,7 +29,7 @@ export function parseStartingVitality(formula: string): {
 }
 
 export function calcStartingVitality(
-  prof: BuilderProfession,
+  prof: Pick<BuilderProfession, "startingVitality">,
   attrs: CharacterAttributes,
 ): number {
   const { base, attribute } = parseStartingVitality(prof.startingVitality);

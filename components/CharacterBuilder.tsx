@@ -807,9 +807,13 @@ export default function CharacterBuilder({
           effectiveCaster.casterType,
           draft.tier,
           totalAttributes[
-            effectiveCaster.casterModifierOptions[0] ??
-              draft.spellcastingModifier ??
-              "mind"
+            effectiveCaster.casterModifierOptions.length === 1
+              ? effectiveCaster.casterModifierOptions[0]
+              : effectiveCaster.casterModifierOptions.length > 1
+                ? effectiveCaster.casterModifierOptions.reduce((best, key) =>
+                    totalAttributes[key] >= totalAttributes[best] ? key : best
+                  )
+                : draft.spellcastingModifier ?? "mind"
           ],
         ) ?? 0)
       : 0;
@@ -3263,9 +3267,13 @@ export default function CharacterBuilder({
     }
 
     const modKey =
-      (effectiveCaster.casterModifierOptions.length === 1
+      effectiveCaster.casterModifierOptions.length === 1
         ? effectiveCaster.casterModifierOptions[0]
-        : draft.spellcastingModifier) ?? "mind";
+        : effectiveCaster.casterModifierOptions.length > 1
+          ? effectiveCaster.casterModifierOptions.reduce((best, key) =>
+              totalAttributes[key] >= totalAttributes[best] ? key : best
+            )
+          : (draft.spellcastingModifier ?? "mind");
     const modVal = totalAttributes[modKey];
     const reservoir = calcReservoir(
       effectiveCaster.casterType,
