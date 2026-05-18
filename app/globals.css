@@ -1,22 +1,65 @@
 @import url('https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&display=swap');
 @import "tailwindcss";
 
-:root {
-  --bg: #FAFAF9;
-  --bg-card: #FFFFFF;
-  --bg-nav: #F5F5F4;
-  --text: #1C1917;
-  --text-muted: #57534E;
-  --primary: #0F766E;
-  --primary-light: #CCFBF1;
-  --accent: #B45309;
-  --accent-light: #FEF3C7;
-  --border: #E7E5E4;
-  --border-hover: #A8A29E;
+/* ── Dark mode (default) ─────────────────────────────── */
+:root,
+[data-theme="dark"] {
+  --bg-page:         #0b0f1e;
+  --bg-nav:          #090d1a;
+  --bg-card:         #0f1525;
+  --border:          #1c2a40;
+  --border-hover:    #2a3d5a;
+  --primary:         #c9821a;
+  --primary-light:   #c9821a1a;
+  --accent:          #c9821a;
+  --accent-light:    #c9821a22;
+  --text:            #c8d4e0;
+  --text-muted:      #3a4f6a;
+  --text-on-primary: #0b0f1e;
+  --bg:              var(--bg-page);
+  color-scheme: dark;
+}
+
+/* ── Light mode ──────────────────────────────────────── */
+[data-theme="light"] {
+  --bg-page:         #f5f0e8;
+  --bg-nav:          #ede7d9;
+  --bg-card:         #ffffff;
+  --border:          #d4c8b0;
+  --border-hover:    #b8a888;
+  --primary:         #a86010;
+  --primary-light:   #a8601015;
+  --accent:          #a86010;
+  --accent-light:    #a8601018;
+  --text:            #1a1410;
+  --text-muted:      #6a5a40;
+  --text-on-primary: #ffffff;
+  --bg:              var(--bg-page);
+  color-scheme: light;
+}
+
+/* ── Respect system preference on first load ─────────── */
+@media (prefers-color-scheme: light) {
+  :root:not([data-theme]) {
+    --bg-page:         #f5f0e8;
+    --bg-nav:          #ede7d9;
+    --bg-card:         #ffffff;
+    --border:          #d4c8b0;
+    --border-hover:    #b8a888;
+    --primary:         #a86010;
+    --primary-light:   #a8601015;
+    --accent:          #a86010;
+    --accent-light:    #a8601018;
+    --text:            #1a1410;
+    --text-muted:      #6a5a40;
+    --text-on-primary: #ffffff;
+    --bg:              var(--bg-page);
+    color-scheme: light;
+  }
 }
 
 @theme inline {
-  --color-background: var(--bg);
+  --color-background: var(--bg-page);
   --color-foreground: var(--text);
   --font-heading: 'Lexend', sans-serif;
   --font-body: 'Source Sans 3', sans-serif;
@@ -31,7 +74,7 @@ html {
 }
 
 body {
-  background: var(--bg);
+  background: var(--bg-page);
   color: var(--text);
   font-family: var(--font-body);
   font-size: 16px;
@@ -137,11 +180,11 @@ h1, h2, h3, h4, h5, h6 {
 }
 .hover-card:hover {
   border-color: var(--primary) !important;
-  box-shadow: 0 2px 10px rgba(15,118,110,0.1);
+  box-shadow: 0 2px 10px var(--primary-light);
 }
 .hover-card-subtle:hover {
   border-color: var(--primary) !important;
-  box-shadow: 0 1px 6px rgba(15,118,110,0.1);
+  box-shadow: 0 1px 6px var(--primary-light);
 }
 
 /* Scrollbar */
