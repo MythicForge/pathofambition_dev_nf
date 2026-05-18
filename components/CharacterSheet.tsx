@@ -7183,450 +7183,462 @@ export default function CharacterSheetPage({
         );
       })()}
 
-      {/* ──── COMBAT CONTROLS: edit vitality / wounds / damage ──── */}
+      {/* ──── VITALITY & DAMAGE MANAGEMENT (unified) ──── */}
       <div
         style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-          gap: "1rem",
+          backgroundColor: "var(--bg-card)",
+          border: "1px solid var(--border)",
+          borderRadius: "12px",
+          overflow: "hidden",
           marginBottom: "1rem",
         }}
       >
-        {/* Left: Editable vitality + wounds + temp HP */}
+        {/* Unified header */}
         <div
           style={{
-            backgroundColor: "var(--bg-card)",
-            border: "1px solid var(--border)",
-            borderRadius: "12px",
-            padding: "0.875rem 1rem",
+            padding: "0.625rem 1rem",
+            borderBottom: "1px solid var(--border)",
+            backgroundColor: "var(--bg-nav)",
           }}
         >
-          <div
+          <span
             style={{
               fontSize: "0.65rem",
-              letterSpacing: "0.12em",
-              color: "var(--text-muted)",
               fontFamily: "var(--font-heading)",
               fontStyle: "italic",
+              letterSpacing: "0.12em",
+              color: "var(--text-muted)",
               textTransform: "uppercase",
-              marginBottom: "0.625rem",
             }}
           >
-            Edit Vitality
+            Vitality & Damage
+          </span>
+        </div>
+        {/* Inner 2-col layout */}
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
+          }}
+        >
+          {/* Left: HP + Wounds + Temp HP */}
+          <div
+            style={{
+              padding: "0.875rem 1rem",
+              borderBottom: "1px solid var(--border)",
+            }}
+          >
+            {(() => {
+              const tempHp = c.tempHp ?? 0;
+              const effectiveMax = derivedMaxVitality + tempHp;
+              return (
+                <>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr",
+                      gap: "0.625rem",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    <DeltaNumber
+                      label={`HP / ${derivedMaxVitality}${tempHp !== 0 ? (tempHp > 0 ? ` +${tempHp}` : ` ${tempHp}`) : ""}`}
+                      value={c.currentVitality ?? 0}
+                      min={0}
+                      max={effectiveMax || undefined}
+                      onChange={(v) => persist({ currentVitality: v })}
+                    />
+                    <EditableNumber
+                      label={`Wounds / ${maxWounds}`}
+                      value={c.currentWounds ?? 0}
+                      min={0}
+                      max={maxWounds}
+                      onChange={(v) => persist({ currentWounds: v })}
+                    />
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "0.375rem",
+                      padding: "0.25rem 0.5rem",
+                      backgroundColor: "var(--bg-nav)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "0.375rem",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: "0.6rem",
+                        color: "var(--text-muted)",
+                        fontFamily: "var(--font-heading)",
+                        fontWeight: 600,
+                      }}
+                    >
+                      Temp HP
+                    </span>
+                    <button
+                      onClick={() => {
+                        const next = tempHp - 1;
+                        const newMax = derivedMaxVitality + next;
+                        const patch: Partial<typeof c> = { tempHp: next };
+                        if ((c.currentVitality ?? 0) > newMax)
+                          patch.currentVitality = Math.max(0, newMax);
+                        persist(patch);
+                      }}
+                      style={{
+                        width: "18px",
+                        height: "18px",
+                        borderRadius: "50%",
+                        border: "1px solid var(--border)",
+                        backgroundColor: "var(--bg-card)",
+                        cursor: "pointer",
+                        fontWeight: 700,
+                        color: "var(--text-muted)",
+                        fontSize: "0.75rem",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      −
+                    </button>
+                    <span
+                      style={{
+                        fontFamily: "var(--font-heading)",
+                        fontWeight: 700,
+                        fontSize: "0.9rem",
+                        color: "var(--text)",
+                        minWidth: "24px",
+                        textAlign: "center",
+                      }}
+                    >
+                      {tempHp}
+                    </span>
+                    <button
+                      onClick={() => persist({ tempHp: tempHp + 1 })}
+                      style={{
+                        width: "18px",
+                        height: "18px",
+                        borderRadius: "50%",
+                        border: "1px solid var(--border)",
+                        backgroundColor: "var(--bg-card)",
+                        cursor: "pointer",
+                        fontWeight: 700,
+                        color: "var(--text-muted)",
+                        fontSize: "0.75rem",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      +
+                    </button>
+                    {tempHp !== 0 && (
+                      <button
+                        onClick={() => {
+                          const patch: Partial<typeof c> = { tempHp: 0 };
+                          if ((c.currentVitality ?? 0) > derivedMaxVitality)
+                            patch.currentVitality = Math.max(
+                              0,
+                              derivedMaxVitality,
+                            );
+                          persist(patch);
+                        }}
+                        style={{
+                          fontSize: "0.6rem",
+                          color: "var(--text-muted)",
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          fontFamily: "var(--font-heading)",
+                        }}
+                      >
+                        ✕
+                      </button>
+                    )}
+                  </div>
+                </>
+              );
+            })()}
           </div>
+
+          {/* Right: Apply Damage + pool tracker */}
           {(() => {
-            const tempHp = c.tempHp ?? 0;
-            const effectiveMax = derivedMaxVitality + tempHp;
+            const spellPool = c.spellReductionPool ?? 0;
+            const featPool = c.featReductionPool ?? 0;
+            const shieldPool = equippedShield?.reductionPoolCurrent ?? null;
+            const shieldPoolMax = equippedShield?.reductionPoolMax ?? null;
+            const hasAnyPool =
+              spellPool > 0 || featPool > 0 || shieldPool != null;
             return (
-              <>
-                <div
+              <div
+                style={{
+                  padding: "0.875rem 1rem",
+                }}
+              >
+                <span
                   style={{
-                    display: "grid",
-                    gridTemplateColumns: "1fr 1fr",
-                    gap: "0.625rem",
-                    marginBottom: "0.5rem",
+                    fontSize: "1rem",
+                    color: "var(--text-muted)",
                   }}
                 >
-                  <DeltaNumber
-                    label={`HP / ${derivedMaxVitality}${tempHp !== 0 ? (tempHp > 0 ? ` +${tempHp}` : ` ${tempHp}`) : ""}`}
-                    value={c.currentVitality ?? 0}
-                    min={0}
-                    max={effectiveMax || undefined}
-                    onChange={(v) => persist({ currentVitality: v })}
-                  />
-                  <EditableNumber
-                    label={`Wounds / ${maxWounds}`}
-                    value={c.currentWounds ?? 0}
-                    min={0}
-                    max={maxWounds}
-                    onChange={(v) => persist({ currentWounds: v })}
-                  />
-                </div>
+                  Reduction Pool
+                </span>
                 <div
                   style={{
                     display: "flex",
                     alignItems: "center",
-                    justifyContent: "center",
-                    gap: "0.375rem",
-                    padding: "0.25rem 0.5rem",
-                    backgroundColor: "var(--bg-nav)",
-                    border: "1px solid var(--border)",
-                    borderRadius: "0.375rem",
+                    gap: "0.5rem",
+                    marginBottom: "0.5rem",
                   }}
                 >
-                  <span
-                    style={{
-                      fontSize: "0.6rem",
-                      color: "var(--text-muted)",
-                      fontFamily: "var(--font-heading)",
-                      fontWeight: 600,
+                  <input
+                    type="number"
+                    min={1}
+                    value={damageInput}
+                    onChange={(e) => setDamageInput(e.target.value)}
+                    onKeyDown={(e) => {
+                      if (e.key === "Enter") {
+                        const n = parseInt(damageInput);
+                        if (n > 0) {
+                          applyDamage(n);
+                          setDamageInput("");
+                        }
+                      }
                     }}
-                  >
-                    Temp HP
-                  </span>
-                  <button
-                    onClick={() => {
-                      const next = tempHp - 1;
-                      const newMax = derivedMaxVitality + next;
-                      const patch: Partial<typeof c> = { tempHp: next };
-                      if ((c.currentVitality ?? 0) > newMax)
-                        patch.currentVitality = Math.max(0, newMax);
-                      persist(patch);
-                    }}
+                    placeholder="0"
                     style={{
-                      width: "18px",
-                      height: "18px",
-                      borderRadius: "50%",
-                      border: "1px solid var(--border)",
-                      backgroundColor: "var(--bg-card)",
-                      cursor: "pointer",
-                      fontWeight: 700,
-                      color: "var(--text-muted)",
-                      fontSize: "0.75rem",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    −
-                  </button>
-                  <span
-                    style={{
-                      fontFamily: "var(--font-heading)",
-                      fontWeight: 700,
-                      fontSize: "0.9rem",
-                      color: "var(--text)",
-                      minWidth: "24px",
+                      ...inputStyle,
+                      width: "60px",
                       textAlign: "center",
                     }}
-                  >
-                    {tempHp}
-                  </span>
+                  />
                   <button
-                    onClick={() => persist({ tempHp: tempHp + 1 })}
-                    style={{
-                      width: "18px",
-                      height: "18px",
-                      borderRadius: "50%",
-                      border: "1px solid var(--border)",
-                      backgroundColor: "var(--bg-card)",
-                      cursor: "pointer",
-                      fontWeight: 700,
-                      color: "var(--text-muted)",
-                      fontSize: "0.75rem",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    +
-                  </button>
-                  {tempHp !== 0 && (
-                    <button
-                      onClick={() => {
-                        const patch: Partial<typeof c> = { tempHp: 0 };
-                        if ((c.currentVitality ?? 0) > derivedMaxVitality)
-                          patch.currentVitality = Math.max(
-                            0,
-                            derivedMaxVitality,
-                          );
-                        persist(patch);
-                      }}
-                      style={{
-                        fontSize: "0.6rem",
-                        color: "var(--text-muted)",
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        fontFamily: "var(--font-heading)",
-                      }}
-                    >
-                      ✕
-                    </button>
-                  )}
-                </div>
-              </>
-            );
-          })()}
-        </div>
-
-        {/* Right: Apply Damage + pool tracker */}
-        {(() => {
-          const spellPool = c.spellReductionPool ?? 0;
-          const featPool = c.featReductionPool ?? 0;
-          const shieldPool = equippedShield?.reductionPoolCurrent ?? null;
-          const shieldPoolMax = equippedShield?.reductionPoolMax ?? null;
-          const hasAnyPool =
-            spellPool > 0 || featPool > 0 || shieldPool != null;
-          return (
-            <div
-              style={{
-                backgroundColor: "var(--bg-card)",
-                border: "1px solid var(--border)",
-                borderRadius: "12px",
-                padding: "0.875rem 1rem",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "0.65rem",
-                  letterSpacing: "0.12em",
-                  color: "var(--text-muted)",
-                  fontFamily: "var(--font-heading)",
-                  fontStyle: "italic",
-                  textTransform: "uppercase",
-                  marginBottom: "0.625rem",
-                }}
-              >
-                Apply Damage
-              </div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "0.5rem",
-                  marginBottom: "0.5rem",
-                }}
-              >
-                <input
-                  type="number"
-                  min={1}
-                  value={damageInput}
-                  onChange={(e) => setDamageInput(e.target.value)}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter") {
+                    onClick={() => {
                       const n = parseInt(damageInput);
                       if (n > 0) {
                         applyDamage(n);
                         setDamageInput("");
                       }
-                    }
-                  }}
-                  placeholder="0"
-                  style={{ ...inputStyle, width: "60px", textAlign: "center" }}
-                />
-                <button
-                  onClick={() => {
-                    const n = parseInt(damageInput);
-                    if (n > 0) {
-                      applyDamage(n);
-                      setDamageInput("");
-                    }
-                  }}
-                  style={{
-                    padding: "0.3rem 0.75rem",
-                    border: "none",
-                    borderRadius: "0.375rem",
-                    backgroundColor: "#EF4444",
-                    color: "#fff",
-                    cursor: "pointer",
-                    fontFamily: "var(--font-heading)",
-                    fontWeight: 700,
-                    fontSize: "0.8rem",
-                  }}
+                    }}
+                    style={{
+                      padding: "0.3rem 0.75rem",
+                      border: "none",
+                      borderRadius: "0.375rem",
+                      backgroundColor: "#EF4444",
+                      color: "#fff",
+                      cursor: "pointer",
+                      fontFamily: "var(--font-heading)",
+                      fontWeight: 700,
+                      fontSize: "0.8rem",
+                    }}
+                  >
+                    Hit
+                  </button>
+                  <span
+                    style={{
+                      fontSize: "0.6rem",
+                      color: "var(--text-muted)",
+                      fontStyle: "italic",
+                    }}
+                  >
+                    Spell → Feat → Shield → HP
+                  </span>
+                </div>
+                <div
+                  style={{ display: "flex", gap: "0.375rem", flexWrap: "wrap" }}
                 >
-                  Hit
-                </button>
-                <span
-                  style={{
-                    fontSize: "0.6rem",
-                    color: "var(--text-muted)",
-                    fontStyle: "italic",
-                  }}
-                >
-                  Spell → Feat → Shield → HP
-                </span>
-              </div>
-              <div
-                style={{ display: "flex", gap: "0.375rem", flexWrap: "wrap" }}
-              >
-                {spellPool > 0 && (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.25rem",
-                      padding: "0.2rem 0.5rem",
-                      backgroundColor: "var(--primary-light)",
-                      border: "1px solid var(--primary)",
-                      borderRadius: "9999px",
-                      fontSize: "0.62rem",
-                      fontFamily: "var(--font-heading)",
-                      color: "var(--primary)",
-                      fontWeight: 700,
-                    }}
-                  >
-                    ✦ Spell: {spellPool}
-                    <button
-                      onClick={() =>
-                        persist({
-                          spellReductionPool: Math.max(0, spellPool - 1),
-                        })
-                      }
+                  {spellPool > 0 && (
+                    <div
                       style={{
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        fontSize: "0.6rem",
-                        color: "var(--primary)",
-                        padding: 0,
-                      }}
-                    >
-                      −
-                    </button>
-                    <button
-                      onClick={() =>
-                        persist({ spellReductionPool: spellPool + 1 })
-                      }
-                      style={{
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        fontSize: "0.6rem",
-                        color: "var(--primary)",
-                        padding: 0,
-                      }}
-                    >
-                      +
-                    </button>
-                    <button
-                      onClick={() => persist({ spellReductionPool: 0 })}
-                      style={{
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        fontSize: "0.55rem",
-                        color: "var(--text-muted)",
-                        padding: 0,
-                      }}
-                    >
-                      ✕
-                    </button>
-                  </div>
-                )}
-                {featPool > 0 && (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.25rem",
-                      padding: "0.2rem 0.5rem",
-                      backgroundColor: "var(--accent-light)",
-                      border: "1px solid var(--accent)",
-                      borderRadius: "9999px",
-                      fontSize: "0.62rem",
-                      fontFamily: "var(--font-heading)",
-                      color: "var(--accent)",
-                      fontWeight: 700,
-                    }}
-                  >
-                    ✦ Feat: {featPool}
-                    <button
-                      onClick={() =>
-                        persist({
-                          featReductionPool: Math.max(0, featPool - 1),
-                        })
-                      }
-                      style={{
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        fontSize: "0.6rem",
-                        color: "var(--accent)",
-                        padding: 0,
-                      }}
-                    >
-                      −
-                    </button>
-                    <button
-                      onClick={() =>
-                        persist({ featReductionPool: featPool + 1 })
-                      }
-                      style={{
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        fontSize: "0.6rem",
-                        color: "var(--accent)",
-                        padding: 0,
-                      }}
-                    >
-                      +
-                    </button>
-                    <button
-                      onClick={() => persist({ featReductionPool: 0 })}
-                      style={{
-                        background: "none",
-                        border: "none",
-                        cursor: "pointer",
-                        fontSize: "0.55rem",
-                        color: "var(--text-muted)",
-                        padding: 0,
-                      }}
-                    >
-                      ✕
-                    </button>
-                  </div>
-                )}
-                {shieldPool != null && (
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.25rem",
-                      padding: "0.2rem 0.5rem",
-                      backgroundColor:
-                        shieldPool === 0 ? "#fff0f0" : "var(--bg-nav)",
-                      border: `1px solid ${shieldPool === 0 ? "#ff7979" : "var(--border)"}`,
-                      borderRadius: "9999px",
-                      fontSize: "0.62rem",
-                      fontFamily: "var(--font-heading)",
-                      color: shieldPool === 0 ? "#ff7979" : "var(--text-muted)",
-                      fontWeight: 700,
-                    }}
-                  >
-                    🛡 {shieldPool}/{shieldPoolMax}
-                    {shieldPool === 0 && " (broken)"}
-                  </div>
-                )}
-                {!hasAnyPool && (
-                  <div style={{ display: "flex", gap: "0.375rem" }}>
-                    <button
-                      onClick={() => persist({ spellReductionPool: 1 })}
-                      style={{
-                        fontSize: "0.6rem",
-                        padding: "0.15rem 0.4rem",
-                        border: "1px dashed var(--border)",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.25rem",
+                        padding: "0.2rem 0.5rem",
+                        backgroundColor: "var(--primary-light)",
+                        border: "1px solid var(--primary)",
                         borderRadius: "9999px",
-                        backgroundColor: "transparent",
-                        cursor: "pointer",
-                        color: "var(--text-muted)",
+                        fontSize: "0.62rem",
                         fontFamily: "var(--font-heading)",
+                        color: "var(--primary)",
+                        fontWeight: 700,
                       }}
                     >
-                      + Spell Pool
-                    </button>
-                    <button
-                      onClick={() => persist({ featReductionPool: 1 })}
+                      ✦ Spell: {spellPool}
+                      <button
+                        onClick={() =>
+                          persist({
+                            spellReductionPool: Math.max(0, spellPool - 1),
+                          })
+                        }
+                        style={{
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          fontSize: "0.6rem",
+                          color: "var(--primary)",
+                          padding: 0,
+                        }}
+                      >
+                        −
+                      </button>
+                      <button
+                        onClick={() =>
+                          persist({ spellReductionPool: spellPool + 1 })
+                        }
+                        style={{
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          fontSize: "0.6rem",
+                          color: "var(--primary)",
+                          padding: 0,
+                        }}
+                      >
+                        +
+                      </button>
+                      <button
+                        onClick={() => persist({ spellReductionPool: 0 })}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          fontSize: "0.55rem",
+                          color: "var(--text-muted)",
+                          padding: 0,
+                        }}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+                  {featPool > 0 && (
+                    <div
                       style={{
-                        fontSize: "0.6rem",
-                        padding: "0.15rem 0.4rem",
-                        border: "1px dashed var(--border)",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.25rem",
+                        padding: "0.2rem 0.5rem",
+                        backgroundColor: "var(--accent-light)",
+                        border: "1px solid var(--accent)",
                         borderRadius: "9999px",
-                        backgroundColor: "transparent",
-                        cursor: "pointer",
-                        color: "var(--text-muted)",
+                        fontSize: "0.62rem",
                         fontFamily: "var(--font-heading)",
+                        color: "var(--accent)",
+                        fontWeight: 700,
                       }}
                     >
-                      + Feat Pool
-                    </button>
-                  </div>
-                )}
+                      ✦ Feat: {featPool}
+                      <button
+                        onClick={() =>
+                          persist({
+                            featReductionPool: Math.max(0, featPool - 1),
+                          })
+                        }
+                        style={{
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          fontSize: "0.6rem",
+                          color: "var(--accent)",
+                          padding: 0,
+                        }}
+                      >
+                        −
+                      </button>
+                      <button
+                        onClick={() =>
+                          persist({ featReductionPool: featPool + 1 })
+                        }
+                        style={{
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          fontSize: "0.6rem",
+                          color: "var(--accent)",
+                          padding: 0,
+                        }}
+                      >
+                        +
+                      </button>
+                      <button
+                        onClick={() => persist({ featReductionPool: 0 })}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          fontSize: "0.55rem",
+                          color: "var(--text-muted)",
+                          padding: 0,
+                        }}
+                      >
+                        ✕
+                      </button>
+                    </div>
+                  )}
+                  {shieldPool != null && (
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.25rem",
+                        padding: "0.2rem 0.5rem",
+                        backgroundColor:
+                          shieldPool === 0 ? "#fff0f0" : "var(--bg-nav)",
+                        border: `1px solid ${shieldPool === 0 ? "#ff7979" : "var(--border)"}`,
+                        borderRadius: "9999px",
+                        fontSize: "0.62rem",
+                        fontFamily: "var(--font-heading)",
+                        color:
+                          shieldPool === 0 ? "#ff7979" : "var(--text-muted)",
+                        fontWeight: 700,
+                      }}
+                    >
+                      🛡 {shieldPool}/{shieldPoolMax}
+                      {shieldPool === 0 && " (broken)"}
+                    </div>
+                  )}
+                  {!hasAnyPool && (
+                    <div style={{ display: "flex", gap: "0.375rem" }}>
+                      <button
+                        onClick={() => persist({ spellReductionPool: 1 })}
+                        style={{
+                          fontSize: "0.6rem",
+                          padding: "0.15rem 0.4rem",
+                          border: "1px dashed var(--border)",
+                          borderRadius: "9999px",
+                          backgroundColor: "transparent",
+                          cursor: "pointer",
+                          color: "var(--text-muted)",
+                          fontFamily: "var(--font-heading)",
+                        }}
+                      >
+                        + Spell Pool
+                      </button>
+                      <button
+                        onClick={() => persist({ featReductionPool: 1 })}
+                        style={{
+                          fontSize: "0.6rem",
+                          padding: "0.15rem 0.4rem",
+                          border: "1px dashed var(--border)",
+                          borderRadius: "9999px",
+                          backgroundColor: "transparent",
+                          cursor: "pointer",
+                          color: "var(--text-muted)",
+                          fontFamily: "var(--font-heading)",
+                        }}
+                      >
+                        + Feat Pool
+                      </button>
+                    </div>
+                  )}
+                </div>
               </div>
-            </div>
-          );
-        })()}
+            );
+          })()}
+        </div>
       </div>
 
       {/* ──── ATTRS | DEFENCE TWO-COLUMN ──── */}
