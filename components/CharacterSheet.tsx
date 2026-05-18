@@ -6525,7 +6525,7 @@ export default function CharacterSheetPage({
   const REF_SECTIONS = [
     {
       name: "Offensive",
-      color: "#FEE2E2",
+      color: "#ffbaba",
       subs: [
         {
           name: "Weapon",
@@ -6566,7 +6566,7 @@ export default function CharacterSheetPage({
     },
     {
       name: "Maneuver",
-      color: "#DBEAFE",
+      color: "#91afd6",
       subs: [
         {
           name: "Movement",
@@ -6609,7 +6609,7 @@ export default function CharacterSheetPage({
     },
     {
       name: "Utility",
-      color: "#D1FAE5",
+      color: "#58FFA2",
       subs: [
         {
           name: "Preservation",
@@ -7672,98 +7672,203 @@ export default function CharacterSheetPage({
               padding: "0.875rem 1rem",
               display: "flex",
               flexDirection: "column",
-              gap: "0.75rem",
+              gap: "0.875rem",
             }}
           >
-            {(["body", "mind", "will"] as const).map((key) => {
-              const val = attrs[key];
-              const isHighest =
-                val === Math.max(attrs.body, attrs.mind, attrs.will);
-              const barPct = Math.min(
-                100,
-                Math.max(0, Math.round((Math.max(0, val) / 12) * 100)),
+            {(() => {
+              const totalAvailableBase = Math.min(
+                12,
+                4 + (c.featsPurchased ?? 0),
               );
+              const currentTotalBase =
+                c.baseAttributes.body +
+                c.baseAttributes.mind +
+                c.baseAttributes.will;
+              const dynamicUnspent = totalAvailableBase - currentTotalBase;
+
               return (
-                <div key={key}>
-                  <div
-                    style={{
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      marginBottom: "3px",
-                    }}
-                  >
-                    <span
-                      style={{
-                        fontSize: "0.75rem",
-                        color: isHighest
-                          ? "var(--primary)"
-                          : "var(--text-muted)",
-                        letterSpacing: "0.04em",
-                        textTransform: "capitalize",
-                      }}
-                    >
-                      {key}
-                    </span>
-                    <span
-                      style={{
-                        fontSize: "1.15rem",
-                        fontWeight: 700,
-                        color: "var(--primary)",
-                        fontFamily: "var(--font-heading)",
-                        lineHeight: 1,
-                      }}
-                    >
-                      {fmtAttr(val)}
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      backgroundColor: "var(--border)",
-                      borderRadius: "4px",
-                      height: "4px",
-                      overflow: "hidden",
-                    }}
-                  >
+                <>
+                  {dynamicUnspent > 0 && (
                     <div
                       style={{
-                        backgroundColor: "var(--primary)",
-                        height: "100%",
-                        width: `${barPct}%`,
-                        opacity: isHighest ? 1 : 0.5,
-                        borderRadius: "4px",
+                        padding: "0.375rem 0.625rem",
+                        backgroundColor: "var(--accent-light)",
+                        border: "1px solid var(--accent)",
+                        borderRadius: "0.375rem",
+                        fontSize: "0.75rem",
+                        color: "var(--text)",
+                        fontFamily: "var(--font-heading)",
+                        fontWeight: 700,
                       }}
-                    />
-                  </div>
-                </div>
+                    >
+                      ⚠ {dynamicUnspent} unspent attr pt
+                      {dynamicUnspent !== 1 ? "s" : ""}
+                      <span style={{ fontWeight: 400, marginLeft: "0.35rem" }}>
+                        ({currentTotalBase} / {totalAvailableBase})
+                      </span>
+                    </div>
+                  )}
+                  {(["body", "mind", "will"] as const).map((key) => {
+                    const val = attrs[key];
+                    const base = c.baseAttributes[key];
+                    const voc =
+                      c.vocationAttributeBonus.attribute === key
+                        ? c.vocationAttributeBonus.value
+                        : 0;
+                    const isHighest =
+                      val === Math.max(attrs.body, attrs.mind, attrs.will);
+                    const barPct = Math.min(
+                      100,
+                      Math.max(0, Math.round((Math.max(0, val) / 12) * 100)),
+                    );
+                    const canIncrease = dynamicUnspent > 0;
+                    const canDecrease = base > 0;
+                    function adjustAttr(delta: number) {
+                      const newBase = base + delta;
+                      if (newBase < 0) return;
+                      if (delta > 0 && !canIncrease) return;
+                      persist({
+                        baseAttributes: {
+                          ...c.baseAttributes,
+                          [key]: newBase,
+                        },
+                        unspentAttributePoints: Math.max(
+                          0,
+                          dynamicUnspent - delta,
+                        ),
+                      });
+                    }
+                    return (
+                      <div key={key}>
+                        {/* Label + total value */}
+                        <div
+                          style={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            marginBottom: "3px",
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: "0.75rem",
+                              color: isHighest
+                                ? "var(--primary)"
+                                : "var(--text-muted)",
+                              letterSpacing: "0.04em",
+                              textTransform: "capitalize",
+                            }}
+                          >
+                            {key}
+                          </span>
+                          <span
+                            style={{
+                              fontSize: "1.15rem",
+                              fontWeight: 700,
+                              color: "var(--primary)",
+                              fontFamily: "var(--font-heading)",
+                              lineHeight: 1,
+                            }}
+                          >
+                            {fmtAttr(val)}
+                          </span>
+                        </div>
+                        {/* Bar */}
+                        <div
+                          style={{
+                            backgroundColor: "var(--border)",
+                            borderRadius: "4px",
+                            height: "4px",
+                            overflow: "hidden",
+                            marginBottom: "0.4rem",
+                          }}
+                        >
+                          <div
+                            style={{
+                              backgroundColor: "var(--primary)",
+                              height: "100%",
+                              width: `${barPct}%`,
+                              opacity: isHighest ? 1 : 0.5,
+                              borderRadius: "4px",
+                            }}
+                          />
+                        </div>
+                        {/* Allocator controls */}
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "0.4rem",
+                          }}
+                        >
+                          <button
+                            onClick={() => adjustAttr(-1)}
+                            disabled={!canDecrease}
+                            style={{
+                              width: "20px",
+                              height: "20px",
+                              borderRadius: "50%",
+                              border: "1px solid var(--border)",
+                              backgroundColor: "var(--bg-card)",
+                              cursor: canDecrease ? "pointer" : "not-allowed",
+                              fontWeight: 700,
+                              color: "var(--text-muted)",
+                              fontSize: "0.85rem",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            −
+                          </button>
+                          <span
+                            style={{
+                              fontFamily: "var(--font-heading)",
+                              fontSize: "0.78rem",
+                              fontWeight: 600,
+                              color: "var(--text-muted)",
+                              minWidth: "20px",
+                              textAlign: "center",
+                            }}
+                          >
+                            {fmtAttr(base)}
+                          </span>
+                          <button
+                            onClick={() => adjustAttr(1)}
+                            disabled={!canIncrease}
+                            style={{
+                              width: "20px",
+                              height: "20px",
+                              borderRadius: "50%",
+                              border: "1px solid var(--border)",
+                              backgroundColor: "var(--bg-card)",
+                              cursor: canIncrease ? "pointer" : "not-allowed",
+                              fontWeight: 700,
+                              color: "var(--text-muted)",
+                              fontSize: "0.85rem",
+                              display: "flex",
+                              alignItems: "center",
+                              justifyContent: "center",
+                            }}
+                          >
+                            +
+                          </button>
+                          <span
+                            style={{
+                              fontSize: "0.62rem",
+                              color: "var(--text-muted)",
+                              marginLeft: "0.15rem",
+                            }}
+                          >
+                            base{voc > 0 ? ` + ${voc} (${c.vocationName})` : ""}
+                          </span>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </>
               );
-            })}
-            {((c.unspentAttributePoints ?? 0) > 0 ||
-              (c.unspentSkillPoints ?? 0) > 0) && (
-              <div
-                style={{
-                  fontSize: "0.7rem",
-                  color: "var(--text-muted)",
-                  paddingTop: "0.5rem",
-                  borderTop: "1px solid var(--border)",
-                }}
-              >
-                Unspent:{" "}
-                {(c.unspentAttributePoints ?? 0) > 0 && (
-                  <span style={{ color: "var(--primary)", fontWeight: 700 }}>
-                    {c.unspentAttributePoints} attr
-                  </span>
-                )}
-                {(c.unspentAttributePoints ?? 0) > 0 &&
-                  (c.unspentSkillPoints ?? 0) > 0 &&
-                  " · "}
-                {(c.unspentSkillPoints ?? 0) > 0 && (
-                  <span style={{ color: "var(--primary)", fontWeight: 700 }}>
-                    {c.unspentSkillPoints} skill
-                  </span>
-                )}
-              </div>
-            )}
+            })()}
           </div>
         </div>
 
@@ -8817,179 +8922,6 @@ export default function CharacterSheetPage({
           </button>
         </div>
       </div>
-
-      {/* ──── ATTRIBUTES (editable allocator) ──── */}
-      <Section title="Attributes">
-        {(() => {
-          const totalAvailableBase = Math.min(12, 4 + (c.featsPurchased ?? 0));
-          const currentTotalBase =
-            c.baseAttributes.body +
-            c.baseAttributes.mind +
-            c.baseAttributes.will;
-          const dynamicUnspent = totalAvailableBase - currentTotalBase;
-          return dynamicUnspent > 0 ? (
-            <div
-              style={{
-                marginBottom: "0.75rem",
-                padding: "0.5rem 0.875rem",
-                backgroundColor: "var(--accent-light)",
-                border: "1px solid #FCD34D",
-                borderRadius: "0.5rem",
-                fontSize: "0.82rem",
-                color: "#92400E",
-                fontFamily: "var(--font-heading)",
-                fontWeight: 700,
-              }}
-            >
-              ⚠ {dynamicUnspent} unspent Attribute point
-              {dynamicUnspent !== 1 ? "s" : ""} — allocate below
-              <span style={{ fontWeight: 400, marginLeft: "0.5rem" }}>
-                ({currentTotalBase} / {totalAvailableBase} spent)
-              </span>
-            </div>
-          ) : null;
-        })()}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
-            gap: "0.75rem",
-          }}
-        >
-          {(["body", "mind", "will"] as const).map((attr) => {
-            const base = c.baseAttributes[attr];
-            const voc =
-              c.vocationAttributeBonus.attribute === attr
-                ? c.vocationAttributeBonus.value
-                : 0;
-            const totalAvailableBase = Math.min(
-              12,
-              4 + (c.featsPurchased ?? 0),
-            );
-            const currentTotalBase =
-              c.baseAttributes.body +
-              c.baseAttributes.mind +
-              c.baseAttributes.will;
-            const dynamicUnspent = totalAvailableBase - currentTotalBase;
-            const canIncrease = dynamicUnspent > 0;
-            const canDecrease = base > 0;
-            function adjustAttr(delta: number) {
-              const newBase = base + delta;
-              if (newBase < 0) return;
-              if (delta > 0 && !canIncrease) return;
-              persist({
-                baseAttributes: { ...c.baseAttributes, [attr]: newBase },
-                unspentAttributePoints: Math.max(0, dynamicUnspent - delta),
-              });
-            }
-            return (
-              <div
-                key={attr}
-                style={{
-                  padding: "0.875rem",
-                  backgroundColor: "var(--bg-nav)",
-                  border: "1px solid var(--border)",
-                  borderRadius: "0.5rem",
-                  textAlign: "center",
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: "var(--font-heading)",
-                    fontWeight: 700,
-                    fontSize: "0.7rem",
-                    textTransform: "uppercase",
-                    letterSpacing: "0.06em",
-                    color: "var(--text-muted)",
-                    marginBottom: "0.375rem",
-                  }}
-                >
-                  {attr.charAt(0).toUpperCase() + attr.slice(1)}
-                </div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-heading)",
-                    fontWeight: 800,
-                    fontSize: "2rem",
-                    color: "var(--primary)",
-                    lineHeight: 1,
-                    marginBottom: "0.375rem",
-                  }}
-                >
-                  {fmtAttr(attrs[attr])}
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                    gap: "0.5rem",
-                    marginBottom: "0.35rem",
-                  }}
-                >
-                  <button
-                    onClick={() => adjustAttr(-1)}
-                    disabled={!canDecrease}
-                    style={{
-                      width: "24px",
-                      height: "24px",
-                      borderRadius: "50%",
-                      border: "1px solid var(--border)",
-                      backgroundColor: "var(--bg-card)",
-                      cursor: canDecrease ? "pointer" : "not-allowed",
-                      fontWeight: 700,
-                      color: "var(--text-muted)",
-                      fontSize: "0.9rem",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    −
-                  </button>
-                  <span
-                    style={{
-                      fontFamily: "var(--font-heading)",
-                      fontSize: "0.85rem",
-                      fontWeight: 600,
-                      minWidth: "24px",
-                      textAlign: "center",
-                    }}
-                  >
-                    {fmtAttr(base)}
-                  </span>
-                  <button
-                    onClick={() => adjustAttr(1)}
-                    disabled={!canIncrease}
-                    style={{
-                      width: "24px",
-                      height: "24px",
-                      borderRadius: "50%",
-                      border: "1px solid var(--border)",
-                      backgroundColor: "var(--bg-card)",
-                      cursor: canIncrease ? "pointer" : "not-allowed",
-                      fontWeight: 700,
-                      color: "var(--text-muted)",
-                      fontSize: "0.9rem",
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                    }}
-                  >
-                    +
-                  </button>
-                </div>
-                <div
-                  style={{ fontSize: "0.65rem", color: "var(--text-muted)" }}
-                >
-                  {fmtAttr(base)} base
-                  {voc > 0 ? ` + ${voc} (${c.vocationName})` : ""}
-                </div>
-              </div>
-            );
-          })}
-        </div>
-      </Section>
 
       {/* ──── PROFICIENCIES (skills with badge design + armaments) ──── */}
       <Section title="Proficiencies">
