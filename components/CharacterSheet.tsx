@@ -3075,7 +3075,7 @@ export default function CharacterSheetPage({
             style={{
               marginBottom: "0.75rem",
               padding: "0.5rem 0.875rem",
-              backgroundColor: "#fff0f0",
+              backgroundColor: "var(--section-alert-bg)",
               border: "1px solid #ff7979",
               borderRadius: "0.5rem",
               fontSize: "0.82rem",
@@ -3084,8 +3084,8 @@ export default function CharacterSheetPage({
               fontWeight: 700,
             }}
           >
-            ⚠ Non-Proficient Armor ({equippedBody.armorCategory}) — All Actions
-            cost −1 AP · Skill dice reduced one step (min d4)
+            ⚠ Non-Proficient Armor ({equippedBody.armorCategory}) — Total
+            available AP reduced by 1 · Skill dice reduced one step (min d4)
           </div>
         )}
         {/* Equipped gear */}
@@ -3141,7 +3141,7 @@ export default function CharacterSheetPage({
                     style={{
                       padding: "0.625rem 0.75rem",
                       backgroundColor: slotAlert
-                        ? "#fff0f0"
+                        ? "var(--section-alert-bg)"
                         : displayItem
                           ? "var(--primary-light)"
                           : "var(--bg-nav)",
@@ -6525,7 +6525,7 @@ export default function CharacterSheetPage({
   const REF_SECTIONS = [
     {
       name: "Offensive",
-      color: "#ffbaba",
+      color: "var(--section-offensive)",
       subs: [
         {
           name: "Weapon",
@@ -6566,7 +6566,7 @@ export default function CharacterSheetPage({
     },
     {
       name: "Maneuver",
-      color: "#91afd6",
+      color: "var(--section-maneuver)",
       subs: [
         {
           name: "Movement",
@@ -6609,7 +6609,7 @@ export default function CharacterSheetPage({
     },
     {
       name: "Utility",
-      color: "#58FFA2",
+      color: "var(--section-utility)",
       subs: [
         {
           name: "Preservation",
@@ -7586,7 +7586,9 @@ export default function CharacterSheetPage({
                         gap: "0.25rem",
                         padding: "0.2rem 0.5rem",
                         backgroundColor:
-                          shieldPool === 0 ? "#fff0f0" : "var(--bg-nav)",
+                          shieldPool === 0
+                            ? "var(--section-alert-bg)"
+                            : "var(--bg-nav)",
                         border: `1px solid ${shieldPool === 0 ? "#ff7979" : "var(--border)"}`,
                         borderRadius: "9999px",
                         fontSize: "0.62rem",
@@ -8945,7 +8947,7 @@ export default function CharacterSheetPage({
             <div
               style={{
                 padding: "0.4rem 0.75rem",
-                backgroundColor: "#fff0f0",
+                backgroundColor: "var(--section-alert-bg)",
                 border: "1px solid #ff7979",
                 borderRadius: "0.375rem",
                 fontSize: "0.78rem",

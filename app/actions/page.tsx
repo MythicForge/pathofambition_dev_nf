@@ -219,9 +219,9 @@ const SECTIONS: Section[] = [
 ];
 
 const SECTION_COLORS: Record<string, string> = {
-  Offensive: "#ffbaba",
-  Maneuver: "#91afd6",
-  Utility: "#58FFA2",
+  Offensive: "var(--section-offensive)",
+  Maneuver: "var(--section-maneuver)",
+  Utility: "var(--section-utility)",
 };
 
 export default function ActionsPage() {
