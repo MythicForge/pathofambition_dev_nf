@@ -1,5 +1,5 @@
-import fs from 'fs';
-import path from 'path';
+import fs from "fs";
+import path from "path";
 import type {
   Profession,
   Spell,
@@ -9,21 +9,20 @@ import type {
   ActionGroup,
   Action,
   SearchResult,
-} from './types';
+} from "./types";
 
-const contentDir = path.join(process.cwd(), 'content');
+const contentDir = path.join(process.cwd(), "content");
 
 function readJSON<T>(filename: string): T {
   const filePath = path.join(contentDir, filename);
-  const raw = fs.readFileSync(filePath, 'utf-8').replace(/^﻿/, '');
+  const raw = fs.readFileSync(filePath, "utf-8").replace(/^﻿/, "");
   return JSON.parse(raw) as T;
 }
 
 // ─── Professions ──────────────────────────────────────────────────────────────
 
-
 export function getProfessions(): Profession[] {
-  const data = readJSON<{ professions: Profession[] }>('professions.normalized.json');
+  const data = readJSON<{ professions: Profession[] }>("professions.json");
   return data.professions;
 }
 
@@ -34,7 +33,7 @@ export function getProfession(slug: string): Profession | undefined {
 // ─── Spells ───────────────────────────────────────────────────────────────────
 
 export function getSpells(): Spell[] {
-  const data = readJSON<{ spells: Spell[] }>('spells.normalized.json');
+  const data = readJSON<{ spells: Spell[] }>("spells.json");
   return data.spells;
 }
 
@@ -56,7 +55,7 @@ export function getSpellSources(): string[] {
 // ─── Origins ──────────────────────────────────────────────────────────────────
 
 export function getOrigins(): Origin[] {
-  const data = readJSON<{ origins: Origin[] }>('origins.normalized.json');
+  const data = readJSON<{ origins: Origin[] }>("origins.json");
   return data.origins;
 }
 
@@ -68,7 +67,7 @@ export function getOrigin(slug: string): Origin | undefined {
 
 export function getOriginFeats(): { owners: FeatOwner[]; feats: Feat[] } {
   const data = readJSON<{ owners: FeatOwner[]; feats: Feat[] }>(
-    'origin_feats.normalized.json'
+    "origin_feats.json",
   );
   return data;
 }
@@ -76,7 +75,9 @@ export function getOriginFeats(): { owners: FeatOwner[]; feats: Feat[] } {
 // ─── Profession Feats ─────────────────────────────────────────────────────────
 
 export function getProfessionFeats(): { owners: FeatOwner[]; feats: Feat[] } {
-  const data = readJSON<{ owners: FeatOwner[]; feats: Feat[] }>('profession_feats.normalized.json');
+  const data = readJSON<{ owners: FeatOwner[]; feats: Feat[] }>(
+    "profession_feats.json",
+  );
   return data;
 }
 
@@ -84,7 +85,7 @@ export function getProfessionFeats(): { owners: FeatOwner[]; feats: Feat[] } {
 
 export function getActions(): { groups: ActionGroup[]; actions: Action[] } {
   const data = readJSON<{ action_groups: ActionGroup[]; actions: Action[] }>(
-    'actions.normalized.json'
+    "actions.json",
   );
   return { groups: data.action_groups, actions: data.actions };
 }
@@ -92,7 +93,7 @@ export function getActions(): { groups: ActionGroup[]; actions: Action[] } {
 // ─── Equipment ────────────────────────────────────────────────────────────────
 
 export function getEquipment(): Record<string, unknown> {
-  return readJSON<Record<string, unknown>>('items.json');
+  return readJSON<Record<string, unknown>>("items.json");
 }
 
 // ─── Search Index ─────────────────────────────────────────────────────────────
@@ -103,7 +104,7 @@ export function buildSearchIndex(): SearchResult[] {
   // Professions
   getProfessions().forEach((p) => {
     results.push({
-      type: 'profession',
+      type: "profession",
       id: p.id,
       name: p.name,
       slug: p.slug,
@@ -113,11 +114,13 @@ export function buildSearchIndex(): SearchResult[] {
     // Profession features
     p.features.forEach((f) => {
       results.push({
-        type: 'profession',
+        type: "profession",
         id: f.id,
         name: `${p.name}: ${f.name}`,
         slug: p.slug,
-        description: f.description_markdown?.replace(/[*_#`>\[\]]/g, '').slice(0, 200) ?? '',
+        description:
+          f.description_markdown?.replace(/[*_#`>\[\]]/g, "").slice(0, 200) ??
+          "",
         tags: f.traits,
       });
     });
@@ -126,11 +129,14 @@ export function buildSearchIndex(): SearchResult[] {
   // Spells
   getSpells().forEach((s) => {
     results.push({
-      type: 'spell',
+      type: "spell",
       id: s.id,
       name: s.name,
       slug: s.slug,
-      description: (s.description_markdown ?? '')?.replace(/[*_#`>\[\]]/g, '').slice(0, 200) ?? '',
+      description:
+        (s.description_markdown ?? "")
+          ?.replace(/[*_#`>\[\]]/g, "")
+          .slice(0, 200) ?? "",
       tags: [s.school, ...(s.sources ?? []), s.tier_label].filter(Boolean),
     });
   });
@@ -138,7 +144,7 @@ export function buildSearchIndex(): SearchResult[] {
   // Origins
   getOrigins().forEach((o) => {
     results.push({
-      type: 'origin',
+      type: "origin",
       id: o.id,
       name: o.name,
       slug: o.slug,
@@ -146,7 +152,7 @@ export function buildSearchIndex(): SearchResult[] {
     });
     o.vocations.forEach((v) => {
       results.push({
-        type: 'origin',
+        type: "origin",
         id: v.id,
         name: `${o.name}: ${v.name}`,
         slug: o.slug,
@@ -160,11 +166,12 @@ export function buildSearchIndex(): SearchResult[] {
   const { feats: originFeats } = getOriginFeats();
   originFeats.forEach((f) => {
     results.push({
-      type: 'feat',
+      type: "feat",
       id: f.id,
       name: f.name,
       slug: f.owner_id,
-      description: f.description_markdown?.replace(/[*_#`>\[\]]/g, '').slice(0, 200) ?? '',
+      description:
+        f.description_markdown?.replace(/[*_#`>\[\]]/g, "").slice(0, 200) ?? "",
       tags: f.traits,
     });
   });
@@ -173,11 +180,12 @@ export function buildSearchIndex(): SearchResult[] {
   const { feats: profFeats } = getProfessionFeats();
   profFeats.forEach((f) => {
     results.push({
-      type: 'feat',
+      type: "feat",
       id: f.id,
       name: f.name,
       slug: f.owner_id,
-      description: f.description_markdown?.replace(/[*_#`>\[\]]/g, '').slice(0, 200) ?? '',
+      description:
+        f.description_markdown?.replace(/[*_#`>\[\]]/g, "").slice(0, 200) ?? "",
       tags: f.traits,
     });
   });
@@ -186,11 +194,12 @@ export function buildSearchIndex(): SearchResult[] {
   const { actions } = getActions();
   actions.forEach((a) => {
     results.push({
-      type: 'action',
+      type: "action",
       id: a.id,
       name: a.name,
       slug: a.slug,
-      description: a.description_markdown?.replace(/[*_#`>\[\]]/g, '').slice(0, 200) ?? '',
+      description:
+        a.description_markdown?.replace(/[*_#`>\[\]]/g, "").slice(0, 200) ?? "",
       tags: a.traits,
     });
   });
