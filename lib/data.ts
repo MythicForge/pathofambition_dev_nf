@@ -92,7 +92,7 @@ export function getActions(): { groups: ActionGroup[]; actions: Action[] } {
 // ─── Equipment ────────────────────────────────────────────────────────────────
 
 export function getEquipment(): Record<string, unknown> {
-  return readJSON<Record<string, unknown>>('equipment.normalized.json');
+  return readJSON<Record<string, unknown>>('items.json');
 }
 
 // ─── Search Index ─────────────────────────────────────────────────────────────

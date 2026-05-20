@@ -327,7 +327,7 @@ export interface CatalogItem {
 }
 
 export function getItemCatalog(): CatalogItem[] {
-  const data = readJSON<{ catalog: Record<string, unknown[]> }>('item_database.json');
+  const data = readJSON<{ catalog: Record<string, unknown[]> }>('items.json');
   const items: CatalogItem[] = [];
 
   // Damage type code → tag mapping

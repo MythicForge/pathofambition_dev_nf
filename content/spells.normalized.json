@@ -4255,8 +4255,8 @@
       "school_display": "",
       "range": "Self",
       "duration": "Instant",
-      "description_markdown": "You send a bolt of bright energy at a target. Make a **spell attack roll**, on a hit deal 1d4 **ether**, and on a **critical hit** that target is illuminated and cannot be a state of **hidden** or **unaware**.",
-      "raw_markdown": "**Radiant Dart**\n**Range** Self | **Duration** Instant\nYou send a bolt of bright energy at a target. Make a **spell attack roll**, on a hit deal 1d4 **ether**, and on a **critical hit** that target is illuminated and cannot be a state of **hidden** or **unaware**.",
+      "description_markdown": "You send a bolt of bright energy at a target. Make a **spell attack roll**, on a hit deal 1d4 **ether**, and on a **critical hit** that target is illuminated and cannot be a state of **hidden** or **Obscured**.",
+      "raw_markdown": "**Radiant Dart**\n**Range** Self | **Duration** Instant\nYou send a bolt of bright energy at a target. Make a **spell attack roll**, on a hit deal 1d4 **ether**, and on a **critical hit** that target is illuminated and cannot be a state of **hidden** or **Obscured**.",
       "granted_by": {
         "collection": "character_data",
         "owner": "Chosen:Starborn",
@@ -4344,8 +4344,8 @@
       "school_display": "",
       "range": "Nearby",
       "duration": "Instant",
-      "description_markdown": "You launch loose debris and objects of minimal mass. Make a **spell attack roll**, on a hit deal 1d8 **gravity** plus **spell casting modifier**.",
-      "raw_markdown": "**Starfall**\n**Range** Nearby | **Duration** Instant\nYou launch loose debris and objects of minimal mass. Make a **spell attack roll**, on a hit deal 1d8 **gravity** plus **spell casting modifier**.",
+      "description_markdown": "",
+      "raw_markdown": "**Starfall**",
       "granted_by": {
         "collection": "character_data",
         "owner": "Chosen:Starborn",
