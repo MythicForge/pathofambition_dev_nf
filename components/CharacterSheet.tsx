@@ -35,6 +35,7 @@ import {
   computeExpertiseBumps,
   clearFeatChoices,
   VITALS_SET,
+  TIER_TOTAL_SLOTS,
 } from "@/lib/characterCalc";
 import type { SkillPoolInfo, ProficiencyRank } from "@/lib/characterCalc";
 import type {
@@ -748,13 +749,17 @@ export default function CharacterSheetPage({
   const bodyDef = calcBodyDefense(attrs);
   const mindDef = calcMindDefense(attrs);
   const willDef = calcWillDefense(attrs);
-  const maxWounds = calcMaxWounds(prof ?? { woundBonusPerTier: 1 }, attrs, effectiveTier);
+  const maxWounds = calcMaxWounds(
+    prof ?? { woundBonusPerTier: 1 },
+    attrs,
+    effectiveTier,
+  );
   const carryWeight = calcCarryWeight(attrs, effectiveTier);
   const spellDC = isCaster ? calcSpellDC(spellTier, modVal) : null;
 
   const ambition = calcAmbition(attrs.will, effectiveTier);
-  const maxAmbition = c.maxAmbition ?? ambition.max;
-  const ambitionDice = c.ambitionDice ?? ambition.dice;
+  const maxAmbition = ambition.max;
+  const ambitionDice = ambition.dice;
 
   // BUG-11: Derive max vitality reactively from profession formula + tier + attrs + feats
   const derivedMaxVitality = prof
@@ -806,7 +811,7 @@ export default function CharacterSheetPage({
   // ─── Rest actions ────────────────────────────────────────────────────────
   function takeRespite() {
     if (currentRespites <= 0) return;
-    const vitRestore = Math.max(4, attrs.body * 2);
+    const vitRestore = Math.max(4, 4 + attrs.body * 2);
     const ambRestore = Math.max(4, attrs.will);
     persist({
       currentRespites: currentRespites - 1,
@@ -1555,8 +1560,14 @@ export default function CharacterSheetPage({
         current.entity_name,
         current.feature_name,
       );
-      const updatedSelections = { ...clearedSelections, [key]: shopCurrentSels };
-      const expertise = recomputeExpertise(c.selectedFeatIds, updatedSelections);
+      const updatedSelections = {
+        ...clearedSelections,
+        [key]: shopCurrentSels,
+      };
+      const expertise = recomputeExpertise(
+        c.selectedFeatIds,
+        updatedSelections,
+      );
       persist({ choiceSelections: updatedSelections, ...expertise });
 
       // Build follow-up synthetic skill picks for options with expertise_skill_count
@@ -1656,9 +1667,16 @@ export default function CharacterSheetPage({
       if (!feat) return;
       const key = `${feat.ownerName}__${feat.name}`;
       // Clear stale synthetic follow-up keys before writing new selection
-      const clearedSelections = clearFeatChoices(c.choiceSelections ?? {}, feat.ownerName, feat.name);
+      const clearedSelections = clearFeatChoices(
+        c.choiceSelections ?? {},
+        feat.ownerName,
+        feat.name,
+      );
       const updatedSelections = { ...clearedSelections, [key]: editChoiceSels };
-      const expertise = recomputeExpertise(c.selectedFeatIds, updatedSelections);
+      const expertise = recomputeExpertise(
+        c.selectedFeatIds,
+        updatedSelections,
+      );
       persist({ choiceSelections: updatedSelections, ...expertise });
       setEditChoiceFeatId(null);
       setEditChoiceSels([]);
@@ -7799,10 +7817,7 @@ export default function CharacterSheetPage({
             }}
           >
             {(() => {
-              const totalAvailableBase = Math.min(
-                12,
-                4 + (c.featsPurchased ?? 0),
-              );
+              const totalAvailableBase = TIER_TOTAL_SLOTS[effectiveTier - 1] ?? 4;
               const currentTotalBase =
                 c.baseAttributes.body +
                 c.baseAttributes.mind +
@@ -7844,11 +7859,11 @@ export default function CharacterSheetPage({
                       100,
                       Math.max(0, Math.round((Math.max(0, val) / 12) * 100)),
                     );
-                    const canIncrease = dynamicUnspent > 0;
+                    const canIncrease = dynamicUnspent > 0 && val < 12;
                     const canDecrease = base > 0;
                     function adjustAttr(delta: number) {
                       const newBase = base + delta;
-                      if (newBase < 0) return;
+                      if (newBase < 0 || newBase + voc > 12) return;
                       if (delta > 0 && !canIncrease) return;
                       persist({
                         baseAttributes: {

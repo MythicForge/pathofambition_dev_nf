@@ -445,13 +445,10 @@ export function calcAmbition(
   tier: number = 1,
 ): { dice: string; max: number } {
   const DICE = ["d4", "d6", "d8", "d10", "d12"] as const;
-  // Will-based die index
-  let willIdx = 0;
-  if (will >= 12) willIdx = 4;
-  else if (will >= 10) willIdx = 3;
-  else if (will >= 8) willIdx = 2;
-  else if (will >= 4) willIdx = 1;
-  // Tier-based die index (Tier 1 → d4, Tier 2–3 → d6, Tier 4–5 → d8)
+  const willIdx = Math.min(Math.floor(will / 3), 4);
   const tierIdx = tier >= 4 ? 2 : tier >= 2 ? 1 : 0;
-  return { dice: DICE[Math.max(willIdx, tierIdx)], max: Math.max(5, will) };
+  return {
+    dice: DICE[Math.max(willIdx, tierIdx)],
+    max: 5 + Math.floor(will / 3) + tier,
+  };
 }
