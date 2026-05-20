@@ -212,6 +212,7 @@ export interface BuilderProfession {
   startingVitality: string;
   vitalityPerTier: string;
   bodyModifierBonus: string;
+  woundBonusPerTier: number;
   pathOptions: string[];
   vitalsChoiceCount: number;
   vitalsOptions: string[];
@@ -268,6 +269,7 @@ export interface BuilderSpell {
   isCantrip: boolean;
   school: string;
   sources: string[];
+  grantedByOwners: string[];
   range: string;
   duration: string;
   descriptionMarkdown: string;

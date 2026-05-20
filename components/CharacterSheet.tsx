@@ -748,7 +748,7 @@ export default function CharacterSheetPage({
   const bodyDef = calcBodyDefense(attrs);
   const mindDef = calcMindDefense(attrs);
   const willDef = calcWillDefense(attrs);
-  const maxWounds = calcMaxWounds(attrs, effectiveTier);
+  const maxWounds = calcMaxWounds(prof ?? { woundBonusPerTier: 1 }, attrs, effectiveTier);
   const carryWeight = calcCarryWeight(attrs, effectiveTier);
   const spellDC = isCaster ? calcSpellDC(spellTier, modVal) : null;
 

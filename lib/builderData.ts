@@ -238,6 +238,7 @@ export function getBuilderProfessions(): BuilderProfession[] {
       startingVitality: prof.starting_vitality ?? "10 + Body",
       vitalityPerTier: prof.vitality_gained_per_tier ?? "2d8",
       bodyModifierBonus: prof.body_modifier_bonus ?? "1d6 per 5 Body",
+      woundBonusPerTier: ((prof as Record<string, unknown>).wound_bonus_per_tier as number) ?? 1,
       pathOptions: prof.path_options ?? [],
       vitalsChoiceCount: count,
       vitalsOptions: options,
@@ -405,6 +406,12 @@ export function getBuilderSpells(): BuilderSpell[] {
           isCantrip: (s.is_cantrip as boolean) ?? false,
           school: (s.school as string) ?? (s.school_display as string) ?? "",
           sources: (s.sources as string[]) ?? [],
+          grantedByOwners: (() => {
+            const gb = s.granted_by as { owner?: string | string[] } | undefined;
+            const owner = gb?.owner;
+            if (!owner) return [];
+            return Array.isArray(owner) ? owner : [owner];
+          })(),
           range: (s.range as string) ?? "",
           duration: (s.duration as string) ?? "",
           descriptionMarkdown: (s.description_markdown as string) ?? "",
