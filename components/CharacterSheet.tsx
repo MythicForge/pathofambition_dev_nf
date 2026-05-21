@@ -33,6 +33,7 @@ import {
   calcFullMaxVitality,
   computeExpertiseBumps,
   clearFeatChoices,
+  computeKnownSpheres,
   VITALS_SET,
   TIER_TOTAL_SLOTS,
 } from "@/lib/characterCalc";
@@ -520,6 +521,8 @@ export default function CharacterSheetPage({
   const [expandedSpells, setExpandedSpells] = useState<Set<string>>(new Set());
   const [showSpellManager, setShowSpellManager] = useState(false);
   const [spellManagerSearch, setSpellManagerSearch] = useState("");
+  const [spellShopSourceFilter, setSpellShopSourceFilter] = useState<Set<string>>(new Set());
+  const [spellShopSphereFilter, setSpellShopSphereFilter] = useState<Set<string>>(new Set());
 
   // Feat shop state
   const [showFeatShop, setShowFeatShop] = useState(false);
@@ -755,6 +758,29 @@ export default function CharacterSheetPage({
   );
   const carryWeight = calcCarryWeight(attrs, effectiveTier);
   const spellDC = isCaster ? calcSpellDC(spellTier, modVal) : null;
+
+  // Magic sources the character can draw from (e.g. "Anima", "Mana")
+  const accessibleSources: string[] = isCaster
+    ? Array.from(
+        new Set(
+          [
+            casterInfo?.casterSource,
+            ...allFeats
+              .filter(
+                (f) =>
+                  c.selectedFeatIds.includes(f.id) &&
+                  f.casterInfo?.casterSource,
+              )
+              .map((f) => f.casterInfo!.casterSource!),
+          ].filter(Boolean) as string[],
+        ),
+      )
+    : [];
+
+  // School spheres unlocked via choice features (e.g. "Aberration", "Conjuration")
+  const knownSchoolSpheres: string[] = isCaster
+    ? Array.from(computeKnownSpheres(c.choiceSelections ?? {}, choiceFeatures))
+    : [];
 
   const ambition = calcAmbition(attrs.will, effectiveTier);
   const maxAmbition = ambition.max;
@@ -5834,21 +5860,6 @@ export default function CharacterSheetPage({
     const myCantripsAll = mySpells.filter((s) => s.isCantrip);
     const cantripAtCap = myCantripsAll.length >= cantripCap;
 
-    // Sphere access: from casterInfo + any feat-granted caster spheres
-    const accessibleSpheres = Array.from(
-      new Set(
-        [
-          casterInfo?.casterSource,
-          ...allFeats
-            .filter(
-              (f) =>
-                c.selectedFeatIds.includes(f.id) && f.casterInfo?.casterSource,
-            )
-            .map((f) => f.casterInfo!.casterSource!),
-        ].filter(Boolean) as string[],
-      ),
-    );
-
     const allSearchable = spellManagerSearch.trim()
       ? spells.filter(
           (s) =>
@@ -5859,18 +5870,26 @@ export default function CharacterSheetPage({
             ),
         )
       : spells;
-    // Filter by accessible spheres; Universal sphere spells always available to all casters
-    const sphereFiltered =
-      accessibleSpheres.length > 0
+    // Filter by accessible sources; Universal spells always available to all casters
+    const sourceFiltered =
+      accessibleSources.length > 0
         ? allSearchable.filter(
             (s) =>
               s.sources.includes("Universal") ||
-              s.sources.some((src) => accessibleSpheres.includes(src)),
+              s.sources.some((src) => accessibleSources.includes(src)),
           )
         : allSearchable;
-    const unknownSpells = sphereFiltered.filter(
+    // Apply shop source/sphere/tier filters
+    const shopFiltered = sourceFiltered.filter((s) => {
+      if (spellShopSourceFilter.size > 0 && !s.sources.some((src) => spellShopSourceFilter.has(src))) return false;
+      if (spellShopSphereFilter.size > 0 && !spellShopSphereFilter.has(s.school)) return false;
+      if (!s.isCantrip && s.tier > spellTier) return false;
+      return true;
+    });
+    const unknownSpells = shopFiltered.filter(
       (s) => !c.knownSpellIds.includes(s.id),
     );
+    const shopHasFilter = spellManagerSearch.trim() || spellShopSourceFilter.size > 0 || spellShopSphereFilter.size > 0;
 
     return (
       <div
@@ -6033,41 +6052,81 @@ export default function CharacterSheetPage({
           />
         </div>
 
-        {/* Sphere access */}
-        {accessibleSpheres.length > 0 && (
-          <div>
-            <div
-              style={{
-                fontSize: "0.65rem",
-                fontWeight: 700,
-                letterSpacing: "0.07em",
-                textTransform: "uppercase",
-                color: "var(--text-muted)",
-                fontFamily: "var(--font-heading)",
-                marginBottom: "0.375rem",
-              }}
-            >
-              Spell Spheres
-            </div>
-            <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
-              {accessibleSpheres.map((sphere) => (
-                <span
-                  key={sphere}
+        {/* Magic sources + school spheres */}
+        {(accessibleSources.length > 0 || knownSchoolSpheres.length > 0) && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+            {accessibleSources.length > 0 && (
+              <div>
+                <div
                   style={{
-                    fontSize: "0.78rem",
-                    padding: "0.2rem 0.625rem",
-                    borderRadius: "9999px",
-                    backgroundColor: "var(--primary-light)",
-                    border: "1px solid var(--primary)",
-                    color: "var(--primary)",
+                    fontSize: "0.65rem",
+                    fontWeight: 700,
+                    letterSpacing: "0.07em",
+                    textTransform: "uppercase",
+                    color: "var(--text-muted)",
                     fontFamily: "var(--font-heading)",
-                    fontWeight: 600,
+                    marginBottom: "0.375rem",
                   }}
                 >
-                  {sphere}
-                </span>
-              ))}
-            </div>
+                  Magic Source{accessibleSources.length > 1 ? "s" : ""}
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
+                  {accessibleSources.map((src) => (
+                    <span
+                      key={src}
+                      style={{
+                        fontSize: "0.78rem",
+                        padding: "0.2rem 0.625rem",
+                        borderRadius: "9999px",
+                        backgroundColor: "var(--primary-light)",
+                        border: "1px solid var(--primary)",
+                        color: "var(--primary)",
+                        fontFamily: "var(--font-heading)",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {src}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
+            {knownSchoolSpheres.length > 0 && (
+              <div>
+                <div
+                  style={{
+                    fontSize: "0.65rem",
+                    fontWeight: 700,
+                    letterSpacing: "0.07em",
+                    textTransform: "uppercase",
+                    color: "var(--text-muted)",
+                    fontFamily: "var(--font-heading)",
+                    marginBottom: "0.375rem",
+                  }}
+                >
+                  Known Sphere{knownSchoolSpheres.length > 1 ? "s" : ""}
+                </div>
+                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
+                  {knownSchoolSpheres.map((sphere) => (
+                    <span
+                      key={sphere}
+                      style={{
+                        fontSize: "0.78rem",
+                        padding: "0.2rem 0.625rem",
+                        borderRadius: "9999px",
+                        backgroundColor: "var(--bg-nav)",
+                        border: "1px solid var(--accent)",
+                        color: "var(--accent)",
+                        fontFamily: "var(--font-heading)",
+                        fontWeight: 600,
+                      }}
+                    >
+                      {sphere}
+                    </span>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         )}
 
@@ -6196,7 +6255,11 @@ export default function CharacterSheetPage({
               overflowY: "auto",
             }}
             onClick={(e) => {
-              if (e.target === e.currentTarget) setShowSpellManager(false);
+              if (e.target === e.currentTarget) {
+                setShowSpellManager(false);
+                setSpellShopSourceFilter(new Set());
+                setSpellShopSphereFilter(new Set());
+              }
             }}
           >
             <div
@@ -6240,18 +6303,19 @@ export default function CharacterSheetPage({
                     }}
                   >
                     Spells: {mySpells.filter((s) => !s.isCantrip).length} ·
-                    Cantrips: {myCantripsAll.length}/{cantripCap}
-                    {accessibleSpheres.length > 0 && (
-                      <>
-                        {" "}
-                        · Sphere{accessibleSpheres.length > 1 ? "s" : ""}:{" "}
-                        {accessibleSpheres.join(", ")}
-                      </>
+                    Cantrips: {myCantripsAll.length}/{cantripCap} ·
+                    Spell Tier: {spellTier}
+                    {accessibleSources.length > 0 && (
+                      <> · Source: {accessibleSources.join(", ")}</>
                     )}
                   </div>
                 </div>
                 <button
-                  onClick={() => setShowSpellManager(false)}
+                  onClick={() => {
+                    setShowSpellManager(false);
+                    setSpellShopSourceFilter(new Set());
+                    setSpellShopSphereFilter(new Set());
+                  }}
                   style={{
                     background: "none",
                     border: "none",
@@ -6447,6 +6511,39 @@ export default function CharacterSheetPage({
                       add another.
                     </div>
                   )}
+                  {/* Source + sphere filter pills */}
+                  {accessibleSources.length > 0 && (
+                    <div style={{ marginBottom: "0.4rem" }}>
+                      <div style={{ fontSize: "0.58rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)", fontFamily: "var(--font-heading)", marginBottom: "0.25rem" }}>Source</div>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem" }}>
+                        {accessibleSources.map((src) => {
+                          const active = spellShopSourceFilter.has(src);
+                          return (
+                            <button key={src} onClick={() => setSpellShopSourceFilter((prev) => { const next = new Set(prev); next.has(src) ? next.delete(src) : next.add(src); return next; })}
+                              style={{ padding: "0.15rem 0.5rem", borderRadius: "9999px", fontSize: "0.7rem", fontFamily: "var(--font-heading)", fontWeight: 600, border: active ? "1.5px solid var(--primary)" : "1.5px solid var(--border)", backgroundColor: active ? "var(--primary)" : "var(--bg-card)", color: active ? "#fff" : "var(--text-muted)", cursor: "pointer" }}>
+                              {src}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
+                  {knownSchoolSpheres.length > 0 && (
+                    <div style={{ marginBottom: "0.4rem" }}>
+                      <div style={{ fontSize: "0.58rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)", fontFamily: "var(--font-heading)", marginBottom: "0.25rem" }}>Sphere</div>
+                      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem" }}>
+                        {knownSchoolSpheres.map((sphere) => {
+                          const active = spellShopSphereFilter.has(sphere);
+                          return (
+                            <button key={sphere} onClick={() => setSpellShopSphereFilter((prev) => { const next = new Set(prev); next.has(sphere) ? next.delete(sphere) : next.add(sphere); return next; })}
+                              style={{ padding: "0.15rem 0.5rem", borderRadius: "9999px", fontSize: "0.7rem", fontFamily: "var(--font-heading)", fontWeight: 600, border: active ? "1.5px solid var(--accent)" : "1.5px solid var(--border)", backgroundColor: active ? "var(--accent)" : "var(--bg-card)", color: active ? "#fff" : "var(--text-muted)", cursor: "pointer" }}>
+                              {sphere}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    </div>
+                  )}
                   <input
                     value={spellManagerSearch}
                     onChange={(e) => setSpellManagerSearch(e.target.value)}
@@ -6465,7 +6562,7 @@ export default function CharacterSheetPage({
                       boxSizing: "border-box",
                     }}
                   />
-                  {spellManagerSearch.trim() && (
+                  {shopHasFilter && (
                     <div
                       style={{
                         display: "flex",
@@ -8601,7 +8698,7 @@ export default function CharacterSheetPage({
                   +
                 </button>
               </div>
-              {casterInfo?.casterSource && (
+              {accessibleSources.length > 0 && (
                 <div
                   style={{
                     fontSize: "0.52rem",
@@ -8609,7 +8706,18 @@ export default function CharacterSheetPage({
                     marginTop: "1px",
                   }}
                 >
-                  {casterInfo.casterSource}
+                  {accessibleSources.join(", ")}
+                </div>
+              )}
+              {knownSchoolSpheres.length > 0 && (
+                <div
+                  style={{
+                    fontSize: "0.52rem",
+                    color: "var(--accent)",
+                    marginTop: "1px",
+                  }}
+                >
+                  {knownSchoolSpheres.join(", ")}
                 </div>
               )}
             </div>
