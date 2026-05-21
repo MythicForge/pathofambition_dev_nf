@@ -521,8 +521,12 @@ export default function CharacterSheetPage({
   const [expandedSpells, setExpandedSpells] = useState<Set<string>>(new Set());
   const [showSpellManager, setShowSpellManager] = useState(false);
   const [spellManagerSearch, setSpellManagerSearch] = useState("");
-  const [spellShopSourceFilter, setSpellShopSourceFilter] = useState<Set<string>>(new Set());
-  const [spellShopSphereFilter, setSpellShopSphereFilter] = useState<Set<string>>(new Set());
+  const [spellShopSourceFilter, setSpellShopSourceFilter] = useState<
+    Set<string>
+  >(new Set());
+  const [spellShopSphereFilter, setSpellShopSphereFilter] = useState<
+    Set<string>
+  >(new Set());
 
   // Feat shop state
   const [showFeatShop, setShowFeatShop] = useState(false);
@@ -5881,15 +5885,26 @@ export default function CharacterSheetPage({
         : allSearchable;
     // Apply shop source/sphere/tier filters
     const shopFiltered = sourceFiltered.filter((s) => {
-      if (spellShopSourceFilter.size > 0 && !s.sources.some((src) => spellShopSourceFilter.has(src))) return false;
-      if (spellShopSphereFilter.size > 0 && !spellShopSphereFilter.has(s.school)) return false;
+      if (
+        spellShopSourceFilter.size > 0 &&
+        !s.sources.some((src) => spellShopSourceFilter.has(src))
+      )
+        return false;
+      if (
+        spellShopSphereFilter.size > 0 &&
+        !spellShopSphereFilter.has(s.school)
+      )
+        return false;
       if (!s.isCantrip && s.tier > spellTier) return false;
       return true;
     });
     const unknownSpells = shopFiltered.filter(
       (s) => !c.knownSpellIds.includes(s.id),
     );
-    const shopHasFilter = spellManagerSearch.trim() || spellShopSourceFilter.size > 0 || spellShopSphereFilter.size > 0;
+    const shopHasFilter =
+      spellManagerSearch.trim() ||
+      spellShopSourceFilter.size > 0 ||
+      spellShopSphereFilter.size > 0;
 
     return (
       <div
@@ -6031,7 +6046,7 @@ export default function CharacterSheetPage({
           }}
         >
           <StatCard
-            label="Spell Threshold"
+            label="Spell Tier"
             value={spellThreshold}
             sub={`${c.featsPurchased ?? 0} feats bought`}
           />
@@ -6054,7 +6069,9 @@ export default function CharacterSheetPage({
 
         {/* Magic sources + school spheres */}
         {(accessibleSources.length > 0 || knownSchoolSpheres.length > 0) && (
-          <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
+          >
             {accessibleSources.length > 0 && (
               <div>
                 <div
@@ -6070,7 +6087,9 @@ export default function CharacterSheetPage({
                 >
                   Magic Source{accessibleSources.length > 1 ? "s" : ""}
                 </div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
+                <div
+                  style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}
+                >
                   {accessibleSources.map((src) => (
                     <span
                       key={src}
@@ -6106,7 +6125,9 @@ export default function CharacterSheetPage({
                 >
                   Known Sphere{knownSchoolSpheres.length > 1 ? "s" : ""}
                 </div>
-                <div style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}>
+                <div
+                  style={{ display: "flex", flexWrap: "wrap", gap: "0.35rem" }}
+                >
                   {knownSchoolSpheres.map((sphere) => (
                     <span
                       key={sphere}
@@ -6303,8 +6324,8 @@ export default function CharacterSheetPage({
                     }}
                   >
                     Spells: {mySpells.filter((s) => !s.isCantrip).length} ·
-                    Cantrips: {myCantripsAll.length}/{cantripCap} ·
-                    Spell Tier: {spellTier}
+                    Cantrips: {myCantripsAll.length}/{cantripCap} · Spell Tier:{" "}
+                    {spellTier}
                     {accessibleSources.length > 0 && (
                       <> · Source: {accessibleSources.join(", ")}</>
                     )}
@@ -6514,13 +6535,56 @@ export default function CharacterSheetPage({
                   {/* Source + sphere filter pills */}
                   {accessibleSources.length > 0 && (
                     <div style={{ marginBottom: "0.4rem" }}>
-                      <div style={{ fontSize: "0.58rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)", fontFamily: "var(--font-heading)", marginBottom: "0.25rem" }}>Source</div>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem" }}>
+                      <div
+                        style={{
+                          fontSize: "0.58rem",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.06em",
+                          color: "var(--text-muted)",
+                          fontFamily: "var(--font-heading)",
+                          marginBottom: "0.25rem",
+                        }}
+                      >
+                        Source
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: "0.3rem",
+                        }}
+                      >
                         {accessibleSources.map((src) => {
                           const active = spellShopSourceFilter.has(src);
                           return (
-                            <button key={src} onClick={() => setSpellShopSourceFilter((prev) => { const next = new Set(prev); next.has(src) ? next.delete(src) : next.add(src); return next; })}
-                              style={{ padding: "0.15rem 0.5rem", borderRadius: "9999px", fontSize: "0.7rem", fontFamily: "var(--font-heading)", fontWeight: 600, border: active ? "1.5px solid var(--primary)" : "1.5px solid var(--border)", backgroundColor: active ? "var(--primary)" : "var(--bg-card)", color: active ? "#fff" : "var(--text-muted)", cursor: "pointer" }}>
+                            <button
+                              key={src}
+                              onClick={() =>
+                                setSpellShopSourceFilter((prev) => {
+                                  const next = new Set(prev);
+                                  next.has(src)
+                                    ? next.delete(src)
+                                    : next.add(src);
+                                  return next;
+                                })
+                              }
+                              style={{
+                                padding: "0.15rem 0.5rem",
+                                borderRadius: "9999px",
+                                fontSize: "0.7rem",
+                                fontFamily: "var(--font-heading)",
+                                fontWeight: 600,
+                                border: active
+                                  ? "1.5px solid var(--primary)"
+                                  : "1.5px solid var(--border)",
+                                backgroundColor: active
+                                  ? "var(--primary)"
+                                  : "var(--bg-card)",
+                                color: active ? "#fff" : "var(--text-muted)",
+                                cursor: "pointer",
+                              }}
+                            >
                               {src}
                             </button>
                           );
@@ -6530,13 +6594,56 @@ export default function CharacterSheetPage({
                   )}
                   {knownSchoolSpheres.length > 0 && (
                     <div style={{ marginBottom: "0.4rem" }}>
-                      <div style={{ fontSize: "0.58rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: "var(--text-muted)", fontFamily: "var(--font-heading)", marginBottom: "0.25rem" }}>Sphere</div>
-                      <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem" }}>
+                      <div
+                        style={{
+                          fontSize: "0.58rem",
+                          fontWeight: 700,
+                          textTransform: "uppercase",
+                          letterSpacing: "0.06em",
+                          color: "var(--text-muted)",
+                          fontFamily: "var(--font-heading)",
+                          marginBottom: "0.25rem",
+                        }}
+                      >
+                        Sphere
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          flexWrap: "wrap",
+                          gap: "0.3rem",
+                        }}
+                      >
                         {knownSchoolSpheres.map((sphere) => {
                           const active = spellShopSphereFilter.has(sphere);
                           return (
-                            <button key={sphere} onClick={() => setSpellShopSphereFilter((prev) => { const next = new Set(prev); next.has(sphere) ? next.delete(sphere) : next.add(sphere); return next; })}
-                              style={{ padding: "0.15rem 0.5rem", borderRadius: "9999px", fontSize: "0.7rem", fontFamily: "var(--font-heading)", fontWeight: 600, border: active ? "1.5px solid var(--accent)" : "1.5px solid var(--border)", backgroundColor: active ? "var(--accent)" : "var(--bg-card)", color: active ? "#fff" : "var(--text-muted)", cursor: "pointer" }}>
+                            <button
+                              key={sphere}
+                              onClick={() =>
+                                setSpellShopSphereFilter((prev) => {
+                                  const next = new Set(prev);
+                                  next.has(sphere)
+                                    ? next.delete(sphere)
+                                    : next.add(sphere);
+                                  return next;
+                                })
+                              }
+                              style={{
+                                padding: "0.15rem 0.5rem",
+                                borderRadius: "9999px",
+                                fontSize: "0.7rem",
+                                fontFamily: "var(--font-heading)",
+                                fontWeight: 600,
+                                border: active
+                                  ? "1.5px solid var(--accent)"
+                                  : "1.5px solid var(--border)",
+                                backgroundColor: active
+                                  ? "var(--accent)"
+                                  : "var(--bg-card)",
+                                color: active ? "#fff" : "var(--text-muted)",
+                                cursor: "pointer",
+                              }}
+                            >
                               {sphere}
                             </button>
                           );
@@ -7913,7 +8020,8 @@ export default function CharacterSheetPage({
             }}
           >
             {(() => {
-              const totalAvailableBase = TIER_TOTAL_SLOTS[effectiveTier - 1] ?? 4;
+              const totalAvailableBase =
+                TIER_TOTAL_SLOTS[effectiveTier - 1] ?? 4;
               const currentTotalBase =
                 c.baseAttributes.body +
                 c.baseAttributes.mind +
