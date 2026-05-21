@@ -30,7 +30,6 @@ import {
   calcSkillPool,
   calcSkillAttrValue,
   calcBaseDiceFromAttr,
-  BASE_SKILL_DIE_FACES,
   calcFullMaxVitality,
   computeExpertiseBumps,
   clearFeatChoices,
