@@ -43,7 +43,7 @@ export default function RootLayout({
               style={{ paddingTop: "3.5rem" }}
             >
               <div
-                style={{ maxWidth: "900px", padding: "1.5rem 2rem 4rem" }}
+                style={{ maxWidth: "1400px", padding: "1.5rem 2rem 4rem" }}
                 className="lg:pt-8"
               >
                 {children}

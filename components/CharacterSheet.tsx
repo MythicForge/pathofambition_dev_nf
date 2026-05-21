@@ -7010,8 +7010,245 @@ export default function CharacterSheetPage({
     },
   ];
 
+  // ─── Left rail renderer ───────────────────────────────────────────────────
+  function renderLeftRail() {
+    const totalAvailableBase = TIER_TOTAL_SLOTS[effectiveTier - 1] ?? 4;
+    const currentTotalBase = c.baseAttributes.body + c.baseAttributes.mind + c.baseAttributes.will;
+    const dynamicUnspent = totalAvailableBase - currentTotalBase;
+    const totalAvailableSkill = 4 + 2 * Math.floor((c.featsPurchased ?? 0) / 2);
+    const totalSpentSkill = Object.values(c.skillPoints ?? {}).reduce((s, v) => s + v, 0);
+    const dynUnspentSkill = totalAvailableSkill - totalSpentSkill;
+
+    return (
+      <>
+        {/* Attributes */}
+        <div style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "12px", overflow: "hidden" }}>
+          <div style={{ padding: "0.5rem 1rem", borderBottom: "1px solid var(--border)", backgroundColor: "var(--bg-nav)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+            <span style={{ fontSize: "0.65rem", fontFamily: "var(--font-heading)", fontStyle: "italic", letterSpacing: "0.12em", color: "var(--text-muted)", textTransform: "uppercase" as const }}>Attributes</span>
+            <span style={{ fontSize: "0.6rem", color: "var(--text-faint)", fontFamily: "var(--font-heading)" }}>{currentTotalBase}/{totalAvailableBase} pts</span>
+          </div>
+          <div style={{ padding: "0.875rem 1rem", display: "flex", flexDirection: "column" as const, gap: "0.875rem" }}>
+            {dynamicUnspent > 0 && (
+              <div style={{ padding: "0.375rem 0.625rem", backgroundColor: "var(--accent-light)", border: "1px solid var(--accent)", borderRadius: "0.375rem", fontSize: "0.75rem", color: "var(--text)", fontFamily: "var(--font-heading)", fontWeight: 700 }}>
+                ⚠ {dynamicUnspent} unspent attr pt{dynamicUnspent !== 1 ? "s" : ""}
+                <span style={{ fontWeight: 400, marginLeft: "0.35rem" }}>({currentTotalBase} / {totalAvailableBase})</span>
+              </div>
+            )}
+            {(["body", "mind", "will"] as const).map((key) => {
+              const val = attrs[key];
+              const base = c.baseAttributes[key];
+              const voc = c.vocationAttributeBonus.attribute === key ? c.vocationAttributeBonus.value : 0;
+              const isHighest = val === Math.max(attrs.body, attrs.mind, attrs.will);
+              const barPct = Math.min(100, Math.max(0, Math.round((Math.max(0, val) / 12) * 100)));
+              const canIncrease = dynamicUnspent > 0 && val < 12;
+              const canDecrease = base > 0;
+              function adjustAttr(delta: number) {
+                const newBase = base + delta;
+                if (newBase < 0 || newBase + voc > 12) return;
+                if (delta > 0 && !canIncrease) return;
+                persist({ baseAttributes: { ...c.baseAttributes, [key]: newBase }, unspentAttributePoints: Math.max(0, dynamicUnspent - delta) });
+              }
+              return (
+                <div key={key}>
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "3px" }}>
+                    <span style={{ fontSize: "0.75rem", color: isHighest ? "var(--primary)" : "var(--text-muted)", letterSpacing: "0.04em", textTransform: "capitalize" as const }}>{key}</span>
+                    <span style={{ fontSize: "1.15rem", fontWeight: 700, color: "var(--primary)", fontFamily: "var(--font-heading)", lineHeight: 1 }}>{fmtAttr(val)}</span>
+                  </div>
+                  <div style={{ backgroundColor: "var(--border)", borderRadius: "4px", height: "4px", overflow: "hidden", marginBottom: "0.4rem" }}>
+                    <div style={{ backgroundColor: "var(--primary)", height: "100%", width: `${barPct}%`, opacity: isHighest ? 1 : 0.5, borderRadius: "4px" }} />
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                    <button onClick={() => adjustAttr(-1)} disabled={!canDecrease} style={{ width: "20px", height: "20px", borderRadius: "50%", border: "1px solid var(--border)", backgroundColor: "var(--bg-card)", cursor: canDecrease ? "pointer" : "not-allowed", fontWeight: 700, color: "var(--text-muted)", fontSize: "0.85rem", display: "flex", alignItems: "center", justifyContent: "center" }}>−</button>
+                    <span style={{ fontFamily: "var(--font-heading)", fontSize: "0.78rem", fontWeight: 600, color: "var(--text-muted)", minWidth: "20px", textAlign: "center" as const }}>{fmtAttr(base)}</span>
+                    <button onClick={() => adjustAttr(1)} disabled={!canIncrease} style={{ width: "20px", height: "20px", borderRadius: "50%", border: "1px solid var(--border)", backgroundColor: "var(--bg-card)", cursor: canIncrease ? "pointer" : "not-allowed", fontWeight: 700, color: "var(--text-muted)", fontSize: "0.85rem", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
+                    <span style={{ fontSize: "0.62rem", color: "var(--text-muted)", marginLeft: "0.15rem" }}>base{voc > 0 ? ` + ${voc} (${c.vocationName})` : ""}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        {/* Defence */}
+        <div style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "12px", overflow: "hidden" }}>
+          <div style={{ padding: "0.5rem 1rem", borderBottom: "1px solid var(--border)", backgroundColor: "var(--bg-nav)" }}>
+            <span style={{ fontSize: "0.65rem", fontFamily: "var(--font-heading)", fontStyle: "italic", letterSpacing: "0.12em", color: "var(--text-muted)", textTransform: "uppercase" as const }}>Defence</span>
+          </div>
+          <div style={{ padding: "0.875rem 1rem", display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "0.5rem" }}>
+            {(() => {
+              const tempAD = c.tempArmorDef ?? 0;
+              const totalAD = armorDefense + tempAD;
+              const spellArmorOn = !!(c.spellArmorActive && isCaster);
+              const subLabel = spellArmorOn ? `Spell (11+${modKey})` : hasUnarmoredDefense && !equippedBody ? "Unarmored" : hasAgile && !equippedShield && (!equippedBody || equippedBody.armorCategory === "Light" || !equippedBody.armorCategory) ? "Agile" : equippedBody ? `${equippedBody.name} +${equippedBody.armorBonus}` : "Base";
+              return (
+                <div style={{ textAlign: "center", padding: "0.5rem 0.35rem", backgroundColor: spellArmorOn ? "var(--primary-light)" : "var(--bg-nav)", border: `1px solid ${spellArmorOn ? "var(--primary)" : "var(--border)"}`, borderRadius: "8px" }}>
+                  <div style={{ fontSize: "0.6rem", color: "var(--text-muted)", letterSpacing: "0.06em", marginBottom: "2px" }}>Armor Def</div>
+                  <div style={{ fontSize: "1.3rem", fontWeight: 700, color: "var(--text)", fontFamily: "var(--font-heading)", lineHeight: 1.1 }}>{totalAD}</div>
+                  <div style={{ fontSize: "0.55rem", color: spellArmorOn ? "var(--primary)" : "var(--text-muted)", marginTop: "0.1rem", marginBottom: "0.15rem" }}>{subLabel}</div>
+                  {isCaster && (
+                    <button onClick={() => persist({ spellArmorActive: !c.spellArmorActive })} style={{ fontSize: "0.5rem", fontFamily: "var(--font-heading)", fontWeight: 700, padding: "0.1rem 0.3rem", borderRadius: "0.25rem", border: `1px solid ${spellArmorOn ? "var(--primary)" : "var(--border)"}`, backgroundColor: spellArmorOn ? "var(--primary)" : "var(--bg-card)", color: spellArmorOn ? "#fff" : "var(--text-muted)", cursor: "pointer", marginBottom: "0.15rem" }}>
+                      {spellArmorOn ? "Spell Armor ON" : "Spell Armor"}
+                    </button>
+                  )}
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.2rem" }}>
+                    <button onClick={() => persist({ tempArmorDef: tempAD - 1 })} style={{ width: "16px", height: "16px", borderRadius: "50%", border: "1px solid var(--border)", backgroundColor: "var(--bg-card)", cursor: "pointer", fontWeight: 700, color: "var(--text-muted)", fontSize: "0.7rem", display: "flex", alignItems: "center", justifyContent: "center" }}>−</button>
+                    <span style={{ fontSize: "0.6rem", color: "var(--text-muted)", fontFamily: "var(--font-heading)", minWidth: "14px", textAlign: "center" as const }}>{tempAD === 0 ? "tmp" : tempAD}</span>
+                    <button onClick={() => persist({ tempArmorDef: tempAD + 1 })} style={{ width: "16px", height: "16px", borderRadius: "50%", border: "1px solid var(--border)", backgroundColor: "var(--bg-card)", cursor: "pointer", fontWeight: 700, color: "var(--text-muted)", fontSize: "0.7rem", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
+                    {tempAD !== 0 && (<button onClick={() => persist({ tempArmorDef: 0 })} style={{ fontSize: "0.55rem", color: "var(--text-muted)", background: "none", border: "none", cursor: "pointer" }}>✕</button>)}
+                  </div>
+                </div>
+              );
+            })()}
+            <StatCard label="Body Def" value={bodyDef} />
+            <StatCard label="Mind Def" value={mindDef} />
+            <StatCard label="Will Def" value={willDef} />
+          </div>
+        </div>
+
+        {/* V.I.T.A.L.S. */}
+        <div style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "12px", overflow: "hidden" }}>
+          <div style={{ padding: "0.5rem 1rem", borderBottom: "1px solid var(--border)", backgroundColor: "var(--bg-nav)" }}>
+            <span style={{ fontSize: "0.65rem", fontFamily: "var(--font-heading)", fontStyle: "italic", letterSpacing: "0.12em", color: "var(--text-muted)", textTransform: "uppercase" as const }}>V.I.T.A.L.S.</span>
+          </div>
+          <div style={{ padding: "0.875rem 1rem", display: "flex", flexDirection: "column" as const, gap: "0.75rem" }}>
+            {!isArmorProficient && (
+              <div style={{ padding: "0.4rem 0.75rem", backgroundColor: "var(--section-alert-bg)", border: "1px solid #ff7979", borderRadius: "0.375rem", fontSize: "0.78rem", color: "#cc2222", fontFamily: "var(--font-heading)", fontWeight: 700 }}>
+                ⚠ Armor Penalty active — all skill dice reduced one step (min d4)
+              </div>
+            )}
+            {dynUnspentSkill > 0 && (
+              <div style={{ padding: "0.4rem 0.75rem", backgroundColor: "var(--accent-light)", border: "1px solid #FCD34D", borderRadius: "0.375rem", fontSize: "0.8rem", color: "(#92400E)", fontFamily: "var(--font-heading)", fontWeight: 700 }}>
+                ✦ {dynUnspentSkill} unspent Skill Point{dynUnspentSkill !== 1 ? "s" : ""} — allocate below
+                <span style={{ fontWeight: 400, marginLeft: "0.5rem" }}>({totalSpentSkill} / {totalAvailableSkill} spent)</span>
+              </div>
+            )}
+            <div style={{ display: "flex", flexDirection: "column" as const, gap: "0.3rem" }}>
+              {["Vigor", "Intuition", "Talent", "Awareness", "Lore", "Social"].map((skill) => {
+                const pool = calcSkillPool(skill, attrs, c.vitalsProficiencies, c.vitalsExpertiseBumps ?? {}, c.skillPoints ?? {});
+                const invested = c.skillPoints?.[skill] ?? 0;
+                const canAdd = dynUnspentSkill > 0 && invested < 12;
+                const canRemove = invested > 0;
+                const RANK_COLORS: Record<string, string> = { Untrained: "var(--text-muted)", Trained: "var(--primary)", Expert: "var(--accent)", Master: "#7C3AED" };
+                const DIE_STEP = [4, 6, 8, 10, 12] as const;
+                function stepDown(faces: number): number { const i = DIE_STEP.indexOf(faces as (typeof DIE_STEP)[number]); return i > 0 ? DIE_STEP[i - 1] : 4; }
+                const penalizedDisplay = (() => {
+                  if (pool.profDieFaces !== null) return `${pool.baseDiceCount + pool.skillDiceCount}d${stepDown(pool.profDieFaces)}`;
+                  const baseFaces = calcBaseDiceFromAttr(calcSkillAttrValue(skill, attrs));
+                  return `${pool.baseDiceCount + pool.skillDiceCount}d${stepDown(baseFaces)}`;
+                })();
+                const dieFaces = pool.profDieFaces ?? calcBaseDiceFromAttr(calcSkillAttrValue(skill, attrs));
+                const badgeStyle: React.CSSProperties = dieFaces >= 10 ? { backgroundColor: "var(--primary)", color: "var(--text-on-primary)" } : dieFaces === 8 ? { backgroundColor: "var(--primary-light)", color: "var(--primary)", border: "1px solid var(--primary)" } : { backgroundColor: "var(--bg-nav)", color: "var(--text-muted)", border: "1px solid var(--border)" };
+                return (
+                  <div key={skill} style={{ display: "flex", alignItems: "center", gap: "0.5rem", backgroundColor: "var(--bg-nav)", border: "1px solid var(--border)", borderRadius: "8px", padding: "0.375rem 0.625rem" }}>
+                    <span style={{ fontSize: "0.8rem", color: "var(--text)", flex: 1, letterSpacing: "0.01em" }}>{skill}</span>
+                    {pool.rank !== "Untrained" && (
+                      <span style={{ fontSize: "0.6rem", fontWeight: 700, fontFamily: "var(--font-heading)", padding: "0.1rem 0.35rem", borderRadius: "9999px", border: `1px solid ${RANK_COLORS[pool.rank]}`, color: RANK_COLORS[pool.rank] }}>{pool.rank}</span>
+                    )}
+                    {isArmorProficient ? (
+                      <span style={{ fontSize: "0.72rem", fontWeight: 700, fontFamily: "var(--font-heading)", padding: "1px 7px", borderRadius: "5px", ...badgeStyle }}>{pool.display}</span>
+                    ) : (
+                      <div style={{ display: "flex", gap: "0.2rem", alignItems: "center" }}>
+                        <span style={{ fontSize: "0.72rem", fontFamily: "var(--font-heading)", color: "var(--text-muted)", textDecoration: "line-through" }}>{pool.display}</span>
+                        <span style={{ fontSize: "0.72rem", fontWeight: 700, fontFamily: "var(--font-heading)", padding: "1px 7px", borderRadius: "5px", backgroundColor: "var(--bg-nav)", color: "#cc2222", border: "1px solid #cc2222" }}>{penalizedDisplay}</span>
+                      </div>
+                    )}
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.2rem", flexShrink: 0 }}>
+                      <button onClick={() => { if (!canRemove) return; persist({ skillPoints: { ...(c.skillPoints ?? {}), [skill]: invested - 1 }, unspentSkillPoints: totalAvailableSkill - (totalSpentSkill - 1) }); }} disabled={!canRemove} style={{ width: "18px", height: "18px", borderRadius: "50%", border: "1px solid var(--border)", backgroundColor: "var(--bg-card)", cursor: canRemove ? "pointer" : "not-allowed", fontWeight: 700, color: "var(--text-muted)", fontSize: "0.75rem", display: "flex", alignItems: "center", justifyContent: "center" }}>−</button>
+                      <span style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: "0.75rem", minWidth: "14px", textAlign: "center" as const, color: "var(--primary)" }}>{invested}</span>
+                      <button onClick={() => { if (!canAdd) return; persist({ skillPoints: { ...(c.skillPoints ?? {}), [skill]: invested + 1 }, unspentSkillPoints: totalAvailableSkill - (totalSpentSkill + 1) }); }} disabled={!canAdd} style={{ width: "18px", height: "18px", borderRadius: "50%", border: "1px solid var(--border)", backgroundColor: "var(--bg-card)", cursor: canAdd ? "pointer" : "not-allowed", fontWeight: 700, color: "var(--text-muted)", fontSize: "0.75rem", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        {/* Armaments / Protection / Tool Kits */}
+        {[
+          { label: "Armaments", items: prof?.armaments ?? [] },
+          { label: "Protection", items: prof?.protection ?? [] },
+          { label: "Tool Kits", items: (prof?.toolKits ?? []).filter((t) => t !== "-") },
+        ].filter((g) => g.items.length > 0).map((group) => (
+          <div key={group.label} style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "12px", overflow: "hidden" }}>
+            <div style={{ padding: "0.5rem 1rem", borderBottom: "1px solid var(--border)", backgroundColor: "var(--bg-nav)" }}>
+              <span style={{ fontSize: "0.65rem", fontFamily: "var(--font-heading)", fontStyle: "italic", letterSpacing: "0.12em", color: "var(--text-muted)", textTransform: "uppercase" as const }}>{group.label}</span>
+            </div>
+            <div style={{ padding: "0.5rem 1rem", display: "flex", flexDirection: "column" as const, gap: "0.35rem" }}>
+              {group.items.map((item) => (
+                <div key={item} style={{ display: "flex", alignItems: "center", gap: "0.625rem", padding: "0.45rem 0.75rem", backgroundColor: "var(--bg-nav)", border: "1px solid var(--border)", borderRadius: "0.375rem" }}>
+                  <span style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: "0.85rem", color: "var(--text)", flex: 1 }}>{item}</span>
+                  <span style={{ fontSize: "0.6rem", fontWeight: 700, fontFamily: "var(--font-heading)", padding: "0.1rem 0.35rem", borderRadius: "9999px", border: "1px solid var(--primary)", color: "var(--primary)" }}>Proficient</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        ))}
+      </>
+    );
+  }
+
+  // ─── Right rail renderer ──────────────────────────────────────────────────
+  function renderRightRail() {
+    return (
+      <>
+        {/* Portrait / identity */}
+        {/* Quick Reference */}
+        <div style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "12px", overflow: "hidden" }}>
+          <div style={{ padding: "0.5rem 1rem", borderBottom: "1px solid var(--border)", backgroundColor: "var(--bg-nav)" }}>
+            <span style={{ fontSize: "0.65rem", fontFamily: "var(--font-heading)", fontStyle: "italic", letterSpacing: "0.12em", color: "var(--text-muted)", textTransform: "uppercase" as const }}>Quick Reference</span>
+          </div>
+          <div style={{ padding: "0.25rem 1rem 0.5rem" }}>
+            {[
+              { k: "Body", v: fmtAttr(attrs.body) },
+              { k: "Mind", v: fmtAttr(attrs.mind) },
+              { k: "Will", v: fmtAttr(attrs.will) },
+              { k: "Armor Def", v: String(armorDefense + (c.tempArmorDef ?? 0)) },
+              { k: "Body Def", v: String(bodyDef) },
+              { k: "Mind Def", v: String(mindDef) },
+              { k: "Will Def", v: String(willDef) },
+              ...(isCaster ? [
+                { k: "Spell DC", v: String(spellDC) },
+                { k: "Spell Mod", v: fmtAttr(modVal) },
+                { k: "Reservoir", v: `${currentReservoir}/${maxReservoir}` },
+              ] : []),
+            ].map((row) => (
+              <div key={row.k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.3rem 0", borderBottom: "1px solid var(--border)" }}>
+                <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontFamily: "var(--font-heading)" }}>{row.k}</span>
+                <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--text)", fontFamily: "var(--font-heading)" }}>{row.v}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Character flavor */}
+        {(c.currency || c.inventoryNotes || c.notes) && (
+          <div style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "12px", overflow: "hidden" }}>
+            <div style={{ padding: "0.5rem 1rem", borderBottom: "1px solid var(--border)", backgroundColor: "var(--bg-nav)" }}>
+              <span style={{ fontSize: "0.65rem", fontFamily: "var(--font-heading)", fontStyle: "italic", letterSpacing: "0.12em", color: "var(--text-muted)", textTransform: "uppercase" as const }}>Details</span>
+            </div>
+            <div style={{ padding: "0.75rem 1rem", display: "flex", flexDirection: "column" as const, gap: "0.625rem" }}>
+              {c.currency && (
+                <div>
+                  <div style={{ fontSize: "0.6rem", color: "var(--text-muted)", letterSpacing: "0.1em", textTransform: "uppercase" as const, fontFamily: "var(--font-heading)", marginBottom: "3px" }}>Currency</div>
+                  <div style={{ fontSize: "0.8rem", color: "var(--text)" }}>{c.currency}</div>
+                </div>
+              )}
+              {c.inventoryNotes && (
+                <div>
+                  <div style={{ fontSize: "0.6rem", color: "var(--text-muted)", letterSpacing: "0.1em", textTransform: "uppercase" as const, fontFamily: "var(--font-heading)", marginBottom: "3px" }}>Inventory Notes</div>
+                  <div style={{ fontSize: "0.8rem", color: "var(--text)" }}>{c.inventoryNotes}</div>
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+      </>
+    );
+  }
+
   return (
-    <div style={{ maxWidth: "860px" }}>
+    <div style={{ width: "100%" }}>
       {/* FEATURE-01: Fixed Ref button */}
       <button
         onClick={() => setShowRefSidebar((v) => !v)}
@@ -7386,6 +7623,17 @@ export default function CharacterSheetPage({
           </button>
         </div>
       </div>
+
+      {/* ──── 3-COLUMN BODY ──── */}
+      <div style={{ display: "grid", gridTemplateColumns: "250px 1fr 280px", gap: "14px", marginTop: "18px", alignItems: "start" }}>
+
+        {/* LEFT COLUMN */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px", minWidth: 0 }}>
+          {renderLeftRail()}
+        </div>
+
+        {/* CENTER COLUMN */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px", minWidth: 0 }}>
 
       {/* ──── VITALITY BAR ──── */}
       {(() => {
@@ -7973,15 +8221,8 @@ export default function CharacterSheetPage({
         </div>
       </div>
 
-      {/* ──── ATTRS | DEFENCE TWO-COLUMN ──── */}
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(auto-fit, minmax(260px, 1fr))",
-          gap: "1rem",
-          marginBottom: "1rem",
-        }}
-      >
+      {/* ATTRS | DEFENCE moved to left rail */}
+      {false ? (<>
         {/* Left: Attributes bar display */}
         <div
           style={{
@@ -8262,11 +8503,11 @@ export default function CharacterSheetPage({
                   : hasAgile &&
                       !equippedShield &&
                       (!equippedBody ||
-                        equippedBody.armorCategory === "Light" ||
-                        !equippedBody.armorCategory)
+                        equippedBody?.armorCategory === "Light" ||
+                        !equippedBody?.armorCategory)
                     ? "Agile"
                     : equippedBody
-                      ? `${equippedBody.name} +${equippedBody.armorBonus}`
+                      ? `${equippedBody?.name} +${equippedBody?.armorBonus}`
                       : "Base";
               return (
                 <div
@@ -8430,7 +8671,7 @@ export default function CharacterSheetPage({
             <StatCard label="Will Def" value={willDef} />
           </div>
         </div>
-      </div>
+      </>) : null}
 
       {/* ──── RESOURCES STRIP ──── */}
       <div
@@ -9276,8 +9517,55 @@ export default function CharacterSheetPage({
         </div>
       </div>
 
-      {/* ──── PROFICIENCIES (skills with badge design + armaments) ──── */}
-      <Section title="Proficiencies">
+      {/* ──── TAB NAVIGATION (top) ──── */}
+      <div style={{ display: "flex", borderBottom: "1px solid var(--border)", marginBottom: "1rem", flexWrap: "wrap" as const }}>
+        {tabs.filter((t) => !t.hidden).map((tab) => {
+          const active = activeTab === tab.id;
+          return (
+            <button
+              key={tab.id}
+              onClick={() => setActiveTab(tab.id)}
+              style={{
+                padding: "0.625rem 0.875rem",
+                border: "none",
+                cursor: "pointer",
+                backgroundColor: "transparent",
+                fontFamily: "var(--font-heading)",
+                fontStyle: "italic",
+                fontWeight: 700,
+                fontSize: "0.75rem",
+                letterSpacing: "0.05em",
+                color: active ? "var(--primary)" : "var(--text-muted)",
+                borderBottom: active ? "2px solid var(--primary)" : "2px solid transparent",
+                marginBottom: "-1px",
+                transition: "color 0.12s",
+              }}
+            >
+              {tab.label}
+            </button>
+          );
+        })}
+      </div>
+
+      {/* ──── TAB CONTENT ──── */}
+      <div style={{ minHeight: "200px" }}>
+        {activeTab === "feats" && renderFeatsTab()}
+        {activeTab === "inventory" && renderInventoryTab()}
+        {activeTab === "spellcasting" && renderSpellcastingTab()}
+        {activeTab === "notes" && renderNotesTab()}
+      </div>
+
+        </div> {/* end CENTER column */}
+
+        {/* RIGHT COLUMN */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "16px", minWidth: 0 }}>
+          {renderRightRail()}
+        </div>
+
+      </div> {/* end 3-col grid */}
+
+      {/* ──── PROFICIENCIES (moved to left rail — retained for Section component compatibility) ──── */}
+      {false && <Section title="Proficiencies">
         <div
           style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}
         >
@@ -9682,59 +9970,7 @@ export default function CharacterSheetPage({
               </div>
             ))}
         </div>
-      </Section>
-
-      {/* ──── TABBED SECTION ──── */}
-      <div>
-        <div style={{ marginBottom: "4rem" }}>
-          {activeTab === "feats" && renderFeatsTab()}
-          {activeTab === "inventory" && renderInventoryTab()}
-          {activeTab === "spellcasting" && renderSpellcastingTab()}
-          {activeTab === "notes" && renderNotesTab()}
-        </div>
-        {/* Bottom sticky tab bar */}
-        <div
-          style={{
-            position: "sticky",
-            bottom: 0,
-            backgroundColor: "var(--bg-nav)",
-            borderTop: "1px solid var(--border)",
-            display: "grid",
-            gridTemplateColumns: `repeat(${tabs.filter((t) => !t.hidden).length}, 1fr)`,
-            zIndex: 10,
-          }}
-        >
-          {tabs
-            .filter((t) => !t.hidden)
-            .map((tab) => {
-              const active = activeTab === tab.id;
-              return (
-                <button
-                  key={tab.id}
-                  onClick={() => setActiveTab(tab.id)}
-                  style={{
-                    padding: "0.625rem 0.5rem",
-                    border: "none",
-                    cursor: "pointer",
-                    backgroundColor: "transparent",
-                    fontFamily: "var(--font-heading)",
-                    fontStyle: "italic",
-                    fontWeight: 700,
-                    fontSize: "0.75rem",
-                    letterSpacing: "0.05em",
-                    color: active ? "var(--primary)" : "var(--text-muted)",
-                    borderTop: active
-                      ? "2px solid var(--primary)"
-                      : "2px solid transparent",
-                    transition: "color 0.12s",
-                  }}
-                >
-                  {tab.label}
-                </button>
-              );
-            })}
-        </div>
-      </div>
+      </Section>}
     </div>
   );
 }
