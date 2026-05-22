@@ -7500,6 +7500,7 @@ export default function CharacterSheetPage({
                     <button
                       onClick={() => adjustAttr(-1)}
                       disabled={!canDecrease}
+                      className="poa-attr-btn"
                       style={{
                         width: "18px",
                         height: "18px",
@@ -7532,6 +7533,7 @@ export default function CharacterSheetPage({
                     <button
                       onClick={() => adjustAttr(1)}
                       disabled={!canIncrease}
+                      className="poa-attr-btn"
                       style={{
                         width: "18px",
                         height: "18px",
@@ -9047,6 +9049,7 @@ export default function CharacterSheetPage({
         >
           {/* ──── DEFENSE STAT ROW ──── */}
           <div
+            className="poa-defense-grid"
             style={{
               display: "grid",
               gridTemplateColumns: "repeat(4, 1fr)",
@@ -9289,6 +9292,7 @@ export default function CharacterSheetPage({
             };
             return (
               <div
+                className="poa-vitals-grid"
                 style={{
                   display: "grid",
                   gridTemplateColumns: "1.5fr 1fr 1fr",
@@ -10642,11 +10646,11 @@ export default function CharacterSheetPage({
 
           {/* ──── TAB NAVIGATION (top) ──── */}
           <div
+            className="poa-tab-bar"
             style={{
               display: "flex",
               borderBottom: "1px solid var(--border)",
               marginBottom: "1rem",
-              flexWrap: "wrap" as const,
             }}
           >
             {tabs

@@ -320,6 +320,8 @@ export default function Sidebar() {
         style={{
           backgroundColor: "var(--bg-card)",
           border: "1px solid var(--border)",
+          touchAction: "manipulation",
+          WebkitTapHighlightColor: "transparent",
         }}
         onClick={() => setMobileOpen(!mobileOpen)}
         aria-label={mobileOpen ? "Close navigation" : "Open navigation"}

@@ -83,6 +83,11 @@
     box-sizing: border-box;
 }
 
+button, a {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+}
+
 html {
     scroll-behavior: smooth;
 }
@@ -296,5 +301,39 @@ h6 {
     .poa-col-center,
     .poa-col-right {
         gap: 10px !important;
+    }
+}
+
+/* ── Tab bar: always horizontal scroll (no wrap) ─────── */
+.poa-tab-bar {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    flex-wrap: nowrap !important;
+}
+.poa-tab-bar::-webkit-scrollbar { display: none; }
+.poa-tab-bar button {
+    flex-shrink: 0;
+    white-space: nowrap;
+}
+
+/* ── Mobile ≤ 480px fixes ────────────────────────────── */
+@media (max-width: 480px) {
+    /* P0: defense 4-col → 2×2 */
+    .poa-defense-grid {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+
+    /* P1: vitals grid → stack */
+    .poa-vitals-grid {
+        grid-template-columns: 1fr !important;
+    }
+
+    /* P0: attribute stepper tap targets */
+    .poa-attr-btn {
+        min-width: 36px !important;
+        min-height: 36px !important;
+        width: 36px !important;
+        height: 36px !important;
     }
 }
