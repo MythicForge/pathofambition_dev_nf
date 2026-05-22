@@ -364,7 +364,7 @@ export default function Sidebar() {
 
       {/* Desktop sidebar */}
       <aside
-        className="hidden lg:flex flex-col w-56 shrink-0 sticky top-0 h-screen overflow-y-auto"
+        className="hidden lg:flex flex-col w-50 shrink-0 sticky top-0 h-screen overflow-y-auto"
         style={{
           backgroundColor: "var(--bg-nav)",
           borderRight: "1px solid var(--border)",
