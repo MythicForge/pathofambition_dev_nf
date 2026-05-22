@@ -9039,14 +9039,66 @@ export default function CharacterSheetPage({
             </div>
             <div
               style={{
-                marginTop: "4px",
-                fontSize: "10px",
-                fontFamily: "monospace",
-                color: "var(--text-muted)",
-                letterSpacing: "0.04em",
+                marginTop: "5px",
+                display: "flex",
+                alignItems: "center",
+                gap: "5px",
               }}
             >
-              {c.renown ?? 0} / {FEAT_COST_BY_TIER[effectiveTier] ?? 6} renown
+              <button
+                onClick={() =>
+                  persist({ renown: Math.max(0, (c.renown ?? 0) - 1) })
+                }
+                style={{
+                  width: "16px",
+                  height: "16px",
+                  borderRadius: "50%",
+                  border: "1px solid var(--border)",
+                  backgroundColor: "var(--bg-nav)",
+                  cursor: "pointer",
+                  fontWeight: 700,
+                  color: "var(--text-muted)",
+                  fontSize: "0.7rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  lineHeight: 1,
+                }}
+              >
+                −
+              </button>
+              <span
+                style={{
+                  fontFamily: "monospace",
+                  fontSize: "10px",
+                  color: "var(--text-muted)",
+                  letterSpacing: "0.04em",
+                  minWidth: "32px",
+                  textAlign: "center",
+                }}
+              >
+                {c.renown ?? 0} / {FEAT_COST_BY_TIER[effectiveTier] ?? 6}
+              </span>
+              <button
+                onClick={() => persist({ renown: (c.renown ?? 0) + 1 })}
+                style={{
+                  width: "16px",
+                  height: "16px",
+                  borderRadius: "50%",
+                  border: "1px solid var(--border)",
+                  backgroundColor: "var(--bg-nav)",
+                  cursor: "pointer",
+                  fontWeight: 700,
+                  color: "var(--text-muted)",
+                  fontSize: "0.7rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  lineHeight: 1,
+                }}
+              >
+                +
+              </button>
             </div>
           </div>
           {/* Spell DC (casters only) */}
@@ -10251,81 +10303,6 @@ export default function CharacterSheetPage({
                 flexWrap: "wrap" as const,
               }}
             >
-              {/* Renown edit (compact inline) */}
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: "6px",
-                  paddingRight: "12px",
-                  borderRight: "1px solid var(--border)",
-                }}
-              >
-                <span
-                  style={{
-                    fontSize: "9px",
-                    fontFamily: "monospace",
-                    letterSpacing: "0.12em",
-                    textTransform: "uppercase" as const,
-                    color: "var(--text-muted)",
-                  }}
-                >
-                  Renown
-                </span>
-                <button
-                  onClick={() =>
-                    persist({ renown: Math.max(0, (c.renown ?? 0) - 1) })
-                  }
-                  style={{
-                    width: "18px",
-                    height: "18px",
-                    borderRadius: "50%",
-                    border: "1px solid var(--border)",
-                    backgroundColor: "var(--bg-nav)",
-                    cursor: "pointer",
-                    fontWeight: 700,
-                    color: "var(--text-muted)",
-                    fontSize: "0.75rem",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  −
-                </button>
-                <span
-                  style={{
-                    fontFamily: "'Cormorant Garamond', Georgia, serif",
-                    fontWeight: 700,
-                    fontSize: "1.3rem",
-                    color: "var(--primary)",
-                    lineHeight: 1,
-                    minWidth: "20px",
-                    textAlign: "center" as const,
-                  }}
-                >
-                  {c.renown ?? 0}
-                </span>
-                <button
-                  onClick={() => persist({ renown: (c.renown ?? 0) + 1 })}
-                  style={{
-                    width: "18px",
-                    height: "18px",
-                    borderRadius: "50%",
-                    border: "1px solid var(--border)",
-                    backgroundColor: "var(--bg-nav)",
-                    cursor: "pointer",
-                    fontWeight: 700,
-                    color: "var(--text-muted)",
-                    fontSize: "0.75rem",
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  +
-                </button>
-              </div>
               {/* Caster stats inline */}
               {isCaster && (
                 <>
@@ -10494,358 +10471,162 @@ export default function CharacterSheetPage({
                   )}
                 </>
               )}
+              {/* Class resource inline (Duelist/Fighter/Eidolon/Stygian only) */}
+              {(() => {
+                const isDuelist = c.professionName === "Duelist";
+                const isFighter = c.professionName === "Fighter";
+                const isEidolon = c.professionName === "Eidolon";
+                const isStygian = c.professionName === "Stygian";
+                if (!isDuelist && !isFighter && !isEidolon && !isStygian)
+                  return null;
+                const maxAdrenaline = attrs.body + effectiveTier;
+                const resourceName = isDuelist
+                  ? "Cadence"
+                  : isFighter
+                    ? "Adrenaline"
+                    : isEidolon
+                      ? "Resonance"
+                      : "Soul Tokens";
+                const resourceVal = isDuelist
+                  ? (c.currentCadence ?? effectiveTier)
+                  : isFighter
+                    ? (c.currentAdrenaline ?? maxAdrenaline)
+                    : isEidolon
+                      ? (c.currentResonance ?? spellThreshold)
+                      : (c.currentSoulTokens ?? 1);
+                const resourceMax = isFighter
+                  ? maxAdrenaline
+                  : isStygian
+                    ? 3
+                    : null;
+                const onDec = isDuelist
+                  ? () =>
+                      persist({
+                        currentCadence: Math.max(
+                          0,
+                          (c.currentCadence ?? effectiveTier) - 1,
+                        ),
+                      })
+                  : isFighter
+                    ? () =>
+                        persist({
+                          currentAdrenaline: Math.max(
+                            0,
+                            (c.currentAdrenaline ?? maxAdrenaline) - 1,
+                          ),
+                        })
+                    : isEidolon
+                      ? () =>
+                          persist({
+                            currentResonance: Math.max(
+                              0,
+                              (c.currentResonance ?? spellThreshold) - 1,
+                            ),
+                          })
+                      : () =>
+                          persist({
+                            currentSoulTokens: Math.max(
+                              0,
+                              (c.currentSoulTokens ?? 1) - 1,
+                            ),
+                          });
+                const onInc = isDuelist
+                  ? () =>
+                      persist({
+                        currentCadence:
+                          (c.currentCadence ?? effectiveTier) + 1,
+                      })
+                  : isFighter
+                    ? () =>
+                        persist({
+                          currentAdrenaline: Math.min(
+                            maxAdrenaline,
+                            (c.currentAdrenaline ?? maxAdrenaline) + 1,
+                          ),
+                        })
+                    : isEidolon
+                      ? () =>
+                          persist({
+                            currentResonance:
+                              (c.currentResonance ?? spellThreshold) + 1,
+                          })
+                      : () =>
+                          persist({
+                            currentSoulTokens: Math.min(
+                              3,
+                              (c.currentSoulTokens ?? 1) + 1,
+                            ),
+                          });
+                const btnSm: React.CSSProperties = {
+                  width: "18px",
+                  height: "18px",
+                  borderRadius: "50%",
+                  border: "1px solid var(--border)",
+                  backgroundColor: "var(--bg-nav)",
+                  cursor: "pointer",
+                  fontWeight: 700,
+                  color: "var(--text-muted)",
+                  fontSize: "0.75rem",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                };
+                return (
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "6px",
+                      paddingLeft: isCaster ? "12px" : "0",
+                      borderLeft: isCaster
+                        ? "1px solid var(--border)"
+                        : "none",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: "9px",
+                        fontFamily: "monospace",
+                        letterSpacing: "0.12em",
+                        textTransform: "uppercase" as const,
+                        color: "var(--text-muted)",
+                      }}
+                    >
+                      {resourceName}
+                    </span>
+                    <button onClick={onDec} style={btnSm}>
+                      −
+                    </button>
+                    <span
+                      style={{
+                        fontFamily: "'Cormorant Garamond', Georgia, serif",
+                        fontWeight: 700,
+                        fontSize: "1.3rem",
+                        color: "var(--primary)",
+                        lineHeight: 1,
+                      }}
+                    >
+                      {resourceVal}
+                      {resourceMax != null && (
+                        <span
+                          style={{
+                            fontSize: "0.62rem",
+                            color: "var(--text-muted)",
+                            fontFamily: "monospace",
+                          }}
+                        >
+                          /{resourceMax}
+                        </span>
+                      )}
+                    </span>
+                    <button onClick={onInc} style={btnSm}>
+                      +
+                    </button>
+                  </div>
+                );
+              })()}
             </div>
           </div>
-
-          {/* ──── PROFESSION CLASS RESOURCE ──── */}
-          {(() => {
-            const isDuelist = c.professionName === "Duelist";
-            const isFighter = c.professionName === "Fighter";
-            const isEidolon = c.professionName === "Eidolon";
-            const isStygian = c.professionName === "Stygian";
-            if (!isDuelist && !isFighter && !isEidolon && !isStygian)
-              return null;
-            const maxAdrenaline = attrs.body + effectiveTier;
-            const maxSoulTokens = 3;
-            const btnStyle: React.CSSProperties = {
-              width: "18px",
-              height: "18px",
-              borderRadius: "50%",
-              border: "1px solid var(--border)",
-              backgroundColor: "var(--bg-card)",
-              cursor: "pointer",
-              fontWeight: 700,
-              color: "var(--text-muted)",
-              fontSize: "0.75rem",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-            };
-            const cellStyle: React.CSSProperties = {
-              textAlign: "center",
-              backgroundColor: "var(--bg-nav)",
-              border: "1px solid var(--border)",
-              borderRadius: "8px",
-              padding: "0.4rem 0.25rem",
-            };
-            return (
-              <div
-                style={{
-                  backgroundColor: "var(--bg-card)",
-                  border: "1px solid var(--border)",
-                  borderRadius: "6px",
-                  padding: "0.875rem 1.25rem",
-                  marginBottom: "1rem",
-                }}
-              >
-                <div
-                  style={{
-                    fontSize: "0.65rem",
-                    letterSpacing: "0.12em",
-                    color: "var(--text-muted)",
-                    fontFamily: "var(--font-heading)",
-                    fontStyle: "italic",
-                    textTransform: "uppercase",
-                    marginBottom: "0.625rem",
-                  }}
-                >
-                  Class Resource
-                </div>
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(auto-fit, minmax(100px, 1fr))",
-                    gap: "0.5rem",
-                  }}
-                >
-                  {isDuelist && (
-                    <div style={cellStyle}>
-                      <div
-                        style={{
-                          fontSize: "0.6rem",
-                          color: "var(--text-muted)",
-                          letterSpacing: "0.06em",
-                          marginBottom: "2px",
-                        }}
-                      >
-                        Cadence
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: "0.25rem",
-                        }}
-                      >
-                        <button
-                          onClick={() =>
-                            persist({
-                              currentCadence: Math.max(
-                                0,
-                                (c.currentCadence ?? effectiveTier) - 1,
-                              ),
-                            })
-                          }
-                          style={btnStyle}
-                        >
-                          −
-                        </button>
-                        <span
-                          style={{
-                            fontFamily: "var(--font-heading)",
-                            fontWeight: 700,
-                            fontSize: "1.1rem",
-                            color: "var(--primary)",
-                          }}
-                        >
-                          {c.currentCadence ?? effectiveTier}
-                        </span>
-                        <button
-                          onClick={() =>
-                            persist({
-                              currentCadence:
-                                (c.currentCadence ?? effectiveTier) + 1,
-                            })
-                          }
-                          style={btnStyle}
-                        >
-                          +
-                        </button>
-                      </div>
-                      <div
-                        style={{
-                          fontSize: "0.52rem",
-                          color: "var(--text-muted)",
-                          marginTop: "1px",
-                        }}
-                      >
-                        Starting: Tier
-                      </div>
-                    </div>
-                  )}
-                  {isFighter && (
-                    <div style={cellStyle}>
-                      <div
-                        style={{
-                          fontSize: "0.6rem",
-                          color: "var(--text-muted)",
-                          letterSpacing: "0.06em",
-                          marginBottom: "2px",
-                        }}
-                      >
-                        Adrenaline
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: "0.25rem",
-                        }}
-                      >
-                        <button
-                          onClick={() =>
-                            persist({
-                              currentAdrenaline: Math.max(
-                                0,
-                                (c.currentAdrenaline ?? maxAdrenaline) - 1,
-                              ),
-                            })
-                          }
-                          style={btnStyle}
-                        >
-                          −
-                        </button>
-                        <span
-                          style={{
-                            fontFamily: "var(--font-heading)",
-                            fontWeight: 700,
-                            fontSize: "1.1rem",
-                            color: "var(--primary)",
-                          }}
-                        >
-                          {c.currentAdrenaline ?? maxAdrenaline}
-                          <span
-                            style={{
-                              fontSize: "0.65rem",
-                              color: "var(--text-muted)",
-                            }}
-                          >
-                            /{maxAdrenaline}
-                          </span>
-                        </span>
-                        <button
-                          onClick={() =>
-                            persist({
-                              currentAdrenaline: Math.min(
-                                maxAdrenaline,
-                                (c.currentAdrenaline ?? maxAdrenaline) + 1,
-                              ),
-                            })
-                          }
-                          style={btnStyle}
-                        >
-                          +
-                        </button>
-                      </div>
-                      <div
-                        style={{
-                          fontSize: "0.52rem",
-                          color: "var(--text-muted)",
-                          marginTop: "1px",
-                        }}
-                      >
-                        Max: Body + Tier
-                      </div>
-                    </div>
-                  )}
-                  {isEidolon && (
-                    <div style={cellStyle}>
-                      <div
-                        style={{
-                          fontSize: "0.6rem",
-                          color: "var(--text-muted)",
-                          letterSpacing: "0.06em",
-                          marginBottom: "2px",
-                        }}
-                      >
-                        Resonance
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: "0.25rem",
-                        }}
-                      >
-                        <button
-                          onClick={() =>
-                            persist({
-                              currentResonance: Math.max(
-                                0,
-                                (c.currentResonance ?? spellThreshold) - 1,
-                              ),
-                            })
-                          }
-                          style={btnStyle}
-                        >
-                          −
-                        </button>
-                        <span
-                          style={{
-                            fontFamily: "var(--font-heading)",
-                            fontWeight: 700,
-                            fontSize: "1.1rem",
-                            color: "var(--primary)",
-                          }}
-                        >
-                          {c.currentResonance ?? spellThreshold}
-                        </span>
-                        <button
-                          onClick={() =>
-                            persist({
-                              currentResonance:
-                                (c.currentResonance ?? spellThreshold) + 1,
-                            })
-                          }
-                          style={btnStyle}
-                        >
-                          +
-                        </button>
-                      </div>
-                      <div
-                        style={{
-                          fontSize: "0.52rem",
-                          color: "var(--text-muted)",
-                          marginTop: "1px",
-                        }}
-                      >
-                        Spell Threshold
-                      </div>
-                    </div>
-                  )}
-                  {isStygian && (
-                    <div style={cellStyle}>
-                      <div
-                        style={{
-                          fontSize: "0.6rem",
-                          color: "var(--text-muted)",
-                          letterSpacing: "0.06em",
-                          marginBottom: "2px",
-                        }}
-                      >
-                        Soul Tokens
-                      </div>
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          gap: "0.25rem",
-                        }}
-                      >
-                        <button
-                          onClick={() =>
-                            persist({
-                              currentSoulTokens: Math.max(
-                                0,
-                                (c.currentSoulTokens ?? 1) - 1,
-                              ),
-                            })
-                          }
-                          style={btnStyle}
-                        >
-                          −
-                        </button>
-                        <span
-                          style={{
-                            fontFamily: "var(--font-heading)",
-                            fontWeight: 700,
-                            fontSize: "1.1rem",
-                            color: "var(--primary)",
-                          }}
-                        >
-                          {c.currentSoulTokens ?? 1}
-                          <span
-                            style={{
-                              fontSize: "0.65rem",
-                              color: "var(--text-muted)",
-                            }}
-                          >
-                            /{maxSoulTokens}
-                          </span>
-                        </span>
-                        <button
-                          onClick={() =>
-                            persist({
-                              currentSoulTokens: Math.min(
-                                maxSoulTokens,
-                                (c.currentSoulTokens ?? 1) + 1,
-                              ),
-                            })
-                          }
-                          style={btnStyle}
-                        >
-                          +
-                        </button>
-                      </div>
-                      <div
-                        style={{
-                          fontSize: "0.52rem",
-                          color: "var(--text-muted)",
-                          marginTop: "1px",
-                        }}
-                      >
-                        Max: 3
-                      </div>
-                    </div>
-                  )}
-                </div>
-              </div>
-            );
-          })()}
 
           {/* ──── TAB NAVIGATION (top) ──── */}
           <div
