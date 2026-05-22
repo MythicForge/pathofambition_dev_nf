@@ -6365,7 +6365,13 @@ export default function CharacterSheetPage({
         {/* Magic sources + school spheres */}
         {(accessibleSources.length > 0 || knownSchoolSpheres.length > 0) && (
           <div
-            style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: "1rem", alignItems: "flex-start" }}
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              flexWrap: "wrap",
+              gap: "1rem",
+              alignItems: "flex-start",
+            }}
           >
             {accessibleSources.length > 0 && (
               <div>
@@ -7556,209 +7562,6 @@ export default function CharacterSheetPage({
                 </div>
               );
             })}
-          </div>
-        </div>
-
-        {/* Defence */}
-        <div
-          style={{
-            backgroundColor: "var(--bg-card)",
-            border: "1px solid var(--border)",
-            borderRadius: "6px",
-            overflow: "hidden",
-          }}
-        >
-          <div
-            style={{
-              padding: "0.5rem 1rem",
-              borderBottom: "1px solid var(--border)",
-              backgroundColor: "var(--bg-nav)",
-            }}
-          >
-            <span
-              style={{
-                fontSize: "0.65rem",
-                fontFamily: "var(--font-heading)",
-                fontStyle: "italic",
-                letterSpacing: "0.12em",
-                color: "var(--text-muted)",
-                textTransform: "uppercase" as const,
-              }}
-            >
-              Defence
-            </span>
-          </div>
-          <div
-            style={{
-              padding: "0.875rem 1rem",
-              display: "grid",
-              gridTemplateColumns: "repeat(2, 1fr)",
-              gap: "0.5rem",
-            }}
-          >
-            {(() => {
-              const tempAD = c.tempArmorDef ?? 0;
-              const totalAD = armorDefense + tempAD;
-              const spellArmorOn = !!(c.spellArmorActive && isCaster);
-              const subLabel = spellArmorOn
-                ? `Spell (11+${modKey})`
-                : hasUnarmoredDefense && !equippedBody
-                  ? "Unarmored"
-                  : hasAgile &&
-                      !equippedShield &&
-                      (!equippedBody ||
-                        equippedBody.armorCategory === "Light" ||
-                        !equippedBody.armorCategory)
-                    ? "Agile"
-                    : equippedBody
-                      ? `${equippedBody.name} +${equippedBody.armorBonus}`
-                      : "Base";
-              return (
-                <div
-                  style={{
-                    textAlign: "center",
-                    padding: "0.5rem 0.35rem",
-                    backgroundColor: spellArmorOn
-                      ? "var(--primary-light)"
-                      : "var(--bg-nav)",
-                    border: `1px solid ${spellArmorOn ? "var(--primary)" : "var(--border)"}`,
-                    borderRadius: "8px",
-                  }}
-                >
-                  <div
-                    style={{
-                      fontSize: "0.6rem",
-                      color: "var(--text-muted)",
-                      letterSpacing: "0.06em",
-                      marginBottom: "2px",
-                    }}
-                  >
-                    Armor Def
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "1.3rem",
-                      fontWeight: 700,
-                      color: "var(--text)",
-                      fontFamily: "var(--font-heading)",
-                      lineHeight: 1.1,
-                    }}
-                  >
-                    {totalAD}
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "0.55rem",
-                      color: spellArmorOn
-                        ? "var(--primary)"
-                        : "var(--text-muted)",
-                      marginTop: "0.1rem",
-                      marginBottom: "0.15rem",
-                    }}
-                  >
-                    {subLabel}
-                  </div>
-                  {isCaster && (
-                    <button
-                      onClick={() =>
-                        persist({ spellArmorActive: !c.spellArmorActive })
-                      }
-                      style={{
-                        fontSize: "0.5rem",
-                        fontFamily: "var(--font-heading)",
-                        fontWeight: 700,
-                        padding: "0.1rem 0.3rem",
-                        borderRadius: "0.25rem",
-                        border: `1px solid ${spellArmorOn ? "var(--primary)" : "var(--border)"}`,
-                        backgroundColor: spellArmorOn
-                          ? "var(--primary)"
-                          : "var(--bg-card)",
-                        color: spellArmorOn ? "#fff" : "var(--text-muted)",
-                        cursor: "pointer",
-                        marginBottom: "0.15rem",
-                      }}
-                    >
-                      {spellArmorOn ? "Spell Armor ON" : "Spell Armor"}
-                    </button>
-                  )}
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "0.2rem",
-                    }}
-                  >
-                    <button
-                      onClick={() => persist({ tempArmorDef: tempAD - 1 })}
-                      style={{
-                        width: "16px",
-                        height: "16px",
-                        borderRadius: "50%",
-                        border: "1px solid var(--border)",
-                        backgroundColor: "var(--bg-card)",
-                        cursor: "pointer",
-                        fontWeight: 700,
-                        color: "var(--text-muted)",
-                        fontSize: "0.7rem",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      −
-                    </button>
-                    <span
-                      style={{
-                        fontSize: "0.6rem",
-                        color: "var(--text-muted)",
-                        fontFamily: "var(--font-heading)",
-                        minWidth: "14px",
-                        textAlign: "center" as const,
-                      }}
-                    >
-                      {tempAD === 0 ? "tmp" : tempAD}
-                    </span>
-                    <button
-                      onClick={() => persist({ tempArmorDef: tempAD + 1 })}
-                      style={{
-                        width: "16px",
-                        height: "16px",
-                        borderRadius: "50%",
-                        border: "1px solid var(--border)",
-                        backgroundColor: "var(--bg-card)",
-                        cursor: "pointer",
-                        fontWeight: 700,
-                        color: "var(--text-muted)",
-                        fontSize: "0.7rem",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      +
-                    </button>
-                    {tempAD !== 0 && (
-                      <button
-                        onClick={() => persist({ tempArmorDef: 0 })}
-                        style={{
-                          fontSize: "0.55rem",
-                          color: "var(--text-muted)",
-                          background: "none",
-                          border: "none",
-                          cursor: "pointer",
-                        }}
-                      >
-                        ✕
-                      </button>
-                    )}
-                  </div>
-                </div>
-              );
-            })()}
-            <StatCard label="Body Def" value={bodyDef} />
-            <StatCard label="Mind Def" value={mindDef} />
-            <StatCard label="Will Def" value={willDef} />
           </div>
         </div>
 
@@ -9193,13 +8996,42 @@ export default function CharacterSheetPage({
               const tempAD = c.tempArmorDef ?? 0;
               const totalAD = armorDefense + tempAD;
               const spellArmorOn = !!(c.spellArmorActive && isCaster);
+              const subLabel = spellArmorOn
+                ? `Spell (11+${modKey})`
+                : hasUnarmoredDefense && !equippedBody
+                  ? "Unarmored"
+                  : hasAgile &&
+                      !equippedShield &&
+                      (!equippedBody ||
+                        equippedBody.armorCategory === "Light" ||
+                        !equippedBody.armorCategory)
+                    ? "Agile"
+                    : equippedBody
+                      ? `${equippedBody.name} +${equippedBody.armorBonus}`
+                      : "Base";
+              const btnSm: React.CSSProperties = {
+                width: "16px",
+                height: "16px",
+                borderRadius: "50%",
+                border: "1px solid var(--border)",
+                backgroundColor: "var(--bg-nav)",
+                cursor: "pointer",
+                fontWeight: 700,
+                color: "var(--text-muted)",
+                fontSize: "0.7rem",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              };
               return (
                 <div
                   style={{
-                    backgroundColor: "var(--bg-card)",
+                    backgroundColor: spellArmorOn
+                      ? "var(--primary-light)"
+                      : "var(--bg-card)",
                     border: `1px solid ${spellArmorOn ? "var(--primary)" : "var(--border)"}`,
                     borderRadius: "6px",
-                    padding: "14px 12px 12px",
+                    padding: "14px 12px 10px",
                     textAlign: "center",
                   }}
                 >
@@ -9230,19 +9062,85 @@ export default function CharacterSheetPage({
                     style={{
                       fontFamily: "var(--font-heading)",
                       fontSize: "9px",
-                      letterSpacing: "0.16em",
-                      textTransform: "uppercase" as const,
+                      letterSpacing: "0.1em",
                       color: spellArmorOn
                         ? "var(--primary)"
                         : "var(--text-muted)",
                       marginTop: "2px",
+                      marginBottom: "6px",
                     }}
                   >
-                    {spellArmorOn
-                      ? "spell armor"
-                      : tempAD !== 0
-                        ? `+${tempAD} temp`
-                        : "armor"}
+                    {subLabel}
+                  </div>
+                  {isCaster && (
+                    <button
+                      onClick={() =>
+                        persist({ spellArmorActive: !c.spellArmorActive })
+                      }
+                      style={{
+                        display: "block",
+                        margin: "0 auto 6px",
+                        fontSize: "0.5rem",
+                        fontFamily: "var(--font-heading)",
+                        fontWeight: 700,
+                        padding: "0.1rem 0.3rem",
+                        borderRadius: "0.25rem",
+                        border: `1px solid ${spellArmorOn ? "var(--primary)" : "var(--border)"}`,
+                        backgroundColor: spellArmorOn
+                          ? "var(--primary)"
+                          : "var(--bg-card)",
+                        color: spellArmorOn ? "#fff" : "var(--text-muted)",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {spellArmorOn ? "Spell Armor ON" : "Spell Armor"}
+                    </button>
+                  )}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "0.2rem",
+                    }}
+                  >
+                    <button
+                      onClick={() => persist({ tempArmorDef: tempAD - 1 })}
+                      style={btnSm}
+                    >
+                      −
+                    </button>
+                    <span
+                      style={{
+                        fontSize: "0.6rem",
+                        color: "var(--text-muted)",
+                        fontFamily: "var(--font-heading)",
+                        minWidth: "14px",
+                        textAlign: "center" as const,
+                      }}
+                    >
+                      {tempAD === 0 ? "tmp" : tempAD}
+                    </span>
+                    <button
+                      onClick={() => persist({ tempArmorDef: tempAD + 1 })}
+                      style={btnSm}
+                    >
+                      +
+                    </button>
+                    {tempAD !== 0 && (
+                      <button
+                        onClick={() => persist({ tempArmorDef: 0 })}
+                        style={{
+                          fontSize: "0.55rem",
+                          color: "var(--text-muted)",
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                        }}
+                      >
+                        ✕
+                      </button>
+                    )}
                   </div>
                 </div>
               );
@@ -9514,7 +9412,7 @@ export default function CharacterSheetPage({
                   <div
                     style={{
                       marginTop: "14px",
-                      height: "6px",
+                      height: "12px",
                       backgroundColor: "rgba(122,157,111,0.1)",
                       borderRadius: "3px",
                       overflow: "hidden",
@@ -10533,8 +10431,7 @@ export default function CharacterSheetPage({
                 const onInc = isDuelist
                   ? () =>
                       persist({
-                        currentCadence:
-                          (c.currentCadence ?? effectiveTier) + 1,
+                        currentCadence: (c.currentCadence ?? effectiveTier) + 1,
                       })
                   : isFighter
                     ? () =>
@@ -10578,9 +10475,7 @@ export default function CharacterSheetPage({
                       alignItems: "center",
                       gap: "6px",
                       paddingLeft: isCaster ? "12px" : "0",
-                      borderLeft: isCaster
-                        ? "1px solid var(--border)"
-                        : "none",
+                      borderLeft: isCaster ? "1px solid var(--border)" : "none",
                     }}
                   >
                     <span
