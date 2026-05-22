@@ -147,7 +147,7 @@ export interface Character {
   // BUG-09: Spell Armor active state
   spellArmorActive?: boolean;
 
-  // Conditions: key = condition code (e.g. "BLD"), value = stack count (0 = off, 1+ = on/stacks)
+  // Conditions: key = condition name (e.g. "Bleeding"), value = stack count (0 = off, 1+ = on/stacks)
   activeConditions?: Record<string, number>;
 }
 

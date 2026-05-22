@@ -508,6 +508,8 @@ export default function CharacterSheetPage({
 
   // Portrait image upload
   const [portraitUrl, setPortraitUrl] = useState<string | null>(null);
+  const [portraitCollapsed, setPortraitCollapsed] = useState(false);
+  const [conditionsCollapsed, setConditionsCollapsed] = useState(false);
   const [vitAdjInput, setVitAdjInput] = useState<string | null>(null);
   const [renownAdjInput, setRenownAdjInput] = useState<string | null>(null);
   const portraitInputRef = React.useRef<HTMLInputElement>(null);
@@ -1177,7 +1179,7 @@ export default function CharacterSheetPage({
 
   function renderCombatTab() {
     const activeConds = c.activeConditions ?? {};
-    const STACKING = new Set(["BLD", "BRN", "DAZ", "PSN", "WEK"]);
+    const STACKING = new Set(["Bleeding", "Burning", "Dazed", "Poisoned", "Weakened"]);
 
     function setCondition(code: string, val: number) {
       persist({
@@ -1427,8 +1429,14 @@ export default function CharacterSheetPage({
 
         {/* ── Conditions ── */}
         <div style={cardStyle}>
-          <div style={headStyle}>Conditions</div>
           <div
+            style={{ ...headStyle, cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}
+            onClick={() => setConditionsCollapsed(v => !v)}
+          >
+            <span>Conditions</span>
+            <span style={{ fontSize: "10px", opacity: 0.6 }}>{conditionsCollapsed ? "▶" : "▼"}</span>
+          </div>
+          {!conditionsCollapsed && <div
             style={{
               padding: "12px 14px",
               display: "flex",
@@ -1439,7 +1447,7 @@ export default function CharacterSheetPage({
             {(
               Object.entries(CONDITIONS) as [
                 string,
-                { name: string; stack: boolean; tip: string },
+                { stack: boolean; tip: string },
               ][]
             ).map(([code, def]) => {
               const count = activeConds[code] ?? 0;
@@ -1544,8 +1552,8 @@ export default function CharacterSheetPage({
                 </div>
               );
             })}
-          </div>
-          {Object.values(activeConds).some((v) => v > 0) && (
+          </div>}
+          {!conditionsCollapsed && Object.values(activeConds).some((v) => v > 0) && (
             <div
               style={{
                 padding: "0 14px 10px",
@@ -7981,22 +7989,41 @@ export default function CharacterSheetPage({
     return (
       <>
         {/* Portrait */}
-        <div
-          onClick={() => portraitInputRef.current?.click()}
-          title={
-            portraitUrl
-              ? "Click to change portrait"
-              : "Click to upload portrait"
-          }
-          style={{
-            position: "relative",
-            borderRadius: "6px",
-            overflow: "hidden",
-            border: "1px solid var(--border)",
-            aspectRatio: "3/4",
-            backgroundColor: "var(--bg-nav)",
-            cursor: "pointer",
-          }}
+        <div style={{ border: "1px solid var(--border)", borderRadius: "6px", overflow: "hidden" }}>
+          <div
+            style={{
+              padding: "6px 14px",
+              backgroundColor: "var(--bg-nav)",
+              borderBottom: portraitCollapsed ? "none" : "1px solid var(--border)",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              cursor: "pointer",
+              fontSize: "10px",
+              fontFamily: "monospace",
+              letterSpacing: "0.16em",
+              textTransform: "uppercase" as const,
+              color: "var(--text-muted)",
+            }}
+            onClick={() => setPortraitCollapsed(v => !v)}
+          >
+            <span>Portrait</span>
+            <span style={{ fontSize: "10px", opacity: 0.6 }}>{portraitCollapsed ? "▶" : "▼"}</span>
+          </div>
+          {!portraitCollapsed && <div
+            onClick={() => portraitInputRef.current?.click()}
+            title={
+              portraitUrl
+                ? "Click to change portrait"
+                : "Click to upload portrait"
+            }
+            style={{
+              position: "relative",
+              overflow: "hidden",
+              aspectRatio: "3/4",
+              backgroundColor: "var(--bg-nav)",
+              cursor: "pointer",
+            }}
         >
           {portraitUrl ? (
             <img
@@ -8081,6 +8108,7 @@ export default function CharacterSheetPage({
               {c.vocationName || c.professionName} · Tier {effectiveTier}
             </div>
           </div>
+          </div>}
         </div>
         <input
           ref={portraitInputRef}
