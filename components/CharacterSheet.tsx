@@ -1178,7 +1178,9 @@ export default function CharacterSheetPage({
     const STACKING = new Set(["BLD", "BRN", "DAZ", "PSN", "WEK"]);
 
     function setCondition(code: string, val: number) {
-      persist({ activeConditions: { ...activeConds, [code]: Math.max(0, val) } });
+      persist({
+        activeConditions: { ...activeConds, [code]: Math.max(0, val) },
+      });
     }
 
     const equippedSlots: { label: string; item: typeof equippedMain }[] = [
@@ -1215,9 +1217,39 @@ export default function CharacterSheetPage({
             {equippedSlots.map(({ label, item }) => {
               if (!item) {
                 return (
-                  <div key={label} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "8px 14px", borderBottom: "1px solid var(--border)", opacity: 0.35 }}>
-                    <span style={{ fontFamily: "monospace", fontSize: "9px", letterSpacing: "0.14em", textTransform: "uppercase" as const, color: "var(--text-muted)", minWidth: "72px" }}>{label}</span>
-                    <span style={{ fontFamily: "var(--font-heading)", fontSize: "13px", fontStyle: "italic", color: "var(--text-muted)" }}>— empty —</span>
+                  <div
+                    key={label}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "12px",
+                      padding: "8px 14px",
+                      borderBottom: "1px solid var(--border)",
+                      opacity: 0.35,
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontFamily: "monospace",
+                        fontSize: "9px",
+                        letterSpacing: "0.14em",
+                        textTransform: "uppercase" as const,
+                        color: "var(--text-muted)",
+                        minWidth: "72px",
+                      }}
+                    >
+                      {label}
+                    </span>
+                    <span
+                      style={{
+                        fontFamily: "var(--font-heading)",
+                        fontSize: "13px",
+                        fontStyle: "italic",
+                        color: "var(--text-muted)",
+                      }}
+                    >
+                      — empty —
+                    </span>
                   </div>
                 );
               }
@@ -1226,36 +1258,163 @@ export default function CharacterSheetPage({
               const isShield = item.category === "Shield";
               const modKey = item.modifierStat ?? "body";
               const toHitMod = attrs[modKey] + (item.masterworkBonus ?? 0);
-              const dmgStr = item.damageDiceCount > 0 ? `${item.damageDiceCount}d${item.damageDiceSize}` : null;
+              const dmgStr =
+                item.damageDiceCount > 0
+                  ? `${item.damageDiceCount}d${item.damageDiceSize}`
+                  : null;
               const typeStr = item.damageTypeTags.join(" / ");
               const shieldPool = item.reductionPoolCurrent ?? null;
               const shieldMax = item.reductionPoolMax ?? null;
               return (
-                <div key={label} style={{ display: "flex", alignItems: "center", gap: "12px", padding: "9px 14px", borderBottom: "1px solid var(--border)" }}>
-                  <span style={{ fontFamily: "monospace", fontSize: "9px", letterSpacing: "0.14em", textTransform: "uppercase" as const, color: "var(--text-muted)", minWidth: "72px", flexShrink: 0 }}>{label}</span>
+                <div
+                  key={label}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "12px",
+                    padding: "9px 14px",
+                    borderBottom: "1px solid var(--border)",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontFamily: "monospace",
+                      fontSize: "9px",
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase" as const,
+                      color: "var(--text-muted)",
+                      minWidth: "72px",
+                      flexShrink: 0,
+                    }}
+                  >
+                    {label}
+                  </span>
                   <div style={{ flex: 1, minWidth: 0 }}>
-                    <div style={{ fontFamily: "var(--font-heading)", fontSize: "14px", fontWeight: 700, color: "var(--text)", marginBottom: "2px" }}>{item.name}{item.masterworkBonus > 0 && <span style={{ fontSize: "10px", color: "var(--primary)", marginLeft: "5px" }}>+{item.masterworkBonus}</span>}</div>
-                    <div style={{ display: "flex", gap: "8px", flexWrap: "wrap" as const, alignItems: "center" }}>
+                    <div
+                      style={{
+                        fontFamily: "var(--font-heading)",
+                        fontSize: "14px",
+                        fontWeight: 700,
+                        color: "var(--text)",
+                        marginBottom: "2px",
+                      }}
+                    >
+                      {item.name}
+                      {item.masterworkBonus > 0 && (
+                        <span
+                          style={{
+                            fontSize: "10px",
+                            color: "var(--primary)",
+                            marginLeft: "5px",
+                          }}
+                        >
+                          +{item.masterworkBonus}
+                        </span>
+                      )}
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "8px",
+                        flexWrap: "wrap" as const,
+                        alignItems: "center",
+                      }}
+                    >
                       {isWeapon && dmgStr && (
                         <>
-                          <span style={{ fontSize: "11px", fontFamily: "monospace", color: "var(--text-muted)" }}>{fmtAttr(toHitMod)} to hit</span>
-                          <span style={{ fontSize: "10px", color: "var(--border)" }}>·</span>
-                          <span style={{ fontSize: "11px", fontFamily: "monospace", color: "var(--text)" }}>{dmgStr}</span>
-                          {typeStr && <span style={{ fontSize: "10px", fontFamily: "var(--font-heading)", color: "var(--text-muted)", textTransform: "capitalize" as const }}>{typeStr}</span>}
+                          <span
+                            style={{
+                              fontSize: "11px",
+                              fontFamily: "monospace",
+                              color: "var(--text-muted)",
+                            }}
+                          >
+                            {fmtAttr(toHitMod)} to hit
+                          </span>
+                          <span
+                            style={{ fontSize: "10px", color: "var(--border)" }}
+                          >
+                            ·
+                          </span>
+                          <span
+                            style={{
+                              fontSize: "11px",
+                              fontFamily: "monospace",
+                              color: "var(--text)",
+                            }}
+                          >
+                            {dmgStr}
+                          </span>
+                          {typeStr && (
+                            <span
+                              style={{
+                                fontSize: "10px",
+                                fontFamily: "var(--font-heading)",
+                                color: "var(--text-muted)",
+                                textTransform: "capitalize" as const,
+                              }}
+                            >
+                              {typeStr}
+                            </span>
+                          )}
                         </>
                       )}
                       {isArmor && (
                         <>
-                          <span style={{ fontSize: "11px", fontFamily: "monospace", color: "var(--text-muted)" }}>+{item.armorBonus} armor</span>
-                          {item.armorCategory && <span style={{ fontSize: "10px", fontFamily: "var(--font-heading)", color: "var(--text-muted)" }}>{item.armorCategory}</span>}
+                          <span
+                            style={{
+                              fontSize: "11px",
+                              fontFamily: "monospace",
+                              color: "var(--text-muted)",
+                            }}
+                          >
+                            +{item.armorBonus} armor
+                          </span>
+                          {item.armorCategory && (
+                            <span
+                              style={{
+                                fontSize: "10px",
+                                fontFamily: "var(--font-heading)",
+                                color: "var(--text-muted)",
+                              }}
+                            >
+                              {item.armorCategory}
+                            </span>
+                          )}
                         </>
                       )}
                       {isShield && shieldPool != null && (
-                        <span style={{ fontSize: "11px", fontFamily: "monospace", color: shieldPool === 0 ? "#c66464" : "var(--text-muted)" }}>Pool {shieldPool}/{shieldMax}{shieldPool === 0 ? " (broken)" : ""}</span>
+                        <span
+                          style={{
+                            fontSize: "11px",
+                            fontFamily: "monospace",
+                            color:
+                              shieldPool === 0
+                                ? "#c66464"
+                                : "var(--text-muted)",
+                          }}
+                        >
+                          Pool {shieldPool}/{shieldMax}
+                          {shieldPool === 0 ? " (broken)" : ""}
+                        </span>
                       )}
-                      {item.traits.length > 0 && item.traits.map(t => (
-                        <span key={t} style={{ fontSize: "9px", padding: "1px 6px", border: "1px solid var(--border)", borderRadius: "9999px", color: "var(--text-muted)", fontFamily: "var(--font-heading)", textTransform: "capitalize" as const }}>{t}</span>
-                      ))}
+                      {item.traits.length > 0 &&
+                        item.traits.map((t) => (
+                          <span
+                            key={t}
+                            style={{
+                              fontSize: "9px",
+                              padding: "1px 6px",
+                              border: "1px solid var(--border)",
+                              borderRadius: "9999px",
+                              color: "var(--text-muted)",
+                              fontFamily: "var(--font-heading)",
+                              textTransform: "capitalize" as const,
+                            }}
+                          >
+                            {t}
+                          </span>
+                        ))}
                     </div>
                   </div>
                 </div>
@@ -1267,8 +1426,20 @@ export default function CharacterSheetPage({
         {/* ── Conditions ── */}
         <div style={cardStyle}>
           <div style={headStyle}>Conditions</div>
-          <div style={{ padding: "12px 14px", display: "flex", flexWrap: "wrap" as const, gap: "6px" }}>
-            {(Object.entries(CONDITIONS) as [string, { name: string; stack: boolean; tip: string }][]).map(([code, def]) => {
+          <div
+            style={{
+              padding: "12px 14px",
+              display: "flex",
+              flexWrap: "wrap" as const,
+              gap: "6px",
+            }}
+          >
+            {(
+              Object.entries(CONDITIONS) as [
+                string,
+                { name: string; stack: boolean; tip: string },
+              ][]
+            ).map(([code, def]) => {
               const count = activeConds[code] ?? 0;
               const active = count > 0;
               const isStack = STACKING.has(code);
@@ -1283,44 +1454,159 @@ export default function CharacterSheetPage({
                     padding: active ? "3px 8px 3px 8px" : "3px 8px",
                     borderRadius: "5px",
                     border: `1px solid ${active ? "var(--primary)" : "var(--border)"}`,
-                    backgroundColor: active ? "var(--primary-light)" : "var(--bg-nav)",
+                    backgroundColor: active
+                      ? "var(--primary-light)"
+                      : "var(--bg-nav)",
                     cursor: "pointer",
                     transition: "all 0.1s",
                   }}
-                  onClick={() => setCondition(code, isStack ? (active ? 0 : 1) : (active ? 0 : 1))}
+                  onClick={() =>
+                    setCondition(
+                      code,
+                      isStack ? (active ? 0 : 1) : active ? 0 : 1,
+                    )
+                  }
                 >
-                  <span style={{ fontSize: "10px", fontFamily: "monospace", letterSpacing: "0.06em", color: active ? "var(--primary)" : "var(--text-muted)", fontWeight: active ? 700 : 400 }}>{code}</span>
-                  {active && !isStack && <span style={{ fontSize: "9px", color: "var(--primary)", marginLeft: "1px" }}>✓</span>}
+                  <span
+                    style={{
+                      fontSize: "10px",
+                      fontFamily: "monospace",
+                      letterSpacing: "0.06em",
+                      color: active ? "var(--primary)" : "var(--text-muted)",
+                      fontWeight: active ? 700 : 400,
+                    }}
+                  >
+                    {code}
+                  </span>
+                  {active && !isStack && (
+                    <span
+                      style={{
+                        fontSize: "9px",
+                        color: "var(--primary)",
+                        marginLeft: "1px",
+                      }}
+                    >
+                      ✓
+                    </span>
+                  )}
                   {active && isStack && (
                     <>
                       <button
-                        onClick={(e) => { e.stopPropagation(); setCondition(code, count - 1); }}
-                        style={{ background: "none", border: "none", cursor: "pointer", fontSize: "11px", color: "var(--primary)", padding: "0 1px", lineHeight: 1 }}
-                      >−</button>
-                      <span style={{ fontSize: "11px", fontFamily: "monospace", color: "var(--primary)", fontWeight: 700, minWidth: "12px", textAlign: "center" as const }}>{count}</span>
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setCondition(code, count - 1);
+                        }}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          fontSize: "11px",
+                          color: "var(--primary)",
+                          padding: "0 1px",
+                          lineHeight: 1,
+                        }}
+                      >
+                        −
+                      </button>
+                      <span
+                        style={{
+                          fontSize: "11px",
+                          fontFamily: "monospace",
+                          color: "var(--primary)",
+                          fontWeight: 700,
+                          minWidth: "12px",
+                          textAlign: "center" as const,
+                        }}
+                      >
+                        {count}
+                      </span>
                       <button
-                        onClick={(e) => { e.stopPropagation(); setCondition(code, count + 1); }}
-                        style={{ background: "none", border: "none", cursor: "pointer", fontSize: "11px", color: "var(--primary)", padding: "0 1px", lineHeight: 1 }}
-                      >+</button>
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setCondition(code, count + 1);
+                        }}
+                        style={{
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                          fontSize: "11px",
+                          color: "var(--primary)",
+                          padding: "0 1px",
+                          lineHeight: 1,
+                        }}
+                      >
+                        +
+                      </button>
                     </>
                   )}
                 </div>
               );
             })}
           </div>
-          {Object.values(activeConds).some(v => v > 0) && (
-            <div style={{ padding: "0 14px 10px", display: "flex", flexDirection: "column" as const, gap: "4px" }}>
-              <div style={{ fontSize: "9px", fontFamily: "monospace", letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "var(--text-muted)", marginBottom: "4px" }}>Active</div>
-              {(Object.entries(activeConds) as [string, number][]).filter(([, v]) => v > 0).map(([code, count]) => {
-                const def = CONDITIONS[code as keyof typeof CONDITIONS];
-                if (!def) return null;
-                return (
-                  <div key={code} style={{ display: "flex", gap: "8px", alignItems: "flex-start", padding: "6px 10px", backgroundColor: "var(--bg-nav)", border: "1px solid var(--primary)", borderRadius: "5px", borderLeftWidth: "3px" }}>
-                    <span style={{ fontFamily: "monospace", fontSize: "10px", fontWeight: 700, color: "var(--primary)", minWidth: "32px" }}>{code}{count > 1 ? ` ×${count}` : ""}</span>
-                    <span style={{ fontSize: "11px", color: "var(--text-muted)", lineHeight: 1.4 }}>{def.tip}</span>
-                  </div>
-                );
-              })}
+          {Object.values(activeConds).some((v) => v > 0) && (
+            <div
+              style={{
+                padding: "0 14px 10px",
+                display: "flex",
+                flexDirection: "column" as const,
+                gap: "4px",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "9px",
+                  fontFamily: "monospace",
+                  letterSpacing: "0.12em",
+                  textTransform: "uppercase" as const,
+                  color: "var(--text-muted)",
+                  marginBottom: "4px",
+                }}
+              >
+                Active
+              </div>
+              {(Object.entries(activeConds) as [string, number][])
+                .filter(([, v]) => v > 0)
+                .map(([code, count]) => {
+                  const def = CONDITIONS[code as keyof typeof CONDITIONS];
+                  if (!def) return null;
+                  return (
+                    <div
+                      key={code}
+                      style={{
+                        display: "flex",
+                        gap: "8px",
+                        alignItems: "flex-start",
+                        padding: "6px 10px",
+                        backgroundColor: "var(--bg-nav)",
+                        border: "1px solid var(--primary)",
+                        borderRadius: "5px",
+                        borderLeftWidth: "3px",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontFamily: "monospace",
+                          fontSize: "10px",
+                          fontWeight: 700,
+                          color: "var(--primary)",
+                          minWidth: "32px",
+                        }}
+                      >
+                        {code}
+                        {count > 1 ? ` ×${count}` : ""}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: "11px",
+                          color: "var(--text-muted)",
+                          lineHeight: 1.4,
+                        }}
+                      >
+                        {def.tip}
+                      </span>
+                    </div>
+                  );
+                })}
             </div>
           )}
         </div>
@@ -6076,167 +6362,10 @@ export default function CharacterSheetPage({
       <div
         style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}
       >
-        {/* Summary row */}
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: "0.5rem",
-          }}
-        >
-          <StatCard
-            label="Caster"
-            value={
-              casterInfo?.casterType === "full"
-                ? "Full"
-                : casterInfo?.casterType === "half"
-                  ? "Half"
-                  : "Ltd."
-            }
-            sub={casterInfo?.casterSource ?? ""}
-          />
-          <div
-            style={{
-              textAlign: "center",
-              padding: "0.625rem 0.5rem",
-              backgroundColor: "var(--bg-nav)",
-              border: "1px solid var(--border)",
-              borderRadius: "0.5rem",
-            }}
-          >
-            <div
-              style={{
-                fontFamily: "var(--font-heading)",
-                fontWeight: 600,
-                fontSize: "0.6rem",
-                textTransform: "uppercase",
-                letterSpacing: "0.06em",
-                color: "var(--text-muted)",
-                marginBottom: "0.25rem",
-              }}
-            >
-              Reservoir
-            </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                gap: "0.3rem",
-              }}
-            >
-              <button
-                onClick={() =>
-                  persist({
-                    currentReservoir: Math.max(0, currentReservoir - 1),
-                  })
-                }
-                style={{
-                  width: "20px",
-                  height: "20px",
-                  borderRadius: "50%",
-                  border: "1px solid var(--border)",
-                  backgroundColor: "var(--bg-card)",
-                  cursor: "pointer",
-                  fontSize: "0.8rem",
-                  color: "var(--text-muted)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                −
-              </button>
-              <span
-                style={{
-                  fontFamily: "var(--font-heading)",
-                  fontWeight: 700,
-                  fontSize: "1.1rem",
-                  color: "var(--primary)",
-                }}
-              >
-                {currentReservoir}
-                <span
-                  style={{ fontSize: "0.7rem", color: "var(--text-muted)" }}
-                >
-                  /{maxReservoir}
-                </span>
-              </span>
-              <button
-                onClick={() =>
-                  persist({
-                    currentReservoir: Math.min(
-                      maxReservoir,
-                      currentReservoir + 1,
-                    ),
-                  })
-                }
-                style={{
-                  width: "20px",
-                  height: "20px",
-                  borderRadius: "50%",
-                  border: "1px solid var(--border)",
-                  backgroundColor: "var(--bg-card)",
-                  cursor: "pointer",
-                  fontSize: "0.8rem",
-                  color: "var(--text-muted)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                +
-              </button>
-            </div>
-          </div>
-          <StatCard
-            label="Spell DC"
-            value={spellDC ?? "—"}
-            sub={`Spell Tier ${spellTier}`}
-          />
-          <StatCard
-            label="Modifier"
-            value={fmtAttr(modVal)}
-            sub={
-              (casterInfo?.casterModifierOptions?.length ?? 0) > 1
-                ? `${modKey} (auto)`
-                : modKey
-            }
-          />
-        </div>
-        <div
-          style={{
-            display: "grid",
-            gridTemplateColumns: "repeat(4, 1fr)",
-            gap: "0.5rem",
-          }}
-        >
-          <StatCard
-            label="Spell Tier"
-            value={spellThreshold}
-            sub={`${c.featsPurchased ?? 0} feats bought`}
-          />
-          <StatCard
-            label="Known Spells"
-            value={knownSpellsMax}
-            sub={`${mySpells.filter((s) => !s.isCantrip).length} known`}
-          />
-          <StatCard
-            label="Prepared"
-            value={preparedSpellsMax}
-            sub="Mod + Tier"
-          />
-          <StatCard
-            label="Cantrips"
-            value={`${myCantripsAll.length}/${cantripCap}`}
-            sub={cantripAtCap ? "at cap" : "available"}
-          />
-        </div>
-
         {/* Magic sources + school spheres */}
         {(accessibleSources.length > 0 || knownSchoolSpheres.length > 0) && (
           <div
-            style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}
+            style={{ display: "flex", flexDirection: "row", flexWrap: "wrap", gap: "1rem", alignItems: "flex-start" }}
           >
             {accessibleSources.length > 0 && (
               <div>
@@ -7180,62 +7309,250 @@ export default function CharacterSheetPage({
   // ─── Left rail renderer ───────────────────────────────────────────────────
   function renderLeftRail() {
     const totalAvailableBase = TIER_TOTAL_SLOTS[effectiveTier - 1] ?? 4;
-    const currentTotalBase = c.baseAttributes.body + c.baseAttributes.mind + c.baseAttributes.will;
+    const currentTotalBase =
+      c.baseAttributes.body + c.baseAttributes.mind + c.baseAttributes.will;
     const dynamicUnspent = totalAvailableBase - currentTotalBase;
     const totalAvailableSkill = 4 + 2 * Math.floor((c.featsPurchased ?? 0) / 2);
-    const totalSpentSkill = Object.values(c.skillPoints ?? {}).reduce((s, v) => s + v, 0);
+    const totalSpentSkill = Object.values(c.skillPoints ?? {}).reduce(
+      (s, v) => s + v,
+      0,
+    );
     const dynUnspentSkill = totalAvailableSkill - totalSpentSkill;
 
     return (
       <>
         {/* Attributes */}
-        <div style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "6px", overflow: "hidden" }}>
-          <div style={{ padding: "0.5rem 1rem", borderBottom: "1px solid var(--border)", backgroundColor: "var(--bg-nav)", display: "flex", justifyContent: "space-between", alignItems: "center" }}>
-            <span style={{ fontSize: "0.65rem", fontFamily: "var(--font-heading)", fontStyle: "italic", letterSpacing: "0.12em", color: "var(--text-muted)", textTransform: "uppercase" as const }}>Attributes</span>
-            <span style={{ fontSize: "0.6rem", color: "var(--text-faint)", fontFamily: "var(--font-heading)" }}>{currentTotalBase}/{totalAvailableBase} pts</span>
+        <div
+          style={{
+            backgroundColor: "var(--bg-card)",
+            border: "1px solid var(--border)",
+            borderRadius: "6px",
+            overflow: "hidden",
+          }}
+        >
+          <div
+            style={{
+              padding: "0.5rem 1rem",
+              borderBottom: "1px solid var(--border)",
+              backgroundColor: "var(--bg-nav)",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "0.65rem",
+                fontFamily: "var(--font-heading)",
+                fontStyle: "italic",
+                letterSpacing: "0.12em",
+                color: "var(--text-muted)",
+                textTransform: "uppercase" as const,
+              }}
+            >
+              Attributes
+            </span>
+            <span
+              style={{
+                fontSize: "0.6rem",
+                color: "var(--text-faint)",
+                fontFamily: "var(--font-heading)",
+              }}
+            >
+              {currentTotalBase}/{totalAvailableBase} pts
+            </span>
           </div>
           {dynamicUnspent > 0 && (
-            <div style={{ margin: "10px 12px 0", padding: "0.375rem 0.625rem", backgroundColor: "var(--accent-light)", border: "1px solid var(--accent)", borderRadius: "0.375rem", fontSize: "0.75rem", color: "var(--text)", fontFamily: "var(--font-heading)", fontWeight: 700 }}>
-              ⚠ {dynamicUnspent} unspent attr pt{dynamicUnspent !== 1 ? "s" : ""}
-              <span style={{ fontWeight: 400, marginLeft: "0.35rem" }}>({currentTotalBase} / {totalAvailableBase})</span>
+            <div
+              style={{
+                margin: "10px 12px 0",
+                padding: "0.375rem 0.625rem",
+                backgroundColor: "var(--accent-light)",
+                border: "1px solid var(--accent)",
+                borderRadius: "0.375rem",
+                fontSize: "0.75rem",
+                color: "var(--text)",
+                fontFamily: "var(--font-heading)",
+                fontWeight: 700,
+              }}
+            >
+              ⚠ {dynamicUnspent} unspent attr pt
+              {dynamicUnspent !== 1 ? "s" : ""}
+              <span style={{ fontWeight: 400, marginLeft: "0.35rem" }}>
+                ({currentTotalBase} / {totalAvailableBase})
+              </span>
             </div>
           )}
           {/* Score tiles */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px", padding: "12px 12px 0" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: "8px",
+              padding: "12px 12px 0",
+            }}
+          >
             {(["body", "mind", "will"] as const).map((key) => {
               const val = attrs[key];
-              const isHighest = val === Math.max(attrs.body, attrs.mind, attrs.will);
+              const isHighest =
+                val === Math.max(attrs.body, attrs.mind, attrs.will);
               return (
-                <div key={key} style={{ backgroundColor: "var(--bg-nav)", border: `1px solid ${isHighest ? "var(--primary)" : "var(--border)"}`, borderRadius: "6px", padding: "10px 8px 8px", textAlign: "center" }}>
-                  <div style={{ fontSize: "9px", fontFamily: "monospace", letterSpacing: "0.16em", textTransform: "uppercase" as const, color: "var(--text-muted)", marginBottom: "4px" }}>{key.slice(0, 3).toUpperCase()}</div>
-                  <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "28px", fontWeight: 700, color: isHighest ? "var(--primary)" : "var(--text)", lineHeight: 1 }}>{fmtAttr(val)}</div>
-                  <div style={{ fontSize: "9px", fontFamily: "monospace", color: "var(--text-muted)", marginTop: "3px", letterSpacing: "0.08em" }}>{key}</div>
+                <div
+                  key={key}
+                  style={{
+                    backgroundColor: "var(--bg-nav)",
+                    border: `1px solid ${isHighest ? "var(--primary)" : "var(--border)"}`,
+                    borderRadius: "6px",
+                    padding: "10px 8px 8px",
+                    textAlign: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: "9px",
+                      fontFamily: "monospace",
+                      letterSpacing: "0.16em",
+                      textTransform: "uppercase" as const,
+                      color: "var(--text-muted)",
+                      marginBottom: "4px",
+                    }}
+                  >
+                    {key.slice(0, 3).toUpperCase()}
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "'Cormorant Garamond', Georgia, serif",
+                      fontSize: "28px",
+                      fontWeight: 700,
+                      color: isHighest ? "var(--primary)" : "var(--text)",
+                      lineHeight: 1,
+                    }}
+                  >
+                    {fmtAttr(val)}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "9px",
+                      fontFamily: "monospace",
+                      color: "var(--text-muted)",
+                      marginTop: "3px",
+                      letterSpacing: "0.08em",
+                    }}
+                  >
+                    {key}
+                  </div>
                 </div>
               );
             })}
           </div>
           {/* Edit controls */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "8px", padding: "8px 12px 12px" }}>
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(3, 1fr)",
+              gap: "8px",
+              padding: "8px 12px 12px",
+            }}
+          >
             {(["body", "mind", "will"] as const).map((key) => {
               const val = attrs[key];
               const base = c.baseAttributes[key];
-              const voc = c.vocationAttributeBonus.attribute === key ? c.vocationAttributeBonus.value : 0;
+              const voc =
+                c.vocationAttributeBonus.attribute === key
+                  ? c.vocationAttributeBonus.value
+                  : 0;
               const canIncrease = dynamicUnspent > 0 && val < 12;
               const canDecrease = base > 0;
               function adjustAttr(delta: number) {
                 const newBase = base + delta;
                 if (newBase < 0 || newBase + voc > 12) return;
                 if (delta > 0 && !canIncrease) return;
-                persist({ baseAttributes: { ...c.baseAttributes, [key]: newBase }, unspentAttributePoints: Math.max(0, dynamicUnspent - delta) });
+                persist({
+                  baseAttributes: { ...c.baseAttributes, [key]: newBase },
+                  unspentAttributePoints: Math.max(0, dynamicUnspent - delta),
+                });
               }
               return (
-                <div key={key} style={{ display: "flex", flexDirection: "column" as const, alignItems: "center", gap: "3px" }}>
-                  <div style={{ display: "flex", alignItems: "center", gap: "3px" }}>
-                    <button onClick={() => adjustAttr(-1)} disabled={!canDecrease} style={{ width: "18px", height: "18px", borderRadius: "50%", border: "1px solid var(--border)", backgroundColor: "var(--bg-card)", cursor: canDecrease ? "pointer" : "not-allowed", fontWeight: 700, color: "var(--text-muted)", fontSize: "0.8rem", display: "flex", alignItems: "center", justifyContent: "center" }}>−</button>
-                    <span style={{ fontFamily: "var(--font-heading)", fontSize: "0.72rem", fontWeight: 600, color: "var(--text-muted)", minWidth: "16px", textAlign: "center" as const }}>{fmtAttr(base)}</span>
-                    <button onClick={() => adjustAttr(1)} disabled={!canIncrease} style={{ width: "18px", height: "18px", borderRadius: "50%", border: "1px solid var(--border)", backgroundColor: "var(--bg-card)", cursor: canIncrease ? "pointer" : "not-allowed", fontWeight: 700, color: "var(--text-muted)", fontSize: "0.8rem", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
+                <div
+                  key={key}
+                  style={{
+                    display: "flex",
+                    flexDirection: "column" as const,
+                    alignItems: "center",
+                    gap: "3px",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "3px",
+                    }}
+                  >
+                    <button
+                      onClick={() => adjustAttr(-1)}
+                      disabled={!canDecrease}
+                      style={{
+                        width: "18px",
+                        height: "18px",
+                        borderRadius: "50%",
+                        border: "1px solid var(--border)",
+                        backgroundColor: "var(--bg-card)",
+                        cursor: canDecrease ? "pointer" : "not-allowed",
+                        fontWeight: 700,
+                        color: "var(--text-muted)",
+                        fontSize: "0.8rem",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      −
+                    </button>
+                    <span
+                      style={{
+                        fontFamily: "var(--font-heading)",
+                        fontSize: "0.72rem",
+                        fontWeight: 600,
+                        color: "var(--text-muted)",
+                        minWidth: "16px",
+                        textAlign: "center" as const,
+                      }}
+                    >
+                      {fmtAttr(base)}
+                    </span>
+                    <button
+                      onClick={() => adjustAttr(1)}
+                      disabled={!canIncrease}
+                      style={{
+                        width: "18px",
+                        height: "18px",
+                        borderRadius: "50%",
+                        border: "1px solid var(--border)",
+                        backgroundColor: "var(--bg-card)",
+                        cursor: canIncrease ? "pointer" : "not-allowed",
+                        fontWeight: 700,
+                        color: "var(--text-muted)",
+                        fontSize: "0.8rem",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      +
+                    </button>
                   </div>
-                  {voc > 0 && <span style={{ fontSize: "0.58rem", color: "var(--text-muted)", letterSpacing: "0.06em" }}>+{voc} voc</span>}
+                  {voc > 0 && (
+                    <span
+                      style={{
+                        fontSize: "0.58rem",
+                        color: "var(--text-muted)",
+                        letterSpacing: "0.06em",
+                      }}
+                    >
+                      +{voc} voc
+                    </span>
+                  )}
                 </div>
               );
             })}
@@ -7243,31 +7560,198 @@ export default function CharacterSheetPage({
         </div>
 
         {/* Defence */}
-        <div style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "6px", overflow: "hidden" }}>
-          <div style={{ padding: "0.5rem 1rem", borderBottom: "1px solid var(--border)", backgroundColor: "var(--bg-nav)" }}>
-            <span style={{ fontSize: "0.65rem", fontFamily: "var(--font-heading)", fontStyle: "italic", letterSpacing: "0.12em", color: "var(--text-muted)", textTransform: "uppercase" as const }}>Defence</span>
+        <div
+          style={{
+            backgroundColor: "var(--bg-card)",
+            border: "1px solid var(--border)",
+            borderRadius: "6px",
+            overflow: "hidden",
+          }}
+        >
+          <div
+            style={{
+              padding: "0.5rem 1rem",
+              borderBottom: "1px solid var(--border)",
+              backgroundColor: "var(--bg-nav)",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "0.65rem",
+                fontFamily: "var(--font-heading)",
+                fontStyle: "italic",
+                letterSpacing: "0.12em",
+                color: "var(--text-muted)",
+                textTransform: "uppercase" as const,
+              }}
+            >
+              Defence
+            </span>
           </div>
-          <div style={{ padding: "0.875rem 1rem", display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "0.5rem" }}>
+          <div
+            style={{
+              padding: "0.875rem 1rem",
+              display: "grid",
+              gridTemplateColumns: "repeat(2, 1fr)",
+              gap: "0.5rem",
+            }}
+          >
             {(() => {
               const tempAD = c.tempArmorDef ?? 0;
               const totalAD = armorDefense + tempAD;
               const spellArmorOn = !!(c.spellArmorActive && isCaster);
-              const subLabel = spellArmorOn ? `Spell (11+${modKey})` : hasUnarmoredDefense && !equippedBody ? "Unarmored" : hasAgile && !equippedShield && (!equippedBody || equippedBody.armorCategory === "Light" || !equippedBody.armorCategory) ? "Agile" : equippedBody ? `${equippedBody.name} +${equippedBody.armorBonus}` : "Base";
+              const subLabel = spellArmorOn
+                ? `Spell (11+${modKey})`
+                : hasUnarmoredDefense && !equippedBody
+                  ? "Unarmored"
+                  : hasAgile &&
+                      !equippedShield &&
+                      (!equippedBody ||
+                        equippedBody.armorCategory === "Light" ||
+                        !equippedBody.armorCategory)
+                    ? "Agile"
+                    : equippedBody
+                      ? `${equippedBody.name} +${equippedBody.armorBonus}`
+                      : "Base";
               return (
-                <div style={{ textAlign: "center", padding: "0.5rem 0.35rem", backgroundColor: spellArmorOn ? "var(--primary-light)" : "var(--bg-nav)", border: `1px solid ${spellArmorOn ? "var(--primary)" : "var(--border)"}`, borderRadius: "8px" }}>
-                  <div style={{ fontSize: "0.6rem", color: "var(--text-muted)", letterSpacing: "0.06em", marginBottom: "2px" }}>Armor Def</div>
-                  <div style={{ fontSize: "1.3rem", fontWeight: 700, color: "var(--text)", fontFamily: "var(--font-heading)", lineHeight: 1.1 }}>{totalAD}</div>
-                  <div style={{ fontSize: "0.55rem", color: spellArmorOn ? "var(--primary)" : "var(--text-muted)", marginTop: "0.1rem", marginBottom: "0.15rem" }}>{subLabel}</div>
+                <div
+                  style={{
+                    textAlign: "center",
+                    padding: "0.5rem 0.35rem",
+                    backgroundColor: spellArmorOn
+                      ? "var(--primary-light)"
+                      : "var(--bg-nav)",
+                    border: `1px solid ${spellArmorOn ? "var(--primary)" : "var(--border)"}`,
+                    borderRadius: "8px",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontSize: "0.6rem",
+                      color: "var(--text-muted)",
+                      letterSpacing: "0.06em",
+                      marginBottom: "2px",
+                    }}
+                  >
+                    Armor Def
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "1.3rem",
+                      fontWeight: 700,
+                      color: "var(--text)",
+                      fontFamily: "var(--font-heading)",
+                      lineHeight: 1.1,
+                    }}
+                  >
+                    {totalAD}
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "0.55rem",
+                      color: spellArmorOn
+                        ? "var(--primary)"
+                        : "var(--text-muted)",
+                      marginTop: "0.1rem",
+                      marginBottom: "0.15rem",
+                    }}
+                  >
+                    {subLabel}
+                  </div>
                   {isCaster && (
-                    <button onClick={() => persist({ spellArmorActive: !c.spellArmorActive })} style={{ fontSize: "0.5rem", fontFamily: "var(--font-heading)", fontWeight: 700, padding: "0.1rem 0.3rem", borderRadius: "0.25rem", border: `1px solid ${spellArmorOn ? "var(--primary)" : "var(--border)"}`, backgroundColor: spellArmorOn ? "var(--primary)" : "var(--bg-card)", color: spellArmorOn ? "#fff" : "var(--text-muted)", cursor: "pointer", marginBottom: "0.15rem" }}>
+                    <button
+                      onClick={() =>
+                        persist({ spellArmorActive: !c.spellArmorActive })
+                      }
+                      style={{
+                        fontSize: "0.5rem",
+                        fontFamily: "var(--font-heading)",
+                        fontWeight: 700,
+                        padding: "0.1rem 0.3rem",
+                        borderRadius: "0.25rem",
+                        border: `1px solid ${spellArmorOn ? "var(--primary)" : "var(--border)"}`,
+                        backgroundColor: spellArmorOn
+                          ? "var(--primary)"
+                          : "var(--bg-card)",
+                        color: spellArmorOn ? "#fff" : "var(--text-muted)",
+                        cursor: "pointer",
+                        marginBottom: "0.15rem",
+                      }}
+                    >
                       {spellArmorOn ? "Spell Armor ON" : "Spell Armor"}
                     </button>
                   )}
-                  <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.2rem" }}>
-                    <button onClick={() => persist({ tempArmorDef: tempAD - 1 })} style={{ width: "16px", height: "16px", borderRadius: "50%", border: "1px solid var(--border)", backgroundColor: "var(--bg-card)", cursor: "pointer", fontWeight: 700, color: "var(--text-muted)", fontSize: "0.7rem", display: "flex", alignItems: "center", justifyContent: "center" }}>−</button>
-                    <span style={{ fontSize: "0.6rem", color: "var(--text-muted)", fontFamily: "var(--font-heading)", minWidth: "14px", textAlign: "center" as const }}>{tempAD === 0 ? "tmp" : tempAD}</span>
-                    <button onClick={() => persist({ tempArmorDef: tempAD + 1 })} style={{ width: "16px", height: "16px", borderRadius: "50%", border: "1px solid var(--border)", backgroundColor: "var(--bg-card)", cursor: "pointer", fontWeight: 700, color: "var(--text-muted)", fontSize: "0.7rem", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
-                    {tempAD !== 0 && (<button onClick={() => persist({ tempArmorDef: 0 })} style={{ fontSize: "0.55rem", color: "var(--text-muted)", background: "none", border: "none", cursor: "pointer" }}>✕</button>)}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      gap: "0.2rem",
+                    }}
+                  >
+                    <button
+                      onClick={() => persist({ tempArmorDef: tempAD - 1 })}
+                      style={{
+                        width: "16px",
+                        height: "16px",
+                        borderRadius: "50%",
+                        border: "1px solid var(--border)",
+                        backgroundColor: "var(--bg-card)",
+                        cursor: "pointer",
+                        fontWeight: 700,
+                        color: "var(--text-muted)",
+                        fontSize: "0.7rem",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      −
+                    </button>
+                    <span
+                      style={{
+                        fontSize: "0.6rem",
+                        color: "var(--text-muted)",
+                        fontFamily: "var(--font-heading)",
+                        minWidth: "14px",
+                        textAlign: "center" as const,
+                      }}
+                    >
+                      {tempAD === 0 ? "tmp" : tempAD}
+                    </span>
+                    <button
+                      onClick={() => persist({ tempArmorDef: tempAD + 1 })}
+                      style={{
+                        width: "16px",
+                        height: "16px",
+                        borderRadius: "50%",
+                        border: "1px solid var(--border)",
+                        backgroundColor: "var(--bg-card)",
+                        cursor: "pointer",
+                        fontWeight: 700,
+                        color: "var(--text-muted)",
+                        fontSize: "0.7rem",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      +
+                    </button>
+                    {tempAD !== 0 && (
+                      <button
+                        onClick={() => persist({ tempArmorDef: 0 })}
+                        style={{
+                          fontSize: "0.55rem",
+                          color: "var(--text-muted)",
+                          background: "none",
+                          border: "none",
+                          cursor: "pointer",
+                        }}
+                      >
+                        ✕
+                      </button>
+                    )}
                   </div>
                 </div>
               );
@@ -7279,56 +7763,310 @@ export default function CharacterSheetPage({
         </div>
 
         {/* V.I.T.A.L.S. */}
-        <div style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "6px", overflow: "hidden" }}>
-          <div style={{ padding: "0.5rem 1rem", borderBottom: "1px solid var(--border)", backgroundColor: "var(--bg-nav)" }}>
-            <span style={{ fontSize: "0.65rem", fontFamily: "var(--font-heading)", fontStyle: "italic", letterSpacing: "0.12em", color: "var(--text-muted)", textTransform: "uppercase" as const }}>V.I.T.A.L.S.</span>
+        <div
+          style={{
+            backgroundColor: "var(--bg-card)",
+            border: "1px solid var(--border)",
+            borderRadius: "6px",
+            overflow: "hidden",
+          }}
+        >
+          <div
+            style={{
+              padding: "0.5rem 1rem",
+              borderBottom: "1px solid var(--border)",
+              backgroundColor: "var(--bg-nav)",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "0.65rem",
+                fontFamily: "var(--font-heading)",
+                fontStyle: "italic",
+                letterSpacing: "0.12em",
+                color: "var(--text-muted)",
+                textTransform: "uppercase" as const,
+              }}
+            >
+              V.I.T.A.L.S.
+            </span>
           </div>
-          <div style={{ padding: "0.875rem 1rem", display: "flex", flexDirection: "column" as const, gap: "0.75rem" }}>
+          <div
+            style={{
+              padding: "0.875rem 1rem",
+              display: "flex",
+              flexDirection: "column" as const,
+              gap: "0.75rem",
+            }}
+          >
             {!isArmorProficient && (
-              <div style={{ padding: "0.4rem 0.75rem", backgroundColor: "var(--section-alert-bg)", border: "1px solid #ff7979", borderRadius: "0.375rem", fontSize: "0.78rem", color: "#cc2222", fontFamily: "var(--font-heading)", fontWeight: 700 }}>
-                ⚠ Armor Penalty active — all skill dice reduced one step (min d4)
+              <div
+                style={{
+                  padding: "0.4rem 0.75rem",
+                  backgroundColor: "var(--section-alert-bg)",
+                  border: "1px solid #ff7979",
+                  borderRadius: "0.375rem",
+                  fontSize: "0.78rem",
+                  color: "#cc2222",
+                  fontFamily: "var(--font-heading)",
+                  fontWeight: 700,
+                }}
+              >
+                ⚠ Armor Penalty active — all skill dice reduced one step (min
+                d4)
               </div>
             )}
             {dynUnspentSkill > 0 && (
-              <div style={{ padding: "0.4rem 0.75rem", backgroundColor: "var(--accent-light)", border: "1px solid #FCD34D", borderRadius: "0.375rem", fontSize: "0.8rem", color: "(#92400E)", fontFamily: "var(--font-heading)", fontWeight: 700 }}>
-                ✦ {dynUnspentSkill} unspent Skill Point{dynUnspentSkill !== 1 ? "s" : ""} — allocate below
-                <span style={{ fontWeight: 400, marginLeft: "0.5rem" }}>({totalSpentSkill} / {totalAvailableSkill} spent)</span>
+              <div
+                style={{
+                  padding: "0.4rem 0.75rem",
+                  backgroundColor: "var(--accent-light)",
+                  border: "1px solid #FCD34D",
+                  borderRadius: "0.375rem",
+                  fontSize: "0.8rem",
+                  color: "(#92400E)",
+                  fontFamily: "var(--font-heading)",
+                  fontWeight: 700,
+                }}
+              >
+                ✦ {dynUnspentSkill} unspent Skill Point
+                {dynUnspentSkill !== 1 ? "s" : ""} — allocate below
+                <span style={{ fontWeight: 400, marginLeft: "0.5rem" }}>
+                  ({totalSpentSkill} / {totalAvailableSkill} spent)
+                </span>
               </div>
             )}
-            <div style={{ display: "flex", flexDirection: "column" as const, gap: "0.3rem" }}>
-              {["Vigor", "Intuition", "Talent", "Awareness", "Lore", "Social"].map((skill) => {
-                const pool = calcSkillPool(skill, attrs, c.vitalsProficiencies, c.vitalsExpertiseBumps ?? {}, c.skillPoints ?? {});
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column" as const,
+                gap: "0.3rem",
+              }}
+            >
+              {[
+                "Vigor",
+                "Intuition",
+                "Talent",
+                "Awareness",
+                "Lore",
+                "Social",
+              ].map((skill) => {
+                const pool = calcSkillPool(
+                  skill,
+                  attrs,
+                  c.vitalsProficiencies,
+                  c.vitalsExpertiseBumps ?? {},
+                  c.skillPoints ?? {},
+                );
                 const invested = c.skillPoints?.[skill] ?? 0;
                 const canAdd = dynUnspentSkill > 0 && invested < 12;
                 const canRemove = invested > 0;
-                const RANK_COLORS: Record<string, string> = { Untrained: "var(--text-muted)", Trained: "var(--primary)", Expert: "var(--accent)", Master: "#7C3AED" };
+                const RANK_COLORS: Record<string, string> = {
+                  Untrained: "var(--text-muted)",
+                  Trained: "var(--primary)",
+                  Expert: "var(--accent)",
+                  Master: "#7C3AED",
+                };
                 const DIE_STEP = [4, 6, 8, 10, 12] as const;
-                function stepDown(faces: number): number { const i = DIE_STEP.indexOf(faces as (typeof DIE_STEP)[number]); return i > 0 ? DIE_STEP[i - 1] : 4; }
+                function stepDown(faces: number): number {
+                  const i = DIE_STEP.indexOf(
+                    faces as (typeof DIE_STEP)[number],
+                  );
+                  return i > 0 ? DIE_STEP[i - 1] : 4;
+                }
                 const penalizedDisplay = (() => {
-                  if (pool.profDieFaces !== null) return `${pool.baseDiceCount + pool.skillDiceCount}d${stepDown(pool.profDieFaces)}`;
-                  const baseFaces = calcBaseDiceFromAttr(calcSkillAttrValue(skill, attrs));
+                  if (pool.profDieFaces !== null)
+                    return `${pool.baseDiceCount + pool.skillDiceCount}d${stepDown(pool.profDieFaces)}`;
+                  const baseFaces = calcBaseDiceFromAttr(
+                    calcSkillAttrValue(skill, attrs),
+                  );
                   return `${pool.baseDiceCount + pool.skillDiceCount}d${stepDown(baseFaces)}`;
                 })();
-                const dieFaces = pool.profDieFaces ?? calcBaseDiceFromAttr(calcSkillAttrValue(skill, attrs));
-                const badgeStyle: React.CSSProperties = dieFaces >= 10 ? { backgroundColor: "var(--primary)", color: "var(--text-on-primary)" } : dieFaces === 8 ? { backgroundColor: "var(--primary-light)", color: "var(--primary)", border: "1px solid var(--primary)" } : { backgroundColor: "var(--bg-nav)", color: "var(--text-muted)", border: "1px solid var(--border)" };
+                const dieFaces =
+                  pool.profDieFaces ??
+                  calcBaseDiceFromAttr(calcSkillAttrValue(skill, attrs));
+                const badgeStyle: React.CSSProperties =
+                  dieFaces >= 10
+                    ? {
+                        backgroundColor: "var(--primary)",
+                        color: "var(--text-on-primary)",
+                      }
+                    : dieFaces === 8
+                      ? {
+                          backgroundColor: "var(--primary-light)",
+                          color: "var(--primary)",
+                          border: "1px solid var(--primary)",
+                        }
+                      : {
+                          backgroundColor: "var(--bg-nav)",
+                          color: "var(--text-muted)",
+                          border: "1px solid var(--border)",
+                        };
                 return (
-                  <div key={skill} style={{ display: "flex", alignItems: "center", gap: "0.5rem", backgroundColor: "var(--bg-nav)", border: "1px solid var(--border)", borderRadius: "8px", padding: "0.375rem 0.625rem" }}>
-                    <span style={{ fontSize: "0.8rem", color: "var(--text)", flex: 1, letterSpacing: "0.01em" }}>{skill}</span>
+                  <div
+                    key={skill}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                      backgroundColor: "var(--bg-nav)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "8px",
+                      padding: "0.375rem 0.625rem",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: "0.8rem",
+                        color: "var(--text)",
+                        flex: 1,
+                        letterSpacing: "0.01em",
+                      }}
+                    >
+                      {skill}
+                    </span>
                     {pool.rank !== "Untrained" && (
-                      <span style={{ fontSize: "0.6rem", fontWeight: 700, fontFamily: "var(--font-heading)", padding: "0.1rem 0.35rem", borderRadius: "9999px", border: `1px solid ${RANK_COLORS[pool.rank]}`, color: RANK_COLORS[pool.rank] }}>{pool.rank}</span>
+                      <span
+                        style={{
+                          fontSize: "0.6rem",
+                          fontWeight: 700,
+                          fontFamily: "var(--font-heading)",
+                          padding: "0.1rem 0.35rem",
+                          borderRadius: "9999px",
+                          border: `1px solid ${RANK_COLORS[pool.rank]}`,
+                          color: RANK_COLORS[pool.rank],
+                        }}
+                      >
+                        {pool.rank}
+                      </span>
                     )}
                     {isArmorProficient ? (
-                      <span style={{ fontSize: "0.72rem", fontWeight: 700, fontFamily: "var(--font-heading)", padding: "1px 7px", borderRadius: "5px", ...badgeStyle }}>{pool.display}</span>
+                      <span
+                        style={{
+                          fontSize: "0.72rem",
+                          fontWeight: 700,
+                          fontFamily: "var(--font-heading)",
+                          padding: "1px 7px",
+                          borderRadius: "5px",
+                          ...badgeStyle,
+                        }}
+                      >
+                        {pool.display}
+                      </span>
                     ) : (
-                      <div style={{ display: "flex", gap: "0.2rem", alignItems: "center" }}>
-                        <span style={{ fontSize: "0.72rem", fontFamily: "var(--font-heading)", color: "var(--text-muted)", textDecoration: "line-through" }}>{pool.display}</span>
-                        <span style={{ fontSize: "0.72rem", fontWeight: 700, fontFamily: "var(--font-heading)", padding: "1px 7px", borderRadius: "5px", backgroundColor: "var(--bg-nav)", color: "#cc2222", border: "1px solid #cc2222" }}>{penalizedDisplay}</span>
+                      <div
+                        style={{
+                          display: "flex",
+                          gap: "0.2rem",
+                          alignItems: "center",
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontSize: "0.72rem",
+                            fontFamily: "var(--font-heading)",
+                            color: "var(--text-muted)",
+                            textDecoration: "line-through",
+                          }}
+                        >
+                          {pool.display}
+                        </span>
+                        <span
+                          style={{
+                            fontSize: "0.72rem",
+                            fontWeight: 700,
+                            fontFamily: "var(--font-heading)",
+                            padding: "1px 7px",
+                            borderRadius: "5px",
+                            backgroundColor: "var(--bg-nav)",
+                            color: "#cc2222",
+                            border: "1px solid #cc2222",
+                          }}
+                        >
+                          {penalizedDisplay}
+                        </span>
                       </div>
                     )}
-                    <div style={{ display: "flex", alignItems: "center", gap: "0.2rem", flexShrink: 0 }}>
-                      <button onClick={() => { if (!canRemove) return; persist({ skillPoints: { ...(c.skillPoints ?? {}), [skill]: invested - 1 }, unspentSkillPoints: totalAvailableSkill - (totalSpentSkill - 1) }); }} disabled={!canRemove} style={{ width: "18px", height: "18px", borderRadius: "50%", border: "1px solid var(--border)", backgroundColor: "var(--bg-card)", cursor: canRemove ? "pointer" : "not-allowed", fontWeight: 700, color: "var(--text-muted)", fontSize: "0.75rem", display: "flex", alignItems: "center", justifyContent: "center" }}>−</button>
-                      <span style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: "0.75rem", minWidth: "14px", textAlign: "center" as const, color: "var(--primary)" }}>{invested}</span>
-                      <button onClick={() => { if (!canAdd) return; persist({ skillPoints: { ...(c.skillPoints ?? {}), [skill]: invested + 1 }, unspentSkillPoints: totalAvailableSkill - (totalSpentSkill + 1) }); }} disabled={!canAdd} style={{ width: "18px", height: "18px", borderRadius: "50%", border: "1px solid var(--border)", backgroundColor: "var(--bg-card)", cursor: canAdd ? "pointer" : "not-allowed", fontWeight: 700, color: "var(--text-muted)", fontSize: "0.75rem", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.2rem",
+                        flexShrink: 0,
+                      }}
+                    >
+                      <button
+                        onClick={() => {
+                          if (!canRemove) return;
+                          persist({
+                            skillPoints: {
+                              ...(c.skillPoints ?? {}),
+                              [skill]: invested - 1,
+                            },
+                            unspentSkillPoints:
+                              totalAvailableSkill - (totalSpentSkill - 1),
+                          });
+                        }}
+                        disabled={!canRemove}
+                        style={{
+                          width: "18px",
+                          height: "18px",
+                          borderRadius: "50%",
+                          border: "1px solid var(--border)",
+                          backgroundColor: "var(--bg-card)",
+                          cursor: canRemove ? "pointer" : "not-allowed",
+                          fontWeight: 700,
+                          color: "var(--text-muted)",
+                          fontSize: "0.75rem",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        −
+                      </button>
+                      <span
+                        style={{
+                          fontFamily: "var(--font-heading)",
+                          fontWeight: 700,
+                          fontSize: "0.75rem",
+                          minWidth: "14px",
+                          textAlign: "center" as const,
+                          color: "var(--primary)",
+                        }}
+                      >
+                        {invested}
+                      </span>
+                      <button
+                        onClick={() => {
+                          if (!canAdd) return;
+                          persist({
+                            skillPoints: {
+                              ...(c.skillPoints ?? {}),
+                              [skill]: invested + 1,
+                            },
+                            unspentSkillPoints:
+                              totalAvailableSkill - (totalSpentSkill + 1),
+                          });
+                        }}
+                        disabled={!canAdd}
+                        style={{
+                          width: "18px",
+                          height: "18px",
+                          borderRadius: "50%",
+                          border: "1px solid var(--border)",
+                          backgroundColor: "var(--bg-card)",
+                          cursor: canAdd ? "pointer" : "not-allowed",
+                          fontWeight: 700,
+                          color: "var(--text-muted)",
+                          fontSize: "0.75rem",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                        }}
+                      >
+                        +
+                      </button>
                     </div>
                   </div>
                 );
@@ -7341,22 +8079,92 @@ export default function CharacterSheetPage({
         {[
           { label: "Armaments", items: prof?.armaments ?? [] },
           { label: "Protection", items: prof?.protection ?? [] },
-          { label: "Tool Kits", items: (prof?.toolKits ?? []).filter((t) => t !== "-") },
-        ].filter((g) => g.items.length > 0).map((group) => (
-          <div key={group.label} style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "6px", overflow: "hidden" }}>
-            <div style={{ padding: "0.5rem 1rem", borderBottom: "1px solid var(--border)", backgroundColor: "var(--bg-nav)" }}>
-              <span style={{ fontSize: "0.65rem", fontFamily: "var(--font-heading)", fontStyle: "italic", letterSpacing: "0.12em", color: "var(--text-muted)", textTransform: "uppercase" as const }}>{group.label}</span>
+          {
+            label: "Tool Kits",
+            items: (prof?.toolKits ?? []).filter((t) => t !== "-"),
+          },
+        ]
+          .filter((g) => g.items.length > 0)
+          .map((group) => (
+            <div
+              key={group.label}
+              style={{
+                backgroundColor: "var(--bg-card)",
+                border: "1px solid var(--border)",
+                borderRadius: "6px",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  padding: "0.5rem 1rem",
+                  borderBottom: "1px solid var(--border)",
+                  backgroundColor: "var(--bg-nav)",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "0.65rem",
+                    fontFamily: "var(--font-heading)",
+                    fontStyle: "italic",
+                    letterSpacing: "0.12em",
+                    color: "var(--text-muted)",
+                    textTransform: "uppercase" as const,
+                  }}
+                >
+                  {group.label}
+                </span>
+              </div>
+              <div
+                style={{
+                  padding: "0.5rem 1rem",
+                  display: "flex",
+                  flexDirection: "column" as const,
+                  gap: "0.35rem",
+                }}
+              >
+                {group.items.map((item) => (
+                  <div
+                    key={item}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.625rem",
+                      padding: "0.45rem 0.75rem",
+                      backgroundColor: "var(--bg-nav)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "0.375rem",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontFamily: "var(--font-heading)",
+                        fontWeight: 700,
+                        fontSize: "0.85rem",
+                        color: "var(--text)",
+                        flex: 1,
+                      }}
+                    >
+                      {item}
+                    </span>
+                    <span
+                      style={{
+                        fontSize: "0.6rem",
+                        fontWeight: 700,
+                        fontFamily: "var(--font-heading)",
+                        padding: "0.1rem 0.35rem",
+                        borderRadius: "9999px",
+                        border: "1px solid var(--primary)",
+                        color: "var(--primary)",
+                      }}
+                    >
+                      Proficient
+                    </span>
+                  </div>
+                ))}
+              </div>
             </div>
-            <div style={{ padding: "0.5rem 1rem", display: "flex", flexDirection: "column" as const, gap: "0.35rem" }}>
-              {group.items.map((item) => (
-                <div key={item} style={{ display: "flex", alignItems: "center", gap: "0.625rem", padding: "0.45rem 0.75rem", backgroundColor: "var(--bg-nav)", border: "1px solid var(--border)", borderRadius: "0.375rem" }}>
-                  <span style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: "0.85rem", color: "var(--text)", flex: 1 }}>{item}</span>
-                  <span style={{ fontSize: "0.6rem", fontWeight: 700, fontFamily: "var(--font-heading)", padding: "0.1rem 0.35rem", borderRadius: "9999px", border: "1px solid var(--primary)", color: "var(--primary)" }}>Proficient</span>
-                </div>
-              ))}
-            </div>
-          </div>
-        ))}
+          ))}
       </>
     );
   }
@@ -7368,20 +8176,103 @@ export default function CharacterSheetPage({
         {/* Portrait */}
         <div
           onClick={() => portraitInputRef.current?.click()}
-          title={portraitUrl ? "Click to change portrait" : "Click to upload portrait"}
-          style={{ position: "relative", borderRadius: "6px", overflow: "hidden", border: "1px solid var(--border)", aspectRatio: "3/4", backgroundColor: "var(--bg-nav)", cursor: "pointer" }}
+          title={
+            portraitUrl
+              ? "Click to change portrait"
+              : "Click to upload portrait"
+          }
+          style={{
+            position: "relative",
+            borderRadius: "6px",
+            overflow: "hidden",
+            border: "1px solid var(--border)",
+            aspectRatio: "3/4",
+            backgroundColor: "var(--bg-nav)",
+            cursor: "pointer",
+          }}
         >
           {portraitUrl ? (
-            <img src={portraitUrl} alt={c.name} style={{ position: "absolute", inset: 0, width: "100%", height: "100%", objectFit: "cover" }} />
+            <img
+              src={portraitUrl}
+              alt={c.name}
+              style={{
+                position: "absolute",
+                inset: 0,
+                width: "100%",
+                height: "100%",
+                objectFit: "cover",
+              }}
+            />
           ) : (
-            <div style={{ position: "absolute", inset: 0, background: "repeating-linear-gradient(135deg, transparent 0 12px, var(--border) 12px 13px)", display: "flex", alignItems: "center", justifyContent: "center" }}>
-              <div style={{ fontFamily: "var(--font-heading)", fontSize: "10px", letterSpacing: "0.3em", color: "var(--text-muted)", textTransform: "uppercase" as const, opacity: 0.6 }}>PORTRAIT</div>
+            <div
+              style={{
+                position: "absolute",
+                inset: 0,
+                background:
+                  "repeating-linear-gradient(135deg, transparent 0 12px, var(--border) 12px 13px)",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "var(--font-heading)",
+                  fontSize: "10px",
+                  letterSpacing: "0.3em",
+                  color: "var(--text-muted)",
+                  textTransform: "uppercase" as const,
+                  opacity: 0.6,
+                }}
+              >
+                PORTRAIT
+              </div>
             </div>
           )}
-          <div style={{ position: "absolute", inset: "auto 0 0 0", padding: "14px 14px 12px", background: "linear-gradient(180deg, transparent 0%, var(--bg-nav) 100%)" }}>
-            <div style={{ fontFamily: "var(--font-heading)", fontSize: "9px", letterSpacing: "0.2em", textTransform: "uppercase" as const, color: "var(--text-muted)" }}>Character</div>
-            <div style={{ fontFamily: "var(--font-heading)", fontStyle: "italic", fontWeight: 700, fontSize: "19px", color: "var(--text)", lineHeight: 1.1, marginTop: "2px" }}>{c.name}</div>
-            <div style={{ fontFamily: "var(--font-heading)", fontSize: "10px", letterSpacing: "0.08em", color: "var(--text-muted)", marginTop: "3px" }}>{c.vocationName || c.professionName} · Tier {effectiveTier}</div>
+          <div
+            style={{
+              position: "absolute",
+              inset: "auto 0 0 0",
+              padding: "14px 14px 12px",
+              background:
+                "linear-gradient(180deg, transparent 0%, var(--bg-nav) 100%)",
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "var(--font-heading)",
+                fontSize: "9px",
+                letterSpacing: "0.2em",
+                textTransform: "uppercase" as const,
+                color: "var(--text-muted)",
+              }}
+            >
+              Character
+            </div>
+            <div
+              style={{
+                fontFamily: "var(--font-heading)",
+                fontStyle: "italic",
+                fontWeight: 700,
+                fontSize: "19px",
+                color: "var(--text)",
+                lineHeight: 1.1,
+                marginTop: "2px",
+              }}
+            >
+              {c.name}
+            </div>
+            <div
+              style={{
+                fontFamily: "var(--font-heading)",
+                fontSize: "10px",
+                letterSpacing: "0.08em",
+                color: "var(--text-muted)",
+                marginTop: "3px",
+              }}
+            >
+              {c.vocationName || c.professionName} · Tier {effectiveTier}
+            </div>
           </div>
         </div>
         <input
@@ -7404,68 +8295,254 @@ export default function CharacterSheetPage({
         />
 
         {/* Character Details */}
-        <div style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "6px", padding: "14px 16px" }}>
-          <div style={{ fontFamily: "var(--font-heading)", fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase" as const, color: "var(--text-muted)", marginBottom: "12px" }}>Character Details</div>
-          <div style={{ display: "flex", flexDirection: "column" as const, gap: "0px" }}>
-            {([
-              { k: "Profession", v: c.professionName },
-              { k: "Origin", v: c.originName },
-              { k: "Vocation", v: c.vocationName },
-            ] as const).filter(({ v }) => v).map(({ k, v }) => (
-              <div key={k} style={{ display: "flex", alignItems: "baseline", justifyContent: "space-between", gap: "12px", padding: "5px 0", borderBottom: "1px dashed var(--border)" }}>
-                <span style={{ fontFamily: "var(--font-heading)", fontSize: "9.5px", letterSpacing: "0.16em", textTransform: "uppercase" as const, color: "var(--text-muted)", whiteSpace: "nowrap" as const }}>{k}</span>
-                <span style={{ fontFamily: "var(--font-heading)", fontStyle: "italic", fontSize: "13px", color: "var(--text)", textAlign: "right" as const }}>{v}</span>
-              </div>
-            ))}
+        <div
+          style={{
+            backgroundColor: "var(--bg-card)",
+            border: "1px solid var(--border)",
+            borderRadius: "6px",
+            padding: "14px 16px",
+          }}
+        >
+          <div
+            style={{
+              fontFamily: "var(--font-heading)",
+              fontSize: "10px",
+              letterSpacing: "0.16em",
+              textTransform: "uppercase" as const,
+              color: "var(--text-muted)",
+              marginBottom: "12px",
+            }}
+          >
+            Character Details
+          </div>
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column" as const,
+              gap: "0px",
+            }}
+          >
+            {(
+              [
+                { k: "Profession", v: c.professionName },
+                { k: "Origin", v: c.originName },
+                { k: "Vocation", v: c.vocationName },
+              ] as const
+            )
+              .filter(({ v }) => v)
+              .map(({ k, v }) => (
+                <div
+                  key={k}
+                  style={{
+                    display: "flex",
+                    alignItems: "baseline",
+                    justifyContent: "space-between",
+                    gap: "12px",
+                    padding: "5px 0",
+                    borderBottom: "1px dashed var(--border)",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontFamily: "var(--font-heading)",
+                      fontSize: "9.5px",
+                      letterSpacing: "0.16em",
+                      textTransform: "uppercase" as const,
+                      color: "var(--text-muted)",
+                      whiteSpace: "nowrap" as const,
+                    }}
+                  >
+                    {k}
+                  </span>
+                  <span
+                    style={{
+                      fontFamily: "var(--font-heading)",
+                      fontStyle: "italic",
+                      fontSize: "13px",
+                      color: "var(--text)",
+                      textAlign: "right" as const,
+                    }}
+                  >
+                    {v}
+                  </span>
+                </div>
+              ))}
           </div>
           {c.ambition && (
             <div style={{ marginTop: "10px" }}>
-              <div style={{ fontFamily: "var(--font-heading)", fontSize: "9px", letterSpacing: "0.18em", textTransform: "uppercase" as const, color: "var(--text-muted)", marginBottom: "4px" }}>Ambition</div>
-              <div style={{ fontFamily: "var(--font-heading)", fontStyle: "italic", fontSize: "13px", color: "var(--text)", lineHeight: 1.5 }}>{c.ambition}</div>
+              <div
+                style={{
+                  fontFamily: "var(--font-heading)",
+                  fontSize: "9px",
+                  letterSpacing: "0.18em",
+                  textTransform: "uppercase" as const,
+                  color: "var(--text-muted)",
+                  marginBottom: "4px",
+                }}
+              >
+                Ambition
+              </div>
+              <div
+                style={{
+                  fontFamily: "var(--font-heading)",
+                  fontStyle: "italic",
+                  fontSize: "13px",
+                  color: "var(--text)",
+                  lineHeight: 1.5,
+                }}
+              >
+                {c.ambition}
+              </div>
             </div>
           )}
         </div>
 
         {/* Proficiencies */}
-        {(prof?.armaments?.length || prof?.protection?.length || (prof?.toolKits ?? []).filter(t => t !== "-").length) ? (
-          <div style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "6px", padding: "14px 16px" }}>
-            <div style={{ fontFamily: "var(--font-heading)", fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase" as const, color: "var(--text-muted)", marginBottom: "10px" }}>Proficiencies</div>
-            {([
-              { l: "Armaments", v: (prof?.armaments ?? []).join(", ") },
-              { l: "Protection", v: (prof?.protection ?? []).join(", ") },
-              { l: "Tool Kits", v: (prof?.toolKits ?? []).filter(t => t !== "-").join(", ") },
-            ] as const).filter(({ v }) => v).map(({ l, v }) => (
-              <div key={l} style={{ marginBottom: "8px" }}>
-                <div style={{ fontFamily: "var(--font-heading)", fontSize: "9px", letterSpacing: "0.18em", textTransform: "uppercase" as const, color: "var(--text-muted)", marginBottom: "3px" }}>{l}</div>
-                <div style={{ fontFamily: "var(--font-heading)", fontStyle: "italic", fontSize: "13px", color: "var(--text)", lineHeight: 1.4 }}>{v}</div>
-              </div>
-            ))}
+        {prof?.armaments?.length ||
+        prof?.protection?.length ||
+        (prof?.toolKits ?? []).filter((t) => t !== "-").length ? (
+          <div
+            style={{
+              backgroundColor: "var(--bg-card)",
+              border: "1px solid var(--border)",
+              borderRadius: "6px",
+              padding: "14px 16px",
+            }}
+          >
+            <div
+              style={{
+                fontFamily: "var(--font-heading)",
+                fontSize: "10px",
+                letterSpacing: "0.16em",
+                textTransform: "uppercase" as const,
+                color: "var(--text-muted)",
+                marginBottom: "10px",
+              }}
+            >
+              Proficiencies
+            </div>
+            {(
+              [
+                { l: "Armaments", v: (prof?.armaments ?? []).join(", ") },
+                { l: "Protection", v: (prof?.protection ?? []).join(", ") },
+                {
+                  l: "Tool Kits",
+                  v: (prof?.toolKits ?? []).filter((t) => t !== "-").join(", "),
+                },
+              ] as const
+            )
+              .filter(({ v }) => v)
+              .map(({ l, v }) => (
+                <div key={l} style={{ marginBottom: "8px" }}>
+                  <div
+                    style={{
+                      fontFamily: "var(--font-heading)",
+                      fontSize: "9px",
+                      letterSpacing: "0.18em",
+                      textTransform: "uppercase" as const,
+                      color: "var(--text-muted)",
+                      marginBottom: "3px",
+                    }}
+                  >
+                    {l}
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "var(--font-heading)",
+                      fontStyle: "italic",
+                      fontSize: "13px",
+                      color: "var(--text)",
+                      lineHeight: 1.4,
+                    }}
+                  >
+                    {v}
+                  </div>
+                </div>
+              ))}
           </div>
         ) : null}
 
         {/* Quick Reference */}
-        <div style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "6px", overflow: "hidden" }}>
-          <div style={{ padding: "0.5rem 1rem", borderBottom: "1px solid var(--border)", backgroundColor: "var(--bg-nav)" }}>
-            <span style={{ fontSize: "0.65rem", fontFamily: "var(--font-heading)", fontStyle: "italic", letterSpacing: "0.12em", color: "var(--text-muted)", textTransform: "uppercase" as const }}>Quick Reference</span>
+        <div
+          style={{
+            backgroundColor: "var(--bg-card)",
+            border: "1px solid var(--border)",
+            borderRadius: "6px",
+            overflow: "hidden",
+          }}
+        >
+          <div
+            style={{
+              padding: "0.5rem 1rem",
+              borderBottom: "1px solid var(--border)",
+              backgroundColor: "var(--bg-nav)",
+            }}
+          >
+            <span
+              style={{
+                fontSize: "0.65rem",
+                fontFamily: "var(--font-heading)",
+                fontStyle: "italic",
+                letterSpacing: "0.12em",
+                color: "var(--text-muted)",
+                textTransform: "uppercase" as const,
+              }}
+            >
+              Quick Reference
+            </span>
           </div>
           <div style={{ padding: "0.25rem 1rem 0.5rem" }}>
             {[
               { k: "Body", v: fmtAttr(attrs.body) },
               { k: "Mind", v: fmtAttr(attrs.mind) },
               { k: "Will", v: fmtAttr(attrs.will) },
-              { k: "Armor Def", v: String(armorDefense + (c.tempArmorDef ?? 0)) },
+              {
+                k: "Armor Def",
+                v: String(armorDefense + (c.tempArmorDef ?? 0)),
+              },
               { k: "Body Def", v: String(bodyDef) },
               { k: "Mind Def", v: String(mindDef) },
               { k: "Will Def", v: String(willDef) },
-              ...(isCaster ? [
-                { k: "Spell DC", v: String(spellDC) },
-                { k: "Spell Mod", v: fmtAttr(modVal) },
-                { k: "Reservoir", v: `${currentReservoir}/${maxReservoir}` },
-              ] : []),
+              ...(isCaster
+                ? [
+                    { k: "Spell DC", v: String(spellDC) },
+                    { k: "Spell Mod", v: fmtAttr(modVal) },
+                    {
+                      k: "Reservoir",
+                      v: `${currentReservoir}/${maxReservoir}`,
+                    },
+                  ]
+                : []),
             ].map((row) => (
-              <div key={row.k} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "0.3rem 0", borderBottom: "1px solid var(--border)" }}>
-                <span style={{ fontSize: "0.75rem", color: "var(--text-muted)", fontFamily: "var(--font-heading)" }}>{row.k}</span>
-                <span style={{ fontSize: "0.85rem", fontWeight: 700, color: "var(--text)", fontFamily: "var(--font-heading)" }}>{row.v}</span>
+              <div
+                key={row.k}
+                style={{
+                  display: "flex",
+                  justifyContent: "space-between",
+                  alignItems: "center",
+                  padding: "0.3rem 0",
+                  borderBottom: "1px solid var(--border)",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "0.75rem",
+                    color: "var(--text-muted)",
+                    fontFamily: "var(--font-heading)",
+                  }}
+                >
+                  {row.k}
+                </span>
+                <span
+                  style={{
+                    fontSize: "0.85rem",
+                    fontWeight: 700,
+                    color: "var(--text)",
+                    fontFamily: "var(--font-heading)",
+                  }}
+                >
+                  {row.v}
+                </span>
               </div>
             ))}
           </div>
@@ -7473,21 +8550,78 @@ export default function CharacterSheetPage({
 
         {/* Character flavor */}
         {(c.currency || c.inventoryNotes || c.notes) && (
-          <div style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "6px", overflow: "hidden" }}>
-            <div style={{ padding: "0.5rem 1rem", borderBottom: "1px solid var(--border)", backgroundColor: "var(--bg-nav)" }}>
-              <span style={{ fontSize: "0.65rem", fontFamily: "var(--font-heading)", fontStyle: "italic", letterSpacing: "0.12em", color: "var(--text-muted)", textTransform: "uppercase" as const }}>Details</span>
+          <div
+            style={{
+              backgroundColor: "var(--bg-card)",
+              border: "1px solid var(--border)",
+              borderRadius: "6px",
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                padding: "0.5rem 1rem",
+                borderBottom: "1px solid var(--border)",
+                backgroundColor: "var(--bg-nav)",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: "0.65rem",
+                  fontFamily: "var(--font-heading)",
+                  fontStyle: "italic",
+                  letterSpacing: "0.12em",
+                  color: "var(--text-muted)",
+                  textTransform: "uppercase" as const,
+                }}
+              >
+                Details
+              </span>
             </div>
-            <div style={{ padding: "0.75rem 1rem", display: "flex", flexDirection: "column" as const, gap: "0.625rem" }}>
+            <div
+              style={{
+                padding: "0.75rem 1rem",
+                display: "flex",
+                flexDirection: "column" as const,
+                gap: "0.625rem",
+              }}
+            >
               {c.currency && (
                 <div>
-                  <div style={{ fontSize: "0.6rem", color: "var(--text-muted)", letterSpacing: "0.1em", textTransform: "uppercase" as const, fontFamily: "var(--font-heading)", marginBottom: "3px" }}>Currency</div>
-                  <div style={{ fontSize: "0.8rem", color: "var(--text)" }}>{c.currency}</div>
+                  <div
+                    style={{
+                      fontSize: "0.6rem",
+                      color: "var(--text-muted)",
+                      letterSpacing: "0.1em",
+                      textTransform: "uppercase" as const,
+                      fontFamily: "var(--font-heading)",
+                      marginBottom: "3px",
+                    }}
+                  >
+                    Currency
+                  </div>
+                  <div style={{ fontSize: "0.8rem", color: "var(--text)" }}>
+                    {c.currency}
+                  </div>
                 </div>
               )}
               {c.inventoryNotes && (
                 <div>
-                  <div style={{ fontSize: "0.6rem", color: "var(--text-muted)", letterSpacing: "0.1em", textTransform: "uppercase" as const, fontFamily: "var(--font-heading)", marginBottom: "3px" }}>Inventory Notes</div>
-                  <div style={{ fontSize: "0.8rem", color: "var(--text)" }}>{c.inventoryNotes}</div>
+                  <div
+                    style={{
+                      fontSize: "0.6rem",
+                      color: "var(--text-muted)",
+                      letterSpacing: "0.1em",
+                      textTransform: "uppercase" as const,
+                      fontFamily: "var(--font-heading)",
+                      marginBottom: "3px",
+                    }}
+                  >
+                    Inventory Notes
+                  </div>
+                  <div style={{ fontSize: "0.8rem", color: "var(--text)" }}>
+                    {c.inventoryNotes}
+                  </div>
                 </div>
               )}
             </div>
@@ -7533,7 +8667,6 @@ export default function CharacterSheetPage({
           ❖ Ref
         </span>
       </button>
-
       {/* FEATURE-01: Ref sidebar overlay */}
       {showRefSidebar && (
         <div
@@ -7756,944 +8889,2225 @@ export default function CharacterSheetPage({
           </div>
         </div>
       )}
-
       {/* ──── HEADER ──── */}
-      <div style={{ backgroundColor: "var(--bg-nav)", border: "1px solid var(--border)", borderRadius: "6px", padding: "14px 20px", marginBottom: "1rem", display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "1rem" }}>
+      <div
+        style={{
+          backgroundColor: "var(--bg-nav)",
+          border: "1px solid var(--border)",
+          borderRadius: "6px",
+          padding: "14px 20px",
+          marginBottom: "1rem",
+          display: "flex",
+          alignItems: "flex-start",
+          justifyContent: "space-between",
+          gap: "1rem",
+        }}
+      >
         {/* LEFT: name + tags + back */}
         <div>
-          <h1 style={{ fontFamily: "var(--font-heading)", fontStyle: "italic", fontSize: "2rem", fontWeight: 700, color: "var(--text)", margin: 0, lineHeight: 1.1 }}>
+          <h1
+            style={{
+              fontFamily: "var(--font-heading)",
+              fontStyle: "italic",
+              fontSize: "2rem",
+              fontWeight: 700,
+              color: "var(--text)",
+              margin: 0,
+              lineHeight: 1.1,
+            }}
+          >
             {c.name || "Unnamed Adventurer"}
           </h1>
-          <div style={{ marginTop: "5px", fontSize: "11px", fontFamily: "monospace", color: "var(--text-muted)", letterSpacing: "0.06em", display: "flex", alignItems: "center", flexWrap: "wrap" as const, gap: "0px" }}>
+          <div
+            style={{
+              marginTop: "5px",
+              fontSize: "11px",
+              fontFamily: "monospace",
+              color: "var(--text-muted)",
+              letterSpacing: "0.06em",
+              display: "flex",
+              alignItems: "center",
+              flexWrap: "wrap" as const,
+              gap: "0px",
+            }}
+          >
             {[
               c.professionName,
-              c.originName && `${c.originName}${c.vocationName ? ` (${c.vocationName})` : ""}`,
+              c.originName &&
+                `${c.originName}${c.vocationName ? ` (${c.vocationName})` : ""}`,
               `Tier ${effectiveTier}`,
-            ].filter(Boolean).map((tag, i, arr) => (
-              <span key={i}>
-                <span>{tag}</span>
-                {i < arr.length - 1 && <span style={{ margin: "0 7px", color: "var(--border)" }}>·</span>}
-              </span>
-            ))}
+            ]
+              .filter(Boolean)
+              .map((tag, i, arr) => (
+                <span key={i}>
+                  <span>{tag}</span>
+                  {i < arr.length - 1 && (
+                    <span style={{ margin: "0 7px", color: "var(--border)" }}>
+                      ·
+                    </span>
+                  )}
+                </span>
+              ))}
           </div>
           {c.ambition && (
-            <div style={{ marginTop: "4px", fontSize: "0.72rem", color: "var(--text-muted)", fontStyle: "italic" }}>
+            <div
+              style={{
+                marginTop: "4px",
+                fontSize: "0.72rem",
+                color: "var(--text-muted)",
+                fontStyle: "italic",
+              }}
+            >
               {c.ambition}
             </div>
           )}
           <div style={{ marginTop: "8px" }}>
-            <Link href="/characters" style={{ fontSize: "0.7rem", color: "var(--text-muted)", textDecoration: "none", fontFamily: "var(--font-heading)", fontWeight: 600 }}>← All Characters</Link>
+            <Link
+              href="/characters"
+              style={{
+                fontSize: "0.7rem",
+                color: "var(--text-muted)",
+                textDecoration: "none",
+                fontFamily: "var(--font-heading)",
+                fontWeight: 600,
+              }}
+            >
+              ← All Characters
+            </Link>
           </div>
         </div>
         {/* RIGHT: tier + renown bar + spell DC + delete */}
-        <div style={{ display: "flex", alignItems: "flex-start", gap: "16px", flexShrink: 0 }}>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "flex-start",
+            gap: "16px",
+            flexShrink: 0,
+          }}
+        >
           {/* Tier + Renown bar */}
           <div>
-            <div style={{ display: "flex", alignItems: "baseline", gap: "5px", marginBottom: "6px" }}>
-              <span style={{ fontSize: "9px", fontFamily: "monospace", letterSpacing: "0.14em", textTransform: "uppercase" as const, color: "var(--text-muted)" }}>Tier</span>
-              <span style={{ fontSize: "22px", fontFamily: "var(--font-heading)", fontWeight: 700, color: "var(--text)", lineHeight: 1 }}>{effectiveTier}</span>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "baseline",
+                gap: "5px",
+                marginBottom: "6px",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: "9px",
+                  fontFamily: "monospace",
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase" as const,
+                  color: "var(--text-muted)",
+                }}
+              >
+                Tier
+              </span>
+              <span
+                style={{
+                  fontSize: "22px",
+                  fontFamily: "var(--font-heading)",
+                  fontWeight: 700,
+                  color: "var(--text)",
+                  lineHeight: 1,
+                }}
+              >
+                {effectiveTier}
+              </span>
             </div>
-            <div style={{ width: "160px", height: "4px", backgroundColor: "var(--border)", borderRadius: "2px", overflow: "hidden" }}>
-              <div style={{ height: "100%", width: `${Math.min(100, Math.round(((c.renown ?? 0) / (FEAT_COST_BY_TIER[effectiveTier] ?? 6)) * 100))}%`, background: "var(--primary)", borderRadius: "2px", transition: "width 0.3s ease" }} />
+            <div
+              style={{
+                width: "160px",
+                height: "4px",
+                backgroundColor: "var(--border)",
+                borderRadius: "2px",
+                overflow: "hidden",
+              }}
+            >
+              <div
+                style={{
+                  height: "100%",
+                  width: `${Math.min(100, Math.round(((c.renown ?? 0) / (FEAT_COST_BY_TIER[effectiveTier] ?? 6)) * 100))}%`,
+                  background: "var(--primary)",
+                  borderRadius: "2px",
+                  transition: "width 0.3s ease",
+                }}
+              />
             </div>
-            <div style={{ marginTop: "4px", fontSize: "10px", fontFamily: "monospace", color: "var(--text-muted)", letterSpacing: "0.04em" }}>
+            <div
+              style={{
+                marginTop: "4px",
+                fontSize: "10px",
+                fontFamily: "monospace",
+                color: "var(--text-muted)",
+                letterSpacing: "0.04em",
+              }}
+            >
               {c.renown ?? 0} / {FEAT_COST_BY_TIER[effectiveTier] ?? 6} renown
             </div>
           </div>
           {/* Spell DC (casters only) */}
           {isCaster && (
             <div style={{ textAlign: "center" }}>
-              <div style={{ fontSize: "9px", fontFamily: "monospace", letterSpacing: "0.14em", textTransform: "uppercase" as const, color: "var(--text-muted)", marginBottom: "3px" }}>Spell DC</div>
-              <div style={{ fontSize: "28px", fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 700, color: "var(--primary)", lineHeight: 1 }}>{spellDC}</div>
+              <div
+                style={{
+                  fontSize: "9px",
+                  fontFamily: "monospace",
+                  letterSpacing: "0.14em",
+                  textTransform: "uppercase" as const,
+                  color: "var(--text-muted)",
+                  marginBottom: "3px",
+                }}
+              >
+                Spell DC
+              </div>
+              <div
+                style={{
+                  fontSize: "28px",
+                  fontFamily: "'Cormorant Garamond', Georgia, serif",
+                  fontWeight: 700,
+                  color: "var(--primary)",
+                  lineHeight: 1,
+                }}
+              >
+                {spellDC}
+              </div>
             </div>
           )}
           {/* Delete */}
-          <button onClick={handleDelete} style={{ padding: "0.25rem 0.5rem", border: "1px solid var(--border)", borderRadius: "0.375rem", backgroundColor: "transparent", cursor: "pointer", color: "var(--text-muted)", fontSize: "0.75rem", fontFamily: "var(--font-heading)", marginTop: "2px" }}>
+          <button
+            onClick={handleDelete}
+            style={{
+              padding: "0.25rem 0.5rem",
+              border: "1px solid var(--border)",
+              borderRadius: "0.375rem",
+              backgroundColor: "transparent",
+              cursor: "pointer",
+              color: "var(--text-muted)",
+              fontSize: "0.75rem",
+              fontFamily: "var(--font-heading)",
+              marginTop: "2px",
+            }}
+          >
             Delete
           </button>
         </div>
       </div>
-
       {/* ──── 3-COLUMN BODY ──── */}
-      <div className="poa-sheet-grid" style={{ display: "grid", gridTemplateColumns: "280px 1fr 320px", gap: "14px", marginTop: "18px", alignItems: "start" }}>
-
+      <div
+        className="poa-sheet-grid"
+        style={{
+          display: "grid",
+          gridTemplateColumns: "280px 1fr 320px",
+          gap: "14px",
+          marginTop: "18px",
+          alignItems: "start",
+        }}
+      >
         {/* LEFT COLUMN */}
-        <div className="poa-col-left" style={{ display: "flex", flexDirection: "column", gap: "16px", minWidth: 0 }}>
+        <div
+          className="poa-col-left"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+            minWidth: 0,
+          }}
+        >
           {renderLeftRail()}
         </div>
-
         {/* CENTER COLUMN */}
-        <div className="poa-col-center" style={{ display: "flex", flexDirection: "column", gap: "16px", minWidth: 0 }}>
-
-      {/* ──── DEFENSE STAT ROW ──── */}
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(4, 1fr)", gap: "12px" }}>
-        {(() => {
-          const tempAD = c.tempArmorDef ?? 0;
-          const totalAD = armorDefense + tempAD;
-          const spellArmorOn = !!(c.spellArmorActive && isCaster);
-          return (
-            <div style={{ backgroundColor: "var(--bg-card)", border: `1px solid ${spellArmorOn ? "var(--primary)" : "var(--border)"}`, borderRadius: "6px", padding: "14px 12px 12px", textAlign: "center" }}>
-              <div style={{ fontFamily: "var(--font-heading)", fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase" as const, color: "var(--text-muted)", marginBottom: "6px" }}>Armor Def</div>
-              <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "32px", fontWeight: 700, color: spellArmorOn ? "var(--primary)" : "var(--text)", lineHeight: 1.05 }}>{totalAD}</div>
-              <div style={{ fontFamily: "var(--font-heading)", fontSize: "9px", letterSpacing: "0.16em", textTransform: "uppercase" as const, color: spellArmorOn ? "var(--primary)" : "var(--text-muted)", marginTop: "2px" }}>
-                {spellArmorOn ? "spell armor" : tempAD !== 0 ? `+${tempAD} temp` : "armor"}
+        <div
+          className="poa-col-center"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+            minWidth: 0,
+          }}
+        >
+          {/* ──── DEFENSE STAT ROW ──── */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "repeat(4, 1fr)",
+              gap: "12px",
+            }}
+          >
+            {(() => {
+              const tempAD = c.tempArmorDef ?? 0;
+              const totalAD = armorDefense + tempAD;
+              const spellArmorOn = !!(c.spellArmorActive && isCaster);
+              return (
+                <div
+                  style={{
+                    backgroundColor: "var(--bg-card)",
+                    border: `1px solid ${spellArmorOn ? "var(--primary)" : "var(--border)"}`,
+                    borderRadius: "6px",
+                    padding: "14px 12px 12px",
+                    textAlign: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontFamily: "var(--font-heading)",
+                      fontSize: "10px",
+                      letterSpacing: "0.16em",
+                      textTransform: "uppercase" as const,
+                      color: "var(--text-muted)",
+                      marginBottom: "6px",
+                    }}
+                  >
+                    Armor Def
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "'Cormorant Garamond', Georgia, serif",
+                      fontSize: "32px",
+                      fontWeight: 700,
+                      color: spellArmorOn ? "var(--primary)" : "var(--text)",
+                      lineHeight: 1.05,
+                    }}
+                  >
+                    {totalAD}
+                  </div>
+                  <div
+                    style={{
+                      fontFamily: "var(--font-heading)",
+                      fontSize: "9px",
+                      letterSpacing: "0.16em",
+                      textTransform: "uppercase" as const,
+                      color: spellArmorOn
+                        ? "var(--primary)"
+                        : "var(--text-muted)",
+                      marginTop: "2px",
+                    }}
+                  >
+                    {spellArmorOn
+                      ? "spell armor"
+                      : tempAD !== 0
+                        ? `+${tempAD} temp`
+                        : "armor"}
+                  </div>
+                </div>
+              );
+            })()}
+            {(
+              [
+                { label: "Body Def", value: bodyDef, sub: "body" },
+                { label: "Mind Def", value: mindDef, sub: "mind" },
+                { label: "Will Def", value: willDef, sub: "will" },
+              ] as const
+            ).map(({ label, value, sub }) => (
+              <div
+                key={label}
+                style={{
+                  backgroundColor: "var(--bg-card)",
+                  border: "1px solid var(--border)",
+                  borderRadius: "6px",
+                  padding: "14px 12px 12px",
+                  textAlign: "center",
+                }}
+              >
+                <div
+                  style={{
+                    fontFamily: "var(--font-heading)",
+                    fontSize: "10px",
+                    letterSpacing: "0.16em",
+                    textTransform: "uppercase" as const,
+                    color: "var(--text-muted)",
+                    marginBottom: "6px",
+                  }}
+                >
+                  {label}
+                </div>
+                <div
+                  style={{
+                    fontFamily: "'Cormorant Garamond', Georgia, serif",
+                    fontSize: "32px",
+                    fontWeight: 700,
+                    color: "var(--text)",
+                    lineHeight: 1.05,
+                  }}
+                >
+                  {value}
+                </div>
+                <div
+                  style={{
+                    fontFamily: "var(--font-heading)",
+                    fontSize: "9px",
+                    letterSpacing: "0.16em",
+                    textTransform: "uppercase" as const,
+                    color: "var(--text-muted)",
+                    marginTop: "2px",
+                  }}
+                >
+                  {sub}
+                </div>
               </div>
-            </div>
-          );
-        })()}
-        {([
-          { label: "Body Def", value: bodyDef, sub: "body" },
-          { label: "Mind Def", value: mindDef, sub: "mind" },
-          { label: "Will Def", value: willDef, sub: "will" },
-        ] as const).map(({ label, value, sub }) => (
-          <div key={label} style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "6px", padding: "14px 12px 12px", textAlign: "center" }}>
-            <div style={{ fontFamily: "var(--font-heading)", fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase" as const, color: "var(--text-muted)", marginBottom: "6px" }}>{label}</div>
-            <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "32px", fontWeight: 700, color: "var(--text)", lineHeight: 1.05 }}>{value}</div>
-            <div style={{ fontFamily: "var(--font-heading)", fontSize: "9px", letterSpacing: "0.16em", textTransform: "uppercase" as const, color: "var(--text-muted)", marginTop: "2px" }}>{sub}</div>
+            ))}
           </div>
-        ))}
-      </div>
 
-      {/* ──── CENTER VITALS GRID ──── */}
-      {(() => {
-        const tempHp = c.tempHp ?? 0;
-        const effectiveMax = derivedMaxVitality + tempHp;
-        const vitPct = effectiveMax > 0 ? Math.min(100, Math.round(((c.currentVitality ?? 0) / effectiveMax) * 100)) : 0;
-        const pmBtn: React.CSSProperties = { width: "22px", height: "22px", borderRadius: "50%", border: "1px solid var(--border)", backgroundColor: "var(--bg-nav)", cursor: "pointer", fontWeight: 700, color: "var(--text-muted)", fontSize: "0.9rem", display: "flex", alignItems: "center", justifyContent: "center" };
-        return (
-          <div style={{ display: "grid", gridTemplateColumns: "1.5fr 1fr 1fr", gap: "12px" }}>
+          {/* ──── CENTER VITALS GRID ──── */}
+          {(() => {
+            const tempHp = c.tempHp ?? 0;
+            const effectiveMax = derivedMaxVitality + tempHp;
+            const vitPct =
+              effectiveMax > 0
+                ? Math.min(
+                    100,
+                    Math.round(((c.currentVitality ?? 0) / effectiveMax) * 100),
+                  )
+                : 0;
+            const pmBtn: React.CSSProperties = {
+              width: "22px",
+              height: "22px",
+              borderRadius: "50%",
+              border: "1px solid var(--border)",
+              backgroundColor: "var(--bg-nav)",
+              cursor: "pointer",
+              fontWeight: 700,
+              color: "var(--text-muted)",
+              fontSize: "0.9rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            };
+            return (
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "1.5fr 1fr 1fr",
+                  gap: "12px",
+                }}
+              >
+                {/* HP Card */}
+                <div
+                  style={{
+                    backgroundColor: "var(--bg-card)",
+                    border: "1px solid var(--border)",
+                    borderRadius: "6px",
+                    padding: "12px 16px 16px",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontFamily: "var(--font-heading)",
+                      fontSize: "10px",
+                      letterSpacing: "0.16em",
+                      textTransform: "uppercase" as const,
+                      color: "#7a9d6f",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    ♥ Vitality
+                  </div>
+                  <div
+                    style={{
+                      display: "grid",
+                      gridTemplateColumns: "1fr 1fr auto 1fr",
+                      gap: "8px",
+                      alignItems: "end",
+                    }}
+                  >
+                    <div style={{ textAlign: "center" }}>
+                      <div
+                        style={{
+                          fontFamily: "var(--font-heading)",
+                          fontSize: "9px",
+                          letterSpacing: "0.18em",
+                          textTransform: "uppercase" as const,
+                          color: "var(--text-muted)",
+                        }}
+                      >
+                        Current
+                      </div>
+                      <div
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "4px",
+                          lineHeight: 1,
+                        }}
+                      >
+                        <button
+                          onClick={() =>
+                            persist({
+                              currentVitality: Math.max(
+                                0,
+                                (c.currentVitality ?? 0) - 1,
+                              ),
+                            })
+                          }
+                          style={pmBtn}
+                        >
+                          −
+                        </button>
+                        <span
+                          style={{
+                            fontFamily: "'Cormorant Garamond', Georgia, serif",
+                            fontSize: "30px",
+                            fontWeight: 700,
+                            color: "var(--text)",
+                          }}
+                        >
+                          {c.currentVitality ?? 0}
+                        </span>
+                        <button
+                          onClick={() =>
+                            persist({
+                              currentVitality: Math.min(
+                                effectiveMax,
+                                (c.currentVitality ?? 0) + 1,
+                              ),
+                            })
+                          }
+                          style={pmBtn}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                    <div style={{ textAlign: "center" }}>
+                      <div
+                        style={{
+                          fontFamily: "var(--font-heading)",
+                          fontSize: "9px",
+                          letterSpacing: "0.18em",
+                          textTransform: "uppercase" as const,
+                          color: "var(--text-muted)",
+                        }}
+                      >
+                        Max
+                      </div>
+                      <div
+                        style={{
+                          fontFamily: "'Cormorant Garamond', Georgia, serif",
+                          fontSize: "30px",
+                          fontWeight: 700,
+                          color: "var(--text-muted)",
+                        }}
+                      >
+                        {derivedMaxVitality}
+                      </div>
+                    </div>
+                    <div
+                      style={{
+                        fontFamily: "var(--font-heading)",
+                        fontSize: "26px",
+                        color: "var(--text-muted)",
+                        paddingBottom: "4px",
+                      }}
+                    >
+                      /
+                    </div>
+                    <div style={{ textAlign: "center" }}>
+                      <div
+                        style={{
+                          fontFamily: "var(--font-heading)",
+                          fontSize: "9px",
+                          letterSpacing: "0.18em",
+                          textTransform: "uppercase" as const,
+                          color: "var(--text-muted)",
+                        }}
+                      >
+                        Temp
+                      </div>
+                      <div
+                        style={{
+                          display: "inline-flex",
+                          alignItems: "center",
+                          gap: "4px",
+                          lineHeight: 1,
+                        }}
+                      >
+                        <button
+                          onClick={() => {
+                            const next = tempHp - 1;
+                            const newMax = derivedMaxVitality + next;
+                            const patch: Partial<Character> = { tempHp: next };
+                            if ((c.currentVitality ?? 0) > newMax)
+                              patch.currentVitality = Math.max(0, newMax);
+                            persist(patch);
+                          }}
+                          style={pmBtn}
+                        >
+                          −
+                        </button>
+                        <span
+                          style={{
+                            fontFamily: "'Cormorant Garamond', Georgia, serif",
+                            fontSize: "30px",
+                            fontWeight: 700,
+                            color:
+                              tempHp !== 0
+                                ? "var(--primary)"
+                                : "var(--text-muted)",
+                          }}
+                        >
+                          {tempHp}
+                        </span>
+                        <button
+                          onClick={() => persist({ tempHp: tempHp + 1 })}
+                          style={pmBtn}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      marginTop: "14px",
+                      height: "6px",
+                      backgroundColor: "rgba(122,157,111,0.1)",
+                      borderRadius: "3px",
+                      overflow: "hidden",
+                    }}
+                  >
+                    <div
+                      style={{
+                        height: "100%",
+                        width: `${vitPct}%`,
+                        background: "linear-gradient(90deg, #4a6042, #7a9d6f)",
+                        borderRadius: "3px",
+                        transition: "width 0.3s",
+                      }}
+                    />
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      justifyContent: "space-between",
+                      fontFamily: "var(--font-heading)",
+                      fontSize: "9px",
+                      color: "var(--text-muted)",
+                      letterSpacing: "0.14em",
+                      textTransform: "uppercase" as const,
+                      marginTop: "6px",
+                    }}
+                  >
+                    <span>
+                      {c.currentVitality ?? 0} / {effectiveMax}
+                    </span>
+                    <span>{Math.round(vitPct)}%</span>
+                  </div>
+                  {tempHp !== 0 && (
+                    <button
+                      onClick={() => {
+                        const patch: Partial<Character> = { tempHp: 0 };
+                        if ((c.currentVitality ?? 0) > derivedMaxVitality)
+                          patch.currentVitality = Math.max(
+                            0,
+                            derivedMaxVitality,
+                          );
+                        persist(patch);
+                      }}
+                      style={{
+                        fontSize: "0.55rem",
+                        color: "var(--text-muted)",
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        marginTop: "4px",
+                      }}
+                    >
+                      ✕ clear temp
+                    </button>
+                  )}
+                </div>
 
-            {/* HP Card */}
-            <div style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "6px", padding: "12px 16px 16px" }}>
-              <div style={{ fontFamily: "var(--font-heading)", fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase" as const, color: "#7a9d6f", marginBottom: "10px" }}>
-                ♥ Vitality
-              </div>
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr auto 1fr", gap: "8px", alignItems: "end" }}>
-                <div style={{ textAlign: "center" }}>
-                  <div style={{ fontFamily: "var(--font-heading)", fontSize: "9px", letterSpacing: "0.18em", textTransform: "uppercase" as const, color: "var(--text-muted)" }}>Current</div>
-                  <div style={{ display: "inline-flex", alignItems: "center", gap: "4px", lineHeight: 1 }}>
-                    <button onClick={() => persist({ currentVitality: Math.max(0, (c.currentVitality ?? 0) - 1) })} style={pmBtn}>−</button>
-                    <span style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "30px", fontWeight: 700, color: "var(--text)" }}>{c.currentVitality ?? 0}</span>
-                    <button onClick={() => persist({ currentVitality: Math.min(effectiveMax, (c.currentVitality ?? 0) + 1) })} style={pmBtn}>+</button>
+                {/* Side Col 1: Wounds + Ambition */}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column" as const,
+                    gap: "12px",
+                  }}
+                >
+                  <div
+                    style={{
+                      backgroundColor: "var(--bg-card)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "6px",
+                      padding: "10px 14px 12px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontFamily: "var(--font-heading)",
+                        fontSize: "10px",
+                        letterSpacing: "0.16em",
+                        textTransform: "uppercase" as const,
+                        color: "#c66464",
+                        marginBottom: "8px",
+                      }}
+                    >
+                      ☠ Wounds
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "4px",
+                        flexWrap: "wrap" as const,
+                      }}
+                    >
+                      {Array.from({ length: maxWounds }).map((_, i) => (
+                        <div
+                          key={i}
+                          onClick={() =>
+                            persist({
+                              currentWounds:
+                                i < (c.currentWounds ?? 0) ? i : i + 1,
+                            })
+                          }
+                          style={{
+                            width: "14px",
+                            height: "14px",
+                            borderRadius: "50%",
+                            border: `1px solid ${i < (c.currentWounds ?? 0) ? "#c66464" : "var(--border)"}`,
+                            backgroundColor:
+                              i < (c.currentWounds ?? 0)
+                                ? "#c66464"
+                                : "transparent",
+                            cursor: "pointer",
+                            boxShadow:
+                              i < (c.currentWounds ?? 0)
+                                ? "0 0 8px rgba(198,100,100,0.4)"
+                                : "none",
+                            transition: "all 0.15s",
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        fontFamily: "var(--font-heading)",
+                        fontSize: "9px",
+                        color: "var(--text-muted)",
+                        letterSpacing: "0.16em",
+                        textTransform: "uppercase" as const,
+                        marginTop: "8px",
+                      }}
+                    >
+                      <span>
+                        {c.currentWounds ?? 0} / {maxWounds}
+                      </span>
+                      <span>{maxWounds - (c.currentWounds ?? 0)} until KO</span>
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      backgroundColor: "var(--bg-card)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "6px",
+                      padding: "10px 14px 12px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontFamily: "var(--font-heading)",
+                        fontSize: "10px",
+                        letterSpacing: "0.16em",
+                        textTransform: "uppercase" as const,
+                        color: "var(--primary)",
+                        marginBottom: "8px",
+                      }}
+                    >
+                      ✦ Ambition
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "5px",
+                        flexWrap: "wrap" as const,
+                      }}
+                    >
+                      {Array.from({ length: maxAmbition }).map((_, i) => (
+                        <div
+                          key={i}
+                          onClick={() =>
+                            persist({
+                              currentAmbition:
+                                i < (c.currentAmbition ?? 0) ? i : i + 1,
+                            })
+                          }
+                          style={{
+                            width: "22px",
+                            height: "18px",
+                            border: `1px solid ${i < (c.currentAmbition ?? 0) ? "var(--primary)" : "var(--border)"}`,
+                            borderRadius: "2px",
+                            background:
+                              i < (c.currentAmbition ?? 0)
+                                ? "var(--primary)"
+                                : "var(--bg-nav)",
+                            cursor: "pointer",
+                            transition: "all 0.15s",
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        fontFamily: "var(--font-heading)",
+                        fontSize: "9px",
+                        color: "var(--text-muted)",
+                        letterSpacing: "0.16em",
+                        textTransform: "uppercase" as const,
+                        marginTop: "8px",
+                      }}
+                    >
+                      <span>
+                        {c.currentAmbition ?? 0} / {maxAmbition}
+                      </span>
+                      <span>{ambitionDice}</span>
+                    </div>
                   </div>
                 </div>
-                <div style={{ textAlign: "center" }}>
-                  <div style={{ fontFamily: "var(--font-heading)", fontSize: "9px", letterSpacing: "0.18em", textTransform: "uppercase" as const, color: "var(--text-muted)" }}>Max</div>
-                  <div style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "30px", fontWeight: 700, color: "var(--text-muted)" }}>{derivedMaxVitality}</div>
-                </div>
-                <div style={{ fontFamily: "var(--font-heading)", fontSize: "26px", color: "var(--text-muted)", paddingBottom: "4px" }}>/</div>
-                <div style={{ textAlign: "center" }}>
-                  <div style={{ fontFamily: "var(--font-heading)", fontSize: "9px", letterSpacing: "0.18em", textTransform: "uppercase" as const, color: "var(--text-muted)" }}>Temp</div>
-                  <div style={{ display: "inline-flex", alignItems: "center", gap: "4px", lineHeight: 1 }}>
-                    <button onClick={() => { const next = tempHp - 1; const newMax = derivedMaxVitality + next; const patch: Partial<Character> = { tempHp: next }; if ((c.currentVitality ?? 0) > newMax) patch.currentVitality = Math.max(0, newMax); persist(patch); }} style={pmBtn}>−</button>
-                    <span style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontSize: "30px", fontWeight: 700, color: tempHp !== 0 ? "var(--primary)" : "var(--text-muted)" }}>{tempHp}</span>
-                    <button onClick={() => persist({ tempHp: tempHp + 1 })} style={pmBtn}>+</button>
+
+                {/* Side Col 2: Respites + Carry */}
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column" as const,
+                    gap: "12px",
+                  }}
+                >
+                  <div
+                    style={{
+                      backgroundColor: "var(--bg-card)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "6px",
+                      padding: "10px 14px 12px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontFamily: "var(--font-heading)",
+                        fontSize: "10px",
+                        letterSpacing: "0.16em",
+                        textTransform: "uppercase" as const,
+                        color: "var(--primary)",
+                        marginBottom: "8px",
+                      }}
+                    >
+                      Respites
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "6px",
+                        alignItems: "center",
+                      }}
+                    >
+                      {[0, 1, 2].map((i) => (
+                        <span
+                          key={i}
+                          onClick={() =>
+                            persist({
+                              currentRespites: i < currentRespites ? i : i + 1,
+                            })
+                          }
+                          style={{
+                            display: "inline-block",
+                            width: "14px",
+                            height: "14px",
+                            borderRadius: "50%",
+                            background:
+                              i < currentRespites
+                                ? "var(--primary)"
+                                : "transparent",
+                            border: `1px solid ${i < currentRespites ? "var(--primary)" : "var(--border)"}`,
+                            cursor: "pointer",
+                          }}
+                        />
+                      ))}
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        fontFamily: "var(--font-heading)",
+                        fontSize: "9px",
+                        color: "var(--text-muted)",
+                        letterSpacing: "0.16em",
+                        textTransform: "uppercase" as const,
+                        marginTop: "8px",
+                      }}
+                    >
+                      <span>{currentRespites} / 3</span>
+                      <span>per day</span>
+                    </div>
+                  </div>
+                  <div
+                    style={{
+                      backgroundColor: "var(--bg-card)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "6px",
+                      padding: "10px 14px 12px",
+                    }}
+                  >
+                    <div
+                      style={{
+                        fontFamily: "var(--font-heading)",
+                        fontSize: "10px",
+                        letterSpacing: "0.16em",
+                        textTransform: "uppercase" as const,
+                        color: "var(--primary)",
+                        marginBottom: "8px",
+                      }}
+                    >
+                      Carry
+                    </div>
+                    <div
+                      style={{
+                        display: "flex",
+                        alignItems: "baseline",
+                        gap: "6px",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontFamily: "var(--font-heading)",
+                          fontSize: "22px",
+                          fontWeight: 700,
+                          color: "var(--text)",
+                        }}
+                      >
+                        {totalCarried}
+                      </span>
+                      <span
+                        style={{
+                          fontFamily: "var(--font-heading)",
+                          fontSize: "11px",
+                          color: "var(--text-muted)",
+                        }}
+                      >
+                        / {carryWeight} lb
+                      </span>
+                    </div>
+                    <div
+                      style={{
+                        marginTop: "6px",
+                        height: "4px",
+                        borderRadius: "2px",
+                        backgroundColor: "var(--border)",
+                        overflow: "hidden",
+                      }}
+                    >
+                      <div
+                        style={{
+                          height: "100%",
+                          width: `${Math.min(100, carryWeight > 0 ? (totalCarried / carryWeight) * 100 : 0)}%`,
+                          backgroundColor: "var(--primary)",
+                          transition: "width 0.3s",
+                        }}
+                      />
+                    </div>
                   </div>
                 </div>
               </div>
-              <div style={{ marginTop: "14px", height: "6px", backgroundColor: "rgba(122,157,111,0.1)", borderRadius: "3px", overflow: "hidden" }}>
-                <div style={{ height: "100%", width: `${vitPct}%`, background: "linear-gradient(90deg, #4a6042, #7a9d6f)", borderRadius: "3px", transition: "width 0.3s" }} />
-              </div>
-              <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "var(--font-heading)", fontSize: "9px", color: "var(--text-muted)", letterSpacing: "0.14em", textTransform: "uppercase" as const, marginTop: "6px" }}>
-                <span>{c.currentVitality ?? 0} / {effectiveMax}</span>
-                <span>{Math.round(vitPct)}%</span>
-              </div>
-              {tempHp !== 0 && (
-                <button onClick={() => { const patch: Partial<Character> = { tempHp: 0 }; if ((c.currentVitality ?? 0) > derivedMaxVitality) patch.currentVitality = Math.max(0, derivedMaxVitality); persist(patch); }} style={{ fontSize: "0.55rem", color: "var(--text-muted)", background: "none", border: "none", cursor: "pointer", marginTop: "4px" }}>✕ clear temp</button>
-              )}
-            </div>
+            );
+          })()}
 
-            {/* Side Col 1: Wounds + Ambition */}
-            <div style={{ display: "flex", flexDirection: "column" as const, gap: "12px" }}>
-              <div style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "6px", padding: "10px 14px 12px" }}>
-                <div style={{ fontFamily: "var(--font-heading)", fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase" as const, color: "#c66464", marginBottom: "8px" }}>☠ Wounds</div>
-                <div style={{ display: "flex", gap: "4px", flexWrap: "wrap" as const }}>
-                  {Array.from({ length: maxWounds }).map((_, i) => (
-                    <div key={i} onClick={() => persist({ currentWounds: i < (c.currentWounds ?? 0) ? i : i + 1 })} style={{ width: "14px", height: "14px", borderRadius: "50%", border: `1px solid ${i < (c.currentWounds ?? 0) ? "#c66464" : "var(--border)"}`, backgroundColor: i < (c.currentWounds ?? 0) ? "#c66464" : "transparent", cursor: "pointer", boxShadow: i < (c.currentWounds ?? 0) ? "0 0 8px rgba(198,100,100,0.4)" : "none", transition: "all 0.15s" }} />
-                  ))}
+          {/* ──── CENTER BOTTOM: REDUCTION POOL + REST ──── */}
+          <div
+            style={{
+              display: "grid",
+              gridTemplateColumns: "1.4fr 1fr",
+              gap: "12px",
+            }}
+          >
+            {/* Reduction Pool card */}
+            {(() => {
+              const spellPool = c.spellReductionPool ?? 0;
+              const featPool = c.featReductionPool ?? 0;
+              const shieldPool = equippedShield?.reductionPoolCurrent ?? null;
+              const shieldPoolMax = equippedShield?.reductionPoolMax ?? null;
+              const hasAnyPool =
+                spellPool > 0 || featPool > 0 || shieldPool != null;
+              return (
+                <div
+                  style={{
+                    backgroundColor: "var(--bg-card)",
+                    border: "1px solid var(--border)",
+                    borderRadius: "6px",
+                    padding: "12px 14px",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontFamily: "var(--font-heading)",
+                      fontSize: "10px",
+                      letterSpacing: "0.16em",
+                      textTransform: "uppercase" as const,
+                      color: "#c66464",
+                      marginBottom: "10px",
+                    }}
+                  >
+                    Reduction Pool
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.5rem",
+                      marginBottom: "0.5rem",
+                    }}
+                  >
+                    <input
+                      type="number"
+                      min={1}
+                      value={damageInput}
+                      onChange={(e) => setDamageInput(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          const n = parseInt(damageInput);
+                          if (n > 0) {
+                            applyDamage(n);
+                            setDamageInput("");
+                          }
+                        }
+                      }}
+                      placeholder="0"
+                      style={{
+                        ...inputStyle,
+                        width: "60px",
+                        textAlign: "center" as const,
+                      }}
+                    />
+                    <button
+                      onClick={() => {
+                        const n = parseInt(damageInput);
+                        if (n > 0) {
+                          applyDamage(n);
+                          setDamageInput("");
+                        }
+                      }}
+                      style={{
+                        padding: "0.3rem 0.75rem",
+                        border: "none",
+                        borderRadius: "0.375rem",
+                        backgroundColor: "#EF4444",
+                        color: "#fff",
+                        cursor: "pointer",
+                        fontFamily: "var(--font-heading)",
+                        fontWeight: 700,
+                        fontSize: "0.8rem",
+                      }}
+                    >
+                      Hit
+                    </button>
+                    <span
+                      style={{
+                        fontSize: "0.6rem",
+                        color: "var(--text-muted)",
+                        fontStyle: "italic",
+                      }}
+                    >
+                      Spell → Feat → Shield → HP
+                    </span>
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "0.375rem",
+                      flexWrap: "wrap" as const,
+                    }}
+                  >
+                    {spellPool > 0 && (
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.25rem",
+                          padding: "0.2rem 0.5rem",
+                          backgroundColor: "var(--primary-light)",
+                          border: "1px solid var(--primary)",
+                          borderRadius: "9999px",
+                          fontSize: "0.62rem",
+                          fontFamily: "var(--font-heading)",
+                          color: "var(--primary)",
+                          fontWeight: 700,
+                        }}
+                      >
+                        ✦ Spell: {spellPool}
+                        <button
+                          onClick={() =>
+                            persist({
+                              spellReductionPool: Math.max(0, spellPool - 1),
+                            })
+                          }
+                          style={{
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            fontSize: "0.6rem",
+                            color: "var(--primary)",
+                            padding: 0,
+                          }}
+                        >
+                          −
+                        </button>
+                        <button
+                          onClick={() =>
+                            persist({ spellReductionPool: spellPool + 1 })
+                          }
+                          style={{
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            fontSize: "0.6rem",
+                            color: "var(--primary)",
+                            padding: 0,
+                          }}
+                        >
+                          +
+                        </button>
+                        <button
+                          onClick={() => persist({ spellReductionPool: 0 })}
+                          style={{
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            fontSize: "0.55rem",
+                            color: "var(--text-muted)",
+                            padding: 0,
+                          }}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    )}
+                    {featPool > 0 && (
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.25rem",
+                          padding: "0.2rem 0.5rem",
+                          backgroundColor: "var(--accent-light)",
+                          border: "1px solid var(--accent)",
+                          borderRadius: "9999px",
+                          fontSize: "0.62rem",
+                          fontFamily: "var(--font-heading)",
+                          color: "var(--accent)",
+                          fontWeight: 700,
+                        }}
+                      >
+                        ✦ Feat: {featPool}
+                        <button
+                          onClick={() =>
+                            persist({
+                              featReductionPool: Math.max(0, featPool - 1),
+                            })
+                          }
+                          style={{
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            fontSize: "0.6rem",
+                            color: "var(--accent)",
+                            padding: 0,
+                          }}
+                        >
+                          −
+                        </button>
+                        <button
+                          onClick={() =>
+                            persist({ featReductionPool: featPool + 1 })
+                          }
+                          style={{
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            fontSize: "0.6rem",
+                            color: "var(--accent)",
+                            padding: 0,
+                          }}
+                        >
+                          +
+                        </button>
+                        <button
+                          onClick={() => persist({ featReductionPool: 0 })}
+                          style={{
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            fontSize: "0.55rem",
+                            color: "var(--text-muted)",
+                            padding: 0,
+                          }}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    )}
+                    {shieldPool != null && (
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.25rem",
+                          padding: "0.2rem 0.5rem",
+                          backgroundColor:
+                            shieldPool === 0
+                              ? "var(--section-alert-bg)"
+                              : "var(--bg-nav)",
+                          border: `1px solid ${shieldPool === 0 ? "#ff7979" : "var(--border)"}`,
+                          borderRadius: "9999px",
+                          fontSize: "0.62rem",
+                          fontFamily: "var(--font-heading)",
+                          color:
+                            shieldPool === 0 ? "#ff7979" : "var(--text-muted)",
+                          fontWeight: 700,
+                        }}
+                      >
+                        🛡 {shieldPool}/{shieldPoolMax}
+                        {shieldPool === 0 && " (broken)"}
+                      </div>
+                    )}
+                    {!hasAnyPool && (
+                      <div style={{ display: "flex", gap: "0.375rem" }}>
+                        <button
+                          onClick={() => persist({ spellReductionPool: 1 })}
+                          style={{
+                            fontSize: "0.6rem",
+                            padding: "0.15rem 0.4rem",
+                            border: "1px dashed var(--border)",
+                            borderRadius: "9999px",
+                            backgroundColor: "transparent",
+                            cursor: "pointer",
+                            color: "var(--text-muted)",
+                            fontFamily: "var(--font-heading)",
+                          }}
+                        >
+                          + Spell Pool
+                        </button>
+                        <button
+                          onClick={() => persist({ featReductionPool: 1 })}
+                          style={{
+                            fontSize: "0.6rem",
+                            padding: "0.15rem 0.4rem",
+                            border: "1px dashed var(--border)",
+                            borderRadius: "9999px",
+                            backgroundColor: "transparent",
+                            cursor: "pointer",
+                            color: "var(--text-muted)",
+                            fontFamily: "var(--font-heading)",
+                          }}
+                        >
+                          + Feat Pool
+                        </button>
+                      </div>
+                    )}
+                  </div>
                 </div>
-                <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "var(--font-heading)", fontSize: "9px", color: "var(--text-muted)", letterSpacing: "0.16em", textTransform: "uppercase" as const, marginTop: "8px" }}>
-                  <span>{c.currentWounds ?? 0} / {maxWounds}</span>
-                  <span>{maxWounds - (c.currentWounds ?? 0)} until KO</span>
-                </div>
-              </div>
-              <div style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "6px", padding: "10px 14px 12px" }}>
-                <div style={{ fontFamily: "var(--font-heading)", fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase" as const, color: "var(--primary)", marginBottom: "8px" }}>✦ Ambition</div>
-                <div style={{ display: "flex", gap: "5px", flexWrap: "wrap" as const }}>
-                  {Array.from({ length: maxAmbition }).map((_, i) => (
-                    <div key={i} onClick={() => persist({ currentAmbition: i < (c.currentAmbition ?? 0) ? i : i + 1 })} style={{ width: "22px", height: "18px", border: `1px solid ${i < (c.currentAmbition ?? 0) ? "var(--primary)" : "var(--border)"}`, borderRadius: "2px", background: i < (c.currentAmbition ?? 0) ? "var(--primary)" : "var(--bg-nav)", cursor: "pointer", transition: "all 0.15s" }} />
-                  ))}
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "var(--font-heading)", fontSize: "9px", color: "var(--text-muted)", letterSpacing: "0.16em", textTransform: "uppercase" as const, marginTop: "8px" }}>
-                  <span>{c.currentAmbition ?? 0} / {maxAmbition}</span>
-                  <span>{ambitionDice}</span>
-                </div>
-              </div>
-            </div>
+              );
+            })()}
 
-            {/* Side Col 2: Respites + Carry */}
-            <div style={{ display: "flex", flexDirection: "column" as const, gap: "12px" }}>
-              <div style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "6px", padding: "10px 14px 12px" }}>
-                <div style={{ fontFamily: "var(--font-heading)", fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase" as const, color: "var(--primary)", marginBottom: "8px" }}>Respites</div>
-                <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
-                  {[0, 1, 2].map((i) => (
-                    <span key={i} onClick={() => persist({ currentRespites: i < currentRespites ? i : i + 1 })} style={{ display: "inline-block", width: "14px", height: "14px", borderRadius: "50%", background: i < currentRespites ? "var(--primary)" : "transparent", border: `1px solid ${i < currentRespites ? "var(--primary)" : "var(--border)"}`, cursor: "pointer" }} />
-                  ))}
-                </div>
-                <div style={{ display: "flex", justifyContent: "space-between", fontFamily: "var(--font-heading)", fontSize: "9px", color: "var(--text-muted)", letterSpacing: "0.16em", textTransform: "uppercase" as const, marginTop: "8px" }}>
-                  <span>{currentRespites} / 3</span>
-                  <span>per day</span>
-                </div>
+            {/* Rest card */}
+            <div
+              style={{
+                backgroundColor: "var(--bg-card)",
+                border: "1px solid var(--border)",
+                borderRadius: "6px",
+                padding: "12px 14px",
+              }}
+            >
+              <div
+                style={{
+                  fontFamily: "var(--font-heading)",
+                  fontSize: "10px",
+                  letterSpacing: "0.16em",
+                  textTransform: "uppercase" as const,
+                  color: "var(--text-muted)",
+                  marginBottom: "8px",
+                }}
+              >
+                Rest
               </div>
-              <div style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "6px", padding: "10px 14px 12px" }}>
-                <div style={{ fontFamily: "var(--font-heading)", fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase" as const, color: "var(--primary)", marginBottom: "8px" }}>Carry</div>
-                <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
-                  <span style={{ fontFamily: "var(--font-heading)", fontSize: "22px", fontWeight: 700, color: "var(--text)" }}>{totalCarried}</span>
-                  <span style={{ fontFamily: "var(--font-heading)", fontSize: "11px", color: "var(--text-muted)" }}>/ {carryWeight} lb</span>
-                </div>
-                <div style={{ marginTop: "6px", height: "4px", borderRadius: "2px", backgroundColor: "var(--border)", overflow: "hidden" }}>
-                  <div style={{ height: "100%", width: `${Math.min(100, carryWeight > 0 ? (totalCarried / carryWeight) * 100 : 0)}%`, backgroundColor: "var(--primary)", transition: "width 0.3s" }} />
-                </div>
+              <div
+                style={{
+                  display: "flex",
+                  flexDirection: "row" as const,
+                  gap: "0.4rem",
+                }}
+              >
+                <button
+                  onClick={takeRespite}
+                  disabled={currentRespites <= 0}
+                  style={{
+                    flex: 1,
+                    padding: "0.5rem 0.4rem",
+                    border: `1px solid ${currentRespites > 0 ? "var(--primary)" : "var(--border)"}`,
+                    borderRadius: "5px",
+                    backgroundColor: "transparent",
+                    cursor: currentRespites > 0 ? "pointer" : "not-allowed",
+                    color:
+                      currentRespites > 0
+                        ? "var(--primary)"
+                        : "var(--text-muted)",
+                    fontFamily: "var(--font-heading)",
+                    fontWeight: 700,
+                    fontSize: "0.72rem",
+                    textAlign: "center" as const,
+                  }}
+                >
+                  <div>Respite</div>
+                  <div
+                    style={{
+                      fontSize: "0.58rem",
+                      fontWeight: 400,
+                      color: "var(--text-muted)",
+                      marginTop: "2px",
+                    }}
+                  >
+                    4 Vit · 1 Amb
+                  </div>
+                </button>
+                <button
+                  onClick={takeLongRest}
+                  style={{
+                    flex: 1,
+                    padding: "0.5rem 0.4rem",
+                    border: "1px solid var(--border)",
+                    borderRadius: "5px",
+                    backgroundColor: "transparent",
+                    cursor: "pointer",
+                    color: "var(--text)",
+                    fontFamily: "var(--font-heading)",
+                    fontWeight: 700,
+                    fontSize: "0.72rem",
+                    textAlign: "center" as const,
+                  }}
+                >
+                  <div>Long Rest</div>
+                  <div
+                    style={{
+                      fontSize: "0.58rem",
+                      fontWeight: 400,
+                      color: "var(--text-muted)",
+                      marginTop: "2px",
+                    }}
+                  >
+                    10 Vit · +1 Resp
+                  </div>
+                </button>
+                <button
+                  onClick={takeFullRest}
+                  style={{
+                    flex: 1,
+                    padding: "0.5rem 0.4rem",
+                    border: "1px solid var(--border)",
+                    borderRadius: "5px",
+                    backgroundColor: "transparent",
+                    cursor: "pointer",
+                    color: "var(--text)",
+                    fontFamily: "var(--font-heading)",
+                    fontWeight: 700,
+                    fontSize: "0.72rem",
+                    textAlign: "center" as const,
+                  }}
+                >
+                  <div>Full Rest</div>
+                  <div
+                    style={{
+                      fontSize: "0.58rem",
+                      fontWeight: 400,
+                      color: "var(--text-muted)",
+                      marginTop: "2px",
+                    }}
+                  >
+                    Full recovery
+                  </div>
+                </button>
               </div>
             </div>
           </div>
-        );
-      })()}
 
-      {/* ──── CENTER BOTTOM: REDUCTION POOL + REST ──── */}
-      <div style={{ display: "grid", gridTemplateColumns: "1.4fr 1fr", gap: "12px" }}>
-        {/* Reduction Pool card */}
-        {(() => {
-          const spellPool = c.spellReductionPool ?? 0;
-          const featPool = c.featReductionPool ?? 0;
-          const shieldPool = equippedShield?.reductionPoolCurrent ?? null;
-          const shieldPoolMax = equippedShield?.reductionPoolMax ?? null;
-          const hasAnyPool = spellPool > 0 || featPool > 0 || shieldPool != null;
-          return (
-            <div style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "6px", padding: "12px 14px" }}>
-              <div style={{ fontFamily: "var(--font-heading)", fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase" as const, color: "#c66464", marginBottom: "10px" }}>
-                Reduction Pool
-              </div>
-              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.5rem" }}>
-                <input type="number" min={1} value={damageInput} onChange={(e) => setDamageInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter") { const n = parseInt(damageInput); if (n > 0) { applyDamage(n); setDamageInput(""); } } }} placeholder="0" style={{ ...inputStyle, width: "60px", textAlign: "center" as const }} />
-                <button onClick={() => { const n = parseInt(damageInput); if (n > 0) { applyDamage(n); setDamageInput(""); } }} style={{ padding: "0.3rem 0.75rem", border: "none", borderRadius: "0.375rem", backgroundColor: "#EF4444", color: "#fff", cursor: "pointer", fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: "0.8rem" }}>Hit</button>
-                <span style={{ fontSize: "0.6rem", color: "var(--text-muted)", fontStyle: "italic" }}>Spell → Feat → Shield → HP</span>
-              </div>
-              <div style={{ display: "flex", gap: "0.375rem", flexWrap: "wrap" as const }}>
-                {spellPool > 0 && (
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.25rem", padding: "0.2rem 0.5rem", backgroundColor: "var(--primary-light)", border: "1px solid var(--primary)", borderRadius: "9999px", fontSize: "0.62rem", fontFamily: "var(--font-heading)", color: "var(--primary)", fontWeight: 700 }}>
-                    ✦ Spell: {spellPool}
-                    <button onClick={() => persist({ spellReductionPool: Math.max(0, spellPool - 1) })} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "0.6rem", color: "var(--primary)", padding: 0 }}>−</button>
-                    <button onClick={() => persist({ spellReductionPool: spellPool + 1 })} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "0.6rem", color: "var(--primary)", padding: 0 }}>+</button>
-                    <button onClick={() => persist({ spellReductionPool: 0 })} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "0.55rem", color: "var(--text-muted)", padding: 0 }}>✕</button>
-                  </div>
-                )}
-                {featPool > 0 && (
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.25rem", padding: "0.2rem 0.5rem", backgroundColor: "var(--accent-light)", border: "1px solid var(--accent)", borderRadius: "9999px", fontSize: "0.62rem", fontFamily: "var(--font-heading)", color: "var(--accent)", fontWeight: 700 }}>
-                    ✦ Feat: {featPool}
-                    <button onClick={() => persist({ featReductionPool: Math.max(0, featPool - 1) })} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "0.6rem", color: "var(--accent)", padding: 0 }}>−</button>
-                    <button onClick={() => persist({ featReductionPool: featPool + 1 })} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "0.6rem", color: "var(--accent)", padding: 0 }}>+</button>
-                    <button onClick={() => persist({ featReductionPool: 0 })} style={{ background: "none", border: "none", cursor: "pointer", fontSize: "0.55rem", color: "var(--text-muted)", padding: 0 }}>✕</button>
-                  </div>
-                )}
-                {shieldPool != null && (
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.25rem", padding: "0.2rem 0.5rem", backgroundColor: shieldPool === 0 ? "var(--section-alert-bg)" : "var(--bg-nav)", border: `1px solid ${shieldPool === 0 ? "#ff7979" : "var(--border)"}`, borderRadius: "9999px", fontSize: "0.62rem", fontFamily: "var(--font-heading)", color: shieldPool === 0 ? "#ff7979" : "var(--text-muted)", fontWeight: 700 }}>
-                    🛡 {shieldPool}/{shieldPoolMax}{shieldPool === 0 && " (broken)"}
-                  </div>
-                )}
-                {!hasAnyPool && (
-                  <div style={{ display: "flex", gap: "0.375rem" }}>
-                    <button onClick={() => persist({ spellReductionPool: 1 })} style={{ fontSize: "0.6rem", padding: "0.15rem 0.4rem", border: "1px dashed var(--border)", borderRadius: "9999px", backgroundColor: "transparent", cursor: "pointer", color: "var(--text-muted)", fontFamily: "var(--font-heading)" }}>+ Spell Pool</button>
-                    <button onClick={() => persist({ featReductionPool: 1 })} style={{ fontSize: "0.6rem", padding: "0.15rem 0.4rem", border: "1px dashed var(--border)", borderRadius: "9999px", backgroundColor: "transparent", cursor: "pointer", color: "var(--text-muted)", fontFamily: "var(--font-heading)" }}>+ Feat Pool</button>
-                  </div>
-                )}
-              </div>
-            </div>
-          );
-        })()}
-
-        {/* Rest card */}
-        <div style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "6px", padding: "12px 14px" }}>
-          <div style={{ fontFamily: "var(--font-heading)", fontSize: "10px", letterSpacing: "0.16em", textTransform: "uppercase" as const, color: "var(--text-muted)", marginBottom: "8px" }}>Rest</div>
-          <div style={{ display: "flex", flexDirection: "row" as const, gap: "0.4rem" }}>
-            <button onClick={takeRespite} disabled={currentRespites <= 0} style={{ flex: 1, padding: "0.5rem 0.4rem", border: `1px solid ${currentRespites > 0 ? "var(--primary)" : "var(--border)"}`, borderRadius: "5px", backgroundColor: "transparent", cursor: currentRespites > 0 ? "pointer" : "not-allowed", color: currentRespites > 0 ? "var(--primary)" : "var(--text-muted)", fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: "0.72rem", textAlign: "center" as const }}>
-              <div>Respite</div>
-              <div style={{ fontSize: "0.58rem", fontWeight: 400, color: "var(--text-muted)", marginTop: "2px" }}>4 Vit · 1 Amb</div>
-            </button>
-            <button onClick={takeLongRest} style={{ flex: 1, padding: "0.5rem 0.4rem", border: "1px solid var(--border)", borderRadius: "5px", backgroundColor: "transparent", cursor: "pointer", color: "var(--text)", fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: "0.72rem", textAlign: "center" as const }}>
-              <div>Long Rest</div>
-              <div style={{ fontSize: "0.58rem", fontWeight: 400, color: "var(--text-muted)", marginTop: "2px" }}>10 Vit · +1 Resp</div>
-            </button>
-            <button onClick={takeFullRest} style={{ flex: 1, padding: "0.5rem 0.4rem", border: "1px solid var(--border)", borderRadius: "5px", backgroundColor: "transparent", cursor: "pointer", color: "var(--text)", fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: "0.72rem", textAlign: "center" as const }}>
-              <div>Full Rest</div>
-              <div style={{ fontSize: "0.58rem", fontWeight: 400, color: "var(--text-muted)", marginTop: "2px" }}>Full recovery</div>
-            </button>
-          </div>
-        </div>
-      </div>
-
-
-      {/* ──── RESOURCES STRIP ──── */}
-      <div style={{ backgroundColor: "var(--bg-card)", border: "1px solid var(--border)", borderRadius: "6px", padding: "10px 14px", marginBottom: "1rem" }}>
-        <div style={{ display: "flex", alignItems: "center", gap: "12px", flexWrap: "wrap" as const }}>
-          {/* Renown edit (compact inline) */}
-          <div style={{ display: "flex", alignItems: "center", gap: "6px", paddingRight: "12px", borderRight: "1px solid var(--border)" }}>
-            <span style={{ fontSize: "9px", fontFamily: "monospace", letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "var(--text-muted)" }}>Renown</span>
-            <button onClick={() => persist({ renown: Math.max(0, (c.renown ?? 0) - 1) })} style={{ width: "18px", height: "18px", borderRadius: "50%", border: "1px solid var(--border)", backgroundColor: "var(--bg-nav)", cursor: "pointer", fontWeight: 700, color: "var(--text-muted)", fontSize: "0.75rem", display: "flex", alignItems: "center", justifyContent: "center" }}>−</button>
-            <span style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 700, fontSize: "1.3rem", color: "var(--primary)", lineHeight: 1, minWidth: "20px", textAlign: "center" as const }}>{c.renown ?? 0}</span>
-            <button onClick={() => persist({ renown: (c.renown ?? 0) + 1 })} style={{ width: "18px", height: "18px", borderRadius: "50%", border: "1px solid var(--border)", backgroundColor: "var(--bg-nav)", cursor: "pointer", fontWeight: 700, color: "var(--text-muted)", fontSize: "0.75rem", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
-          </div>
-          {/* Caster stats inline */}
-          {isCaster && (
-            <>
-              <div style={{ display: "flex", alignItems: "center", gap: "6px", paddingRight: "12px", borderRight: "1px solid var(--border)" }}>
-                <span style={{ fontSize: "9px", fontFamily: "monospace", letterSpacing: "0.12em", textTransform: "uppercase" as const, color: "var(--text-muted)" }}>Reservoir</span>
-                <button onClick={() => persist({ currentReservoir: Math.max(0, currentReservoir - 1) })} style={{ width: "18px", height: "18px", borderRadius: "50%", border: "1px solid var(--border)", backgroundColor: "var(--bg-nav)", cursor: "pointer", fontWeight: 700, color: "var(--text-muted)", fontSize: "0.75rem", display: "flex", alignItems: "center", justifyContent: "center" }}>−</button>
-                <span style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 700, fontSize: "1.3rem", color: "var(--primary)", lineHeight: 1 }}>{currentReservoir}<span style={{ fontSize: "0.62rem", color: "var(--text-muted)", fontFamily: "monospace" }}>/{maxReservoir}</span></span>
-                <button onClick={() => persist({ currentReservoir: Math.min(maxReservoir, currentReservoir + 1) })} style={{ width: "18px", height: "18px", borderRadius: "50%", border: "1px solid var(--border)", backgroundColor: "var(--bg-nav)", cursor: "pointer", fontWeight: 700, color: "var(--text-muted)", fontSize: "0.75rem", display: "flex", alignItems: "center", justifyContent: "center" }}>+</button>
-              </div>
-              {[
-                { lbl: "Spell DC", val: String(spellDC ?? "—") },
-                { lbl: "Known", val: `${c.knownSpellIds.length}/${knownSpellsMax}` },
-                { lbl: "Prepared", val: String(preparedSpellsMax) },
-              ].map(({ lbl, val }) => (
-                <div key={lbl} style={{ display: "flex", flexDirection: "column" as const, alignItems: "center", gap: "1px" }}>
-                  <span style={{ fontSize: "9px", fontFamily: "monospace", letterSpacing: "0.1em", textTransform: "uppercase" as const, color: "var(--text-muted)" }}>{lbl}</span>
-                  <span style={{ fontFamily: "'Cormorant Garamond', Georgia, serif", fontWeight: 700, fontSize: "1.3rem", color: "var(--text)", lineHeight: 1 }}>{val}</span>
-                </div>
-              ))}
-              {(accessibleSources.length > 0 || knownSchoolSpheres.length > 0) && (
-                <div style={{ display: "flex", flexDirection: "column" as const, gap: "1px" }}>
-                  {accessibleSources.length > 0 && <span style={{ fontSize: "0.52rem", color: "var(--text-muted)" }}>{accessibleSources.join(", ")}</span>}
-                  {knownSchoolSpheres.length > 0 && <span style={{ fontSize: "0.52rem", color: "var(--accent)" }}>{knownSchoolSpheres.join(", ")}</span>}
-                </div>
-              )}
-            </>
-          )}
-        </div>
-      </div>
-
-      {/* ──── PROFESSION CLASS RESOURCE ──── */}
-      {(() => {
-        const isDuelist = c.professionName === "Duelist";
-        const isFighter = c.professionName === "Fighter";
-        const isEidolon = c.professionName === "Eidolon";
-        const isStygian = c.professionName === "Stygian";
-        if (!isDuelist && !isFighter && !isEidolon && !isStygian) return null;
-        const maxAdrenaline = attrs.body + effectiveTier;
-        const maxSoulTokens = 3;
-        const btnStyle: React.CSSProperties = {
-          width: "18px",
-          height: "18px",
-          borderRadius: "50%",
-          border: "1px solid var(--border)",
-          backgroundColor: "var(--bg-card)",
-          cursor: "pointer",
-          fontWeight: 700,
-          color: "var(--text-muted)",
-          fontSize: "0.75rem",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        };
-        const cellStyle: React.CSSProperties = {
-          textAlign: "center",
-          backgroundColor: "var(--bg-nav)",
-          border: "1px solid var(--border)",
-          borderRadius: "8px",
-          padding: "0.4rem 0.25rem",
-        };
-        return (
+          {/* ──── RESOURCES STRIP ──── */}
           <div
             style={{
               backgroundColor: "var(--bg-card)",
               border: "1px solid var(--border)",
               borderRadius: "6px",
-              padding: "0.875rem 1.25rem",
+              padding: "10px 14px",
               marginBottom: "1rem",
             }}
           >
             <div
               style={{
-                fontSize: "0.65rem",
-                letterSpacing: "0.12em",
-                color: "var(--text-muted)",
-                fontFamily: "var(--font-heading)",
-                fontStyle: "italic",
-                textTransform: "uppercase",
-                marginBottom: "0.625rem",
+                display: "flex",
+                alignItems: "center",
+                gap: "12px",
+                flexWrap: "wrap" as const,
               }}
             >
-              Class Resource
-            </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(100px, 1fr))",
-                gap: "0.5rem",
-              }}
-            >
-              {isDuelist && (
-                <div style={cellStyle}>
-                  <div
-                    style={{
-                      fontSize: "0.6rem",
-                      color: "var(--text-muted)",
-                      letterSpacing: "0.06em",
-                      marginBottom: "2px",
-                    }}
-                  >
-                    Cadence
-                  </div>
+              {/* Renown edit (compact inline) */}
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                  paddingRight: "12px",
+                  borderRight: "1px solid var(--border)",
+                }}
+              >
+                <span
+                  style={{
+                    fontSize: "9px",
+                    fontFamily: "monospace",
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase" as const,
+                    color: "var(--text-muted)",
+                  }}
+                >
+                  Renown
+                </span>
+                <button
+                  onClick={() =>
+                    persist({ renown: Math.max(0, (c.renown ?? 0) - 1) })
+                  }
+                  style={{
+                    width: "18px",
+                    height: "18px",
+                    borderRadius: "50%",
+                    border: "1px solid var(--border)",
+                    backgroundColor: "var(--bg-nav)",
+                    cursor: "pointer",
+                    fontWeight: 700,
+                    color: "var(--text-muted)",
+                    fontSize: "0.75rem",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  −
+                </button>
+                <span
+                  style={{
+                    fontFamily: "'Cormorant Garamond', Georgia, serif",
+                    fontWeight: 700,
+                    fontSize: "1.3rem",
+                    color: "var(--primary)",
+                    lineHeight: 1,
+                    minWidth: "20px",
+                    textAlign: "center" as const,
+                  }}
+                >
+                  {c.renown ?? 0}
+                </span>
+                <button
+                  onClick={() => persist({ renown: (c.renown ?? 0) + 1 })}
+                  style={{
+                    width: "18px",
+                    height: "18px",
+                    borderRadius: "50%",
+                    border: "1px solid var(--border)",
+                    backgroundColor: "var(--bg-nav)",
+                    cursor: "pointer",
+                    fontWeight: 700,
+                    color: "var(--text-muted)",
+                    fontSize: "0.75rem",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  +
+                </button>
+              </div>
+              {/* Caster stats inline */}
+              {isCaster && (
+                <>
                   <div
                     style={{
                       display: "flex",
                       alignItems: "center",
-                      justifyContent: "center",
-                      gap: "0.25rem",
+                      gap: "6px",
+                      paddingRight: "12px",
+                      borderRight: "1px solid var(--border)",
                     }}
                   >
-                    <button
-                      onClick={() =>
-                        persist({
-                          currentCadence: Math.max(
-                            0,
-                            (c.currentCadence ?? effectiveTier) - 1,
-                          ),
-                        })
-                      }
-                      style={btnStyle}
-                    >
-                      −
-                    </button>
                     <span
                       style={{
-                        fontFamily: "var(--font-heading)",
-                        fontWeight: 700,
-                        fontSize: "1.1rem",
-                        color: "var(--primary)",
+                        fontSize: "9px",
+                        fontFamily: "monospace",
+                        letterSpacing: "0.12em",
+                        textTransform: "uppercase" as const,
+                        color: "var(--text-muted)",
                       }}
                     >
-                      {c.currentCadence ?? effectiveTier}
+                      Reservoir
                     </span>
                     <button
                       onClick={() =>
                         persist({
-                          currentCadence:
-                            (c.currentCadence ?? effectiveTier) + 1,
+                          currentReservoir: Math.max(0, currentReservoir - 1),
                         })
                       }
-                      style={btnStyle}
-                    >
-                      +
-                    </button>
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "0.52rem",
-                      color: "var(--text-muted)",
-                      marginTop: "1px",
-                    }}
-                  >
-                    Starting: Tier
-                  </div>
-                </div>
-              )}
-              {isFighter && (
-                <div style={cellStyle}>
-                  <div
-                    style={{
-                      fontSize: "0.6rem",
-                      color: "var(--text-muted)",
-                      letterSpacing: "0.06em",
-                      marginBottom: "2px",
-                    }}
-                  >
-                    Adrenaline
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "0.25rem",
-                    }}
-                  >
-                    <button
-                      onClick={() =>
-                        persist({
-                          currentAdrenaline: Math.max(
-                            0,
-                            (c.currentAdrenaline ?? maxAdrenaline) - 1,
-                          ),
-                        })
-                      }
-                      style={btnStyle}
+                      style={{
+                        width: "18px",
+                        height: "18px",
+                        borderRadius: "50%",
+                        border: "1px solid var(--border)",
+                        backgroundColor: "var(--bg-nav)",
+                        cursor: "pointer",
+                        fontWeight: 700,
+                        color: "var(--text-muted)",
+                        fontSize: "0.75rem",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
                     >
                       −
                     </button>
                     <span
                       style={{
-                        fontFamily: "var(--font-heading)",
+                        fontFamily: "'Cormorant Garamond', Georgia, serif",
                         fontWeight: 700,
-                        fontSize: "1.1rem",
+                        fontSize: "1.3rem",
                         color: "var(--primary)",
+                        lineHeight: 1,
                       }}
                     >
-                      {c.currentAdrenaline ?? maxAdrenaline}
+                      {currentReservoir}
                       <span
                         style={{
-                          fontSize: "0.65rem",
+                          fontSize: "0.62rem",
                           color: "var(--text-muted)",
+                          fontFamily: "monospace",
                         }}
                       >
-                        /{maxAdrenaline}
+                        /{maxReservoir}
                       </span>
                     </span>
                     <button
                       onClick={() =>
                         persist({
-                          currentAdrenaline: Math.min(
-                            maxAdrenaline,
-                            (c.currentAdrenaline ?? maxAdrenaline) + 1,
+                          currentReservoir: Math.min(
+                            maxReservoir,
+                            currentReservoir + 1,
                           ),
                         })
                       }
-                      style={btnStyle}
+                      style={{
+                        width: "18px",
+                        height: "18px",
+                        borderRadius: "50%",
+                        border: "1px solid var(--border)",
+                        backgroundColor: "var(--bg-nav)",
+                        cursor: "pointer",
+                        fontWeight: 700,
+                        color: "var(--text-muted)",
+                        fontSize: "0.75rem",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
                     >
                       +
                     </button>
                   </div>
-                  <div
-                    style={{
-                      fontSize: "0.52rem",
-                      color: "var(--text-muted)",
-                      marginTop: "1px",
-                    }}
-                  >
-                    Max: Body + Tier
-                  </div>
-                </div>
-              )}
-              {isEidolon && (
-                <div style={cellStyle}>
-                  <div
-                    style={{
-                      fontSize: "0.6rem",
-                      color: "var(--text-muted)",
-                      letterSpacing: "0.06em",
-                      marginBottom: "2px",
-                    }}
-                  >
-                    Resonance
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "0.25rem",
-                    }}
-                  >
-                    <button
-                      onClick={() =>
-                        persist({
-                          currentResonance: Math.max(
-                            0,
-                            (c.currentResonance ?? spellThreshold) - 1,
-                          ),
-                        })
-                      }
-                      style={btnStyle}
-                    >
-                      −
-                    </button>
-                    <span
+                  {[
+                    { lbl: "Spell Tier", val: String(spellTier) },
+                    { lbl: "Spell DC", val: String(spellDC ?? "—") },
+                    {
+                      lbl: "Known",
+                      val: `${c.knownSpellIds.length}/${knownSpellsMax}`,
+                    },
+                    { lbl: "Prepared", val: String(preparedSpellsMax) },
+                  ].map(({ lbl, val }) => (
+                    <div
+                      key={lbl}
                       style={{
-                        fontFamily: "var(--font-heading)",
-                        fontWeight: 700,
-                        fontSize: "1.1rem",
-                        color: "var(--primary)",
+                        display: "flex",
+                        flexDirection: "column" as const,
+                        alignItems: "center",
+                        gap: "1px",
                       }}
                     >
-                      {c.currentResonance ?? spellThreshold}
-                    </span>
-                    <button
-                      onClick={() =>
-                        persist({
-                          currentResonance:
-                            (c.currentResonance ?? spellThreshold) + 1,
-                        })
-                      }
-                      style={btnStyle}
-                    >
-                      +
-                    </button>
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "0.52rem",
-                      color: "var(--text-muted)",
-                      marginTop: "1px",
-                    }}
-                  >
-                    Spell Threshold
-                  </div>
-                </div>
-              )}
-              {isStygian && (
-                <div style={cellStyle}>
-                  <div
-                    style={{
-                      fontSize: "0.6rem",
-                      color: "var(--text-muted)",
-                      letterSpacing: "0.06em",
-                      marginBottom: "2px",
-                    }}
-                  >
-                    Soul Tokens
-                  </div>
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      gap: "0.25rem",
-                    }}
-                  >
-                    <button
-                      onClick={() =>
-                        persist({
-                          currentSoulTokens: Math.max(
-                            0,
-                            (c.currentSoulTokens ?? 1) - 1,
-                          ),
-                        })
-                      }
-                      style={btnStyle}
-                    >
-                      −
-                    </button>
-                    <span
-                      style={{
-                        fontFamily: "var(--font-heading)",
-                        fontWeight: 700,
-                        fontSize: "1.1rem",
-                        color: "var(--primary)",
-                      }}
-                    >
-                      {c.currentSoulTokens ?? 1}
                       <span
                         style={{
-                          fontSize: "0.65rem",
+                          fontSize: "9px",
+                          fontFamily: "monospace",
+                          letterSpacing: "0.1em",
+                          textTransform: "uppercase" as const,
                           color: "var(--text-muted)",
                         }}
                       >
-                        /{maxSoulTokens}
+                        {lbl}
                       </span>
-                    </span>
-                    <button
-                      onClick={() =>
-                        persist({
-                          currentSoulTokens: Math.min(
-                            maxSoulTokens,
-                            (c.currentSoulTokens ?? 1) + 1,
-                          ),
-                        })
-                      }
-                      style={btnStyle}
+                      <span
+                        style={{
+                          fontFamily: "'Cormorant Garamond', Georgia, serif",
+                          fontWeight: 700,
+                          fontSize: "1.3rem",
+                          color: "var(--text)",
+                          lineHeight: 1,
+                        }}
+                      >
+                        {val}
+                      </span>
+                    </div>
+                  ))}
+                  {(accessibleSources.length > 0 ||
+                    knownSchoolSpheres.length > 0) && (
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column" as const,
+                        gap: "1px",
+                      }}
                     >
-                      +
-                    </button>
-                  </div>
-                  <div
-                    style={{
-                      fontSize: "0.52rem",
-                      color: "var(--text-muted)",
-                      marginTop: "1px",
-                    }}
-                  >
-                    Max: 3
-                  </div>
-                </div>
+                      {accessibleSources.length > 0 && (
+                        <span
+                          style={{
+                            fontSize: "0.52rem",
+                            color: "var(--text-muted)",
+                          }}
+                        >
+                          {accessibleSources.join(", ")}
+                        </span>
+                      )}
+                      {knownSchoolSpheres.length > 0 && (
+                        <span
+                          style={{
+                            fontSize: "0.52rem",
+                            color: "var(--accent)",
+                          }}
+                        >
+                          {knownSchoolSpheres.join(", ")}
+                        </span>
+                      )}
+                    </div>
+                  )}
+                </>
               )}
             </div>
           </div>
-        );
-      })()}
 
-      {/* ──── TAB NAVIGATION (top) ──── */}
-      <div style={{ display: "flex", borderBottom: "1px solid var(--border)", marginBottom: "1rem", flexWrap: "wrap" as const }}>
-        {tabs.filter((t) => !t.hidden).map((tab) => {
-          const active = activeTab === tab.id;
-          return (
-            <button
-              key={tab.id}
-              onClick={() => setActiveTab(tab.id)}
-              style={{
-                padding: "0.625rem 0.875rem",
-                border: "none",
-                cursor: "pointer",
-                backgroundColor: "transparent",
-                fontFamily: "'JetBrains Mono', monospace",
-                fontStyle: "normal",
-                fontWeight: 500,
-                fontSize: "0.7rem",
-                letterSpacing: "0.08em",
-                textTransform: "uppercase" as const,
-                color: active ? "var(--primary)" : "var(--text-muted)",
-                borderBottom: active ? "2px solid var(--primary)" : "2px solid transparent",
-                marginBottom: "-1px",
-                transition: "color 0.12s",
-              }}
-            >
-              {tab.label}
-            </button>
-          );
-        })}
-      </div>
+          {/* ──── PROFESSION CLASS RESOURCE ──── */}
+          {(() => {
+            const isDuelist = c.professionName === "Duelist";
+            const isFighter = c.professionName === "Fighter";
+            const isEidolon = c.professionName === "Eidolon";
+            const isStygian = c.professionName === "Stygian";
+            if (!isDuelist && !isFighter && !isEidolon && !isStygian)
+              return null;
+            const maxAdrenaline = attrs.body + effectiveTier;
+            const maxSoulTokens = 3;
+            const btnStyle: React.CSSProperties = {
+              width: "18px",
+              height: "18px",
+              borderRadius: "50%",
+              border: "1px solid var(--border)",
+              backgroundColor: "var(--bg-card)",
+              cursor: "pointer",
+              fontWeight: 700,
+              color: "var(--text-muted)",
+              fontSize: "0.75rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            };
+            const cellStyle: React.CSSProperties = {
+              textAlign: "center",
+              backgroundColor: "var(--bg-nav)",
+              border: "1px solid var(--border)",
+              borderRadius: "8px",
+              padding: "0.4rem 0.25rem",
+            };
+            return (
+              <div
+                style={{
+                  backgroundColor: "var(--bg-card)",
+                  border: "1px solid var(--border)",
+                  borderRadius: "6px",
+                  padding: "0.875rem 1.25rem",
+                  marginBottom: "1rem",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: "0.65rem",
+                    letterSpacing: "0.12em",
+                    color: "var(--text-muted)",
+                    fontFamily: "var(--font-heading)",
+                    fontStyle: "italic",
+                    textTransform: "uppercase",
+                    marginBottom: "0.625rem",
+                  }}
+                >
+                  Class Resource
+                </div>
+                <div
+                  style={{
+                    display: "grid",
+                    gridTemplateColumns: "repeat(auto-fit, minmax(100px, 1fr))",
+                    gap: "0.5rem",
+                  }}
+                >
+                  {isDuelist && (
+                    <div style={cellStyle}>
+                      <div
+                        style={{
+                          fontSize: "0.6rem",
+                          color: "var(--text-muted)",
+                          letterSpacing: "0.06em",
+                          marginBottom: "2px",
+                        }}
+                      >
+                        Cadence
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "0.25rem",
+                        }}
+                      >
+                        <button
+                          onClick={() =>
+                            persist({
+                              currentCadence: Math.max(
+                                0,
+                                (c.currentCadence ?? effectiveTier) - 1,
+                              ),
+                            })
+                          }
+                          style={btnStyle}
+                        >
+                          −
+                        </button>
+                        <span
+                          style={{
+                            fontFamily: "var(--font-heading)",
+                            fontWeight: 700,
+                            fontSize: "1.1rem",
+                            color: "var(--primary)",
+                          }}
+                        >
+                          {c.currentCadence ?? effectiveTier}
+                        </span>
+                        <button
+                          onClick={() =>
+                            persist({
+                              currentCadence:
+                                (c.currentCadence ?? effectiveTier) + 1,
+                            })
+                          }
+                          style={btnStyle}
+                        >
+                          +
+                        </button>
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "0.52rem",
+                          color: "var(--text-muted)",
+                          marginTop: "1px",
+                        }}
+                      >
+                        Starting: Tier
+                      </div>
+                    </div>
+                  )}
+                  {isFighter && (
+                    <div style={cellStyle}>
+                      <div
+                        style={{
+                          fontSize: "0.6rem",
+                          color: "var(--text-muted)",
+                          letterSpacing: "0.06em",
+                          marginBottom: "2px",
+                        }}
+                      >
+                        Adrenaline
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "0.25rem",
+                        }}
+                      >
+                        <button
+                          onClick={() =>
+                            persist({
+                              currentAdrenaline: Math.max(
+                                0,
+                                (c.currentAdrenaline ?? maxAdrenaline) - 1,
+                              ),
+                            })
+                          }
+                          style={btnStyle}
+                        >
+                          −
+                        </button>
+                        <span
+                          style={{
+                            fontFamily: "var(--font-heading)",
+                            fontWeight: 700,
+                            fontSize: "1.1rem",
+                            color: "var(--primary)",
+                          }}
+                        >
+                          {c.currentAdrenaline ?? maxAdrenaline}
+                          <span
+                            style={{
+                              fontSize: "0.65rem",
+                              color: "var(--text-muted)",
+                            }}
+                          >
+                            /{maxAdrenaline}
+                          </span>
+                        </span>
+                        <button
+                          onClick={() =>
+                            persist({
+                              currentAdrenaline: Math.min(
+                                maxAdrenaline,
+                                (c.currentAdrenaline ?? maxAdrenaline) + 1,
+                              ),
+                            })
+                          }
+                          style={btnStyle}
+                        >
+                          +
+                        </button>
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "0.52rem",
+                          color: "var(--text-muted)",
+                          marginTop: "1px",
+                        }}
+                      >
+                        Max: Body + Tier
+                      </div>
+                    </div>
+                  )}
+                  {isEidolon && (
+                    <div style={cellStyle}>
+                      <div
+                        style={{
+                          fontSize: "0.6rem",
+                          color: "var(--text-muted)",
+                          letterSpacing: "0.06em",
+                          marginBottom: "2px",
+                        }}
+                      >
+                        Resonance
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "0.25rem",
+                        }}
+                      >
+                        <button
+                          onClick={() =>
+                            persist({
+                              currentResonance: Math.max(
+                                0,
+                                (c.currentResonance ?? spellThreshold) - 1,
+                              ),
+                            })
+                          }
+                          style={btnStyle}
+                        >
+                          −
+                        </button>
+                        <span
+                          style={{
+                            fontFamily: "var(--font-heading)",
+                            fontWeight: 700,
+                            fontSize: "1.1rem",
+                            color: "var(--primary)",
+                          }}
+                        >
+                          {c.currentResonance ?? spellThreshold}
+                        </span>
+                        <button
+                          onClick={() =>
+                            persist({
+                              currentResonance:
+                                (c.currentResonance ?? spellThreshold) + 1,
+                            })
+                          }
+                          style={btnStyle}
+                        >
+                          +
+                        </button>
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "0.52rem",
+                          color: "var(--text-muted)",
+                          marginTop: "1px",
+                        }}
+                      >
+                        Spell Threshold
+                      </div>
+                    </div>
+                  )}
+                  {isStygian && (
+                    <div style={cellStyle}>
+                      <div
+                        style={{
+                          fontSize: "0.6rem",
+                          color: "var(--text-muted)",
+                          letterSpacing: "0.06em",
+                          marginBottom: "2px",
+                        }}
+                      >
+                        Soul Tokens
+                      </div>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          gap: "0.25rem",
+                        }}
+                      >
+                        <button
+                          onClick={() =>
+                            persist({
+                              currentSoulTokens: Math.max(
+                                0,
+                                (c.currentSoulTokens ?? 1) - 1,
+                              ),
+                            })
+                          }
+                          style={btnStyle}
+                        >
+                          −
+                        </button>
+                        <span
+                          style={{
+                            fontFamily: "var(--font-heading)",
+                            fontWeight: 700,
+                            fontSize: "1.1rem",
+                            color: "var(--primary)",
+                          }}
+                        >
+                          {c.currentSoulTokens ?? 1}
+                          <span
+                            style={{
+                              fontSize: "0.65rem",
+                              color: "var(--text-muted)",
+                            }}
+                          >
+                            /{maxSoulTokens}
+                          </span>
+                        </span>
+                        <button
+                          onClick={() =>
+                            persist({
+                              currentSoulTokens: Math.min(
+                                maxSoulTokens,
+                                (c.currentSoulTokens ?? 1) + 1,
+                              ),
+                            })
+                          }
+                          style={btnStyle}
+                        >
+                          +
+                        </button>
+                      </div>
+                      <div
+                        style={{
+                          fontSize: "0.52rem",
+                          color: "var(--text-muted)",
+                          marginTop: "1px",
+                        }}
+                      >
+                        Max: 3
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </div>
+            );
+          })()}
 
-      {/* ──── TAB CONTENT ──── */}
-      <div style={{ minHeight: "200px" }}>
-        {activeTab === "combat" && renderCombatTab()}
-        {activeTab === "feats" && renderFeatsTab()}
-        {activeTab === "inventory" && renderInventoryTab()}
-        {activeTab === "spellcasting" && renderSpellcastingTab()}
-        {activeTab === "notes" && renderNotesTab()}
-      </div>
+          {/* ──── TAB NAVIGATION (top) ──── */}
+          <div
+            style={{
+              display: "flex",
+              borderBottom: "1px solid var(--border)",
+              marginBottom: "1rem",
+              flexWrap: "wrap" as const,
+            }}
+          >
+            {tabs
+              .filter((t) => !t.hidden)
+              .map((tab) => {
+                const active = activeTab === tab.id;
+                return (
+                  <button
+                    key={tab.id}
+                    onClick={() => setActiveTab(tab.id)}
+                    style={{
+                      padding: "0.625rem 0.875rem",
+                      border: "none",
+                      cursor: "pointer",
+                      backgroundColor: "transparent",
+                      fontFamily: "'JetBrains Mono', monospace",
+                      fontStyle: "normal",
+                      fontWeight: 500,
+                      fontSize: "0.7rem",
+                      letterSpacing: "0.08em",
+                      textTransform: "uppercase" as const,
+                      color: active ? "var(--primary)" : "var(--text-muted)",
+                      borderBottom: active
+                        ? "2px solid var(--primary)"
+                        : "2px solid transparent",
+                      marginBottom: "-1px",
+                      transition: "color 0.12s",
+                    }}
+                  >
+                    {tab.label}
+                  </button>
+                );
+              })}
+          </div>
 
-        </div> {/* end CENTER column */}
-
+          {/* ──── TAB CONTENT ──── */}
+          <div style={{ minHeight: "200px" }}>
+            {activeTab === "combat" && renderCombatTab()}
+            {activeTab === "feats" && renderFeatsTab()}
+            {activeTab === "inventory" && renderInventoryTab()}
+            {activeTab === "spellcasting" && renderSpellcastingTab()}
+            {activeTab === "notes" && renderNotesTab()}
+          </div>
+        </div>{" "}
+        {/* end CENTER column */}
         {/* RIGHT COLUMN */}
-        <div className="poa-col-right" style={{ display: "flex", flexDirection: "column", gap: "16px", minWidth: 0 }}>
+        <div
+          className="poa-col-right"
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            gap: "16px",
+            minWidth: 0,
+          }}
+        >
           {renderRightRail()}
         </div>
-
-      </div> {/* end 3-col grid */}
-
+      </div>{" "}
+      {/* end 3-col grid */}
       {/* ──── PROFICIENCIES (moved to left rail — retained for Section component compatibility) ──── */}
-      {false && <Section title="Proficiencies">
-        <div
-          style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}
-        >
-          {/* Armor penalty warning */}
-          {!isArmorProficient && (
-            <div
-              style={{
-                padding: "0.4rem 0.75rem",
-                backgroundColor: "var(--section-alert-bg)",
-                border: "1px solid #ff7979",
-                borderRadius: "0.375rem",
-                fontSize: "0.78rem",
-                color: "#cc2222",
-                fontFamily: "var(--font-heading)",
-                fontWeight: 700,
-              }}
-            >
-              ⚠ Armor Penalty active — all skill dice reduced one step (min d4)
-            </div>
-          )}
-
-          {/* Unspent skill points notice */}
-          {(() => {
-            const totalAvailableSkill =
-              4 + 2 * Math.floor((c.featsPurchased ?? 0) / 2);
-            const totalSpentSkill = Object.values(c.skillPoints ?? {}).reduce(
-              (s, v) => s + v,
-              0,
-            );
-            const dynUnspentSkill = totalAvailableSkill - totalSpentSkill;
-            return dynUnspentSkill > 0 ? (
+      {false && (
+        <Section title="Proficiencies">
+          <div
+            style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}
+          >
+            {/* Armor penalty warning */}
+            {!isArmorProficient && (
               <div
                 style={{
                   padding: "0.4rem 0.75rem",
-                  backgroundColor: "var(--accent-light)",
-                  border: "1px solid #FCD34D",
+                  backgroundColor: "var(--section-alert-bg)",
+                  border: "1px solid #ff7979",
                   borderRadius: "0.375rem",
-                  fontSize: "0.8rem",
-                  color: "(#92400E)",
+                  fontSize: "0.78rem",
+                  color: "#cc2222",
                   fontFamily: "var(--font-heading)",
                   fontWeight: 700,
                 }}
               >
-                ✦ {dynUnspentSkill} unspent Skill Point
-                {dynUnspentSkill !== 1 ? "s" : ""} — allocate below
-                <span style={{ fontWeight: 400, marginLeft: "0.5rem" }}>
-                  ({totalSpentSkill} / {totalAvailableSkill} spent)
-                </span>
+                ⚠ Armor Penalty active — all skill dice reduced one step (min
+                d4)
               </div>
-            ) : null;
-          })()}
+            )}
 
-          {/* V.I.T.A.L.S. skills — 2-col badge grid */}
-          <div>
-            <div
-              style={{
-                fontSize: "0.65rem",
-                fontWeight: 700,
-                letterSpacing: "0.07em",
-                textTransform: "uppercase",
-                color: "var(--text-muted)",
-                fontFamily: "var(--font-heading)",
-                marginBottom: "0.5rem",
-              }}
-            >
-              V.I.T.A.L.S.
-            </div>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
-                gap: "0.3rem",
-              }}
-            >
-              {[
-                "Vigor",
-                "Intuition",
-                "Talent",
-                "Awareness",
-                "Lore",
-                "Social",
-              ].map((skill) => {
-                const pool = calcSkillPool(
-                  skill,
-                  attrs,
-                  c.vitalsProficiencies,
-                  c.vitalsExpertiseBumps ?? {},
-                  c.skillPoints ?? {},
-                );
-                const invested = c.skillPoints?.[skill] ?? 0;
-                const totalAvailableSkill =
-                  4 + 2 * Math.floor((c.featsPurchased ?? 0) / 2);
-                const totalSpentSkill = Object.values(
-                  c.skillPoints ?? {},
-                ).reduce((s, v) => s + v, 0);
-                const dynUnspentSkill = totalAvailableSkill - totalSpentSkill;
-                const canAdd = dynUnspentSkill > 0 && invested < 12;
-                const canRemove = invested > 0;
-                const RANK_COLORS: Record<string, string> = {
-                  Untrained: "var(--text-muted)",
-                  Trained: "var(--primary)",
-                  Expert: "var(--accent)",
-                  Master: "#7C3AED",
-                };
-                const DIE_STEP = [4, 6, 8, 10, 12] as const;
-                function stepDown(faces: number): number {
-                  const i = DIE_STEP.indexOf(
-                    faces as (typeof DIE_STEP)[number],
+            {/* Unspent skill points notice */}
+            {(() => {
+              const totalAvailableSkill =
+                4 + 2 * Math.floor((c.featsPurchased ?? 0) / 2);
+              const totalSpentSkill = Object.values(c.skillPoints ?? {}).reduce(
+                (s, v) => s + v,
+                0,
+              );
+              const dynUnspentSkill = totalAvailableSkill - totalSpentSkill;
+              return dynUnspentSkill > 0 ? (
+                <div
+                  style={{
+                    padding: "0.4rem 0.75rem",
+                    backgroundColor: "var(--accent-light)",
+                    border: "1px solid #FCD34D",
+                    borderRadius: "0.375rem",
+                    fontSize: "0.8rem",
+                    color: "(#92400E)",
+                    fontFamily: "var(--font-heading)",
+                    fontWeight: 700,
+                  }}
+                >
+                  ✦ {dynUnspentSkill} unspent Skill Point
+                  {dynUnspentSkill !== 1 ? "s" : ""} — allocate below
+                  <span style={{ fontWeight: 400, marginLeft: "0.5rem" }}>
+                    ({totalSpentSkill} / {totalAvailableSkill} spent)
+                  </span>
+                </div>
+              ) : null;
+            })()}
+
+            {/* V.I.T.A.L.S. skills — 2-col badge grid */}
+            <div>
+              <div
+                style={{
+                  fontSize: "0.65rem",
+                  fontWeight: 700,
+                  letterSpacing: "0.07em",
+                  textTransform: "uppercase",
+                  color: "var(--text-muted)",
+                  fontFamily: "var(--font-heading)",
+                  marginBottom: "0.5rem",
+                }}
+              >
+                V.I.T.A.L.S.
+              </div>
+              <div
+                style={{
+                  display: "grid",
+                  gridTemplateColumns: "repeat(auto-fit, minmax(220px, 1fr))",
+                  gap: "0.3rem",
+                }}
+              >
+                {[
+                  "Vigor",
+                  "Intuition",
+                  "Talent",
+                  "Awareness",
+                  "Lore",
+                  "Social",
+                ].map((skill) => {
+                  const pool = calcSkillPool(
+                    skill,
+                    attrs,
+                    c.vitalsProficiencies,
+                    c.vitalsExpertiseBumps ?? {},
+                    c.skillPoints ?? {},
                   );
-                  return i > 0 ? DIE_STEP[i - 1] : 4;
-                }
-                const penalizedDisplay = (() => {
-                  if (pool.profDieFaces !== null) {
-                    return `${pool.baseDiceCount + pool.skillDiceCount}d${stepDown(pool.profDieFaces)}`;
+                  const invested = c.skillPoints?.[skill] ?? 0;
+                  const totalAvailableSkill =
+                    4 + 2 * Math.floor((c.featsPurchased ?? 0) / 2);
+                  const totalSpentSkill = Object.values(
+                    c.skillPoints ?? {},
+                  ).reduce((s, v) => s + v, 0);
+                  const dynUnspentSkill = totalAvailableSkill - totalSpentSkill;
+                  const canAdd = dynUnspentSkill > 0 && invested < 12;
+                  const canRemove = invested > 0;
+                  const RANK_COLORS: Record<string, string> = {
+                    Untrained: "var(--text-muted)",
+                    Trained: "var(--primary)",
+                    Expert: "var(--accent)",
+                    Master: "#7C3AED",
+                  };
+                  const DIE_STEP = [4, 6, 8, 10, 12] as const;
+                  function stepDown(faces: number): number {
+                    const i = DIE_STEP.indexOf(
+                      faces as (typeof DIE_STEP)[number],
+                    );
+                    return i > 0 ? DIE_STEP[i - 1] : 4;
                   }
-                  const baseFaces = calcBaseDiceFromAttr(
-                    calcSkillAttrValue(skill, attrs),
-                  );
-                  return `${pool.baseDiceCount + pool.skillDiceCount}d${stepDown(baseFaces)}`;
-                })();
+                  const penalizedDisplay = (() => {
+                    if (pool.profDieFaces !== null) {
+                      return `${pool.baseDiceCount + pool.skillDiceCount}d${stepDown(pool.profDieFaces)}`;
+                    }
+                    const baseFaces = calcBaseDiceFromAttr(
+                      calcSkillAttrValue(skill, attrs),
+                    );
+                    return `${pool.baseDiceCount + pool.skillDiceCount}d${stepDown(baseFaces)}`;
+                  })();
 
-                // Badge color by die size
-                const dieFaces =
-                  pool.profDieFaces ??
-                  calcBaseDiceFromAttr(calcSkillAttrValue(skill, attrs));
-                const badgeStyle: React.CSSProperties =
-                  dieFaces >= 10
-                    ? {
-                        backgroundColor: "var(--primary)",
-                        color: "var(--text-on-primary)",
-                      }
-                    : dieFaces === 8
+                  // Badge color by die size
+                  const dieFaces =
+                    pool.profDieFaces ??
+                    calcBaseDiceFromAttr(calcSkillAttrValue(skill, attrs));
+                  const badgeStyle: React.CSSProperties =
+                    dieFaces >= 10
                       ? {
-                          backgroundColor: "var(--primary-light)",
-                          color: "var(--primary)",
-                          border: "1px solid var(--primary)",
+                          backgroundColor: "var(--primary)",
+                          color: "var(--text-on-primary)",
                         }
-                      : dieFaces === 6
+                      : dieFaces === 8
                         ? {
-                            backgroundColor: "var(--bg-nav)",
-                            color: "var(--text-muted)",
-                            border: "1px solid var(--border)",
+                            backgroundColor: "var(--primary-light)",
+                            color: "var(--primary)",
+                            border: "1px solid var(--primary)",
                           }
-                        : {
-                            backgroundColor: "var(--bg-nav)",
-                            color: "var(--text-muted)",
-                            border: "1px solid var(--border)",
-                          };
+                        : dieFaces === 6
+                          ? {
+                              backgroundColor: "var(--bg-nav)",
+                              color: "var(--text-muted)",
+                              border: "1px solid var(--border)",
+                            }
+                          : {
+                              backgroundColor: "var(--bg-nav)",
+                              color: "var(--text-muted)",
+                              border: "1px solid var(--border)",
+                            };
 
-                return (
-                  <div
-                    key={skill}
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "0.5rem",
-                      backgroundColor: "var(--bg-nav)",
-                      border: "1px solid var(--border)",
-                      borderRadius: "8px",
-                      padding: "0.375rem 0.625rem",
-                    }}
-                  >
-                    {/* Skill name */}
-                    <span
+                  return (
+                    <div
+                      key={skill}
                       style={{
-                        fontSize: "0.8rem",
-                        color: "var(--text)",
-                        flex: 1,
-                        letterSpacing: "0.01em",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "0.5rem",
+                        backgroundColor: "var(--bg-nav)",
+                        border: "1px solid var(--border)",
+                        borderRadius: "8px",
+                        padding: "0.375rem 0.625rem",
                       }}
                     >
-                      {skill}
-                    </span>
-                    {/* Rank badge (non-untrained only) */}
-                    {pool.rank !== "Untrained" && (
+                      {/* Skill name */}
                       <span
                         style={{
-                          fontSize: "0.6rem",
-                          fontWeight: 700,
-                          fontFamily: "var(--font-heading)",
-                          padding: "0.1rem 0.35rem",
-                          borderRadius: "9999px",
-                          border: `1px solid ${RANK_COLORS[pool.rank]}`,
-                          color: RANK_COLORS[pool.rank],
+                          fontSize: "0.8rem",
+                          color: "var(--text)",
+                          flex: 1,
+                          letterSpacing: "0.01em",
                         }}
                       >
-                        {pool.rank}
+                        {skill}
                       </span>
-                    )}
-                    {/* Die badge */}
-                    {isArmorProficient ? (
-                      <span
-                        style={{
-                          fontSize: "0.72rem",
-                          fontWeight: 700,
-                          fontFamily: "var(--font-heading)",
-                          padding: "1px 7px",
-                          borderRadius: "5px",
-                          ...badgeStyle,
-                        }}
-                      >
-                        {pool.display}
-                      </span>
-                    ) : (
-                      <div
-                        style={{
-                          display: "flex",
-                          gap: "0.2rem",
-                          alignItems: "center",
-                        }}
-                      >
+                      {/* Rank badge (non-untrained only) */}
+                      {pool.rank !== "Untrained" && (
                         <span
                           style={{
-                            fontSize: "0.72rem",
+                            fontSize: "0.6rem",
+                            fontWeight: 700,
                             fontFamily: "var(--font-heading)",
-                            color: "var(--text-muted)",
-                            textDecoration: "line-through",
+                            padding: "0.1rem 0.35rem",
+                            borderRadius: "9999px",
+                            border: `1px solid ${RANK_COLORS[pool.rank]}`,
+                            color: RANK_COLORS[pool.rank],
                           }}
                         >
-                          {pool.display}
+                          {pool.rank}
                         </span>
+                      )}
+                      {/* Die badge */}
+                      {isArmorProficient ? (
                         <span
                           style={{
                             fontSize: "0.72rem",
@@ -8701,183 +11115,214 @@ export default function CharacterSheetPage({
                             fontFamily: "var(--font-heading)",
                             padding: "1px 7px",
                             borderRadius: "5px",
-                            backgroundColor: "var(--bg-nav)",
-                            color: "#cc2222",
-                            border: "1px solid #cc2222",
+                            ...badgeStyle,
                           }}
                         >
-                          {penalizedDisplay}
+                          {pool.display}
+                        </span>
+                      ) : (
+                        <div
+                          style={{
+                            display: "flex",
+                            gap: "0.2rem",
+                            alignItems: "center",
+                          }}
+                        >
+                          <span
+                            style={{
+                              fontSize: "0.72rem",
+                              fontFamily: "var(--font-heading)",
+                              color: "var(--text-muted)",
+                              textDecoration: "line-through",
+                            }}
+                          >
+                            {pool.display}
+                          </span>
+                          <span
+                            style={{
+                              fontSize: "0.72rem",
+                              fontWeight: 700,
+                              fontFamily: "var(--font-heading)",
+                              padding: "1px 7px",
+                              borderRadius: "5px",
+                              backgroundColor: "var(--bg-nav)",
+                              color: "#cc2222",
+                              border: "1px solid #cc2222",
+                            }}
+                          >
+                            {penalizedDisplay}
+                          </span>
+                        </div>
+                      )}
+                      {/* Invest +/− */}
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.2rem",
+                          flexShrink: 0,
+                        }}
+                      >
+                        <button
+                          onClick={() => {
+                            if (!canRemove) return;
+                            const newSkillPts = {
+                              ...(c.skillPoints ?? {}),
+                              [skill]: invested - 1,
+                            };
+                            const newTotalSpent = totalSpentSkill - 1;
+                            persist({
+                              skillPoints: newSkillPts,
+                              unspentSkillPoints:
+                                totalAvailableSkill - newTotalSpent,
+                            });
+                          }}
+                          disabled={!canRemove}
+                          style={{
+                            width: "18px",
+                            height: "18px",
+                            borderRadius: "50%",
+                            border: "1px solid var(--border)",
+                            backgroundColor: "var(--bg-card)",
+                            cursor: canRemove ? "pointer" : "not-allowed",
+                            fontWeight: 700,
+                            color: "var(--text-muted)",
+                            fontSize: "0.75rem",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          −
+                        </button>
+                        <span
+                          style={{
+                            fontFamily: "var(--font-heading)",
+                            fontWeight: 700,
+                            fontSize: "0.75rem",
+                            minWidth: "14px",
+                            textAlign: "center",
+                            color: "var(--primary)",
+                          }}
+                        >
+                          {invested}
+                        </span>
+                        <button
+                          onClick={() => {
+                            if (!canAdd) return;
+                            const newSkillPts = {
+                              ...(c.skillPoints ?? {}),
+                              [skill]: invested + 1,
+                            };
+                            const newTotalSpent = totalSpentSkill + 1;
+                            persist({
+                              skillPoints: newSkillPts,
+                              unspentSkillPoints:
+                                totalAvailableSkill - newTotalSpent,
+                            });
+                          }}
+                          disabled={!canAdd}
+                          style={{
+                            width: "18px",
+                            height: "18px",
+                            borderRadius: "50%",
+                            border: "1px solid var(--border)",
+                            backgroundColor: "var(--bg-card)",
+                            cursor: canAdd ? "pointer" : "not-allowed",
+                            fontWeight: 700,
+                            color: "var(--text-muted)",
+                            fontSize: "0.75rem",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                          }}
+                        >
+                          +
+                        </button>
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Armaments / Protection / Tool Kits */}
+            {[
+              { label: "Armaments", items: prof?.armaments ?? [] },
+              { label: "Protection", items: prof?.protection ?? [] },
+              {
+                label: "Tool Kits",
+                items: (prof?.toolKits ?? []).filter((t) => t !== "-"),
+              },
+            ]
+              .filter((g) => g.items.length > 0)
+              .map((group) => (
+                <div key={group.label}>
+                  <div
+                    style={{
+                      fontSize: "0.65rem",
+                      fontWeight: 700,
+                      letterSpacing: "0.07em",
+                      textTransform: "uppercase",
+                      color: "var(--text-muted)",
+                      fontFamily: "var(--font-heading)",
+                      marginBottom: "0.375rem",
+                    }}
+                  >
+                    {group.label}
+                  </div>
+                  <div
+                    style={{
+                      display: "flex",
+                      flexDirection: "column",
+                      gap: "0.35rem",
+                    }}
+                  >
+                    {group.items.map((item) => (
+                      <div
+                        key={item}
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                          gap: "0.625rem",
+                          padding: "0.45rem 0.75rem",
+                          backgroundColor: "var(--bg-nav)",
+                          border: "1px solid var(--border)",
+                          borderRadius: "0.375rem",
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontFamily: "var(--font-heading)",
+                            fontWeight: 700,
+                            fontSize: "0.85rem",
+                            color: "var(--text)",
+                            flex: 1,
+                          }}
+                        >
+                          {item}
+                        </span>
+                        <span
+                          style={{
+                            fontSize: "0.6rem",
+                            fontWeight: 700,
+                            fontFamily: "var(--font-heading)",
+                            padding: "0.1rem 0.35rem",
+                            borderRadius: "9999px",
+                            border: "1px solid var(--primary)",
+                            color: "var(--primary)",
+                          }}
+                        >
+                          Proficient
                         </span>
                       </div>
-                    )}
-                    {/* Invest +/− */}
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "0.2rem",
-                        flexShrink: 0,
-                      }}
-                    >
-                      <button
-                        onClick={() => {
-                          if (!canRemove) return;
-                          const newSkillPts = {
-                            ...(c.skillPoints ?? {}),
-                            [skill]: invested - 1,
-                          };
-                          const newTotalSpent = totalSpentSkill - 1;
-                          persist({
-                            skillPoints: newSkillPts,
-                            unspentSkillPoints:
-                              totalAvailableSkill - newTotalSpent,
-                          });
-                        }}
-                        disabled={!canRemove}
-                        style={{
-                          width: "18px",
-                          height: "18px",
-                          borderRadius: "50%",
-                          border: "1px solid var(--border)",
-                          backgroundColor: "var(--bg-card)",
-                          cursor: canRemove ? "pointer" : "not-allowed",
-                          fontWeight: 700,
-                          color: "var(--text-muted)",
-                          fontSize: "0.75rem",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        −
-                      </button>
-                      <span
-                        style={{
-                          fontFamily: "var(--font-heading)",
-                          fontWeight: 700,
-                          fontSize: "0.75rem",
-                          minWidth: "14px",
-                          textAlign: "center",
-                          color: "var(--primary)",
-                        }}
-                      >
-                        {invested}
-                      </span>
-                      <button
-                        onClick={() => {
-                          if (!canAdd) return;
-                          const newSkillPts = {
-                            ...(c.skillPoints ?? {}),
-                            [skill]: invested + 1,
-                          };
-                          const newTotalSpent = totalSpentSkill + 1;
-                          persist({
-                            skillPoints: newSkillPts,
-                            unspentSkillPoints:
-                              totalAvailableSkill - newTotalSpent,
-                          });
-                        }}
-                        disabled={!canAdd}
-                        style={{
-                          width: "18px",
-                          height: "18px",
-                          borderRadius: "50%",
-                          border: "1px solid var(--border)",
-                          backgroundColor: "var(--bg-card)",
-                          cursor: canAdd ? "pointer" : "not-allowed",
-                          fontWeight: 700,
-                          color: "var(--text-muted)",
-                          fontSize: "0.75rem",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                        }}
-                      >
-                        +
-                      </button>
-                    </div>
+                    ))}
                   </div>
-                );
-              })}
-            </div>
+                </div>
+              ))}
           </div>
-
-          {/* Armaments / Protection / Tool Kits */}
-          {[
-            { label: "Armaments", items: prof?.armaments ?? [] },
-            { label: "Protection", items: prof?.protection ?? [] },
-            {
-              label: "Tool Kits",
-              items: (prof?.toolKits ?? []).filter((t) => t !== "-"),
-            },
-          ]
-            .filter((g) => g.items.length > 0)
-            .map((group) => (
-              <div key={group.label}>
-                <div
-                  style={{
-                    fontSize: "0.65rem",
-                    fontWeight: 700,
-                    letterSpacing: "0.07em",
-                    textTransform: "uppercase",
-                    color: "var(--text-muted)",
-                    fontFamily: "var(--font-heading)",
-                    marginBottom: "0.375rem",
-                  }}
-                >
-                  {group.label}
-                </div>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "0.35rem",
-                  }}
-                >
-                  {group.items.map((item) => (
-                    <div
-                      key={item}
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "0.625rem",
-                        padding: "0.45rem 0.75rem",
-                        backgroundColor: "var(--bg-nav)",
-                        border: "1px solid var(--border)",
-                        borderRadius: "0.375rem",
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontFamily: "var(--font-heading)",
-                          fontWeight: 700,
-                          fontSize: "0.85rem",
-                          color: "var(--text)",
-                          flex: 1,
-                        }}
-                      >
-                        {item}
-                      </span>
-                      <span
-                        style={{
-                          fontSize: "0.6rem",
-                          fontWeight: 700,
-                          fontFamily: "var(--font-heading)",
-                          padding: "0.1rem 0.35rem",
-                          borderRadius: "9999px",
-                          border: "1px solid var(--primary)",
-                          color: "var(--primary)",
-                        }}
-                      >
-                        Proficient
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-        </div>
-      </Section>}
+        </Section>
+      )}
     </div>
   );
 }
