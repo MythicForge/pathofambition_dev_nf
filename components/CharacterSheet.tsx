@@ -508,6 +508,8 @@ export default function CharacterSheetPage({
 
   // Portrait image upload
   const [portraitUrl, setPortraitUrl] = useState<string | null>(null);
+  const [vitAdjInput, setVitAdjInput] = useState<string | null>(null);
+  const [renownAdjInput, setRenownAdjInput] = useState<string | null>(null);
   const portraitInputRef = React.useRef<HTMLInputElement>(null);
   useEffect(() => {
     if (char?.id) {
@@ -8821,25 +8823,72 @@ export default function CharacterSheetPage({
                 {effectiveTier}
               </span>
             </div>
-            <div
-              style={{
-                width: "160px",
-                height: "4px",
-                backgroundColor: "var(--border)",
-                borderRadius: "2px",
-                overflow: "hidden",
-              }}
-            >
-              <div
+            {renownAdjInput !== null ? (
+              <input
+                autoFocus
+                value={renownAdjInput}
+                onChange={(e) => setRenownAdjInput(e.target.value)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    const trimmed = renownAdjInput.trim();
+                    if (trimmed !== "") {
+                      const cur = c.renown ?? 0;
+                      let next: number;
+                      if (trimmed.startsWith("+")) {
+                        next = cur + parseInt(trimmed.slice(1), 10);
+                      } else if (trimmed.startsWith("-")) {
+                        next = cur + parseInt(trimmed, 10);
+                      } else {
+                        next = parseInt(trimmed, 10);
+                      }
+                      if (!isNaN(next)) {
+                        persist({ renown: Math.max(0, next) });
+                      }
+                    }
+                    setRenownAdjInput(null);
+                  } else if (e.key === "Escape") {
+                    setRenownAdjInput(null);
+                  }
+                }}
+                onBlur={() => setRenownAdjInput(null)}
+                placeholder="+5 or -2"
                 style={{
-                  height: "100%",
-                  width: `${Math.min(100, Math.round(((c.renown ?? 0) / (FEAT_COST_BY_TIER[effectiveTier] ?? 6)) * 100))}%`,
-                  background: "var(--primary)",
+                  width: "160px",
+                  padding: "1px 6px",
                   borderRadius: "2px",
-                  transition: "width 0.3s ease",
+                  border: "1px solid var(--primary)",
+                  backgroundColor: "var(--bg-nav)",
+                  color: "var(--text)",
+                  fontFamily: "monospace",
+                  fontSize: "0.75rem",
+                  textAlign: "center" as const,
+                  outline: "none",
                 }}
               />
-            </div>
+            ) : (
+              <div
+                onClick={() => setRenownAdjInput("")}
+                title="Click to adjust renown"
+                style={{
+                  width: "160px",
+                  height: "8px",
+                  backgroundColor: "var(--border)",
+                  borderRadius: "2px",
+                  overflow: "hidden",
+                  cursor: "pointer",
+                }}
+              >
+                <div
+                  style={{
+                    height: "100%",
+                    width: `${Math.min(100, Math.round(((c.renown ?? 0) / (FEAT_COST_BY_TIER[effectiveTier] ?? 6)) * 100))}%`,
+                    background: "var(--primary)",
+                    borderRadius: "2px",
+                    transition: "width 0.3s ease",
+                  }}
+                />
+              </div>
+            )}
             <div
               style={{
                 marginTop: "5px",
@@ -8902,6 +8951,18 @@ export default function CharacterSheetPage({
               >
                 +
               </button>
+              <span
+                style={{
+                  fontFamily: "monospace",
+                  fontSize: "9px",
+                  letterSpacing: "0.1em",
+                  textTransform: "uppercase" as const,
+                  color: "var(--text-muted)",
+                  marginLeft: "2px",
+                }}
+              >
+                Renown
+              </span>
             </div>
           </div>
           {/* Spell DC (casters only) */}
@@ -9409,25 +9470,81 @@ export default function CharacterSheetPage({
                       </div>
                     </div>
                   </div>
-                  <div
-                    style={{
-                      marginTop: "14px",
-                      height: "12px",
-                      backgroundColor: "rgba(122,157,111,0.1)",
-                      borderRadius: "3px",
-                      overflow: "hidden",
-                    }}
-                  >
+                  {vitAdjInput !== null ? (
+                    <div style={{ marginTop: "14px" }}>
+                      <input
+                        autoFocus
+                        value={vitAdjInput}
+                        onChange={(e) => setVitAdjInput(e.target.value)}
+                        onKeyDown={(e) => {
+                          if (e.key === "Enter") {
+                            const trimmed = vitAdjInput.trim();
+                            if (trimmed !== "") {
+                              const cur = c.currentVitality ?? 0;
+                              let next: number;
+                              if (trimmed.startsWith("+")) {
+                                next = cur + parseInt(trimmed.slice(1), 10);
+                              } else if (trimmed.startsWith("-")) {
+                                next = cur + parseInt(trimmed, 10);
+                              } else {
+                                next = parseInt(trimmed, 10);
+                              }
+                              if (!isNaN(next)) {
+                                persist({
+                                  currentVitality: Math.max(
+                                    0,
+                                    Math.min(effectiveMax, next),
+                                  ),
+                                });
+                              }
+                            }
+                            setVitAdjInput(null);
+                          } else if (e.key === "Escape") {
+                            setVitAdjInput(null);
+                          }
+                        }}
+                        onBlur={() => setVitAdjInput(null)}
+                        placeholder="+5 or -10"
+                        style={{
+                          width: "100%",
+                          padding: "4px 8px",
+                          borderRadius: "3px",
+                          border: "1px solid var(--primary)",
+                          backgroundColor: "var(--bg-nav)",
+                          color: "var(--text)",
+                          fontFamily: "monospace",
+                          fontSize: "0.85rem",
+                          textAlign: "center" as const,
+                          outline: "none",
+                          boxSizing: "border-box" as const,
+                        }}
+                      />
+                    </div>
+                  ) : (
                     <div
+                      onClick={() => setVitAdjInput("")}
+                      title="Click to adjust vitality"
                       style={{
-                        height: "100%",
-                        width: `${vitPct}%`,
-                        background: "linear-gradient(90deg, #4a6042, #7a9d6f)",
+                        marginTop: "14px",
+                        height: "12px",
+                        backgroundColor: "rgba(122,157,111,0.1)",
                         borderRadius: "3px",
-                        transition: "width 0.3s",
+                        overflow: "hidden",
+                        cursor: "pointer",
                       }}
-                    />
-                  </div>
+                    >
+                      <div
+                        style={{
+                          height: "100%",
+                          width: `${vitPct}%`,
+                          background:
+                            "linear-gradient(90deg, #4a6042, #7a9d6f)",
+                          borderRadius: "3px",
+                          transition: "width 0.3s",
+                        }}
+                      />
+                    </div>
+                  )}
                   <div
                     style={{
                       display: "flex",
