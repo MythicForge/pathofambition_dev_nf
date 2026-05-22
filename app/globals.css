@@ -318,6 +318,17 @@ h6 {
     }
 }
 
+/* ── Mobile-only sidebar buttons (Portrait + Favorites) ── */
+/* Visible whenever right rail is not a dedicated 3rd column (≤1240px) */
+.poa-mobile-sidebar-btn {
+    display: none !important;
+}
+@media (max-width: 1240px) {
+    .poa-mobile-sidebar-btn {
+        display: flex !important;
+    }
+}
+
 /* ── Tab bar: always horizontal scroll (no wrap) ─────── */
 .poa-tab-bar {
     overflow-x: auto;

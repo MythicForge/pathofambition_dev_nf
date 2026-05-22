@@ -149,6 +149,9 @@ export interface Character {
 
   // Conditions: key = condition name (e.g. "Bleeding"), value = stack count (0 = off, 1+ = on/stacks)
   activeConditions?: Record<string, number>;
+
+  // Favorites: items/feats/spells pinned to the right rail quick-access panel
+  favorites?: { type: "item" | "feat" | "spell"; id: string }[];
 }
 
 // ─── Choice feature resolution ────────────────────────────────────────────────

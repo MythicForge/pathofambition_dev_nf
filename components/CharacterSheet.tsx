@@ -509,6 +509,7 @@ export default function CharacterSheetPage({
   // Portrait image upload
   const [portraitUrl, setPortraitUrl] = useState<string | null>(null);
   const [portraitCollapsed, setPortraitCollapsed] = useState(false);
+  const [favoritesCollapsed, setFavoritesCollapsed] = useState(false);
   const [conditionsCollapsed, setConditionsCollapsed] = useState(false);
   const [vitAdjInput, setVitAdjInput] = useState<string | null>(null);
   const [renownAdjInput, setRenownAdjInput] = useState<string | null>(null);
@@ -554,6 +555,8 @@ export default function CharacterSheetPage({
 
   // FEATURE-01: Ref sidebar
   const [showRefSidebar, setShowRefSidebar] = useState(false);
+  const [showFavsSidebar, setShowFavsSidebar] = useState(false);
+  const [showPortraitSidebar, setShowPortraitSidebar] = useState(false);
 
   // FEATURE-02: Apply Damage pipeline
   const [damageInput, setDamageInput] = useState("");
@@ -566,6 +569,10 @@ export default function CharacterSheetPage({
   );
   const [editChoiceFeatId, setEditChoiceFeatId] = useState<string | null>(null);
   const [editChoiceSels, setEditChoiceSels] = useState<string[]>([]);
+  const [favPopout, setFavPopout] = useState<{
+    type: "item" | "feat" | "spell";
+    id: string;
+  } | null>(null);
 
   useEffect(() => {
     const loaded = getCharacter(id);
@@ -844,6 +851,19 @@ export default function CharacterSheetPage({
   function persist(updates: Partial<Character>) {
     const updated = updateCharacter(id, updates);
     if (updated) setChar(updated);
+  }
+
+  function toggleFavorite(type: "item" | "feat" | "spell", id: string) {
+    const favs = c.favorites ?? [];
+    const exists = favs.some((f) => f.type === type && f.id === id);
+    persist({
+      favorites: exists
+        ? favs.filter((f) => !(f.type === type && f.id === id))
+        : [...favs, { type, id }],
+    });
+  }
+  function isFavorite(type: "item" | "feat" | "spell", id: string) {
+    return (c.favorites ?? []).some((f) => f.type === type && f.id === id);
   }
 
   function handleDelete() {
@@ -1179,7 +1199,13 @@ export default function CharacterSheetPage({
 
   function renderCombatTab() {
     const activeConds = c.activeConditions ?? {};
-    const STACKING = new Set(["Bleeding", "Burning", "Dazed", "Poisoned", "Weakened"]);
+    const STACKING = new Set([
+      "Bleeding",
+      "Burning",
+      "Dazed",
+      "Poisoned",
+      "Weakened",
+    ]);
 
     function setCondition(code: string, val: number) {
       persist({
@@ -1430,195 +1456,206 @@ export default function CharacterSheetPage({
         {/* ── Conditions ── */}
         <div style={cardStyle}>
           <div
-            style={{ ...headStyle, cursor: "pointer", display: "flex", justifyContent: "space-between", alignItems: "center" }}
-            onClick={() => setConditionsCollapsed(v => !v)}
+            style={{
+              ...headStyle,
+              cursor: "pointer",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+            onClick={() => setConditionsCollapsed((v) => !v)}
           >
             <span>Conditions</span>
-            <span style={{ fontSize: "10px", opacity: 0.6 }}>{conditionsCollapsed ? "▶" : "▼"}</span>
+            <span style={{ fontSize: "10px", opacity: 0.6 }}>
+              {conditionsCollapsed ? "▶" : "▼"}
+            </span>
           </div>
-          {!conditionsCollapsed && <div
-            style={{
-              padding: "12px 14px",
-              display: "flex",
-              flexWrap: "wrap" as const,
-              gap: "6px",
-            }}
-          >
-            {(
-              Object.entries(CONDITIONS) as [
-                string,
-                { stack: boolean; tip: string },
-              ][]
-            ).map(([code, def]) => {
-              const count = activeConds[code] ?? 0;
-              const active = count > 0;
-              const isStack = STACKING.has(code);
-              return (
-                <div
-                  key={code}
-                  title={def.tip}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "4px",
-                    padding: active ? "3px 8px 3px 8px" : "3px 8px",
-                    borderRadius: "5px",
-                    border: `1px solid ${active ? "var(--primary)" : "var(--border)"}`,
-                    backgroundColor: active
-                      ? "var(--primary-light)"
-                      : "var(--bg-nav)",
-                    cursor: "pointer",
-                    transition: "all 0.1s",
-                  }}
-                  onClick={() =>
-                    setCondition(
-                      code,
-                      isStack ? (active ? 0 : 1) : active ? 0 : 1,
-                    )
-                  }
-                >
-                  <span
-                    style={{
-                      fontSize: "10px",
-                      fontFamily: "monospace",
-                      letterSpacing: "0.06em",
-                      color: active ? "var(--primary)" : "var(--text-muted)",
-                      fontWeight: active ? 700 : 400,
-                    }}
-                  >
-                    {code}
-                  </span>
-                  {active && !isStack && (
-                    <span
-                      style={{
-                        fontSize: "9px",
-                        color: "var(--primary)",
-                        marginLeft: "1px",
-                      }}
-                    >
-                      ✓
-                    </span>
-                  )}
-                  {active && isStack && (
-                    <>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setCondition(code, count - 1);
-                        }}
-                        style={{
-                          background: "none",
-                          border: "none",
-                          cursor: "pointer",
-                          fontSize: "11px",
-                          color: "var(--primary)",
-                          padding: "0 1px",
-                          lineHeight: 1,
-                        }}
-                      >
-                        −
-                      </button>
-                      <span
-                        style={{
-                          fontSize: "11px",
-                          fontFamily: "monospace",
-                          color: "var(--primary)",
-                          fontWeight: 700,
-                          minWidth: "12px",
-                          textAlign: "center" as const,
-                        }}
-                      >
-                        {count}
-                      </span>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setCondition(code, count + 1);
-                        }}
-                        style={{
-                          background: "none",
-                          border: "none",
-                          cursor: "pointer",
-                          fontSize: "11px",
-                          color: "var(--primary)",
-                          padding: "0 1px",
-                          lineHeight: 1,
-                        }}
-                      >
-                        +
-                      </button>
-                    </>
-                  )}
-                </div>
-              );
-            })}
-          </div>}
-          {!conditionsCollapsed && Object.values(activeConds).some((v) => v > 0) && (
+          {!conditionsCollapsed && (
             <div
               style={{
-                padding: "0 14px 10px",
+                padding: "12px 14px",
                 display: "flex",
-                flexDirection: "column" as const,
-                gap: "4px",
+                flexWrap: "wrap" as const,
+                gap: "6px",
               }}
             >
-              <div
-                style={{
-                  fontSize: "9px",
-                  fontFamily: "monospace",
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase" as const,
-                  color: "var(--text-muted)",
-                  marginBottom: "4px",
-                }}
-              >
-                Active
-              </div>
-              {(Object.entries(activeConds) as [string, number][])
-                .filter(([, v]) => v > 0)
-                .map(([code, count]) => {
-                  const def = CONDITIONS[code as keyof typeof CONDITIONS];
-                  if (!def) return null;
-                  return (
-                    <div
-                      key={code}
+              {(
+                Object.entries(CONDITIONS) as [
+                  string,
+                  { stack: boolean; tip: string },
+                ][]
+              ).map(([code, def]) => {
+                const count = activeConds[code] ?? 0;
+                const active = count > 0;
+                const isStack = STACKING.has(code);
+                return (
+                  <div
+                    key={code}
+                    title={def.tip}
+                    style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      gap: "4px",
+                      padding: active ? "3px 8px 3px 8px" : "3px 8px",
+                      borderRadius: "5px",
+                      border: `1px solid ${active ? "var(--primary)" : "var(--border)"}`,
+                      backgroundColor: active
+                        ? "var(--primary-light)"
+                        : "var(--bg-nav)",
+                      cursor: "pointer",
+                      transition: "all 0.1s",
+                    }}
+                    onClick={() =>
+                      setCondition(
+                        code,
+                        isStack ? (active ? 0 : 1) : active ? 0 : 1,
+                      )
+                    }
+                  >
+                    <span
                       style={{
-                        display: "flex",
-                        gap: "8px",
-                        alignItems: "flex-start",
-                        padding: "6px 10px",
-                        backgroundColor: "var(--bg-nav)",
-                        border: "1px solid var(--primary)",
-                        borderRadius: "5px",
-                        borderLeftWidth: "3px",
+                        fontSize: "10px",
+                        fontFamily: "monospace",
+                        letterSpacing: "0.06em",
+                        color: active ? "var(--primary)" : "var(--text-muted)",
+                        fontWeight: active ? 700 : 400,
                       }}
                     >
+                      {code}
+                    </span>
+                    {active && !isStack && (
                       <span
                         style={{
-                          fontFamily: "monospace",
-                          fontSize: "10px",
-                          fontWeight: 700,
+                          fontSize: "9px",
                           color: "var(--primary)",
-                          minWidth: "32px",
+                          marginLeft: "1px",
                         }}
                       >
-                        {code}
-                        {count > 1 ? ` ×${count}` : ""}
+                        ✓
                       </span>
-                      <span
-                        style={{
-                          fontSize: "11px",
-                          color: "var(--text-muted)",
-                          lineHeight: 1.4,
-                        }}
-                      >
-                        {def.tip}
-                      </span>
-                    </div>
-                  );
-                })}
+                    )}
+                    {active && isStack && (
+                      <>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setCondition(code, count - 1);
+                          }}
+                          style={{
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            fontSize: "11px",
+                            color: "var(--primary)",
+                            padding: "0 1px",
+                            lineHeight: 1,
+                          }}
+                        >
+                          −
+                        </button>
+                        <span
+                          style={{
+                            fontSize: "11px",
+                            fontFamily: "monospace",
+                            color: "var(--primary)",
+                            fontWeight: 700,
+                            minWidth: "12px",
+                            textAlign: "center" as const,
+                          }}
+                        >
+                          {count}
+                        </span>
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setCondition(code, count + 1);
+                          }}
+                          style={{
+                            background: "none",
+                            border: "none",
+                            cursor: "pointer",
+                            fontSize: "11px",
+                            color: "var(--primary)",
+                            padding: "0 1px",
+                            lineHeight: 1,
+                          }}
+                        >
+                          +
+                        </button>
+                      </>
+                    )}
+                  </div>
+                );
+              })}
             </div>
           )}
+          {!conditionsCollapsed &&
+            Object.values(activeConds).some((v) => v > 0) && (
+              <div
+                style={{
+                  padding: "0 14px 10px",
+                  display: "flex",
+                  flexDirection: "column" as const,
+                  gap: "4px",
+                }}
+              >
+                <div
+                  style={{
+                    fontSize: "9px",
+                    fontFamily: "monospace",
+                    letterSpacing: "0.12em",
+                    textTransform: "uppercase" as const,
+                    color: "var(--text-muted)",
+                    marginBottom: "4px",
+                  }}
+                >
+                  Active
+                </div>
+                {(Object.entries(activeConds) as [string, number][])
+                  .filter(([, v]) => v > 0)
+                  .map(([code, count]) => {
+                    const def = CONDITIONS[code as keyof typeof CONDITIONS];
+                    if (!def) return null;
+                    return (
+                      <div
+                        key={code}
+                        style={{
+                          display: "flex",
+                          gap: "8px",
+                          alignItems: "flex-start",
+                          padding: "6px 10px",
+                          backgroundColor: "var(--bg-nav)",
+                          border: "1px solid var(--primary)",
+                          borderRadius: "5px",
+                          borderLeftWidth: "3px",
+                        }}
+                      >
+                        <span
+                          style={{
+                            fontFamily: "monospace",
+                            fontSize: "10px",
+                            fontWeight: 700,
+                            color: "var(--primary)",
+                            minWidth: "32px",
+                          }}
+                        >
+                          {code}
+                          {count > 1 ? ` ×${count}` : ""}
+                        </span>
+                        <span
+                          style={{
+                            fontSize: "11px",
+                            color: "var(--text-muted)",
+                            lineHeight: 1.4,
+                          }}
+                        >
+                          {def.tip}
+                        </span>
+                      </div>
+                    );
+                  })}
+              </div>
+            )}
         </div>
       </>
     );
@@ -1697,69 +1734,52 @@ export default function CharacterSheetPage({
             overflow: "hidden",
           }}
         >
-          <button
-            onClick={() => toggleFeat(id)}
-            style={{
-              width: "100%",
-              padding: "0.625rem 0.875rem",
-              backgroundColor: expanded
-                ? "var(--primary-light)"
-                : "var(--bg-card)",
-              border: "none",
-              cursor: "pointer",
-              textAlign: "left",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.5rem",
-              flexWrap: "wrap",
-            }}
-          >
-            <span
+          <div style={{ display: "flex", alignItems: "stretch" }}>
+            <button
+              onClick={() => toggleFeat(id)}
               style={{
-                fontFamily: "var(--font-heading)",
-                fontWeight: 700,
-                fontSize: "0.9rem",
-                color: expanded ? "var(--primary)" : "var(--text)",
                 flex: 1,
+                padding: "0.625rem 0.875rem",
+                backgroundColor: expanded
+                  ? "var(--primary-light)"
+                  : "var(--bg-card)",
+                border: "none",
+                cursor: "pointer",
+                textAlign: "left",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.5rem",
+                flexWrap: "wrap",
               }}
             >
-              {name}
-            </span>
-            {resolvedOptions && resolvedOptions.length > 0 && (
               <span
                 style={{
-                  fontSize: "0.65rem",
                   fontFamily: "var(--font-heading)",
-                  fontWeight: 600,
-                  color: "var(--primary)",
-                  backgroundColor: "var(--primary-light)",
-                  padding: "0.1rem 0.4rem",
-                  borderRadius: "9999px",
-                  border: "1px solid var(--primary)",
-                }}
-              >
-                {resolvedOptions.map((o) => o.name).join(", ")}
-              </span>
-            )}
-            {tier !== undefined && (
-              <span
-                style={{
-                  fontSize: "0.62rem",
                   fontWeight: 700,
-                  fontFamily: "var(--font-heading)",
-                  padding: "0.1rem 0.35rem",
-                  borderRadius: "9999px",
-                  backgroundColor: "var(--bg-nav)",
-                  color: "var(--text-muted)",
-                  border: "1px solid var(--border)",
+                  fontSize: "0.9rem",
+                  color: expanded ? "var(--primary)" : "var(--text)",
+                  flex: 1,
                 }}
               >
-                Tier {tier}
+                {name}
               </span>
-            )}
-            {activationRaw &&
-              activationRaw !== "-" &&
-              activationRaw !== "null" && (
+              {resolvedOptions && resolvedOptions.length > 0 && (
+                <span
+                  style={{
+                    fontSize: "0.65rem",
+                    fontFamily: "var(--font-heading)",
+                    fontWeight: 600,
+                    color: "var(--primary)",
+                    backgroundColor: "var(--primary-light)",
+                    padding: "0.1rem 0.4rem",
+                    borderRadius: "9999px",
+                    border: "1px solid var(--primary)",
+                  }}
+                >
+                  {resolvedOptions.map((o) => o.name).join(", ")}
+                </span>
+              )}
+              {tier !== undefined && (
                 <span
                   style={{
                     fontSize: "0.62rem",
@@ -1767,42 +1787,90 @@ export default function CharacterSheetPage({
                     fontFamily: "var(--font-heading)",
                     padding: "0.1rem 0.35rem",
                     borderRadius: "9999px",
-                    backgroundColor: "var(--accent-light)",
-                    color: "var(--accent)",
-                    border: "1px solid #FCD34D",
-                  }}
-                >
-                  {activationRaw}
-                </span>
-              )}
-            {traits
-              ?.filter((t) => t)
-              .map((t) => (
-                <span
-                  key={t}
-                  style={{
-                    fontSize: "0.6rem",
-                    padding: "0.1rem 0.35rem",
-                    borderRadius: "9999px",
                     backgroundColor: "var(--bg-nav)",
                     color: "var(--text-muted)",
                     border: "1px solid var(--border)",
-                    fontFamily: "var(--font-heading)",
                   }}
                 >
-                  {t}
+                  Tier {tier}
                 </span>
-              ))}
-            <span
-              style={{
-                fontSize: "0.65rem",
-                color: "var(--text-muted)",
-                marginLeft: "auto",
-              }}
-            >
-              {expanded ? "▲" : "▼"}
-            </span>
-          </button>
+              )}
+              {activationRaw &&
+                activationRaw !== "-" &&
+                activationRaw !== "null" && (
+                  <span
+                    style={{
+                      fontSize: "0.62rem",
+                      fontWeight: 700,
+                      fontFamily: "var(--font-heading)",
+                      padding: "0.1rem 0.35rem",
+                      borderRadius: "9999px",
+                      backgroundColor: "var(--accent-light)",
+                      color: "var(--accent)",
+                      border: "1px solid #FCD34D",
+                    }}
+                  >
+                    {activationRaw}
+                  </span>
+                )}
+              {traits
+                ?.filter((t) => t)
+                .map((t) => (
+                  <span
+                    key={t}
+                    style={{
+                      fontSize: "0.6rem",
+                      padding: "0.1rem 0.35rem",
+                      borderRadius: "9999px",
+                      backgroundColor: "var(--bg-nav)",
+                      color: "var(--text-muted)",
+                      border: "1px solid var(--border)",
+                      fontFamily: "var(--font-heading)",
+                    }}
+                  >
+                    {t}
+                  </span>
+                ))}
+              <span
+                style={{
+                  fontSize: "0.65rem",
+                  color: "var(--text-muted)",
+                  marginLeft: "auto",
+                }}
+              >
+                {expanded ? "▲" : "▼"}
+              </span>
+            </button>
+            {(() => {
+              const favId = id.startsWith("base-")
+                ? id.slice(5)
+                : id.startsWith("voc-")
+                  ? id.slice(4)
+                  : id;
+              const faved = isFavorite("feat", favId);
+              return (
+                <button
+                  onClick={() => toggleFavorite("feat", favId)}
+                  title={faved ? "Remove from Favorites" : "Add to Favorites"}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    borderLeft: "1px solid var(--border)",
+                    cursor: "pointer",
+                    fontSize: "0.8rem",
+                    color: faved ? "var(--primary)" : "var(--text-muted)",
+                    padding: "0 10px",
+                    flexShrink: 0,
+                    backgroundColor: expanded
+                      ? "var(--primary-light)"
+                      : "var(--bg-card)",
+                  }}
+                >
+                  {faved ? "★" : "☆"}
+                </button>
+              );
+            })()}
+          </div>
           {expanded && (
             <div
               style={{
@@ -4410,6 +4478,28 @@ export default function CharacterSheetPage({
                     >
                       ✕
                     </button>
+                    <button
+                      onClick={() => toggleFavorite("item", item.id)}
+                      title={
+                        isFavorite("item", item.id)
+                          ? "Remove from Favorites"
+                          : "Add to Favorites"
+                      }
+                      style={{
+                        background: "none",
+                        border: "none",
+                        cursor: "pointer",
+                        fontSize: "0.8rem",
+                        color: isFavorite("item", item.id)
+                          ? "var(--primary)"
+                          : "var(--text-muted)",
+                        padding: "0 2px",
+                        flexShrink: 0,
+                        lineHeight: 1,
+                      }}
+                    >
+                      {isFavorite("item", item.id) ? "★" : "☆"}
+                    </button>
                   </div>
                   {/* Notes popover — BUG-07 */}
                   {notePopoverItemId === item.id && item.notes && (
@@ -6039,109 +6129,138 @@ export default function CharacterSheetPage({
           }}
         >
           {/* Collapsed header */}
-          <button
-            onClick={() => toggleSpellExpand(spell.id)}
-            style={{
-              width: "100%",
-              padding: "0.6rem 0.875rem",
-              border: "none",
-              cursor: "pointer",
-              textAlign: "left",
-              backgroundColor: expanded
-                ? "var(--primary-light)"
-                : "var(--bg-card)",
-              display: "flex",
-              alignItems: "center",
-              gap: "0.4rem",
-              flexWrap: "wrap",
-            }}
-          >
-            <span
+          <div style={{ display: "flex", alignItems: "stretch" }}>
+            <button
+              onClick={() => toggleSpellExpand(spell.id)}
               style={{
-                fontFamily: "var(--font-heading)",
-                fontWeight: 700,
-                fontSize: "0.9rem",
-                color: expanded ? "var(--primary)" : "var(--text)",
                 flex: 1,
-                minWidth: "120px",
+                padding: "0.6rem 0.875rem",
+                border: "none",
+                cursor: "pointer",
+                textAlign: "left",
+                backgroundColor: expanded
+                  ? "var(--primary-light)"
+                  : "var(--bg-card)",
+                display: "flex",
+                alignItems: "center",
+                gap: "0.4rem",
+                flexWrap: "wrap",
               }}
             >
-              {spell.name}
-            </span>
-            <span
-              style={{
-                ...badgeStyle,
-                backgroundColor: spell.isCantrip
-                  ? "var(--accent-light)"
-                  : "var(--bg-nav)",
-                color: spell.isCantrip ? "var(--accent)" : "var(--text-muted)",
-                border: spell.isCantrip
-                  ? "1px solid #FCD34D"
-                  : "1px solid var(--border)",
-              }}
-            >
-              {spell.isCantrip ? "Cantrip" : `Tier ${spell.tier}`}
-            </span>
-            {!spell.isCantrip && (
+              <span
+                style={{
+                  fontFamily: "var(--font-heading)",
+                  fontWeight: 700,
+                  fontSize: "0.9rem",
+                  color: expanded ? "var(--primary)" : "var(--text)",
+                  flex: 1,
+                  minWidth: "120px",
+                }}
+              >
+                {spell.name}
+              </span>
               <span
                 style={{
                   ...badgeStyle,
-                  backgroundColor: canCast
-                    ? "var(--primary-light)"
+                  backgroundColor: spell.isCantrip
+                    ? "var(--accent-light)"
                     : "var(--bg-nav)",
-                  color: canCast ? "var(--primary)" : "var(--text-muted)",
-                  border: canCast
-                    ? "1px solid var(--primary)"
+                  color: spell.isCantrip
+                    ? "var(--accent)"
+                    : "var(--text-muted)",
+                  border: spell.isCantrip
+                    ? "1px solid #FCD34D"
                     : "1px solid var(--border)",
                 }}
               >
-                Cost: {totalCost}
+                {spell.isCantrip ? "Cantrip" : `Tier ${spell.tier}`}
               </span>
-            )}
-            {spell.range && (
+              {!spell.isCantrip && (
+                <span
+                  style={{
+                    ...badgeStyle,
+                    backgroundColor: canCast
+                      ? "var(--primary-light)"
+                      : "var(--bg-nav)",
+                    color: canCast ? "var(--primary)" : "var(--text-muted)",
+                    border: canCast
+                      ? "1px solid var(--primary)"
+                      : "1px solid var(--border)",
+                  }}
+                >
+                  Cost: {totalCost}
+                </span>
+              )}
+              {spell.range && (
+                <span
+                  style={{
+                    fontSize: "0.7rem",
+                    color: "var(--text-muted)",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {spell.range}
+                </span>
+              )}
+              {spell.duration && (
+                <span
+                  style={{
+                    fontSize: "0.7rem",
+                    color: "var(--text-muted)",
+                    whiteSpace: "nowrap",
+                  }}
+                >
+                  {spell.duration}
+                </span>
+              )}
+              {hasAmps && (
+                <span
+                  style={{
+                    ...badgeStyle,
+                    backgroundColor: "#FEF3C7",
+                    color: "#92400E",
+                    border: "1px solid #FCD34D",
+                  }}
+                >
+                  Amps
+                </span>
+              )}
               <span
                 style={{
-                  fontSize: "0.7rem",
+                  fontSize: "0.65rem",
                   color: "var(--text-muted)",
-                  whiteSpace: "nowrap",
+                  marginLeft: "auto",
                 }}
               >
-                {spell.range}
+                {expanded ? "▲" : "▼"}
               </span>
-            )}
-            {spell.duration && (
-              <span
-                style={{
-                  fontSize: "0.7rem",
-                  color: "var(--text-muted)",
-                  whiteSpace: "nowrap",
-                }}
-              >
-                {spell.duration}
-              </span>
-            )}
-            {hasAmps && (
-              <span
-                style={{
-                  ...badgeStyle,
-                  backgroundColor: "#FEF3C7",
-                  color: "#92400E",
-                  border: "1px solid #FCD34D",
-                }}
-              >
-                Amps
-              </span>
-            )}
-            <span
+            </button>
+            <button
+              onClick={() => toggleFavorite("spell", spell.id)}
+              title={
+                isFavorite("spell", spell.id)
+                  ? "Remove from Favorites"
+                  : "Add to Favorites"
+              }
               style={{
-                fontSize: "0.65rem",
-                color: "var(--text-muted)",
-                marginLeft: "auto",
+                background: "none",
+                border: "none",
+                borderLeft: "1px solid var(--border)",
+                cursor: "pointer",
+                fontSize: "0.8rem",
+                color: isFavorite("spell", spell.id)
+                  ? "var(--primary)"
+                  : "var(--text-muted)",
+                padding: "0 10px",
+                flexShrink: 0,
+                backgroundColor: expanded
+                  ? "var(--primary-light)"
+                  : "var(--bg-card)",
               }}
             >
-              {expanded ? "▲" : "▼"}
-            </span>
-          </button>
+              {isFavorite("spell", spell.id) ? "★" : "☆"}
+            </button>
+          </div>
 
           {/* Expanded content */}
           {expanded && (
@@ -7989,12 +8108,20 @@ export default function CharacterSheetPage({
     return (
       <>
         {/* Portrait */}
-        <div style={{ border: "1px solid var(--border)", borderRadius: "6px", overflow: "hidden" }}>
+        <div
+          style={{
+            border: "1px solid var(--border)",
+            borderRadius: "6px",
+            overflow: "hidden",
+          }}
+        >
           <div
             style={{
               padding: "6px 14px",
               backgroundColor: "var(--bg-nav)",
-              borderBottom: portraitCollapsed ? "none" : "1px solid var(--border)",
+              borderBottom: portraitCollapsed
+                ? "none"
+                : "1px solid var(--border)",
               display: "flex",
               justifyContent: "space-between",
               alignItems: "center",
@@ -8005,110 +8132,114 @@ export default function CharacterSheetPage({
               textTransform: "uppercase" as const,
               color: "var(--text-muted)",
             }}
-            onClick={() => setPortraitCollapsed(v => !v)}
+            onClick={() => setPortraitCollapsed((v) => !v)}
           >
             <span>Portrait</span>
-            <span style={{ fontSize: "10px", opacity: 0.6 }}>{portraitCollapsed ? "▶" : "▼"}</span>
+            <span style={{ fontSize: "10px", opacity: 0.6 }}>
+              {portraitCollapsed ? "▶" : "▼"}
+            </span>
           </div>
-          {!portraitCollapsed && <div
-            onClick={() => portraitInputRef.current?.click()}
-            title={
-              portraitUrl
-                ? "Click to change portrait"
-                : "Click to upload portrait"
-            }
-            style={{
-              position: "relative",
-              overflow: "hidden",
-              aspectRatio: "3/4",
-              backgroundColor: "var(--bg-nav)",
-              cursor: "pointer",
-            }}
-        >
-          {portraitUrl ? (
-            <img
-              src={portraitUrl}
-              alt={c.name}
-              style={{
-                position: "absolute",
-                inset: 0,
-                width: "100%",
-                height: "100%",
-                objectFit: "cover",
-              }}
-            />
-          ) : (
+          {!portraitCollapsed && (
             <div
+              onClick={() => portraitInputRef.current?.click()}
+              title={
+                portraitUrl
+                  ? "Click to change portrait"
+                  : "Click to upload portrait"
+              }
               style={{
-                position: "absolute",
-                inset: 0,
-                background:
-                  "repeating-linear-gradient(135deg, transparent 0 12px, var(--border) 12px 13px)",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
+                position: "relative",
+                overflow: "hidden",
+                aspectRatio: "3/4",
+                backgroundColor: "var(--bg-nav)",
+                cursor: "pointer",
               }}
             >
+              {portraitUrl ? (
+                <img
+                  src={portraitUrl}
+                  alt={c.name}
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                />
+              ) : (
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background:
+                      "repeating-linear-gradient(135deg, transparent 0 12px, var(--border) 12px 13px)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontFamily: "var(--font-heading)",
+                      fontSize: "10px",
+                      letterSpacing: "0.3em",
+                      color: "var(--text-muted)",
+                      textTransform: "uppercase" as const,
+                      opacity: 0.6,
+                    }}
+                  >
+                    PORTRAIT
+                  </div>
+                </div>
+              )}
               <div
                 style={{
-                  fontFamily: "var(--font-heading)",
-                  fontSize: "10px",
-                  letterSpacing: "0.3em",
-                  color: "var(--text-muted)",
-                  textTransform: "uppercase" as const,
-                  opacity: 0.6,
+                  position: "absolute",
+                  inset: "auto 0 0 0",
+                  padding: "14px 14px 12px",
+                  background:
+                    "linear-gradient(180deg, transparent 0%, var(--bg-nav) 100%)",
                 }}
               >
-                PORTRAIT
+                <div
+                  style={{
+                    fontFamily: "var(--font-heading)",
+                    fontSize: "9px",
+                    letterSpacing: "0.2em",
+                    textTransform: "uppercase" as const,
+                    color: "var(--text-muted)",
+                  }}
+                >
+                  Character
+                </div>
+                <div
+                  style={{
+                    fontFamily: "var(--font-heading)",
+                    fontStyle: "italic",
+                    fontWeight: 700,
+                    fontSize: "19px",
+                    color: "var(--text)",
+                    lineHeight: 1.1,
+                    marginTop: "2px",
+                  }}
+                >
+                  {c.name}
+                </div>
+                <div
+                  style={{
+                    fontFamily: "var(--font-heading)",
+                    fontSize: "10px",
+                    letterSpacing: "0.08em",
+                    color: "var(--text-muted)",
+                    marginTop: "3px",
+                  }}
+                >
+                  {c.vocationName || c.professionName} · Tier {effectiveTier}
+                </div>
               </div>
             </div>
           )}
-          <div
-            style={{
-              position: "absolute",
-              inset: "auto 0 0 0",
-              padding: "14px 14px 12px",
-              background:
-                "linear-gradient(180deg, transparent 0%, var(--bg-nav) 100%)",
-            }}
-          >
-            <div
-              style={{
-                fontFamily: "var(--font-heading)",
-                fontSize: "9px",
-                letterSpacing: "0.2em",
-                textTransform: "uppercase" as const,
-                color: "var(--text-muted)",
-              }}
-            >
-              Character
-            </div>
-            <div
-              style={{
-                fontFamily: "var(--font-heading)",
-                fontStyle: "italic",
-                fontWeight: 700,
-                fontSize: "19px",
-                color: "var(--text)",
-                lineHeight: 1.1,
-                marginTop: "2px",
-              }}
-            >
-              {c.name}
-            </div>
-            <div
-              style={{
-                fontFamily: "var(--font-heading)",
-                fontSize: "10px",
-                letterSpacing: "0.08em",
-                color: "var(--text-muted)",
-                marginTop: "3px",
-              }}
-            >
-              {c.vocationName || c.professionName} · Tier {effectiveTier}
-            </div>
-          </div>
-          </div>}
         </div>
         <input
           ref={portraitInputRef}
@@ -8129,348 +8260,210 @@ export default function CharacterSheetPage({
           }}
         />
 
-        {/* Character Details */}
-        <div
-          style={{
-            backgroundColor: "var(--bg-card)",
-            border: "1px solid var(--border)",
-            borderRadius: "6px",
-            padding: "14px 16px",
-          }}
-        >
-          <div
-            style={{
-              fontFamily: "var(--font-heading)",
-              fontSize: "10px",
-              letterSpacing: "0.16em",
-              textTransform: "uppercase" as const,
-              color: "var(--text-muted)",
-              marginBottom: "12px",
-            }}
-          >
-            Character Details
-          </div>
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column" as const,
-              gap: "0px",
-            }}
-          >
-            {(
-              [
-                { k: "Profession", v: c.professionName },
-                { k: "Origin", v: c.originName },
-                { k: "Vocation", v: c.vocationName },
-              ] as const
-            )
-              .filter(({ v }) => v)
-              .map(({ k, v }) => (
-                <div
-                  key={k}
-                  style={{
-                    display: "flex",
-                    alignItems: "baseline",
-                    justifyContent: "space-between",
-                    gap: "12px",
-                    padding: "5px 0",
-                    borderBottom: "1px dashed var(--border)",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontFamily: "var(--font-heading)",
-                      fontSize: "9.5px",
-                      letterSpacing: "0.16em",
-                      textTransform: "uppercase" as const,
-                      color: "var(--text-muted)",
-                      whiteSpace: "nowrap" as const,
-                    }}
-                  >
-                    {k}
-                  </span>
-                  <span
-                    style={{
-                      fontFamily: "var(--font-heading)",
-                      fontStyle: "italic",
-                      fontSize: "13px",
-                      color: "var(--text)",
-                      textAlign: "right" as const,
-                    }}
-                  >
-                    {v}
-                  </span>
-                </div>
-              ))}
-          </div>
-          {c.ambition && (
-            <div style={{ marginTop: "10px" }}>
-              <div
-                style={{
-                  fontFamily: "var(--font-heading)",
-                  fontSize: "9px",
-                  letterSpacing: "0.18em",
-                  textTransform: "uppercase" as const,
-                  color: "var(--text-muted)",
-                  marginBottom: "4px",
-                }}
-              >
-                Ambition
-              </div>
-              <div
-                style={{
-                  fontFamily: "var(--font-heading)",
-                  fontStyle: "italic",
-                  fontSize: "13px",
-                  color: "var(--text)",
-                  lineHeight: 1.5,
-                }}
-              >
-                {c.ambition}
-              </div>
-            </div>
-          )}
-        </div>
-
-        {/* Proficiencies */}
-        {prof?.armaments?.length ||
-        prof?.protection?.length ||
-        (prof?.toolKits ?? []).filter((t) => t !== "-").length ? (
-          <div
-            style={{
-              backgroundColor: "var(--bg-card)",
-              border: "1px solid var(--border)",
-              borderRadius: "6px",
-              padding: "14px 16px",
-            }}
-          >
+        {/* Favorites Panel */}
+        {(() => {
+          const favs = c.favorites ?? [];
+          const favItems = favs
+            .filter((f) => f.type === "item")
+            .map((f) => inventory.find((i) => i.id === f.id))
+            .filter(Boolean)
+            .sort((a, b) => a!.name.localeCompare(b!.name)) as typeof inventory;
+          const allFeatEntries = [
+            ...allFeats,
+            ...(prof?.baseFeatures ?? []),
+            ...(vocation?.features ?? []),
+          ];
+          const favFeats = favs
+            .filter((f) => f.type === "feat")
+            .map((f) => allFeatEntries.find((e) => e.id === f.id))
+            .filter(Boolean)
+            .sort((a, b) =>
+              a!.name.localeCompare(b!.name),
+            ) as typeof allFeatEntries;
+          const favSpells = favs
+            .filter((f) => f.type === "spell")
+            .map((f) => spells.find((s) => s.id === f.id))
+            .filter(Boolean)
+            .sort((a, b) => a!.name.localeCompare(b!.name)) as typeof spells;
+          const isEmpty =
+            favItems.length === 0 &&
+            favFeats.length === 0 &&
+            favSpells.length === 0;
+          const pipBtnStyle: React.CSSProperties = {
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            fontSize: "0.8rem",
+            color: "var(--primary)",
+            padding: "0 4px",
+            flexShrink: 0,
+            lineHeight: 1,
+          };
+          const rowStyle: React.CSSProperties = {
+            display: "flex",
+            alignItems: "center",
+            gap: "6px",
+            padding: "4px 0",
+            borderBottom: "1px solid var(--border)",
+          };
+          const entryBtnStyle: React.CSSProperties = {
+            flex: 1,
+            background: "none",
+            border: "none",
+            cursor: "pointer",
+            textAlign: "left",
+            fontFamily: "var(--font-heading)",
+            fontSize: "0.8rem",
+            color: "var(--text)",
+            padding: 0,
+            overflow: "hidden",
+            textOverflow: "ellipsis",
+            whiteSpace: "nowrap",
+          };
+          const sectionLabelStyle: React.CSSProperties = {
+            fontSize: "9px",
+            fontFamily: "monospace",
+            letterSpacing: "0.16em",
+            textTransform: "uppercase",
+            color: "var(--text-muted)",
+            marginBottom: "4px",
+            marginTop: "8px",
+          };
+          return (
             <div
               style={{
-                fontFamily: "var(--font-heading)",
-                fontSize: "10px",
-                letterSpacing: "0.16em",
-                textTransform: "uppercase" as const,
-                color: "var(--text-muted)",
-                marginBottom: "10px",
+                backgroundColor: "var(--bg-card)",
+                border: "1px solid var(--border)",
+                borderRadius: "6px",
+                overflow: "hidden",
               }}
             >
-              Proficiencies
-            </div>
-            {(
-              [
-                { l: "Armaments", v: (prof?.armaments ?? []).join(", ") },
-                { l: "Protection", v: (prof?.protection ?? []).join(", ") },
-                {
-                  l: "Tool Kits",
-                  v: (prof?.toolKits ?? []).filter((t) => t !== "-").join(", "),
-                },
-              ] as const
-            )
-              .filter(({ v }) => v)
-              .map(({ l, v }) => (
-                <div key={l} style={{ marginBottom: "8px" }}>
-                  <div
-                    style={{
-                      fontFamily: "var(--font-heading)",
-                      fontSize: "9px",
-                      letterSpacing: "0.18em",
-                      textTransform: "uppercase" as const,
-                      color: "var(--text-muted)",
-                      marginBottom: "3px",
-                    }}
-                  >
-                    {l}
-                  </div>
-                  <div
-                    style={{
-                      fontFamily: "var(--font-heading)",
-                      fontStyle: "italic",
-                      fontSize: "13px",
-                      color: "var(--text)",
-                      lineHeight: 1.4,
-                    }}
-                  >
-                    {v}
-                  </div>
-                </div>
-              ))}
-          </div>
-        ) : null}
-
-        {/* Quick Reference */}
-        <div
-          style={{
-            backgroundColor: "var(--bg-card)",
-            border: "1px solid var(--border)",
-            borderRadius: "6px",
-            overflow: "hidden",
-          }}
-        >
-          <div
-            style={{
-              padding: "0.5rem 1rem",
-              borderBottom: "1px solid var(--border)",
-              backgroundColor: "var(--bg-nav)",
-            }}
-          >
-            <span
-              style={{
-                fontSize: "0.65rem",
-                fontFamily: "var(--font-heading)",
-                fontStyle: "italic",
-                letterSpacing: "0.12em",
-                color: "var(--text-muted)",
-                textTransform: "uppercase" as const,
-              }}
-            >
-              Quick Reference
-            </span>
-          </div>
-          <div style={{ padding: "0.25rem 1rem 0.5rem" }}>
-            {[
-              { k: "Body", v: fmtAttr(attrs.body) },
-              { k: "Mind", v: fmtAttr(attrs.mind) },
-              { k: "Will", v: fmtAttr(attrs.will) },
-              {
-                k: "Armor Def",
-                v: String(armorDefense + (c.tempArmorDef ?? 0)),
-              },
-              { k: "Body Def", v: String(bodyDef) },
-              { k: "Mind Def", v: String(mindDef) },
-              { k: "Will Def", v: String(willDef) },
-              ...(isCaster
-                ? [
-                    { k: "Spell DC", v: String(spellDC) },
-                    { k: "Spell Mod", v: fmtAttr(modVal) },
-                    {
-                      k: "Reservoir",
-                      v: `${currentReservoir}/${maxReservoir}`,
-                    },
-                  ]
-                : []),
-            ].map((row) => (
               <div
-                key={row.k}
                 style={{
+                  padding: "6px 14px",
+                  borderBottom: favoritesCollapsed
+                    ? "none"
+                    : "1px solid var(--border)",
+                  backgroundColor: "var(--bg-nav)",
                   display: "flex",
                   justifyContent: "space-between",
                   alignItems: "center",
-                  padding: "0.3rem 0",
-                  borderBottom: "1px solid var(--border)",
+                  cursor: "pointer",
+                  fontSize: "10px",
+                  fontFamily: "monospace",
+                  letterSpacing: "0.16em",
+                  textTransform: "uppercase" as const,
+                  color: "var(--text-muted)",
                 }}
+                onClick={() => setFavoritesCollapsed((v) => !v)}
               >
-                <span
-                  style={{
-                    fontSize: "0.75rem",
-                    color: "var(--text-muted)",
-                    fontFamily: "var(--font-heading)",
-                  }}
-                >
-                  {row.k}
-                </span>
-                <span
-                  style={{
-                    fontSize: "0.85rem",
-                    fontWeight: 700,
-                    color: "var(--text)",
-                    fontFamily: "var(--font-heading)",
-                  }}
-                >
-                  {row.v}
+                <span>Favorites</span>
+                <span style={{ fontSize: "10px", opacity: 0.6 }}>
+                  {favoritesCollapsed ? "▶" : "▼"}
                 </span>
               </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Character flavor */}
-        {(c.currency || c.inventoryNotes || c.notes) && (
-          <div
-            style={{
-              backgroundColor: "var(--bg-card)",
-              border: "1px solid var(--border)",
-              borderRadius: "6px",
-              overflow: "hidden",
-            }}
-          >
-            <div
-              style={{
-                padding: "0.5rem 1rem",
-                borderBottom: "1px solid var(--border)",
-                backgroundColor: "var(--bg-nav)",
-              }}
-            >
-              <span
-                style={{
-                  fontSize: "0.65rem",
-                  fontFamily: "var(--font-heading)",
-                  fontStyle: "italic",
-                  letterSpacing: "0.12em",
-                  color: "var(--text-muted)",
-                  textTransform: "uppercase" as const,
-                }}
-              >
-                Details
-              </span>
-            </div>
-            <div
-              style={{
-                padding: "0.75rem 1rem",
-                display: "flex",
-                flexDirection: "column" as const,
-                gap: "0.625rem",
-              }}
-            >
-              {c.currency && (
-                <div>
-                  <div
-                    style={{
-                      fontSize: "0.6rem",
-                      color: "var(--text-muted)",
-                      letterSpacing: "0.1em",
-                      textTransform: "uppercase" as const,
-                      fontFamily: "var(--font-heading)",
-                      marginBottom: "3px",
-                    }}
-                  >
-                    Currency
-                  </div>
-                  <div style={{ fontSize: "0.8rem", color: "var(--text)" }}>
-                    {c.currency}
-                  </div>
+              {!favoritesCollapsed && (
+                <div style={{ padding: "8px 14px 12px" }}>
+                  {isEmpty && (
+                    <div
+                      style={{
+                        fontSize: "0.72rem",
+                        color: "var(--text-muted)",
+                        fontStyle: "italic",
+                        padding: "8px 0",
+                      }}
+                    >
+                      Mark items, feats, or spells with ☆ to pin them here.
+                    </div>
+                  )}
+                  {favItems.length > 0 && (
+                    <div>
+                      <div style={sectionLabelStyle}>Items</div>
+                      {favItems.map((item) => (
+                        <div key={item.id} style={rowStyle}>
+                          <button
+                            style={entryBtnStyle}
+                            onClick={() =>
+                              setFavPopout({ type: "item", id: item.id })
+                            }
+                            title={item.name}
+                          >
+                            {item.name}
+                          </button>
+                          <button
+                            style={pipBtnStyle}
+                            onClick={() => toggleFavorite("item", item.id)}
+                            title="Remove"
+                          >
+                            ★
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {favFeats.length > 0 && (
+                    <div>
+                      <div style={sectionLabelStyle}>Feats</div>
+                      {favFeats.map((feat) => (
+                        <div key={feat.id} style={rowStyle}>
+                          <button
+                            style={entryBtnStyle}
+                            onClick={() =>
+                              setFavPopout({ type: "feat", id: feat.id })
+                            }
+                            title={feat.name}
+                          >
+                            {feat.name}
+                          </button>
+                          <button
+                            style={pipBtnStyle}
+                            onClick={() => toggleFavorite("feat", feat.id)}
+                            title="Remove"
+                          >
+                            ★
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                  {favSpells.length > 0 && (
+                    <div>
+                      <div style={sectionLabelStyle}>Spells</div>
+                      {favSpells.map((spell) => (
+                        <div key={spell.id} style={rowStyle}>
+                          <button
+                            style={entryBtnStyle}
+                            onClick={() =>
+                              setFavPopout({ type: "spell", id: spell.id })
+                            }
+                            title={spell.name}
+                          >
+                            {spell.name}
+                          </button>
+                          <button
+                            style={pipBtnStyle}
+                            onClick={() => toggleFavorite("spell", spell.id)}
+                            title="Remove"
+                          >
+                            ★
+                          </button>
+                        </div>
+                      ))}
+                    </div>
+                  )}
                 </div>
               )}
-              {c.inventoryNotes && (
-                <div>
-                  <div
-                    style={{
-                      fontSize: "0.6rem",
-                      color: "var(--text-muted)",
-                      letterSpacing: "0.1em",
-                      textTransform: "uppercase" as const,
-                      fontFamily: "var(--font-heading)",
-                      marginBottom: "3px",
-                    }}
-                  >
-                    Inventory Notes
-                  </div>
-                  <div style={{ fontSize: "0.8rem", color: "var(--text)" }}>
-                    {c.inventoryNotes}
-                  </div>
-                </div>
-              )}
             </div>
-          </div>
-        )}
+          );
+        })()}
       </>
     );
   }
 
   return (
     <div style={{ width: "100%" }}>
-      {/* FEATURE-01: Fixed Ref button */}
-      <button
-        onClick={() => setShowRefSidebar((v) => !v)}
+      {/* Fixed sidebar button group */}
+      <div
         style={{
           position: "fixed",
           right: "1rem",
@@ -8479,29 +8472,117 @@ export default function CharacterSheetPage({
           zIndex: 70,
           display: "flex",
           flexDirection: "column",
-          alignItems: "center",
-          gap: "0.2rem",
-          padding: "0.5rem 0.4rem",
-          backgroundColor: showRefSidebar ? "var(--primary)" : "var(--bg-card)",
-          border: `1.5px solid ${showRefSidebar ? "var(--primary)" : "var(--border)"}`,
-          borderRadius: "0.5rem",
-          cursor: "pointer",
-          boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
-          writingMode: "vertical-rl",
+          gap: "6px",
         }}
       >
-        <span
+        {/* Portrait button — mobile only (hidden via CSS at >860px) */}
+        <button
+          className="poa-mobile-sidebar-btn"
+          onClick={() => {
+            setShowPortraitSidebar((v) => !v);
+            setShowFavsSidebar(false);
+            setShowRefSidebar(false);
+          }}
           style={{
-            fontFamily: "var(--font-heading)",
-            fontWeight: 800,
-            fontSize: "0.72rem",
-            color: showRefSidebar ? "#fff" : "var(--primary)",
-            letterSpacing: "0.06em",
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "0.2rem",
+            padding: "0.5rem 0.4rem",
+            backgroundColor: showPortraitSidebar
+              ? "var(--primary)"
+              : "var(--bg-card)",
+            border: `1.5px solid ${showPortraitSidebar ? "var(--primary)" : "var(--border)"}`,
+            borderRadius: "0.5rem",
+            cursor: "pointer",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            writingMode: "vertical-rl",
           }}
         >
-          ❖ Ref
-        </span>
-      </button>
+          <span
+            style={{
+              fontFamily: "var(--font-heading)",
+              fontWeight: 800,
+              fontSize: "0.72rem",
+              color: showPortraitSidebar ? "#fff" : "var(--primary)",
+              letterSpacing: "0.06em",
+            }}
+          >
+            ◉ Portrait
+          </span>
+        </button>
+        {/* Favorites button — mobile only */}
+        <button
+          className="poa-mobile-sidebar-btn"
+          onClick={() => {
+            setShowFavsSidebar((v) => !v);
+            setShowPortraitSidebar(false);
+            setShowRefSidebar(false);
+          }}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "0.2rem",
+            padding: "0.5rem 0.4rem",
+            backgroundColor: showFavsSidebar
+              ? "var(--primary)"
+              : "var(--bg-card)",
+            border: `1.5px solid ${showFavsSidebar ? "var(--primary)" : "var(--border)"}`,
+            borderRadius: "0.5rem",
+            cursor: "pointer",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            writingMode: "vertical-rl",
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "var(--font-heading)",
+              fontWeight: 800,
+              fontSize: "0.72rem",
+              color: showFavsSidebar ? "#fff" : "var(--primary)",
+              letterSpacing: "0.06em",
+            }}
+          >
+            ★ Favs
+          </span>
+        </button>
+        {/* Actions button — always visible */}
+        <button
+          onClick={() => {
+            setShowRefSidebar((v) => !v);
+            setShowFavsSidebar(false);
+            setShowPortraitSidebar(false);
+          }}
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "0.2rem",
+            padding: "0.5rem 0.4rem",
+            backgroundColor: showRefSidebar
+              ? "var(--primary)"
+              : "var(--bg-card)",
+            border: `1.5px solid ${showRefSidebar ? "var(--primary)" : "var(--border)"}`,
+            borderRadius: "0.5rem",
+            cursor: "pointer",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            writingMode: "vertical-rl",
+          }}
+        >
+          <span
+            style={{
+              fontFamily: "var(--font-heading)",
+              fontWeight: 800,
+              fontSize: "0.72rem",
+              color: showRefSidebar ? "#fff" : "var(--primary)",
+              letterSpacing: "0.06em",
+            }}
+          >
+            ❖ Actions
+          </span>
+        </button>
+      </div>
       {/* FEATURE-01: Ref sidebar overlay */}
       {showRefSidebar && (
         <div
@@ -8547,7 +8628,7 @@ export default function CharacterSheetPage({
                   color: "var(--text)",
                 }}
               >
-                ❖ Action Reference
+                ❖ Actions
               </span>
               <button
                 onClick={() => setShowRefSidebar(false)}
@@ -8721,6 +8802,397 @@ export default function CharacterSheetPage({
                 </div>
               ))}
             </div>
+          </div>
+        </div>
+      )}
+      {/* Portrait mobile sidebar */}
+      {showPortraitSidebar && (
+        <div
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowPortraitSidebar(false);
+          }}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 65,
+            backgroundColor: "rgba(0,0,0,0.3)",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              right: 0,
+              top: 0,
+              bottom: 0,
+              width: "300px",
+              maxWidth: "95vw",
+              backgroundColor: "var(--bg-card)",
+              borderLeft: "1px solid var(--border)",
+              overflowY: "auto",
+              padding: "1rem",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "0.75rem",
+                paddingBottom: "0.5rem",
+                borderBottom: "2px solid var(--primary)",
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: "var(--font-heading)",
+                  fontWeight: 800,
+                  fontSize: "0.95rem",
+                  color: "var(--text)",
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "6px",
+                }}
+              >
+                <svg
+                  width="14"
+                  height="14"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                >
+                  <path d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z" />
+                </svg>
+                Portrait
+              </span>
+              <button
+                onClick={() => setShowPortraitSidebar(false)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: "1rem",
+                  color: "var(--text-muted)",
+                  padding: "0.1rem 0.3rem",
+                }}
+              >
+                ✕
+              </button>
+            </div>
+            <div
+              onClick={() => portraitInputRef.current?.click()}
+              title={
+                portraitUrl
+                  ? "Click to change portrait"
+                  : "Click to upload portrait"
+              }
+              style={{
+                position: "relative",
+                overflow: "hidden",
+                aspectRatio: "3/4",
+                backgroundColor: "var(--bg-nav)",
+                borderRadius: "6px",
+                cursor: "pointer",
+              }}
+            >
+              {portraitUrl ? (
+                <img
+                  src={portraitUrl}
+                  alt={c.name}
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "cover",
+                  }}
+                />
+              ) : (
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    background:
+                      "repeating-linear-gradient(135deg, transparent 0 12px, var(--border) 12px 13px)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                  }}
+                >
+                  <div
+                    style={{
+                      fontFamily: "var(--font-heading)",
+                      fontSize: "10px",
+                      letterSpacing: "0.3em",
+                      color: "var(--text-muted)",
+                      textTransform: "uppercase" as const,
+                      opacity: 0.6,
+                    }}
+                  >
+                    PORTRAIT
+                  </div>
+                </div>
+              )}
+            </div>
+            <div style={{ marginTop: "12px" }}>
+              <div
+                style={{
+                  fontFamily: "var(--font-heading)",
+                  fontStyle: "italic",
+                  fontWeight: 700,
+                  fontSize: "1.1rem",
+                  color: "var(--text)",
+                }}
+              >
+                {c.name}
+              </div>
+              <div
+                style={{
+                  fontFamily: "var(--font-heading)",
+                  fontSize: "11px",
+                  color: "var(--text-muted)",
+                  marginTop: "3px",
+                }}
+              >
+                {c.vocationName || c.professionName} · Tier {effectiveTier}
+              </div>
+              {c.ambition && (
+                <div
+                  style={{
+                    fontFamily: "var(--font-heading)",
+                    fontStyle: "italic",
+                    fontSize: "12px",
+                    color: "var(--text-muted)",
+                    marginTop: "6px",
+                  }}
+                >
+                  {c.ambition}
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+      {/* Favorites mobile sidebar */}
+      {showFavsSidebar && (
+        <div
+          onClick={(e) => {
+            if (e.target === e.currentTarget) setShowFavsSidebar(false);
+          }}
+          style={{
+            position: "fixed",
+            inset: 0,
+            zIndex: 65,
+            backgroundColor: "rgba(0,0,0,0.3)",
+          }}
+        >
+          <div
+            style={{
+              position: "absolute",
+              right: 0,
+              top: 0,
+              bottom: 0,
+              width: "300px",
+              maxWidth: "95vw",
+              backgroundColor: "var(--bg-card)",
+              borderLeft: "1px solid var(--border)",
+              overflowY: "auto",
+              padding: "1rem",
+            }}
+          >
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                marginBottom: "0.75rem",
+                paddingBottom: "0.5rem",
+                borderBottom: "2px solid var(--primary)",
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: "var(--font-heading)",
+                  fontWeight: 800,
+                  fontSize: "0.95rem",
+                  color: "var(--text)",
+                }}
+              >
+                ★ Favorites
+              </span>
+              <button
+                onClick={() => setShowFavsSidebar(false)}
+                style={{
+                  background: "none",
+                  border: "none",
+                  cursor: "pointer",
+                  fontSize: "1rem",
+                  color: "var(--text-muted)",
+                  padding: "0.1rem 0.3rem",
+                }}
+              >
+                ✕
+              </button>
+            </div>
+            {(() => {
+              const favs = c.favorites ?? [];
+              const allFeatEntries = [
+                ...allFeats,
+                ...(prof?.baseFeatures ?? []),
+                ...(vocation?.features ?? []),
+              ];
+              const favItems = favs
+                .filter((f) => f.type === "item")
+                .map((f) => inventory.find((i) => i.id === f.id))
+                .filter(Boolean)
+                .sort((a, b) =>
+                  a!.name.localeCompare(b!.name),
+                ) as typeof inventory;
+              const favFeats = favs
+                .filter((f) => f.type === "feat")
+                .map((f) => allFeatEntries.find((e) => e.id === f.id))
+                .filter(Boolean)
+                .sort((a, b) =>
+                  a!.name.localeCompare(b!.name),
+                ) as typeof allFeatEntries;
+              const favSpells = favs
+                .filter((f) => f.type === "spell")
+                .map((f) => spells.find((s) => s.id === f.id))
+                .filter(Boolean)
+                .sort((a, b) =>
+                  a!.name.localeCompare(b!.name),
+                ) as typeof spells;
+              const isEmpty =
+                favItems.length === 0 &&
+                favFeats.length === 0 &&
+                favSpells.length === 0;
+              const rowStyle: React.CSSProperties = {
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                padding: "6px 0",
+                borderBottom: "1px solid var(--border)",
+              };
+              const entryBtnStyle: React.CSSProperties = {
+                flex: 1,
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                textAlign: "left",
+                fontFamily: "var(--font-heading)",
+                fontSize: "0.85rem",
+                color: "var(--text)",
+                padding: 0,
+                overflow: "hidden",
+                textOverflow: "ellipsis",
+                whiteSpace: "nowrap" as const,
+              };
+              const pipBtnStyle: React.CSSProperties = {
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                fontSize: "0.8rem",
+                color: "var(--primary)",
+                padding: "0 4px",
+                flexShrink: 0,
+              };
+              const sectionLabel: React.CSSProperties = {
+                fontSize: "9px",
+                fontFamily: "monospace",
+                letterSpacing: "0.16em",
+                textTransform: "uppercase" as const,
+                color: "var(--text-muted)",
+                marginTop: "12px",
+                marginBottom: "4px",
+              };
+              if (isEmpty)
+                return (
+                  <div
+                    style={{
+                      fontSize: "0.75rem",
+                      color: "var(--text-muted)",
+                      fontStyle: "italic",
+                      padding: "8px 0",
+                    }}
+                  >
+                    Mark items, feats, or spells with ☆ to pin them here.
+                  </div>
+                );
+              return (
+                <>
+                  {favItems.length > 0 && (
+                    <>
+                      <div style={sectionLabel}>Items</div>
+                      {favItems.map((item) => (
+                        <div key={item.id} style={rowStyle}>
+                          <button
+                            style={entryBtnStyle}
+                            onClick={() => {
+                              setShowFavsSidebar(false);
+                              setFavPopout({ type: "item", id: item.id });
+                            }}
+                          >
+                            {item.name}
+                          </button>
+                          <button
+                            style={pipBtnStyle}
+                            onClick={() => toggleFavorite("item", item.id)}
+                          >
+                            ★
+                          </button>
+                        </div>
+                      ))}
+                    </>
+                  )}
+                  {favFeats.length > 0 && (
+                    <>
+                      <div style={sectionLabel}>Feats</div>
+                      {favFeats.map((feat) => (
+                        <div key={feat.id} style={rowStyle}>
+                          <button
+                            style={entryBtnStyle}
+                            onClick={() => {
+                              setShowFavsSidebar(false);
+                              setFavPopout({ type: "feat", id: feat.id });
+                            }}
+                          >
+                            {feat.name}
+                          </button>
+                          <button
+                            style={pipBtnStyle}
+                            onClick={() => toggleFavorite("feat", feat.id)}
+                          >
+                            ★
+                          </button>
+                        </div>
+                      ))}
+                    </>
+                  )}
+                  {favSpells.length > 0 && (
+                    <>
+                      <div style={sectionLabel}>Spells</div>
+                      {favSpells.map((spell) => (
+                        <div key={spell.id} style={rowStyle}>
+                          <button
+                            style={entryBtnStyle}
+                            onClick={() => {
+                              setShowFavsSidebar(false);
+                              setFavPopout({ type: "spell", id: spell.id });
+                            }}
+                          >
+                            {spell.name}
+                          </button>
+                          <button
+                            style={pipBtnStyle}
+                            onClick={() => toggleFavorite("spell", spell.id)}
+                          >
+                            ★
+                          </button>
+                        </div>
+                      ))}
+                    </>
+                  )}
+                </>
+              );
+            })()}
           </div>
         </div>
       )}
@@ -11153,6 +11625,243 @@ export default function CharacterSheetPage({
           </div>
         </Section>
       )}
+      {/* ──── FAVORITES POPOUT OVERLAY ──── */}
+      {favPopout &&
+        (() => {
+          let title = "";
+          let body: React.ReactNode = null;
+
+          if (favPopout.type === "item") {
+            const item = inventory.find((i) => i.id === favPopout.id);
+            if (item) {
+              title = item.name;
+              body = (
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "8px",
+                  }}
+                >
+                  <div
+                    style={{ fontSize: "0.75rem", color: "var(--text-muted)" }}
+                  >
+                    {item.category}
+                    {item.armorCategory ? ` · ${item.armorCategory}` : ""}
+                  </div>
+                  {(item.armorBonus ?? 0) > 0 && (
+                    <div style={{ fontSize: "0.8rem" }}>
+                      +{item.armorBonus}{" "}
+                      {item.category === "Shield" ? "Shield" : "Armor"} Def
+                    </div>
+                  )}
+                  {item.damageDiceCount > 0 && (
+                    <div style={{ fontSize: "0.8rem" }}>
+                      {item.damageDiceCount}d{item.damageDiceSize} damage
+                    </div>
+                  )}
+                  {(item.traits ?? []).length > 0 && (
+                    <div
+                      style={{
+                        fontSize: "0.75rem",
+                        color: "var(--text-muted)",
+                      }}
+                    >
+                      {item.traits.join(", ")}
+                    </div>
+                  )}
+                  {item.notes && (
+                    <div
+                      style={{
+                        fontSize: "0.8rem",
+                        color: "var(--text)",
+                        marginTop: "4px",
+                        whiteSpace: "pre-wrap" as const,
+                      }}
+                    >
+                      {item.notes}
+                    </div>
+                  )}
+                  <div
+                    style={{ fontSize: "0.72rem", color: "var(--text-muted)" }}
+                  >
+                    {item.weight} lb · qty {item.quantity}
+                  </div>
+                </div>
+              );
+            }
+          } else if (favPopout.type === "feat") {
+            const allFeatEntries = [
+              ...allFeats,
+              ...(prof?.baseFeatures ?? []),
+              ...(vocation?.features ?? []),
+            ];
+            const feat = allFeatEntries.find((f) => f.id === favPopout.id);
+            if (feat) {
+              title = feat.name;
+              const featTier =
+                "tier" in feat ? (feat as { tier?: number }).tier : undefined;
+              const featActivation =
+                "activationRaw" in feat
+                  ? (feat as { activationRaw?: string | null }).activationRaw
+                  : null;
+              body = (
+                <div>
+                  {featTier !== undefined && (
+                    <div
+                      style={{
+                        fontSize: "0.72rem",
+                        color: "var(--text-muted)",
+                        marginBottom: "8px",
+                      }}
+                    >
+                      Tier {featTier}
+                    </div>
+                  )}
+                  {featActivation && featActivation !== "-" && (
+                    <div
+                      style={{
+                        fontSize: "0.72rem",
+                        color: "var(--accent)",
+                        marginBottom: "8px",
+                      }}
+                    >
+                      {featActivation}
+                    </div>
+                  )}
+                  <MarkdownContent content={feat.descriptionMarkdown} />
+                </div>
+              );
+            }
+          } else if (favPopout.type === "spell") {
+            const spell = spells.find((s) => s.id === favPopout.id);
+            if (spell) {
+              title = spell.name;
+              body = (
+                <div>
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "8px",
+                      flexWrap: "wrap" as const,
+                      marginBottom: "10px",
+                    }}
+                  >
+                    <span
+                      style={{
+                        fontSize: "0.72rem",
+                        color: "var(--text-muted)",
+                      }}
+                    >
+                      {spell.isCantrip ? "Cantrip" : `Tier ${spell.tier}`}
+                    </span>
+                    {spell.school && (
+                      <span
+                        style={{
+                          fontSize: "0.72rem",
+                          color: "var(--text-muted)",
+                        }}
+                      >
+                        {spell.school}
+                      </span>
+                    )}
+                    {spell.range && (
+                      <span
+                        style={{
+                          fontSize: "0.72rem",
+                          color: "var(--text-muted)",
+                        }}
+                      >
+                        {spell.range}
+                      </span>
+                    )}
+                    {spell.duration && (
+                      <span
+                        style={{
+                          fontSize: "0.72rem",
+                          color: "var(--text-muted)",
+                        }}
+                      >
+                        {spell.duration}
+                      </span>
+                    )}
+                  </div>
+                  <MarkdownContent content={spell.descriptionMarkdown} />
+                </div>
+              );
+            }
+          }
+
+          if (!body) return null;
+
+          return (
+            <div
+              onClick={() => setFavPopout(null)}
+              style={{
+                position: "fixed",
+                inset: 0,
+                backgroundColor: "rgba(0,0,0,0.55)",
+                zIndex: 200,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                padding: "16px",
+              }}
+            >
+              <div
+                onClick={(e) => e.stopPropagation()}
+                style={{
+                  backgroundColor: "var(--bg-card)",
+                  border: "1px solid var(--border)",
+                  borderRadius: "8px",
+                  padding: "20px",
+                  maxWidth: "480px",
+                  width: "100%",
+                  maxHeight: "80vh",
+                  overflow: "auto",
+                  boxShadow: "0 8px 32px rgba(0,0,0,0.4)",
+                }}
+              >
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "flex-start",
+                    marginBottom: "14px",
+                  }}
+                >
+                  <h2
+                    style={{
+                      fontFamily: "var(--font-heading)",
+                      fontStyle: "italic",
+                      fontSize: "1.2rem",
+                      fontWeight: 700,
+                      color: "var(--text)",
+                      margin: 0,
+                    }}
+                  >
+                    {title}
+                  </h2>
+                  <button
+                    onClick={() => setFavPopout(null)}
+                    style={{
+                      background: "none",
+                      border: "none",
+                      cursor: "pointer",
+                      color: "var(--text-muted)",
+                      fontSize: "1rem",
+                      padding: "0 0 0 12px",
+                      lineHeight: 1,
+                    }}
+                  >
+                    ✕
+                  </button>
+                </div>
+                {body}
+              </div>
+            </div>
+          );
+        })()}
     </div>
   );
 }
