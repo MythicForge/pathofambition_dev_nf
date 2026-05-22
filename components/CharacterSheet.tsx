@@ -7433,7 +7433,7 @@ export default function CharacterSheetPage({
                       marginBottom: "4px",
                     }}
                   >
-                    {key.slice(0, 3).toUpperCase()}
+                    {key.toUpperCase()}
                   </div>
                   <div
                     style={{
@@ -8726,6 +8726,7 @@ export default function CharacterSheetPage({
       )}
       {/* ──── HEADER ──── */}
       <div
+        className="poa-header"
         style={{
           backgroundColor: "var(--bg-nav)",
           border: "1px solid var(--border)",
@@ -8774,7 +8775,7 @@ export default function CharacterSheetPage({
             ]
               .filter(Boolean)
               .map((tag, i, arr) => (
-                <span key={i}>
+                <span key={i} style={{ whiteSpace: "nowrap" as const }}>
                   <span>{tag}</span>
                   {i < arr.length - 1 && (
                     <span style={{ margin: "0 7px", color: "var(--border)" }}>
@@ -8813,6 +8814,7 @@ export default function CharacterSheetPage({
         </div>
         {/* RIGHT: tier + renown bar + spell DC + delete */}
         <div
+          className="poa-header-right"
           style={{
             display: "flex",
             alignItems: "flex-start",
@@ -9047,7 +9049,7 @@ export default function CharacterSheetPage({
         className="poa-sheet-grid"
         style={{
           display: "grid",
-          gridTemplateColumns: "280px 1fr 320px",
+          gridTemplateColumns: "320px 1fr 320px",
           gap: "14px",
           marginTop: "18px",
           alignItems: "start",
@@ -9958,7 +9960,7 @@ export default function CharacterSheetPage({
                       display: "flex",
                       alignItems: "center",
                       gap: "0.5rem",
-                      marginBottom: "0.5rem",
+                      marginBottom: "0.25rem",
                     }}
                   >
                     <input
@@ -10004,15 +10006,17 @@ export default function CharacterSheetPage({
                     >
                       Hit
                     </button>
-                    <span
-                      style={{
-                        fontSize: "0.6rem",
-                        color: "var(--text-muted)",
-                        fontStyle: "italic",
-                      }}
-                    >
-                      Spell → Feat → Shield → HP
-                    </span>
+                  </div>
+                  <div
+                    style={{
+                      fontSize: "0.58rem",
+                      color: "var(--text-muted)",
+                      fontStyle: "italic",
+                      marginBottom: "0.5rem",
+                      letterSpacing: "0.04em",
+                    }}
+                  >
+                    Spell → Feat → Shield → HP
                   </div>
                   <div
                     style={{
@@ -10234,6 +10238,7 @@ export default function CharacterSheetPage({
                 Rest
               </div>
               <div
+                className="poa-rest-buttons"
                 style={{
                   display: "flex",
                   flexDirection: "row" as const,

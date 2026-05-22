@@ -291,6 +291,20 @@ h6 {
     }
 }
 
+/* Below 860px: stack header vertically */
+@media (max-width: 860px) {
+    .poa-header {
+        flex-direction: column !important;
+        gap: 0.75rem !important;
+    }
+    .poa-header-right {
+        flex-direction: row !important;
+        flex-wrap: wrap !important;
+        width: 100% !important;
+        justify-content: space-between !important;
+    }
+}
+
 /* Below 640px: tighten gaps */
 @media (max-width: 640px) {
     .poa-sheet-grid {
@@ -327,6 +341,11 @@ h6 {
     /* P1: vitals grid → stack */
     .poa-vitals-grid {
         grid-template-columns: 1fr !important;
+    }
+
+    /* Rest buttons → vertical column */
+    .poa-rest-buttons {
+        flex-direction: column !important;
     }
 
     /* P0: attribute stepper tap targets */
