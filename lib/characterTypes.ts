@@ -1,4 +1,4 @@
-export type AttributeKey = "body" | "mind" | "will";
+export type AttributeKey = "brawn" | "finesse" | "mind" | "will";
 
 export type InventoryCategory =
   | "Weapon"
@@ -29,9 +29,14 @@ export interface InventoryItem {
   // Armor fields
   armorBonus: number;
   armorCategory: "Light" | "Medium" | "Heavy" | null;
+  armorTier: "Standard" | "Enhanced" | "Fortified" | null;
+  woundBonus: number;
+  mediumArmorStat: "brawn" | "finesse" | null;
+  // Shield fields
+  shieldType: "Temporary" | "Light" | "Medium" | "Heavy" | null;
   // Weapon fields — all rules logic must use these structured fields, never display strings
   armamentTags: string[]; // e.g. ["simple", "finesse"] — used for proficiency matching
-  modifierStat: AttributeKey | null; // "body" | "mind" | "will"
+  modifierStat: AttributeKey | null; // "brawn" | "finesse" | "mind" | "will"
   isRanged: boolean;
   damageDiceCount: number;
   damageDiceSize: number;
@@ -47,7 +52,8 @@ export interface InventoryItem {
 }
 
 export interface CharacterAttributes {
-  body: number;
+  brawn: number;
+  finesse: number;
   mind: number;
   will: number;
 }
@@ -130,7 +136,7 @@ export interface Character {
 
   // Profession-specific resources (undefined if not applicable)
   currentCadence?: number; // Duelist — starting pool = Tier, no max
-  currentAdrenaline?: number; // Fighter — starting pool = Body + Tier, max = Body + Tier
+  currentAdrenaline?: number; // Fighter — starting pool = Brawn + Tier, max = Brawn + Tier
   currentResonance?: number; // Eidolon — starting pool = Spellcasting Threshold, no max
   currentSoulTokens?: number; // Stygian — starting = 1, max = 3
 

@@ -6,8 +6,8 @@ import MarkdownContent from "./MarkdownContent";
 import { saveCharacter } from "@/lib/characterStorage";
 import {
   calcStartingVitality,
-  calcBodyDefense,
-  calcMindDefense,
+  calcFortitude,
+  calcMentalDefense,
   calcWillDefense,
   calcMaxWounds,
   calcCarryWeight,
@@ -105,9 +105,9 @@ const emptyDraft: Draft = {
   originName: "",
   vocationId: "",
   vocationName: "",
-  vocationAttributeBonus: { attribute: "body", value: 1 },
+  vocationAttributeBonus: { attribute: "brawn", value: 1 },
   vocationCaster: null,
-  baseAttributes: { body: 0, mind: 0, will: 0 },
+  baseAttributes: { brawn: 0, finesse: 0, mind: 0, will: 0 },
   vitalsProficiencies: [],
   spellcastingModifier: null,
   selectedFeatIds: [],
@@ -277,9 +277,14 @@ export default function CharacterBuilder({
     selectedOrigin?.vocations.find((v) => v.id === draft.vocationId) ?? null;
 
   const totalAttributes = {
-    body:
-      draft.baseAttributes.body +
-      (draft.vocationAttributeBonus.attribute === "body"
+    brawn:
+      draft.baseAttributes.brawn +
+      (draft.vocationAttributeBonus.attribute === "brawn"
+        ? draft.vocationAttributeBonus.value
+        : 0),
+    finesse:
+      draft.baseAttributes.finesse +
+      (draft.vocationAttributeBonus.attribute === "finesse"
         ? draft.vocationAttributeBonus.value
         : 0),
     mind:
@@ -364,7 +369,8 @@ export default function CharacterBuilder({
   }, [spells, effectiveCaster, draft.professionName, draft.originName, draft.vocationName, knownSpheres]);
 
   const totalBasePoints =
-    draft.baseAttributes.body +
+    draft.baseAttributes.brawn +
+    draft.baseAttributes.finesse +
     draft.baseAttributes.mind +
     draft.baseAttributes.will;
 
@@ -380,7 +386,7 @@ export default function CharacterBuilder({
         draft.vitalsProficiencies.length ===
         (selectedProf?.vitalsChoiceCount ?? 0)
       );
-    if (step === 6) return totalBasePoints === 4;
+    if (step === 6) return totalBasePoints === 5;
     return true;
   }
 
@@ -589,6 +595,10 @@ export default function CharacterBuilder({
         catalogItemId: null,
         armorBonus: 0,
         armorCategory: null,
+        armorTier: null,
+        woundBonus: 0,
+        mediumArmorStat: null,
+        shieldType: null,
         armamentTags: [],
         modifierStat: null,
         isRanged: false,
@@ -622,6 +632,10 @@ export default function CharacterBuilder({
           | "Medium"
           | "Heavy"
           | null,
+        armorTier: (ci.armorTier ?? null) as "Standard" | "Enhanced" | "Fortified" | null,
+        woundBonus: ci.woundBonus ?? 0,
+        mediumArmorStat: null,
+        shieldType: (ci.shieldType ?? null) as "Temporary" | "Light" | "Medium" | "Heavy" | null,
         armamentTags: ci.armamentTags,
         modifierStat: null,
         isRanged: ci.isRanged,
@@ -926,7 +940,7 @@ export default function CharacterBuilder({
         draft.professionName === "Duelist" ? draft.tier : undefined,
       currentAdrenaline:
         draft.professionName === "Fighter"
-          ? totalAttributes.body + draft.tier
+          ? totalAttributes.brawn + draft.tier
           : undefined,
       currentResonance:
         draft.professionName === "Eidolon" ? startingSpellThreshold : undefined,
@@ -1680,7 +1694,7 @@ export default function CharacterBuilder({
                       originName: o.name,
                       vocationId: "",
                       vocationName: "",
-                      vocationAttributeBonus: { attribute: "body", value: 1 },
+                      vocationAttributeBonus: { attribute: "brawn", value: 1 },
                       vocationCaster: o.caster ?? null,
                     });
                     setPackChoices({});
@@ -2787,8 +2801,8 @@ export default function CharacterBuilder({
 
   function renderStep6() {
     // Attributes (was step 5 — now after proficiencies)
-    const attrs: AttributeKey[] = ["body", "mind", "will"];
-    const remaining = 4 - totalBasePoints;
+    const attrs: AttributeKey[] = ["brawn", "finesse", "mind", "will"];
+    const remaining = 5 - totalBasePoints;
 
     function adjust(attr: AttributeKey, delta: number) {
       const current = draft.baseAttributes[attr];
@@ -2803,8 +2817,8 @@ export default function CharacterBuilder({
           startingVitality:
             calcStartingVitality(selectedProf, totalAttributes) +
             featVitalityBonus,
-          bodyDef: calcBodyDefense(totalAttributes),
-          mindDef: calcMindDefense(totalAttributes),
+          bodyDef: calcFortitude(totalAttributes),
+          mindDef: calcMentalDefense(totalAttributes),
           willDef: calcWillDefense(totalAttributes),
           wounds: calcMaxWounds(selectedProf ?? { woundBonusPerTier: 1 }, totalAttributes, draft.tier),
           carry: calcCarryWeight(totalAttributes, draft.tier),
@@ -2823,7 +2837,7 @@ export default function CharacterBuilder({
             color: "var(--text)",
           }}
         >
-          Distribute <strong>4 points</strong> among Body, Mind, and Will (max
+          Distribute <strong>5 points</strong> among Brawn, Finesse, Mind, and Will (max
           +3 each).
           {draft.vocationAttributeBonus.value > 0 && (
             <>
@@ -2844,7 +2858,7 @@ export default function CharacterBuilder({
         <div
           style={{
             display: "grid",
-            gridTemplateColumns: "repeat(3, 1fr)",
+            gridTemplateColumns: "repeat(4, 1fr)",
             gap: "1rem",
           }}
         >
@@ -3766,7 +3780,7 @@ export default function CharacterBuilder({
               ],
               [
                 "Attributes",
-                `Body ${totalAttributes.body >= 0 ? "+" : ""}${totalAttributes.body} · Mind ${totalAttributes.mind >= 0 ? "+" : ""}${totalAttributes.mind} · Will ${totalAttributes.will >= 0 ? "+" : ""}${totalAttributes.will}`,
+                `Brawn ${totalAttributes.brawn >= 0 ? "+" : ""}${totalAttributes.brawn} · Finesse ${totalAttributes.finesse >= 0 ? "+" : ""}${totalAttributes.finesse} · Mind ${totalAttributes.mind >= 0 ? "+" : ""}${totalAttributes.mind} · Will ${totalAttributes.will >= 0 ? "+" : ""}${totalAttributes.will}`,
               ],
               [
                 "Starting Vitality",

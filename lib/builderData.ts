@@ -88,13 +88,17 @@ function detectCasterFromMarkdown(md: string): CasterInfo {
   const casterModifierOptions: AttributeKey[] = [];
   if (/mind/i.test(modRaw)) casterModifierOptions.push("mind");
   if (/will/i.test(modRaw)) casterModifierOptions.push("will");
-  if (/body/i.test(modRaw)) casterModifierOptions.push("body");
+  if (/brawn/i.test(modRaw)) casterModifierOptions.push("brawn");
+  if (/finesse/i.test(modRaw)) casterModifierOptions.push("finesse");
+  if (/body/i.test(modRaw)) casterModifierOptions.push("brawn"); // legacy alias
   if (casterModifierOptions.length === 0 && modRaw) {
     // fallback: try lower-cased
     const lower = modRaw.toLowerCase();
     if (lower.includes("mind")) casterModifierOptions.push("mind");
     else if (lower.includes("will")) casterModifierOptions.push("will");
-    else if (lower.includes("body")) casterModifierOptions.push("body");
+    else if (lower.includes("brawn")) casterModifierOptions.push("brawn");
+    else if (lower.includes("finesse")) casterModifierOptions.push("finesse");
+    else if (lower.includes("body")) casterModifierOptions.push("brawn"); // legacy alias
   }
 
   return { casterType, casterSource, casterModifierOptions };
@@ -327,7 +331,7 @@ export function getBuilderOrigins(): BuilderOrigin[] {
           name: v.name,
           flavor: v.flavor ?? "",
           attributeBonus: {
-            attribute: (v.attribute_bonus?.attribute ?? "body") as AttributeKey,
+            attribute: ((v.attribute_bonus?.attribute ?? "brawn") as string).toLowerCase() as AttributeKey,
             value: v.attribute_bonus?.value ?? 1,
           },
           caster: vocationCaster,
@@ -437,6 +441,9 @@ export interface CatalogItem {
   damage?: string;
   armorBonus?: number;
   armorCategory?: string | null;
+  armorTier?: "Standard" | "Enhanced" | "Fortified" | null;
+  woundBonus?: number;
+  shieldType?: "Temporary" | "Light" | "Medium" | "Heavy" | null;
   equippable: boolean;
   // Weapon structured fields
   armamentTags: string[]; // e.g. ["simple", "finesse"]
@@ -493,6 +500,9 @@ export function getItemCatalog(): CatalogItem[] {
         return r?.value ?? r?.min ?? s?.value;
       })(),
       armorCategory: (raw.armor_type as string | undefined) ?? null,
+      armorTier: (raw.armor_tier as "Standard" | "Enhanced" | "Fortified" | undefined) ?? null,
+      woundBonus: (raw.wound_bonus as number | undefined) ?? 0,
+      shieldType: (raw.shield_type as "Temporary" | "Light" | "Medium" | "Heavy" | undefined) ?? null,
       equippable: (raw.equippable as boolean) ?? false,
       armamentTags: groups.map((g) => g.toLowerCase()),
       damageTypeTags: damageTypes

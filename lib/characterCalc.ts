@@ -116,23 +116,24 @@ export function clearFeatChoices(
 export function getTotalAttributes(char: Character): CharacterAttributes {
   const b = char.vocationAttributeBonus;
   return {
-    body: char.baseAttributes.body + (b.attribute === "body" ? b.value : 0),
+    brawn: char.baseAttributes.brawn + (b.attribute === "brawn" ? b.value : 0),
+    finesse:
+      char.baseAttributes.finesse + (b.attribute === "finesse" ? b.value : 0),
     mind: char.baseAttributes.mind + (b.attribute === "mind" ? b.value : 0),
     will: char.baseAttributes.will + (b.attribute === "will" ? b.value : 0),
   };
 }
 
-/** Parse "12 + Body" → { base: 12, attribute: 'body' } */
+/** Parse "12 + Brawn" → { base: 12, attribute: 'brawn' }. Accepts legacy "Body" as alias for "brawn". */
 export function parseStartingVitality(formula: string): {
   base: number;
   attribute: AttributeKey;
 } {
-  const m = formula.match(/(\d+)\s*\+\s*(Body|Mind|Will)/i);
-  if (!m) return { base: 10, attribute: "body" };
-  return {
-    base: parseInt(m[1], 10),
-    attribute: m[2].toLowerCase() as AttributeKey,
-  };
+  const m = formula.match(/(\d+)\s*\+\s*(Brawn|Finesse|Body|Mind|Will)/i);
+  if (!m) return { base: 10, attribute: "brawn" };
+  const raw = m[2].toLowerCase();
+  const attribute = (raw === "body" ? "brawn" : raw) as AttributeKey;
+  return { base: parseInt(m[1], 10), attribute };
 }
 
 export function calcStartingVitality(
@@ -171,60 +172,100 @@ export function calcArmorDefense(
     armorBonus?: number;
     armorCategory?: string | null;
     masterworkBonus?: number;
+    mediumArmorStat?: "brawn" | "finesse" | null;
   } | null,
   equippedShield: {
     armorBonus?: number;
-    armorCategory?: string | null;
     masterworkBonus?: number;
   } | null,
   attrs: CharacterAttributes,
   hasAgile: boolean,
   hasUnarmoredDefense?: boolean,
   tier?: number,
+  spellArmorActive?: boolean,
+  spellModValue?: number,
 ): number {
-  // Berserker: Unarmored Defense applies when no armor is equipped
+  const BASE = 8;
+  const characterTier = tier ?? 1;
+  const shieldBonus = equippedShield?.armorBonus ?? 0;
+  const defenseBonus = equippedArmor?.armorBonus ?? 0;
+  const masterwork = equippedArmor?.masterworkBonus ?? 0;
+  const category = equippedArmor?.armorCategory ?? null;
+
+  // Spell Armor
+  if (spellArmorActive) {
+    return BASE + characterTier + Math.min(9, spellModValue ?? 0);
+  }
+
+  // Berserker Unarmored
   if (hasUnarmoredDefense && !equippedArmor) {
-    return 10 + attrs.body + (tier ?? 1);
+    return BASE + characterTier + Math.min(9, attrs.brawn);
   }
-  const armorBonus =
-    (equippedArmor?.armorBonus ?? 0) + (equippedArmor?.masterworkBonus ?? 0);
-  const shieldBonus =
-    (equippedShield?.armorBonus ?? 0) + (equippedShield?.masterworkBonus ?? 0);
-  const armorCategory = equippedArmor?.armorCategory ?? null;
-  // Agile applies with no armor (or Light armor) and no Medium/Heavy shield
-  const shieldBlocksAgile =
-    equippedShield && equippedShield.armorCategory !== "Light";
-  if (
-    hasAgile &&
-    !shieldBlocksAgile &&
-    (armorCategory === null || armorCategory === "Light")
-  ) {
-    return 10 + armorBonus + shieldBonus + Math.max(attrs.body, attrs.mind);
+
+  if (category === "Heavy") {
+    const cap = 3 + masterwork;
+    return BASE + defenseBonus + shieldBonus + Math.min(cap, attrs.brawn);
   }
-  return 10 + armorBonus + shieldBonus;
+
+  if (category === "Medium") {
+    const cap = 3 + masterwork;
+    const chosenStat = equippedArmor?.mediumArmorStat ?? "brawn";
+    const statVal = chosenStat === "finesse" ? attrs.finesse : attrs.brawn;
+    return BASE + defenseBonus + shieldBonus + Math.min(cap, statVal);
+  }
+
+  if (category === "Light") {
+    const cap = 5 + masterwork;
+    if (hasAgile) {
+      return (
+        BASE +
+        characterTier +
+        defenseBonus +
+        shieldBonus +
+        Math.min(cap, attrs.finesse)
+      );
+    }
+    return BASE + defenseBonus + shieldBonus + Math.min(cap, attrs.finesse);
+  }
+
+  // Unarmored
+  if (!equippedArmor) {
+    if (hasAgile) {
+      return BASE + characterTier + shieldBonus + attrs.finesse;
+    }
+    return BASE + shieldBonus + attrs.finesse;
+  }
+
+  return BASE + defenseBonus + shieldBonus;
 }
 
-export function calcBodyDefense(attrs: CharacterAttributes): number {
-  return 10 + attrs.body;
+export function calcFortitude(attrs: CharacterAttributes): number {
+  return 8 + attrs.brawn;
 }
-export function calcMindDefense(attrs: CharacterAttributes): number {
-  return 10 + attrs.mind;
+export function calcMentalDefense(attrs: CharacterAttributes): number {
+  return 8 + attrs.mind;
 }
 export function calcWillDefense(attrs: CharacterAttributes): number {
-  return 10 + attrs.will;
+  return 8 + attrs.will;
 }
 export function calcMaxWounds(
   prof: Pick<BuilderProfession, "woundBonusPerTier">,
   attrs: CharacterAttributes,
   tier: number,
+  armorWoundBonus: number = 0,
 ): number {
-  return 1 + prof.woundBonusPerTier * tier + Math.ceil(attrs.body / 3);
+  return (
+    1 +
+    prof.woundBonusPerTier * tier +
+    Math.ceil(attrs.brawn / 4) +
+    armorWoundBonus
+  );
 }
 export function calcCarryWeight(
   attrs: CharacterAttributes,
   tier: number,
 ): number {
-  return 5 + attrs.body + tier;
+  return 5 + attrs.brawn + tier;
 }
 
 export function calcReservoir(
@@ -254,7 +295,7 @@ export const FEAT_ALLOWANCE: Record<number, number> = {
   5: 10,
 };
 
-export const TIER_TOTAL_SLOTS = [4, 8, 11, 13, 16];
+export const TIER_TOTAL_SLOTS = [5, 9, 12, 14, 17];
 
 /** Tier is determined by total feats purchased with Renown. */
 export function calcTierFromFeatsPurchased(featsPurchased: number): number {
@@ -322,11 +363,11 @@ export function calcSkillAttrValue(
 ): number {
   switch (skill) {
     case "Vigor":
-      return attrs.body;
+      return attrs.brawn;
     case "Intuition":
       return attrs.mind;
     case "Talent":
-      return Math.max(attrs.body, attrs.mind);
+      return Math.max(attrs.finesse, attrs.mind);
     case "Awareness":
       return attrs.mind;
     case "Lore":
@@ -405,18 +446,22 @@ export function parseAvgDiceExpr(formula: string): number {
   return Math.round((count * (faces + 1)) / 2 + flat);
 }
 
-/** Parse "XdY per N Attr" → average bonus given attr value. Attr key auto-detected from string. */
+/** Parse "XdY per N Attr" → average bonus given attr value. Accepts Brawn/Finesse/Body/Mind/Will. */
 export function parseBodyModifierBonusValue(
   formula: string,
   attrs: CharacterAttributes,
 ): number {
-  const m = formula.match(/(\d+)d(\d+)\s+per\s+(\d+)\s+(Body|Mind|Will)/i);
+  const m = formula.match(
+    /(\d+)d(\d+)\s+per\s+(\d+)\s+(Brawn|Finesse|Body|Mind|Will)/i,
+  );
   if (!m) return 0;
   const count = parseInt(m[1], 10);
   const faces = parseInt(m[2], 10);
   const perN = parseInt(m[3], 10);
-  const attr = m[4].toLowerCase() as keyof CharacterAttributes;
-  const groups = Math.floor((attrs[attr] ?? 0) / perN);
+  const raw = m[4].toLowerCase();
+  // "body" is legacy alias for "brawn"
+  const attrKey = (raw === "body" ? "brawn" : raw) as keyof CharacterAttributes;
+  const groups = Math.floor((attrs[attrKey] ?? 0) / perN);
   return Math.round(((count * (faces + 1)) / 2) * groups);
 }
 

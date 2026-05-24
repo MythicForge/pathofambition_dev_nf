@@ -1,4 +1,4 @@
-import type { Character } from './characterTypes';
+import type { Character, InventoryItem } from './characterTypes';
 
 const STORAGE_KEY = 'poa_characters';
 
@@ -43,6 +43,27 @@ export function getCharacter(id: string): Character | null {
   const found = loadCharacters().find((c) => c.id === id) ?? null;
   if (!found) return null;
   // Backfill fields added after initial release
+  // Migrate old Body attribute to Brawn+Finesse split
+  if ('body' in (found.baseAttributes as object) && !('brawn' in (found.baseAttributes as object))) {
+    (found as Character).baseAttributes = {
+      brawn: 0,
+      finesse: 0,
+      mind: (found.baseAttributes as unknown as Record<string, number>).mind ?? 0,
+      will: (found.baseAttributes as unknown as Record<string, number>).will ?? 0,
+    };
+    (found as Character).unspentAttributePoints = 5;
+  }
+  // Migrate vocationAttributeBonus "body" → "brawn", normalize any Title-case values
+  {
+    const vab = found.vocationAttributeBonus as { attribute: string; value: number };
+    const rawAttr = (vab?.attribute ?? '').toLowerCase();
+    if (rawAttr === 'body') {
+      (found as Character).vocationAttributeBonus = { attribute: 'brawn', value: vab.value };
+    } else if (rawAttr !== vab?.attribute) {
+      // Fix Title-case (e.g., "Brawn" → "brawn")
+      (found as Character).vocationAttributeBonus = { attribute: rawAttr as import('./characterTypes').AttributeKey, value: vab.value };
+    }
+  }
   if (!found.inventory) (found as Character).inventory = [];
   if (found.currentAmbition === undefined) (found as Character).currentAmbition = 0;
   if (found.maxAmbition === undefined) (found as Character).maxAmbition = 4;
@@ -72,7 +93,9 @@ export function getCharacter(id: string): Character | null {
     const diceMatch = rawDice.match(/^(\d+)d(\d+)$/i);
     // Normalise legacy modifierStat (Title-case → lower-case AttributeKey)
     const rawModStat = (item.modifierStat ?? rawItem.modifierStat ?? null) as string | null;
-    const modStatNorm = rawModStat ? rawModStat.toLowerCase() as 'body' | 'mind' | 'will' : null;
+    const rawModLower = rawModStat ? rawModStat.toLowerCase() : null;
+    // "body" is legacy alias for "brawn"
+    const modStatNorm = rawModLower ? ((rawModLower === 'body' ? 'brawn' : rawModLower) as 'brawn' | 'finesse' | 'mind' | 'will') : null;
     // Normalise legacy damageTypes free-text to damageTypeTags enum values
     const legacyTypes = (rawItem.damageTypes as string[] | undefined) ?? [];
     const rawDamTypeTags = (rawItem.damageTypeTags as string[] | undefined);
@@ -99,5 +122,79 @@ export function getCharacter(id: string): Character | null {
       equippable: item.equippable ?? (item.slot !== null),
     };
   });
+  // Shield type + pool backfill
+  const SHIELD_BASE_POOL: Record<string, number> = { Temporary: 10, Light: 10, Medium: 15, Heavy: 20 };
+  (found as Character).inventory = ((found as Character).inventory ?? []).map((item) => {
+    if (item.category !== 'Shield') return item;
+    // Backfill shieldType from name if missing
+    if ((item as InventoryItem).shieldType == null) {
+      const name = item.name.toLowerCase();
+      let shieldType: 'Temporary' | 'Light' | 'Medium' | 'Heavy' | null = null;
+      if (/improvised/.test(name)) shieldType = 'Temporary';
+      else if (/buckler/.test(name)) shieldType = 'Light';
+      else if (/reinforced|tower/.test(name)) shieldType = 'Heavy';
+      else if (/\bshield\b/.test(name)) shieldType = 'Medium';
+      (item as InventoryItem).shieldType = shieldType;
+    }
+    // Recalculate reductionPoolMax from shieldType + masterwork
+    const st = (item as InventoryItem).shieldType;
+    if (st != null) {
+      const base = SHIELD_BASE_POOL[st] ?? 10;
+      const mw = (item.masterworkBonus ?? 0) * 5;
+      (item as InventoryItem).reductionPoolMax = base + mw;
+      // Only reset current pool if it's null/undefined (don't reset mid-combat)
+      if ((item as InventoryItem).reductionPoolCurrent == null) {
+        (item as InventoryItem).reductionPoolCurrent = base + mw;
+      }
+    }
+    return item;
+  });
+
+  // Armor overhaul migration — backfill armorTier, woundBonus, mediumArmorStat; fix legacy masterworkBonus
+  (found as Character).inventory = ((found as Character).inventory ?? []).map((item) => {
+    if (item.category !== 'Armor') return item;
+
+    // Infer armorTier from legacy armorBonus ranges
+    if (!item.armorTier && item.armorCategory) {
+      const b = item.armorBonus ?? 0;
+      let tier: 'Standard' | 'Enhanced' | 'Fortified' | null = null;
+      if (item.armorCategory === 'Heavy') {
+        tier = b <= 4 ? 'Standard' : b <= 7 ? 'Enhanced' : 'Fortified';
+      } else if (item.armorCategory === 'Medium') {
+        tier = b <= 3 ? 'Standard' : b <= 5 ? 'Enhanced' : 'Fortified';
+      } else if (item.armorCategory === 'Light') {
+        tier = b <= 2 ? 'Standard' : b <= 4 ? 'Enhanced' : 'Fortified';
+      }
+      (item as InventoryItem).armorTier = tier;
+    }
+
+    // Backfill woundBonus from tier
+    if ((item as InventoryItem).woundBonus === undefined || (item as InventoryItem).woundBonus === null) {
+      const woundMap: Record<string, Record<string, number>> = {
+        Heavy:  { Standard: 3, Enhanced: 4, Fortified: 5 },
+        Medium: { Standard: 2, Enhanced: 3, Fortified: 4 },
+        Light:  { Standard: 1, Enhanced: 2, Fortified: 3 },
+      };
+      const cat = item.armorCategory ?? '';
+      const tier = (item as InventoryItem).armorTier ?? 'Standard';
+      (item as InventoryItem).woundBonus = woundMap[cat]?.[tier] ?? 0;
+    }
+
+    // Backfill mediumArmorStat
+    if (!(item as InventoryItem).mediumArmorStat && item.armorCategory === 'Medium') {
+      (item as InventoryItem).mediumArmorStat = 'brawn';
+    }
+
+    // Legacy masterworkBonus on armor was added directly to AC; now it means stat cap raise only.
+    // Subtract it back out of armorBonus so armorBonus = pure defense bonus.
+    const rawItem = item as unknown as Record<string, unknown>;
+    if (!rawItem.__armorMigrated && (item.masterworkBonus ?? 0) > 0) {
+      (item as InventoryItem).armorBonus = Math.max(0, (item.armorBonus ?? 0) - (item.masterworkBonus ?? 0));
+      rawItem.__armorMigrated = true;
+    }
+
+    return item;
+  });
+
   return found;
 }

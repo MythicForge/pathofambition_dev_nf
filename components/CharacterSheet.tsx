@@ -13,8 +13,8 @@ import {
   getTotalAttributes,
   calcStartingVitality,
   calcFeatVitalityBonus,
-  calcBodyDefense,
-  calcMindDefense,
+  calcFortitude,
+  calcMentalDefense,
   calcWillDefense,
   calcMaxWounds,
   calcCarryWeight,
@@ -477,11 +477,15 @@ export default function CharacterSheetPage({
   const [newNotes, setNewNotes] = useState("");
   const [newSlot, setNewSlot] = useState<InventorySlot>(null);
   const [newArmorBonus, setNewArmorBonus] = useState(0);
+  const [newWoundBonus, setNewWoundBonus] = useState(0);
   const [newArmorCategory, setNewArmorCategory] = useState<
     "Light" | "Medium" | "Heavy" | null
   >(null);
+  const [newShieldType, setNewShieldType] = useState<
+    "Temporary" | "Light" | "Medium" | "Heavy" | null
+  >(null);
   const [newModifierStat, setNewModifierStat] = useState<
-    "body" | "mind" | "will" | null
+    "brawn" | "finesse" | "mind" | "will" | null
   >(null);
   const [newIsRanged, setNewIsRanged] = useState(false);
   const [newDamageDiceCount, setNewDamageDiceCount] = useState(0);
@@ -726,7 +730,11 @@ export default function CharacterSheetPage({
   const prof = professions.find((p) => p.id === c.professionId) ?? null;
   const origin = origins.find((o) => o.id === c.originId) ?? null;
   const vocation = origin?.vocations.find((v) => v.id === c.vocationId) ?? null;
-  const attrs = getTotalAttributes(c);
+  // Always use live origins.json vocation bonus to avoid stale stored values
+  const effectiveChar = vocation
+    ? { ...c, vocationAttributeBonus: vocation.attributeBonus }
+    : c;
+  const attrs = getTotalAttributes(effectiveChar);
 
   // Tier: derived from feats purchased from Renown; creation tier is the floor
   const effectiveTier = Math.max(
@@ -774,13 +782,18 @@ export default function CharacterSheetPage({
   const maxReservoir = isCaster
     ? (calcReservoir(casterInfo!.casterType, effectiveTier, modVal) ?? 0)
     : 0;
-  const bodyDef = calcBodyDefense(attrs);
-  const mindDef = calcMindDefense(attrs);
+  const bodyDef = calcFortitude(attrs);
+  const mindDef = calcMentalDefense(attrs);
   const willDef = calcWillDefense(attrs);
+  const equippedArmorWoundBonus =
+    (c.inventory ?? []).find(
+      (i) => i.equipped && i.slot === "Body" && i.category === "Armor",
+    )?.woundBonus ?? 0;
   const maxWounds = calcMaxWounds(
     prof ?? { woundBonusPerTier: 1 },
     attrs,
     effectiveTier,
+    equippedArmorWoundBonus,
   );
   const carryWeight = calcCarryWeight(attrs, effectiveTier);
   const spellDC = isCaster ? calcSpellDC(spellTier, modVal) : null;
@@ -875,7 +888,7 @@ export default function CharacterSheetPage({
   // ─── Rest actions ────────────────────────────────────────────────────────
   function takeRespite() {
     if (currentRespites <= 0) return;
-    const vitRestore = Math.max(4, 4 + attrs.body * 2);
+    const vitRestore = Math.max(4, 4 + attrs.brawn * 2);
     const ambRestore = Math.max(4, attrs.will);
     persist({
       currentRespites: currentRespites - 1,
@@ -891,7 +904,7 @@ export default function CharacterSheetPage({
   }
 
   function takeLongRest() {
-    const vitRestore = Math.max(10, attrs.body * 3);
+    const vitRestore = Math.max(10, attrs.brawn * 3);
     const ambRestore = Math.max(10, attrs.will * 2);
     const resRestore = isCaster ? Math.max(9, modVal * 2) : 0;
     persist({
@@ -929,6 +942,15 @@ export default function CharacterSheetPage({
     setNewQty(1);
     setNewNotes("");
     setNewArmorBonus(item.armorBonus ?? 0);
+    setNewWoundBonus(item.woundBonus ?? 0);
+    setNewShieldType(
+      (item.shieldType ?? null) as
+        | "Temporary"
+        | "Light"
+        | "Medium"
+        | "Heavy"
+        | null,
+    );
     setNewArmorCategory(
       (item.armorCategory as "Light" | "Medium" | "Heavy" | null) ?? null,
     );
@@ -958,6 +980,10 @@ export default function CharacterSheetPage({
       catalogItemId: catalogSelected?.id ?? null,
       armorBonus: newArmorBonus,
       armorCategory: newArmorCategory,
+      armorTier: null,
+      woundBonus: newWoundBonus,
+      mediumArmorStat: null,
+      shieldType: newShieldType,
       armamentTags: newArmamentTags,
       modifierStat: newModifierStat,
       isRanged: newIsRanged,
@@ -978,7 +1004,9 @@ export default function CharacterSheetPage({
     setNewNotes("");
     setNewSlot(null);
     setNewArmorBonus(0);
+    setNewWoundBonus(0);
     setNewArmorCategory(null);
+    setNewShieldType(null);
     setNewArmamentTags([]);
     setNewModifierStat(null);
     setNewIsRanged(false);
@@ -998,25 +1026,41 @@ export default function CharacterSheetPage({
 
   function updateItem(itemId: string, updates: Partial<InventoryItem>) {
     persist({
-      inventory: inventory.map((i) =>
-        i.id === itemId ? { ...i, ...updates } : i,
-      ),
+      inventory: inventory.map((i) => {
+        if (i.id !== itemId) return i;
+        const merged = { ...i, ...updates };
+        // Recalc shield pool when shieldType or masterworkBonus changes
+        if (
+          merged.category === "Shield" &&
+          ("shieldType" in updates || "masterworkBonus" in updates)
+        ) {
+          const base = SHIELD_BASE_POOL[merged.shieldType ?? ""] ?? 10;
+          const newMax = base + (merged.masterworkBonus ?? 0) * 5;
+          merged.reductionPoolMax = newMax;
+          // Reset current to new max only if pool was full (not mid-combat depleted)
+          if ((i.reductionPoolCurrent ?? 0) >= (i.reductionPoolMax ?? 0)) {
+            merged.reductionPoolCurrent = newMax;
+          }
+        }
+        return merged;
+      }),
     });
   }
 
   // FEATURE-02: default shield reduction pool by shield name
-  const SHIELD_POOL_DEFAULTS: Record<string, number> = {
-    "improvised shield": 10,
-    buckler: 10,
-    shield: 15,
-    "reinforced shield": 25,
-    "tower shield": 40,
-    "colossus shield": 50,
+  const SHIELD_BASE_POOL: Record<string, number> = {
+    Temporary: 10,
+    Light: 10,
+    Medium: 15,
+    Heavy: 20,
   };
 
-  function getShieldPoolDefault(name: string): number {
-    const key = name.toLowerCase().trim();
-    return SHIELD_POOL_DEFAULTS[key] ?? 15;
+  function calcShieldPool(
+    shieldType: string | null | undefined,
+    masterworkBonus: number = 0,
+  ): number {
+    const base = SHIELD_BASE_POOL[shieldType ?? ""] ?? 10;
+    return base + masterworkBonus * 5;
   }
 
   function equipItem(itemId: string, slot: InventorySlot) {
@@ -1028,7 +1072,7 @@ export default function CharacterSheetPage({
       if (i.id === itemId) {
         const base: InventoryItem = { ...i, equipped: true, slot };
         if (i.category === "Shield" && i.reductionPoolMax == null) {
-          const pool = getShieldPoolDefault(i.name);
+          const pool = calcShieldPool(i.shieldType, i.masterworkBonus ?? 0);
           base.reductionPoolMax = pool;
           base.reductionPoolCurrent = pool;
         }
@@ -1122,17 +1166,16 @@ export default function CharacterSheetPage({
     inventory.find(
       (i) => i.equipped && i.slot === "Off Hand" && i.category === "Shield",
     ) ?? null;
-  const baseArmorDefense = calcArmorDefense(
+  const armorDefense = calcArmorDefense(
     equippedBody,
     equippedShield,
     attrs,
     hasAgile,
     hasUnarmoredDefense,
     effectiveTier,
+    !!(c.spellArmorActive && isCaster),
+    modVal,
   );
-  // BUG-09: Spell Armor overrides armor defense when active
-  const armorDefense =
-    c.spellArmorActive && isCaster ? 11 + modVal : baseArmorDefense;
 
   // AMEND-05: Armor proficiency check
   const isArmorProficient: boolean = (() => {
@@ -1164,7 +1207,7 @@ export default function CharacterSheetPage({
       item.modifierStat ??
       (item.armamentTags?.includes("catalyst")
         ? (c.spellcastingModifier ?? "mind")
-        : "body");
+        : "brawn");
     const modAttr = attrs[modStat];
     const mw = item.masterworkBonus ?? 0;
     const proficient =
@@ -1286,7 +1329,7 @@ export default function CharacterSheetPage({
               const isWeapon = item.category === "Weapon";
               const isArmor = item.category === "Armor";
               const isShield = item.category === "Shield";
-              const modKey = item.modifierStat ?? "body";
+              const modKey = item.modifierStat ?? "brawn";
               const toHitMod = attrs[modKey] + (item.masterworkBonus ?? 0);
               const dmgStr =
                 item.damageDiceCount > 0
@@ -3933,7 +3976,7 @@ export default function CharacterSheetPage({
                               marginTop: "0.2rem",
                             }}
                           >
-                            +{displayItem.armorBonus} Armor Def
+                            +{displayItem.armorBonus} Defense
                             {displayItem.armorCategory
                               ? ` · ${displayItem.armorCategory}`
                               : ""}
@@ -4226,24 +4269,32 @@ export default function CharacterSheetPage({
                               fontFamily: "var(--font-heading)",
                             }}
                           >
-                            +{item.armorBonus} Armor Def
+                            +{item.armorBonus} Defense
                             {item.armorCategory
                               ? ` · ${item.armorCategory}`
                               : ""}
+                            {item.armorTier ? ` · ${item.armorTier}` : ""}
+                            {(item.woundBonus ?? 0) > 0
+                              ? ` · +${item.woundBonus} Wounds`
+                              : ""}
                           </span>
                         )}
-                      {item.category === "Shield" &&
-                        (item.armorBonus ?? 0) > 0 && (
-                          <span
-                            style={{
-                              fontSize: "0.62rem",
-                              color: "var(--text-muted)",
-                              fontFamily: "var(--font-heading)",
-                            }}
-                          >
-                            +{item.armorBonus} Shield Def
-                          </span>
-                        )}
+                      {item.category === "Shield" && (
+                        <span
+                          style={{
+                            fontSize: "0.62rem",
+                            color: "var(--text-muted)",
+                            fontFamily: "var(--font-heading)",
+                          }}
+                        >
+                          {item.shieldType
+                            ? `${item.shieldType} Shield`
+                            : "Shield"}
+                          {(item.armorBonus ?? 0) > 0
+                            ? ` · +${item.armorBonus} Def`
+                            : ""}
+                        </span>
+                      )}
                       {/* Traits badges — BUG-06 */}
                       {["Weapon", "Armor", "Shield"].includes(item.category) &&
                         (item.traits ?? []).length > 0 && (
@@ -4746,6 +4797,30 @@ export default function CharacterSheetPage({
                                 style={{ ...inputStyle, width: "55px" }}
                               />
                             </div>
+                            <div>
+                              <div
+                                style={{
+                                  fontSize: "0.6rem",
+                                  color: "var(--text-muted)",
+                                  marginBottom: "0.15rem",
+                                }}
+                              >
+                                Wound Bonus
+                              </div>
+                              <input
+                                type="number"
+                                value={editFields.woundBonus ?? 0}
+                                min={0}
+                                max={10}
+                                onChange={(e) =>
+                                  setEditFields((f) => ({
+                                    ...f,
+                                    woundBonus: parseInt(e.target.value) || 0,
+                                  }))
+                                }
+                                style={{ ...inputStyle, width: "55px" }}
+                              />
+                            </div>
                           </div>
                         )}
                         {editFields.category === "Weapon" && (
@@ -4780,7 +4855,8 @@ export default function CharacterSheetPage({
                                     setEditFields((f) => ({
                                       ...f,
                                       modifierStat: (e.target.value || null) as
-                                        | "body"
+                                        | "brawn"
+                                        | "finesse"
                                         | "mind"
                                         | "will"
                                         | null,
@@ -4789,7 +4865,8 @@ export default function CharacterSheetPage({
                                   style={{ ...inputStyle, width: "70px" }}
                                 >
                                   <option value="">—</option>
-                                  <option value="body">Body</option>
+                                  <option value="brawn">Brawn</option>
+                                  <option value="finesse">Finesse</option>
                                   <option value="mind">Mind</option>
                                   <option value="will">Will</option>
                                 </select>
@@ -5109,6 +5186,38 @@ export default function CharacterSheetPage({
                               alignItems: "end",
                             }}
                           >
+                            <div>
+                              <div
+                                style={{
+                                  fontSize: "0.6rem",
+                                  color: "var(--text-muted)",
+                                  marginBottom: "0.15rem",
+                                }}
+                              >
+                                Shield Type
+                              </div>
+                              <select
+                                value={editFields.shieldType ?? ""}
+                                onChange={(e) =>
+                                  setEditFields((f) => ({
+                                    ...f,
+                                    shieldType: (e.target.value || null) as
+                                      | "Temporary"
+                                      | "Light"
+                                      | "Medium"
+                                      | "Heavy"
+                                      | null,
+                                  }))
+                                }
+                                style={inputStyle}
+                              >
+                                <option value="">—</option>
+                                <option value="Temporary">Temporary</option>
+                                <option value="Light">Light</option>
+                                <option value="Medium">Medium</option>
+                                <option value="Heavy">Heavy</option>
+                              </select>
+                            </div>
                             <div>
                               <div
                                 style={{
@@ -5670,6 +5779,85 @@ export default function CharacterSheetPage({
                     style={{ ...inputStyle, width: "55px" }}
                   />
                 </div>
+                <div>
+                  <div
+                    style={{
+                      fontSize: "0.6rem",
+                      color: "var(--text-muted)",
+                      marginBottom: "0.2rem",
+                    }}
+                  >
+                    Wound Bonus
+                  </div>
+                  <input
+                    type="number"
+                    value={newWoundBonus}
+                    min={0}
+                    max={10}
+                    onChange={(e) =>
+                      setNewWoundBonus(parseInt(e.target.value) || 0)
+                    }
+                    style={{ ...inputStyle, width: "55px" }}
+                  />
+                </div>
+              </div>
+            )}
+            {newCategory === "Shield" && (
+              <div
+                style={{ display: "flex", gap: "0.5rem", alignItems: "end" }}
+              >
+                <div>
+                  <div
+                    style={{
+                      fontSize: "0.6rem",
+                      color: "var(--text-muted)",
+                      marginBottom: "0.2rem",
+                    }}
+                  >
+                    Shield Type
+                  </div>
+                  <select
+                    value={newShieldType ?? ""}
+                    onChange={(e) =>
+                      setNewShieldType(
+                        (e.target.value || null) as
+                          | "Temporary"
+                          | "Light"
+                          | "Medium"
+                          | "Heavy"
+                          | null,
+                      )
+                    }
+                    style={inputStyle}
+                  >
+                    <option value="">—</option>
+                    <option value="Temporary">Temporary</option>
+                    <option value="Light">Light</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Heavy">Heavy</option>
+                  </select>
+                </div>
+                <div>
+                  <div
+                    style={{
+                      fontSize: "0.6rem",
+                      color: "var(--text-muted)",
+                      marginBottom: "0.2rem",
+                    }}
+                  >
+                    Shield Bonus
+                  </div>
+                  <input
+                    type="number"
+                    value={newArmorBonus}
+                    min={0}
+                    max={10}
+                    onChange={(e) =>
+                      setNewArmorBonus(parseInt(e.target.value) || 0)
+                    }
+                    style={{ ...inputStyle, width: "55px" }}
+                  />
+                </div>
               </div>
             )}
             {newCategory === "Weapon" && (
@@ -5703,7 +5891,8 @@ export default function CharacterSheetPage({
                       onChange={(e) =>
                         setNewModifierStat(
                           (e.target.value || null) as
-                            | "body"
+                            | "brawn"
+                            | "finesse"
                             | "mind"
                             | "will"
                             | null,
@@ -5712,7 +5901,8 @@ export default function CharacterSheetPage({
                       style={{ ...inputStyle, width: "70px" }}
                     >
                       <option value="">—</option>
-                      <option value="body">Body</option>
+                      <option value="brawn">Brawn</option>
+                      <option value="finesse">Finesse</option>
                       <option value="mind">Mind</option>
                       <option value="will">Will</option>
                     </select>
@@ -7433,7 +7623,7 @@ export default function CharacterSheetPage({
             {
               n: "Brace",
               ap: "1 AP",
-              d: "+2 attack (weapon) or +2 Armor Def (shield/armor).",
+              d: "+2 attack (weapon) or +2 Defense (shield/armor).",
             },
           ],
         },
@@ -7443,9 +7633,12 @@ export default function CharacterSheetPage({
 
   // ─── Left rail renderer ───────────────────────────────────────────────────
   function renderLeftRail() {
-    const totalAvailableBase = TIER_TOTAL_SLOTS[effectiveTier - 1] ?? 4;
+    const totalAvailableBase = TIER_TOTAL_SLOTS[effectiveTier - 1] ?? 5;
     const currentTotalBase =
-      c.baseAttributes.body + c.baseAttributes.mind + c.baseAttributes.will;
+      c.baseAttributes.brawn +
+      c.baseAttributes.finesse +
+      c.baseAttributes.mind +
+      c.baseAttributes.will;
     const dynamicUnspent = totalAvailableBase - currentTotalBase;
     const totalAvailableSkill = 4 + 2 * Math.floor((c.featsPurchased ?? 0) / 2);
     const totalSpentSkill = Object.values(c.skillPoints ?? {}).reduce(
@@ -7522,15 +7715,16 @@ export default function CharacterSheetPage({
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
+              gridTemplateColumns: "repeat(4, 1fr)",
               gap: "8px",
               padding: "12px 12px 0",
             }}
           >
-            {(["body", "mind", "will"] as const).map((key) => {
+            {(["brawn", "finesse", "mind", "will"] as const).map((key) => {
               const val = attrs[key];
               const isHighest =
-                val === Math.max(attrs.body, attrs.mind, attrs.will);
+                val ===
+                Math.max(attrs.brawn, attrs.finesse, attrs.mind, attrs.will);
               return (
                 <div
                   key={key}
@@ -7574,7 +7768,7 @@ export default function CharacterSheetPage({
                       letterSpacing: "0.08em",
                     }}
                   >
-                    {key}
+                    {/*{key}*/}
                   </div>
                 </div>
               );
@@ -7584,17 +7778,17 @@ export default function CharacterSheetPage({
           <div
             style={{
               display: "grid",
-              gridTemplateColumns: "repeat(3, 1fr)",
+              gridTemplateColumns: "repeat(4, 1fr)",
               gap: "8px",
               padding: "8px 12px 12px",
             }}
           >
-            {(["body", "mind", "will"] as const).map((key) => {
+            {(["brawn", "finesse", "mind", "will"] as const).map((key) => {
               const val = attrs[key];
               const base = c.baseAttributes[key];
               const voc =
-                c.vocationAttributeBonus.attribute === key
-                  ? c.vocationAttributeBonus.value
+                effectiveChar.vocationAttributeBonus.attribute === key
+                  ? effectiveChar.vocationAttributeBonus.value
                   : 0;
               const canIncrease = dynamicUnspent > 0 && val < 12;
               const canDecrease = base > 0;
@@ -7687,7 +7881,7 @@ export default function CharacterSheetPage({
                         letterSpacing: "0.06em",
                       }}
                     >
-                      +{voc} voc
+                      {/*+{voc}*/}
                     </span>
                   )}
                 </div>
@@ -9563,7 +9757,7 @@ export default function CharacterSheetPage({
               const totalAD = armorDefense + tempAD;
               const spellArmorOn = !!(c.spellArmorActive && isCaster);
               const subLabel = spellArmorOn
-                ? `Spell (11+${modKey})`
+                ? `Active`
                 : hasUnarmoredDefense && !equippedBody
                   ? "Unarmored"
                   : hasAgile &&
@@ -9611,7 +9805,7 @@ export default function CharacterSheetPage({
                       marginBottom: "6px",
                     }}
                   >
-                    Armor Def
+                    Defense
                   </div>
                   <div
                     style={{
@@ -9662,6 +9856,48 @@ export default function CharacterSheetPage({
                       {spellArmorOn ? "Spell Armor ON" : "Spell Armor"}
                     </button>
                   )}
+                  {!spellArmorOn &&
+                    equippedBody?.armorCategory === "Medium" && (
+                      <div
+                        style={{
+                          display: "flex",
+                          justifyContent: "center",
+                          gap: "0.2rem",
+                          marginBottom: "6px",
+                        }}
+                      >
+                        {(["brawn", "finesse"] as const).map((stat) => {
+                          const active =
+                            (equippedBody.mediumArmorStat ?? "brawn") === stat;
+                          return (
+                            <button
+                              key={stat}
+                              onClick={() =>
+                                updateItem(equippedBody.id, {
+                                  mediumArmorStat: stat,
+                                })
+                              }
+                              style={{
+                                fontSize: "0.5rem",
+                                fontFamily: "var(--font-heading)",
+                                fontWeight: 700,
+                                padding: "0.1rem 0.3rem",
+                                borderRadius: "0.25rem",
+                                border: `1px solid ${active ? "var(--primary)" : "var(--border)"}`,
+                                backgroundColor: active
+                                  ? "var(--primary)"
+                                  : "var(--bg-card)",
+                                color: active ? "#fff" : "var(--text-muted)",
+                                cursor: "pointer",
+                                textTransform: "capitalize" as const,
+                              }}
+                            >
+                              {stat}
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
                   <div
                     style={{
                       display: "flex",
@@ -9713,9 +9949,9 @@ export default function CharacterSheetPage({
             })()}
             {(
               [
-                { label: "Body Def", value: bodyDef, sub: "body" },
-                { label: "Mind Def", value: mindDef, sub: "mind" },
-                { label: "Will Def", value: willDef, sub: "will" },
+                { label: "Fortitude", value: bodyDef, sub: "brawn" },
+                { label: "Mental", value: mindDef, sub: "mind" },
+                { label: "Will", value: willDef, sub: "will" },
               ] as const
             ).map(({ label, value, sub }) => (
               <div
@@ -10354,7 +10590,7 @@ export default function CharacterSheetPage({
                           color: "var(--text)",
                         }}
                       >
-                        {totalCarried}
+                        {totalCarried.toFixed(1)}
                       </span>
                       <span
                         style={{
@@ -11003,7 +11239,7 @@ export default function CharacterSheetPage({
                 const isStygian = c.professionName === "Stygian";
                 if (!isDuelist && !isFighter && !isEidolon && !isStygian)
                   return null;
-                const maxAdrenaline = attrs.body + effectiveTier;
+                const maxAdrenaline = attrs.brawn + effectiveTier;
                 const resourceName = isDuelist
                   ? "Cadence"
                   : isFighter
