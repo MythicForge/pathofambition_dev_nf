@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&family=JetBrains+Mono:wght@400;500&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap");
 @import "tailwindcss";
 
 /* ── Dark mode (default) ─────────────────────────────── */
@@ -193,7 +193,7 @@
     --color-foreground: var(--text-primary);
     --font-heading: "Cormorant Garamond", Georgia, serif;
     --font-body: "Inter", "Source Sans 3", sans-serif;
-    --font-mono: "JetBrains Mono", monospace;
+    --font-mono: "IBM Plex Mono", monospace;
     --breakpoint-lg: 1300px;
 }
 
@@ -333,19 +333,26 @@ h6 {
 
 /* Hover cards */
 .hover-card {
-    transition:
-        border-color 0.15s,
-        box-shadow 0.15s;
+    transition: border-color 0.15s, box-shadow 0.15s;
     cursor: pointer;
 }
 .hover-card:hover {
-    border-color: var(--primary) !important;
-    box-shadow: 0 2px 10px var(--primary-light);
+    border-color: var(--gold) !important;
+    box-shadow: 0 2px 10px rgb(var(--gold-rgb) / 0.12);
 }
 .hover-card-subtle:hover {
-    border-color: var(--primary) !important;
-    box-shadow: 0 1px 6px var(--primary-light);
+    border-color: var(--gold) !important;
+    box-shadow: 0 1px 6px rgb(var(--gold-rgb) / 0.10);
 }
+
+/* Category-specific card hover — use on server-rendered Links */
+.card-hover { transition: border-color 0.15s; cursor: pointer; }
+.card-hover-prof:hover   { border-color: var(--c-prof)   !important; }
+.card-hover-origin:hover { border-color: var(--c-origin) !important; }
+.card-hover-spell:hover  { border-color: var(--c-spell)  !important; }
+.card-hover-feat:hover   { border-color: var(--c-feat)   !important; }
+.card-hover-action:hover { border-color: var(--c-action) !important; }
+.card-hover-equip:hover  { border-color: var(--c-equip)  !important; }
 
 /* Scrollbar */
 ::-webkit-scrollbar {

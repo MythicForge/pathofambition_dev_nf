@@ -75,6 +75,8 @@ export interface Spell {
   raw_markdown: string;
   amps?: SpellAmp[];
   cost?: string;
+  area?: string;
+  spheres?: string[];
 }
 
 // Origins

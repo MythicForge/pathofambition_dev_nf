@@ -1139,7 +1139,7 @@ export default function CharacterBuilder({
               borderRadius: "0.5rem",
               cursor: canConfirm ? "pointer" : "not-allowed",
               backgroundColor: canConfirm ? "var(--primary)" : "var(--border)",
-              color: canConfirm ? "#fff" : "var(--text-muted)",
+              color: canConfirm ? "var(--bg)" : "var(--text-muted)",
               fontFamily: "var(--font-heading)",
               fontWeight: 600,
               fontSize: "0.875rem",
@@ -1312,7 +1312,7 @@ export default function CharacterBuilder({
                   fontSize: "0.85rem",
                   border: `1.5px solid ${sel ? "var(--primary)" : "var(--border)"}`,
                   backgroundColor: sel ? "var(--primary)" : "var(--bg-card)",
-                  color: sel ? "#fff" : "var(--text-muted)",
+                  color: sel ? "var(--bg)" : "var(--text-muted)",
                   transition: "all 0.12s",
                 }}
               >
@@ -1487,9 +1487,9 @@ export default function CharacterBuilder({
                         fontSize: "0.78rem",
                         padding: "0.2rem 0.6rem",
                         borderRadius: "9999px",
-                        backgroundColor: "var(--accent-light)",
-                        color: "var(--accent)",
-                        border: "1px solid #FCD34D",
+                        backgroundColor: "rgb(var(--gold-rgb) / 0.09)",
+                        color: "var(--gold)",
+                        border: "1px solid rgb(var(--gold-rgb) / 0.40)",
                         fontFamily: "var(--font-heading)",
                         fontWeight: 600,
                       }}
@@ -1699,7 +1699,7 @@ export default function CharacterBuilder({
                     fontSize: "0.85rem",
                     border: `1.5px solid ${sel ? "var(--primary)" : "var(--border)"}`,
                     backgroundColor: sel ? "var(--primary)" : "var(--bg-card)",
-                    color: sel ? "#fff" : "var(--text-muted)",
+                    color: sel ? "var(--bg)" : "var(--text-muted)",
                     transition: "all 0.12s",
                   }}
                 >
@@ -1879,7 +1879,7 @@ export default function CharacterBuilder({
                       fontSize: "0.85rem",
                       border: `1.5px solid ${sel ? "var(--accent)" : previewing ? "var(--border)" : "var(--border)"}`,
                       backgroundColor: sel ? "var(--accent)" : "var(--bg-card)",
-                      color: sel ? "#fff" : "var(--text-muted)",
+                      color: sel ? "var(--bg)" : "var(--text-muted)",
                       transition: "all 0.12s",
                     }}
                   >
@@ -2420,7 +2420,7 @@ export default function CharacterBuilder({
                     border: `1.5px solid ${active ? "var(--primary)" : "var(--border)"}`,
                     backgroundColor: active ? "var(--primary)" : "transparent",
                     color: active
-                      ? "#fff"
+                      ? "var(--bg)"
                       : atLimit
                         ? "var(--border)"
                         : "var(--text-muted)",
@@ -3286,7 +3286,7 @@ export default function CharacterBuilder({
                 : atFeatCap
                   ? "var(--accent-light)"
                   : "var(--primary-light)",
-            border: `1px solid ${allowance === 0 ? "var(--border)" : atFeatCap ? "#FCD34D" : "var(--primary)"}`,
+            border: `1px solid ${allowance === 0 ? "var(--border)" : atFeatCap ? "rgb(var(--gold-rgb) / 0.40)" : "var(--primary)"}`,
             borderRadius: "0.5rem",
             fontSize: "0.85rem",
             display: "flex",
@@ -4011,7 +4011,7 @@ export default function CharacterBuilder({
                 backgroundColor: canAdvance()
                   ? "var(--primary)"
                   : "var(--border)",
-                color: canAdvance() ? "#fff" : "var(--text-muted)",
+                color: canAdvance() ? "var(--bg)" : "var(--text-muted)",
                 fontFamily: "var(--font-heading)",
                 fontWeight: 600,
                 fontSize: "0.875rem",
@@ -4028,10 +4028,10 @@ export default function CharacterBuilder({
                 borderRadius: "0.5rem",
                 cursor: "pointer",
                 backgroundColor: "var(--primary)",
-                color: "#fff",
-                fontFamily: "var(--font-heading)",
-                fontWeight: 700,
-                fontSize: "0.9rem",
+                color: "var(--bg)",
+                fontFamily: "var(--font-mono)",
+                fontWeight: 600,
+                fontSize: "0.875rem",
               }}
             >
               Save Character →

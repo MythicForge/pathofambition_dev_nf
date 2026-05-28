@@ -1,175 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import MarkdownContent from "./MarkdownContent";
-import TraitBadge from "./TraitBadge";
 import type { Feat, FeatOwner } from "@/lib/types";
-
-const ORIGINS = [
-  "Acolyte",
-  "Apprentice",
-  "Boroughborn",
-  "Chosen",
-  "Commonfolk",
-  "Cursed",
-  "Farmhand",
-  "Guildmate",
-  "Magic Initiate",
-  "Nobility",
-  "Nomad",
-  "Outlaw",
-  "Soldier",
-];
-
-const PROFESSIONS = [
-  "Agent",
-  "Berserker",
-  "Drifter",
-  "Duelist",
-  "Eidolon",
-  "Fighter",
-  "Mage",
-  "Mercenary",
-  "Mesmer",
-  "Oathbound",
-  "Stygian",
-  "Warden",
-];
-
-function FilterPill({
-  label,
-  active,
-  onClick,
-}: {
-  label: string;
-  active: boolean;
-  onClick: () => void;
-}) {
-  return (
-    <button
-      onClick={onClick}
-      style={{
-        padding: "0.2rem 0.6rem",
-        borderRadius: "6px",
-        fontSize: "0.65rem",
-        fontFamily: "var(--font-mono)",
-        fontWeight: 500,
-        letterSpacing: "0.04em",
-        border: active
-          ? "1.5px solid var(--gold)"
-          : "1.5px solid var(--border)",
-        backgroundColor: active ? "var(--gold)" : "transparent",
-        color: active ? "var(--bg)" : "var(--text-secondary)",
-        cursor: "pointer",
-        transition: "all 0.15s",
-      }}
-    >
-      {label}
-    </button>
-  );
-}
-
-function FeatCard({ feat }: { feat: Feat }) {
-  const isPathFeat = feat.tag && feat.tag !== feat.owner_name;
-  return (
-    <div
-      style={{
-        padding: "1rem 1.25rem",
-        backgroundColor: "var(--bg-card)",
-        border: "1px solid var(--border)",
-        borderRadius: "0.625rem",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          alignItems: "flex-start",
-          justifyContent: "space-between",
-          gap: "0.75rem",
-          marginBottom: "0.4rem",
-          flexWrap: "wrap",
-        }}
-      >
-        <h3
-          style={{
-            fontFamily: "var(--font-heading)",
-            fontWeight: 600,
-            fontSize: "0.95rem",
-            color: "var(--text)",
-            margin: 0,
-          }}
-        >
-          {feat.name}
-        </h3>
-        <div
-          style={{
-            display: "flex",
-            gap: "0.3rem",
-            flexWrap: "wrap",
-            flexShrink: 0,
-          }}
-        >
-          {feat.tier !== undefined && (
-            <TraitBadge trait={`Tier ${feat.tier}`} variant="muted" />
-          )}
-          {feat.traits?.map((t) => (
-            <TraitBadge key={t} trait={t} variant="muted" />
-          ))}
-          {feat.activation?.raw && feat.activation.raw !== "-" && (
-            <TraitBadge trait={feat.activation.raw} variant="accent" />
-          )}
-        </div>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          gap: "1rem",
-          flexWrap: "wrap",
-          marginBottom: "0.5rem",
-        }}
-      >
-        {isPathFeat && (
-          <span
-            style={{
-              fontSize: "0.78rem",
-              color: "var(--accent)",
-              fontWeight: 500,
-            }}
-          >
-            Path: <strong>{feat.tag}</strong>
-          </span>
-        )}
-        {feat.required && (
-          <span
-            style={{
-              fontSize: "0.78rem",
-              color: "var(--text-muted)",
-              fontWeight: 500,
-            }}
-          >
-            Requires:{" "}
-            <strong style={{ color: "var(--text)" }}>{feat.required}</strong>
-          </span>
-        )}
-        {feat.path_investment && (
-          <span
-            style={{
-              fontSize: "0.78rem",
-              color: "var(--text-muted)",
-              fontWeight: 500,
-            }}
-          >
-            Investment:{" "}
-            <strong style={{ color: "var(--text)" }}>
-              {feat.path_investment}
-            </strong>
-          </span>
-        )}
-      </div>
-      <MarkdownContent content={feat.description_markdown} />
-    </div>
-  );
-}
 
 interface Props {
   profOwners: FeatOwner[];
@@ -178,288 +11,451 @@ interface Props {
   originFeats: Feat[];
 }
 
-export default function FeatsClient({
-  profOwners,
-  profFeats,
-  originOwners,
-  originFeats,
-}: Props) {
-  const [activeProfs, setActiveProfs] = useState<Set<string>>(new Set());
-  const [activeOrigins, setActiveOrigins] = useState<Set<string>>(new Set());
+type Source = "all" | "profession" | "origin";
 
-  function toggle(
-    set: Set<string>,
-    setter: (s: Set<string>) => void,
-    value: string,
-  ) {
-    const next = new Set(set);
-    next.has(value) ? next.delete(value) : next.add(value);
-    setter(next);
+function stripMd(md: string, maxLen = 90): string {
+  const plain = md
+    .replace(/\*\*(.+?)\*\*/g, "$1")
+    .replace(/\*(.+?)\*/g, "$1")
+    .replace(/`(.+?)`/g, "$1")
+    .replace(/#+\s/g, "")
+    .split("\n")[0]
+    .trim();
+  return plain.length > maxLen ? plain.slice(0, maxLen) + "…" : plain;
+}
+
+function FilterPill({
+  label,
+  count,
+  active,
+  onClick,
+}: {
+  label: string;
+  count?: number;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "5px",
+        padding: "5px 12px",
+        borderRadius: "20px",
+        fontSize: "0.72rem",
+        fontFamily: "var(--font-mono)",
+        fontWeight: active ? 600 : 400,
+        letterSpacing: "0.03em",
+        border: "1px solid",
+        borderColor: active ? "transparent" : "var(--border)",
+        backgroundColor: active ? "var(--gold)" : "transparent",
+        color: active ? "var(--bg)" : "var(--text-secondary)",
+        cursor: "pointer",
+        transition: "all 0.15s",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {label}
+      {count !== undefined && (
+        <span style={{ fontSize: "0.65rem", opacity: active ? 0.75 : 0.6, fontWeight: 500 }}>
+          {count}
+        </span>
+      )}
+    </button>
+  );
+}
+
+function OwnerPill({
+  label,
+  count,
+  active,
+  onClick,
+}: {
+  label: string;
+  count: number;
+  active: boolean;
+  onClick: () => void;
+}) {
+  return (
+    <button
+      onClick={onClick}
+      style={{
+        display: "inline-flex",
+        alignItems: "center",
+        gap: "4px",
+        padding: "4px 10px",
+        borderRadius: "12px",
+        fontSize: "0.68rem",
+        fontFamily: "var(--font-mono)",
+        fontWeight: active ? 600 : 400,
+        border: "1px solid",
+        borderColor: active ? "rgb(var(--c-feat-rgb) / 0.53)" : "var(--border)",
+        backgroundColor: active ? "rgb(var(--c-feat-rgb) / 0.14)" : "transparent",
+        color: active ? "var(--c-feat)" : "var(--text-secondary)",
+        cursor: "pointer",
+        transition: "all 0.15s",
+        whiteSpace: "nowrap",
+      }}
+    >
+      {label}
+      <span style={{ opacity: 0.7, fontWeight: 500, fontSize: "0.6rem" }}>{count}</span>
+    </button>
+  );
+}
+
+export default function FeatsClient({ profOwners, profFeats, originOwners, originFeats }: Props) {
+  const [source, setSource] = useState<Source>("all");
+  const [activeOwner, setActiveOwner] = useState<string | null>(null);
+  const [search, setSearch] = useState("");
+  const [expandedIds, setExpandedIds] = useState<Set<string>>(new Set());
+
+  const allFeats = useMemo<Feat[]>(
+    () => [...profFeats, ...originFeats],
+    [profFeats, originFeats],
+  );
+
+  // Owner counts map
+  const ownerCounts = useMemo(() => {
+    const m: Record<string, number> = {};
+    allFeats.forEach((f) => {
+      m[f.owner_name] = (m[f.owner_name] ?? 0) + 1;
+    });
+    return m;
+  }, [allFeats]);
+
+  const profTotal = profFeats.length;
+  const originTotal = originFeats.length;
+
+  const currentOwners: FeatOwner[] =
+    source === "profession"
+      ? profOwners
+      : source === "origin"
+        ? originOwners
+        : [];
+
+  const filtered = useMemo(() => {
+    let pool: Feat[];
+    if (source === "profession") pool = profFeats;
+    else if (source === "origin") pool = originFeats;
+    else pool = allFeats;
+
+    return pool.filter((f) => {
+      if (activeOwner && f.owner_name !== activeOwner) return false;
+      if (search.trim()) {
+        const q = search.toLowerCase();
+        if (
+          !f.name.toLowerCase().includes(q) &&
+          !(f.owner_name ?? "").toLowerCase().includes(q)
+        )
+          return false;
+      }
+      return true;
+    });
+  }, [source, activeOwner, search, profFeats, originFeats, allFeats]);
+
+  function toggleExpand(id: string) {
+    setExpandedIds((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
   }
 
-  const hasFilters = activeProfs.size > 0 || activeOrigins.size > 0;
+  function handleSourceChange(s: Source) {
+    setSource(s);
+    setActiveOwner(null);
+  }
 
-  const visibleProfOwners =
-    activeProfs.size > 0
-      ? profOwners.filter((o) => activeProfs.has(o.name))
-      : profOwners;
-
-  const visibleOriginOwners =
-    activeOrigins.size > 0
-      ? originOwners.filter((o) => activeOrigins.has(o.name))
-      : originOwners;
-
-  const filteredProfCount = visibleProfOwners.reduce(
-    (n, o) => n + profFeats.filter((f) => f.owner_id === o.id).length,
-    0,
-  );
-  const filteredOriginCount = visibleOriginOwners.reduce(
-    (n, o) => n + originFeats.filter((f) => f.owner_id === o.id).length,
-    0,
-  );
+  const hasFilters = source !== "all" || activeOwner || search.trim();
 
   return (
     <div>
       {/* Filter bar */}
       <div
         style={{
-          marginBottom: "2rem",
-          padding: "1rem 1.25rem",
-          backgroundColor: "var(--bg-nav)",
+          marginBottom: "20px",
+          padding: "16px 18px",
+          backgroundColor: "var(--panel)",
           border: "1px solid var(--border)",
-          borderRadius: "0.625rem",
+          borderRadius: "12px",
+          display: "flex",
+          flexDirection: "column",
+          gap: "12px",
         }}
       >
-        {/* Profession filters */}
-        <div style={{ marginBottom: "0.75rem" }}>
-          <span
-            style={{
-              fontSize: "0.65rem",
-              fontWeight: 700,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: "var(--text-muted)",
-              fontFamily: "var(--font-heading)",
-              display: "block",
-              marginBottom: "0.375rem",
-            }}
-          >
-            Profession
-          </span>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.375rem" }}>
-            {PROFESSIONS.map((p) => (
-              <FilterPill
-                key={p}
-                label={p}
-                active={activeProfs.has(p)}
-                onClick={() => toggle(activeProfs, setActiveProfs, p)}
-              />
-            ))}
-          </div>
-        </div>
+        {/* Source tabs */}
+        <div style={{ display: "flex", alignItems: "center", gap: "6px", flexWrap: "wrap" }}>
+          <FilterPill
+            label="All"
+            count={allFeats.length}
+            active={source === "all"}
+            onClick={() => handleSourceChange("all")}
+          />
+          <FilterPill
+            label="Profession"
+            count={profTotal}
+            active={source === "profession"}
+            onClick={() => handleSourceChange("profession")}
+          />
+          <FilterPill
+            label="Origin"
+            count={originTotal}
+            active={source === "origin"}
+            onClick={() => handleSourceChange("origin")}
+          />
 
-        {/* Origin filters */}
-        <div>
-          <span
-            style={{
-              fontSize: "0.65rem",
-              fontWeight: 700,
-              letterSpacing: "0.08em",
-              textTransform: "uppercase",
-              color: "var(--text-muted)",
-              fontFamily: "var(--font-heading)",
-              display: "block",
-              marginBottom: "0.375rem",
-            }}
-          >
-            Origin
-          </span>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.375rem" }}>
-            {ORIGINS.map((o) => (
-              <FilterPill
-                key={o}
-                label={o}
-                active={activeOrigins.has(o)}
-                onClick={() => toggle(activeOrigins, setActiveOrigins, o)}
-              />
-            ))}
-          </div>
-        </div>
-
-        {/* Filter summary + clear */}
-        {hasFilters && (
-          <div
-            style={{
-              marginTop: "0.75rem",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "space-between",
-            }}
-          >
-            <span style={{ fontSize: "0.8rem", color: "var(--text-muted)" }}>
-              {filteredProfCount + filteredOriginCount} feat
-              {filteredProfCount + filteredOriginCount !== 1 ? "s" : ""} match
-            </span>
-            <button
-              onClick={() => {
-                setActiveProfs(new Set());
-                setActiveOrigins(new Set());
-              }}
+          {/* Inline search */}
+          <div style={{ flex: 1 }} />
+          <div style={{ position: "relative", flexShrink: 0 }}>
+            <svg
+              style={{ position: "absolute", left: "9px", top: "50%", transform: "translateY(-50%)", color: "var(--text-tertiary)", pointerEvents: "none" }}
+              width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round"
+            >
+              <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
+            </svg>
+            <input
+              type="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search feats…"
+              aria-label="Filter feats by name"
               style={{
+                padding: "5px 10px 5px 28px",
                 fontSize: "0.75rem",
-                color: "var(--primary)",
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                fontFamily: "var(--font-heading)",
-                fontWeight: 600,
-                padding: "0.15rem 0.375rem",
+                fontFamily: "var(--font-mono)",
+                border: "1px solid var(--border)",
+                borderRadius: "8px",
+                backgroundColor: "var(--bg-2)",
+                color: "var(--text-primary)",
+                outline: "none",
+                width: "180px",
               }}
+            />
+          </div>
+        </div>
+
+        {/* Owner pills when source selected */}
+        {currentOwners.length > 0 && (
+          <div style={{ display: "flex", gap: "5px", flexWrap: "wrap", alignItems: "center" }}>
+            <span style={{ fontFamily: "var(--font-mono)", fontSize: "9px", letterSpacing: "1.6px", textTransform: "uppercase", color: "var(--text-tertiary)", marginRight: "2px" }}>
+              {source === "profession" ? "Profession" : "Origin"}
+            </span>
+            {currentOwners.map((owner) => (
+              <OwnerPill
+                key={owner.id}
+                label={owner.name}
+                count={ownerCounts[owner.name] ?? 0}
+                active={activeOwner === owner.name}
+                onClick={() => setActiveOwner(activeOwner === owner.name ? null : owner.name)}
+              />
+            ))}
+          </div>
+        )}
+
+        {/* Summary row */}
+        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+          <span style={{ fontFamily: "var(--font-mono)", fontSize: "0.72rem", color: "var(--text-tertiary)" }}>
+            {filtered.length} of {allFeats.length} feats
+          </span>
+          {hasFilters && (
+            <button
+              onClick={() => { setSource("all"); setActiveOwner(null); setSearch(""); }}
+              style={{ fontSize: "0.72rem", color: "var(--c-feat)", background: "none", border: "none", cursor: "pointer", fontFamily: "var(--font-mono)", padding: "2px 6px" }}
             >
               Clear filters
             </button>
-          </div>
-        )}
+          )}
+        </div>
       </div>
 
-      {/* Profession Feats */}
-      {(activeOrigins.size === 0 || activeProfs.size > 0) && (
-        <section style={{ marginBottom: "2.5rem" }}>
-          <h2
+      {/* Compact row list */}
+      {filtered.length === 0 ? (
+        <div style={{ textAlign: "center", padding: "3rem", color: "var(--text-tertiary)", fontFamily: "var(--font-mono)", fontSize: "0.85rem" }}>
+          No feats match the selected filters.
+        </div>
+      ) : (
+        <div
+          style={{
+            backgroundColor: "var(--panel)",
+            border: "1px solid var(--border)",
+            borderRadius: "12px",
+            overflow: "hidden",
+          }}
+        >
+          {/* Table header */}
+          <div
             style={{
-              fontFamily: "var(--font-heading)",
-              fontWeight: 700,
-              fontSize: "1.25rem",
-              color: "var(--text)",
-              marginBottom: "1.25rem",
-              paddingBottom: "0.5rem",
-              borderBottom: "2px solid var(--primary)",
-              display: "inline-block",
+              display: "grid",
+              gridTemplateColumns: "1fr 90px 100px 28px",
+              gap: "12px",
+              padding: "8px 16px 8px 20px",
+              borderBottom: "1px solid var(--border)",
+              fontFamily: "var(--font-mono)",
+              fontSize: "9px",
+              letterSpacing: "1.6px",
+              textTransform: "uppercase",
+              color: "var(--text-tertiary)",
             }}
           >
-            Profession Feats
-          </h2>
+            <span>Feat</span>
+            <span>Source</span>
+            <span>Tier</span>
+            <span />
+          </div>
 
-          {visibleProfOwners.map((owner) => {
-            const ownerFeats = profFeats.filter((f) => f.owner_id === owner.id);
-            if (!ownerFeats.length) return null;
+          {filtered.map((feat, i) => {
+            const expanded = expandedIds.has(feat.id);
+            const summary = stripMd(feat.description_markdown);
+
             return (
-              <div key={owner.id} style={{ marginBottom: "1.75rem" }}>
-                <h3
+              <div
+                key={feat.id}
+                style={{
+                  borderBottom: i < filtered.length - 1 ? "1px solid var(--border)" : "none",
+                  borderLeft: "2px solid var(--c-feat)",
+                }}
+              >
+                <button
+                  onClick={() => toggleExpand(feat.id)}
                   style={{
-                    fontFamily: "var(--font-heading)",
-                    fontWeight: 600,
-                    fontSize: "1rem",
-                    color: "var(--primary)",
-                    marginBottom: "0.625rem",
-                    display: "flex",
+                    display: "grid",
+                    gridTemplateColumns: "1fr 90px 100px 28px",
+                    gap: "12px",
+                    padding: "11px 16px 11px 18px",
+                    width: "100%",
+                    textAlign: "left",
+                    background: "none",
+                    border: "none",
+                    cursor: "pointer",
                     alignItems: "center",
-                    gap: "0.5rem",
+                    transition: "background-color 0.12s",
+                    backgroundColor: expanded ? "var(--panel-hi)" : "transparent",
                   }}
+                  onMouseEnter={(e) => { if (!expanded) e.currentTarget.style.backgroundColor = "var(--bg-2)"; }}
+                  onMouseLeave={(e) => { if (!expanded) e.currentTarget.style.backgroundColor = "transparent"; }}
                 >
-                  {owner.name}
+                  {/* Name + summary */}
+                  <div style={{ minWidth: 0 }}>
+                    <div
+                      style={{
+                        fontFamily: "var(--font-heading)",
+                        fontStyle: "italic",
+                        fontWeight: 500,
+                        fontSize: "15px",
+                        color: "var(--text-primary)",
+                        overflow: "hidden",
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {feat.name}
+                    </div>
+                    {!expanded && summary && (
+                      <div
+                        style={{
+                          fontFamily: "var(--font-body)",
+                          fontSize: "11.5px",
+                          color: "var(--text-secondary)",
+                          overflow: "hidden",
+                          textOverflow: "ellipsis",
+                          whiteSpace: "nowrap",
+                          marginTop: "2px",
+                          lineHeight: 1.4,
+                        }}
+                      >
+                        {summary}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Source (owner) */}
                   <span
                     style={{
-                      fontSize: "0.75rem",
-                      color: "var(--text-muted)",
-                      fontWeight: 400,
+                      fontFamily: "var(--font-mono)",
+                      fontSize: "9.5px",
+                      letterSpacing: "0.5px",
+                      color: "var(--c-feat)",
+                      overflow: "hidden",
+                      textOverflow: "ellipsis",
+                      whiteSpace: "nowrap",
                     }}
                   >
-                    ({ownerFeats.length})
+                    {feat.owner_name}
+                    {feat.tag && feat.tag !== feat.owner_name && (
+                      <span style={{ color: "var(--text-tertiary)", marginLeft: "4px" }}>· {feat.tag}</span>
+                    )}
                   </span>
-                </h3>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "0.625rem",
-                  }}
-                >
-                  {ownerFeats.map((feat) => (
-                    <FeatCard key={feat.id} feat={feat} />
-                  ))}
-                </div>
+
+                  {/* Tier */}
+                  <span
+                    style={{
+                      fontFamily: "var(--font-mono)",
+                      fontSize: "9.5px",
+                      letterSpacing: "1px",
+                      textTransform: "uppercase",
+                      color: "var(--text-tertiary)",
+                    }}
+                  >
+                    {feat.tier != null ? `Tier ${feat.tier}` : "—"}
+                  </span>
+
+                  {/* Expand indicator */}
+                  <span
+                    style={{
+                      color: "var(--c-feat)",
+                      fontSize: "14px",
+                      opacity: 0.6,
+                      textAlign: "right",
+                      transition: "transform 0.15s",
+                      display: "inline-block",
+                      transform: expanded ? "rotate(90deg)" : "none",
+                    }}
+                  >
+                    →
+                  </span>
+                </button>
+
+                {/* Expanded details */}
+                {expanded && (
+                  <div
+                    style={{
+                      padding: "0 18px 16px 20px",
+                      backgroundColor: "var(--panel-hi)",
+                      borderTop: "1px solid var(--border)",
+                    }}
+                  >
+                    <div style={{ paddingTop: "14px" }}>
+                      {(feat.required || feat.path_investment || feat.cost) && (
+                        <div style={{ display: "flex", gap: "14px", marginBottom: "10px", flexWrap: "wrap" }}>
+                          {feat.required && (
+                            <span style={{ fontFamily: "var(--font-mono)", fontSize: "10px", color: "var(--text-tertiary)" }}>
+                              Requires: <span style={{ color: "var(--text-secondary)" }}>{feat.required}</span>
+                            </span>
+                          )}
+                          {feat.path_investment && (
+                            <span style={{ fontFamily: "var(--font-mono)", fontSize: "10px", color: "var(--text-tertiary)" }}>
+                              Investment: <span style={{ color: "var(--text-secondary)" }}>{feat.path_investment}</span>
+                            </span>
+                          )}
+                          {feat.cost && (
+                            <span style={{ fontFamily: "var(--font-mono)", fontSize: "10px", color: "var(--c-feat)" }}>
+                              {feat.cost}
+                            </span>
+                          )}
+                        </div>
+                      )}
+                      <div style={{ fontSize: "0.875rem", color: "var(--text-secondary)", lineHeight: 1.6 }}>
+                        <MarkdownContent content={feat.description_markdown} />
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             );
           })}
-
-          {visibleProfOwners.length === 0 && (
-            <p style={{ color: "var(--text-muted)", fontSize: "0.875rem" }}>
-              No profession feats match the selected filters.
-            </p>
-          )}
-        </section>
-      )}
-
-      {/* Origin Feats */}
-      {(activeProfs.size === 0 || activeOrigins.size > 0) && (
-        <section>
-          <h2
-            style={{
-              fontFamily: "var(--font-heading)",
-              fontWeight: 700,
-              fontSize: "1.25rem",
-              color: "var(--text)",
-              marginBottom: "1.25rem",
-              paddingBottom: "0.5rem",
-              borderBottom: "2px solid var(--primary)",
-              display: "inline-block",
-            }}
-          >
-            Origin Feats
-          </h2>
-
-          {visibleOriginOwners.map((owner) => {
-            const ownerFeats = originFeats.filter(
-              (f) => f.owner_id === owner.id,
-            );
-            if (!ownerFeats.length) return null;
-            return (
-              <div key={owner.id} style={{ marginBottom: "1.75rem" }}>
-                <h3
-                  style={{
-                    fontFamily: "var(--font-heading)",
-                    fontWeight: 600,
-                    fontSize: "1rem",
-                    color: "var(--primary)",
-                    marginBottom: "0.625rem",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "0.5rem",
-                  }}
-                >
-                  {owner.name}
-                  <span
-                    style={{
-                      fontSize: "0.75rem",
-                      color: "var(--text-muted)",
-                      fontWeight: 400,
-                    }}
-                  >
-                    ({ownerFeats.length})
-                  </span>
-                </h3>
-                <div
-                  style={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "0.625rem",
-                  }}
-                >
-                  {ownerFeats.map((feat) => (
-                    <FeatCard key={feat.id} feat={feat} />
-                  ))}
-                </div>
-              </div>
-            );
-          })}
-
-          {visibleOriginOwners.length === 0 && (
-            <p style={{ color: "var(--text-muted)", fontSize: "0.875rem" }}>
-              No origin feats match the selected filters.
-            </p>
-          )}
-        </section>
+        </div>
       )}
     </div>
   );

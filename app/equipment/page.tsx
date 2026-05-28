@@ -36,30 +36,32 @@ interface ItemTrait {
 
 function SectionTitle({ children }: { children: React.ReactNode }) {
   return (
-    <h2 style={{
-      fontFamily: 'var(--font-heading)',
-      fontWeight: 700,
-      fontSize: '1.15rem',
-      color: 'var(--text)',
-      marginBottom: '0.875rem',
-      paddingBottom: '0.4rem',
-      borderBottom: '2px solid var(--primary)',
-      display: 'inline-block',
-    }}>
-      {children}
-    </h2>
+    <div style={{ marginBottom: '16px' }}>
+      <div style={{
+        fontFamily: 'var(--font-mono)',
+        fontSize: '9.5px',
+        letterSpacing: '1.8px',
+        textTransform: 'uppercase',
+        color: 'var(--c-equip)',
+        marginBottom: '4px',
+      }}>
+        {children}
+      </div>
+      <div style={{ height: '1px', background: 'linear-gradient(90deg, var(--c-equip) 0%, var(--border) 50%, transparent 100%)' }} />
+    </div>
   );
 }
 
 function RuleCard({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div style={{
-      padding: '1rem 1.25rem',
-      backgroundColor: 'var(--bg-card)',
+      padding: '14px 16px',
+      backgroundColor: 'var(--panel)',
       border: '1px solid var(--border)',
-      borderRadius: '0.625rem',
+      borderLeft: '2px solid var(--c-equip)',
+      borderRadius: '10px',
     }}>
-      <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '0.9rem', color: 'var(--text)', marginBottom: '0.5rem' }}>
+      <h3 style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic', fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-primary)', marginBottom: '8px' }}>
         {title}
       </h3>
       {children}
@@ -92,6 +94,7 @@ export default function EquipmentPage() {
   return (
     <div>
       <PageHeader
+        eyebrow="Reference · Equipment"
         title="Equipment"
         subtitle="Weapons, armor, kits, shields, and the rules that govern them."
       />
