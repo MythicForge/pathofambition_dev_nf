@@ -8,18 +8,12 @@ import type { Spell } from '@/lib/types';
 const SOURCES = ['Anima', 'Mana', 'Soul', 'Primeval'];
 const SPHERES = ['Aberration', 'Augmentation', 'Conjuration', 'Decimation', 'Divination', 'Mortification', 'Reclamation'];
 
-const SCHOOL_COLORS: Record<string, { bg: string; text: string }> = {
-  Conjuration:  { bg: '#DBEAFE', text: '#1D4ED8' },
-  Aberration:   { bg: '#F3E8FF', text: '#7C3AED' },
-  Mortification:{ bg: '#FCE7F3', text: '#9D174D' },
-  Augmentation: { bg: '#FEF9C3', text: '#854D0E' },
-  Decimation:   { bg: '#FEE2E2', text: '#B91C1C' },
-  Divination:   { bg: '#E0F2FE', text: '#075985' },
-  Reclamation:  { bg: '#D1FAE5', text: '#065F46' },
-};
-
-function schoolStyle(school: string) {
-  return SCHOOL_COLORS[school] ?? { bg: 'var(--bg-nav)', text: 'var(--text-muted)' };
+function schoolStyle(_school: string) {
+  return {
+    bg: 'rgb(var(--c-spell-rgb) / 0.14)',
+    border: 'rgb(var(--c-spell-rgb) / 0.53)',
+    text: 'var(--c-spell)',
+  };
 }
 
 function FilterPill({
@@ -29,14 +23,15 @@ function FilterPill({
     <button
       onClick={onClick}
       style={{
-        padding: '0.25rem 0.625rem',
-        borderRadius: '9999px',
-        fontSize: '0.75rem',
-        fontFamily: 'var(--font-heading)',
-        fontWeight: 600,
-        border: active ? '1.5px solid var(--primary)' : '1.5px solid var(--border)',
-        backgroundColor: active ? 'var(--primary)' : 'var(--bg-card)',
-        color: active ? '#fff' : 'var(--text-muted)',
+        padding: '0.2rem 0.6rem',
+        borderRadius: '6px',
+        fontSize: '0.65rem',
+        fontFamily: 'var(--font-mono)',
+        fontWeight: 500,
+        letterSpacing: '0.04em',
+        border: active ? '1.5px solid var(--gold)' : '1.5px solid var(--border)',
+        backgroundColor: active ? 'var(--gold)' : 'transparent',
+        color: active ? 'var(--bg)' : 'var(--text-secondary)',
         cursor: 'pointer',
         transition: 'all 0.15s',
       }}
@@ -192,10 +187,11 @@ export default function SpellsClient({ spells }: Props) {
                     <div style={{ display: 'flex', gap: '0.35rem', flexWrap: 'wrap', marginBottom: '0.4rem' }}>
                       {spell.school && (
                         <span style={{
-                          fontSize: '0.65rem', fontWeight: 700, fontFamily: 'var(--font-heading)',
-                          letterSpacing: '0.04em', textTransform: 'uppercase',
-                          padding: '0.1rem 0.4rem', borderRadius: '9999px',
+                          fontSize: '0.65rem', fontWeight: 700, fontFamily: 'var(--font-mono)',
+                          letterSpacing: '0.06em', textTransform: 'uppercase',
+                          padding: '0.1rem 0.4rem', borderRadius: '4px',
                           backgroundColor: sc.bg, color: sc.text,
+                          border: `1px solid ${sc.border}`,
                         }}>
                           {spell.school}
                         </span>

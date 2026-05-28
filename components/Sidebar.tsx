@@ -221,18 +221,23 @@ export default function Sidebar() {
           <div
             style={{
               fontFamily: "var(--font-heading)",
-              fontWeight: 700,
-              fontSize: "1.1rem",
-              color: "var(--primary)",
+              fontStyle: "italic",
+              fontWeight: 500,
+              fontSize: "1.15rem",
+              color: "var(--gold)",
+              letterSpacing: "-0.3px",
             }}
           >
             Path of Ambition
           </div>
           <div
             style={{
-              fontSize: "0.75rem",
-              color: "var(--text-muted)",
-              marginTop: "1px",
+              fontSize: "0.65rem",
+              fontFamily: "var(--font-mono)",
+              textTransform: "uppercase",
+              letterSpacing: "2px",
+              color: "var(--text-tertiary)",
+              marginTop: "2px",
             }}
           >
             Player Reference
@@ -246,11 +251,12 @@ export default function Sidebar() {
           <div key={section.label}>
             <p
               style={{
-                fontSize: "0.65rem",
-                fontWeight: 700,
-                letterSpacing: "0.1em",
+                fontSize: "0.6rem",
+                fontFamily: "var(--font-mono)",
+                fontWeight: 500,
+                letterSpacing: "0.15em",
                 textTransform: "uppercase",
-                color: "var(--text-muted)",
+                color: "var(--text-tertiary)",
                 paddingLeft: "0.5rem",
                 marginBottom: "0.375rem",
               }}
@@ -265,34 +271,34 @@ export default function Sidebar() {
                     <Link
                       href={item.href}
                       onClick={() => setMobileOpen(false)}
-                      className="flex items-center gap-2.5 px-2.5 py-2 rounded-lg transition-colors duration-150 cursor-pointer"
+                      className="flex items-center gap-2.5 px-2.5 py-2 transition-colors duration-150 cursor-pointer"
                       style={{
-                        fontFamily: "var(--font-heading)",
-                        fontWeight: active ? 600 : 400,
-                        fontSize: "0.9rem",
-                        color: active ? "var(--primary)" : "var(--text)",
-                        backgroundColor: active
-                          ? "var(--primary-light)"
-                          : "transparent",
+                        fontFamily: "var(--font-mono)",
+                        fontWeight: active ? 500 : 400,
+                        fontSize: "0.8rem",
+                        letterSpacing: active ? "0.02em" : undefined,
+                        color: active ? "var(--gold)" : "var(--text-secondary)",
+                        backgroundColor: active ? "var(--panel)" : "transparent",
+                        borderRadius: "0 6px 6px 0",
+                        boxShadow: active ? "inset 2px 0 0 var(--gold)" : "inset 2px 0 0 transparent",
                         textDecoration: "none",
                       }}
                       onMouseEnter={(e) => {
                         if (!active) {
-                          e.currentTarget.style.backgroundColor =
-                            "var(--bg-nav)";
+                          e.currentTarget.style.backgroundColor = "var(--panel)";
+                          e.currentTarget.style.color = "var(--text-primary)";
                         }
                       }}
                       onMouseLeave={(e) => {
                         if (!active) {
                           e.currentTarget.style.backgroundColor = "transparent";
+                          e.currentTarget.style.color = "var(--text-secondary)";
                         }
                       }}
                     >
                       <span
                         style={{
-                          color: active
-                            ? "var(--primary)"
-                            : "var(--text-muted)",
+                          color: active ? "var(--gold)" : "var(--text-tertiary)",
                         }}
                       >
                         <CategoryIcon type={item.icon} />

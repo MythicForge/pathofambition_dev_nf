@@ -49,16 +49,17 @@ function FilterPill({
     <button
       onClick={onClick}
       style={{
-        padding: "0.25rem 0.625rem",
-        borderRadius: "9999px",
-        fontSize: "0.75rem",
-        fontFamily: "var(--font-heading)",
-        fontWeight: 600,
+        padding: "0.2rem 0.6rem",
+        borderRadius: "6px",
+        fontSize: "0.65rem",
+        fontFamily: "var(--font-mono)",
+        fontWeight: 500,
+        letterSpacing: "0.04em",
         border: active
-          ? "1.5px solid var(--primary)"
+          ? "1.5px solid var(--gold)"
           : "1.5px solid var(--border)",
-        backgroundColor: active ? "var(--primary)" : "var(--bg-card)",
-        color: active ? "#fff" : "var(--text-muted)",
+        backgroundColor: active ? "var(--gold)" : "transparent",
+        color: active ? "var(--bg)" : "var(--text-secondary)",
         cursor: "pointer",
         transition: "all 0.15s",
       }}

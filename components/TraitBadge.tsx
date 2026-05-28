@@ -6,18 +6,18 @@ interface Props {
 export default function TraitBadge({ trait, variant = 'default' }: Props) {
   const styles: Record<string, React.CSSProperties> = {
     default: {
-      backgroundColor: 'var(--primary-light)',
-      color: 'var(--primary)',
-      border: '1px solid #99F6E4',
+      backgroundColor: 'rgb(var(--gold-rgb) / 0.09)',
+      color: 'var(--gold)',
+      border: '1px solid rgb(var(--gold-rgb) / 0.40)',
     },
     accent: {
-      backgroundColor: 'var(--accent-light)',
-      color: 'var(--accent)',
-      border: '1px solid #FCD34D',
+      backgroundColor: 'rgb(var(--gold-rgb) / 0.14)',
+      color: 'var(--gold-hi)',
+      border: '1px solid rgb(var(--gold-rgb) / 0.53)',
     },
     muted: {
-      backgroundColor: 'var(--bg-nav)',
-      color: 'var(--text-muted)',
+      backgroundColor: 'var(--bg-2)',
+      color: 'var(--text-tertiary)',
       border: '1px solid var(--border)',
     },
   };
@@ -26,10 +26,10 @@ export default function TraitBadge({ trait, variant = 'default' }: Props) {
     <span
       style={{
         ...styles[variant],
-        fontSize: '0.7rem',
+        fontSize: '0.65rem',
         fontWeight: 600,
-        fontFamily: 'var(--font-heading)',
-        letterSpacing: '0.04em',
+        fontFamily: 'var(--font-mono)',
+        letterSpacing: '0.06em',
         textTransform: 'uppercase',
         padding: '0.15rem 0.45rem',
         borderRadius: '9999px',

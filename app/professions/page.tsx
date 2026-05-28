@@ -26,13 +26,13 @@ export default function ProfessionsPage() {
             style={{
               display: 'block',
               padding: '1.25rem',
-              backgroundColor: 'var(--bg-card)',
+              backgroundColor: 'var(--panel)',
               border: '1px solid var(--border)',
-              borderRadius: '0.75rem',
+              borderRadius: '6px',
               textDecoration: 'none',
             }}
           >
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '1.1rem', color: 'var(--primary)', marginBottom: '0.4rem' }}>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontStyle: 'italic', fontWeight: 500, fontSize: '1.15rem', color: 'var(--gold)', marginBottom: '0.4rem', letterSpacing: '-0.2px' }}>
               {prof.name}
             </h2>
 
@@ -40,9 +40,12 @@ export default function ProfessionsPage() {
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.3rem', marginBottom: '0.6rem' }}>
                 {prof.path_options.map((p) => (
                   <span key={p} style={{
-                    fontSize: '0.7rem', fontWeight: 600, fontFamily: 'var(--font-heading)',
-                    letterSpacing: '0.04em', padding: '0.1rem 0.4rem', borderRadius: '9999px',
-                    backgroundColor: 'var(--accent-light)', color: 'var(--accent)', border: '1px solid #FCD34D',
+                    fontSize: '0.6rem', fontWeight: 600, fontFamily: 'var(--font-mono)',
+                    letterSpacing: '0.06em', textTransform: 'uppercase',
+                    padding: '0.1rem 0.4rem', borderRadius: '4px',
+                    backgroundColor: 'rgb(var(--c-prof-rgb) / 0.09)',
+                    color: 'var(--c-prof)',
+                    border: '1px solid rgb(var(--c-prof-rgb) / 0.40)',
                   }}>
                     {p}
                   </span>
@@ -51,16 +54,16 @@ export default function ProfessionsPage() {
             )}
 
             <p style={{
-              fontSize: '0.85rem', color: 'var(--text-muted)', lineHeight: 1.55,
+              fontSize: '0.85rem', color: 'var(--text-secondary)', lineHeight: 1.55,
               display: '-webkit-box', WebkitLineClamp: 3, WebkitBoxOrient: 'vertical', overflow: 'hidden',
             }}>
               {prof.role}
             </p>
 
-            <div style={{ marginTop: '0.875rem', fontSize: '0.8rem', color: 'var(--text-muted)' }}>
-              <span style={{ color: 'var(--text)', fontWeight: 500 }}>Vitality:</span> {prof.starting_vitality}
+            <div style={{ marginTop: '0.875rem', fontSize: '0.75rem', fontFamily: 'var(--font-mono)', color: 'var(--text-tertiary)' }}>
+              <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>Vitality:</span> {prof.starting_vitality}
               {prof.favored_attributes_raw && (
-                <> &middot; <span style={{ color: 'var(--text)', fontWeight: 500 }}>Favored:</span> {prof.favored_attributes_raw}</>
+                <> &middot; <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>Favored:</span> {prof.favored_attributes_raw}</>
               )}
             </div>
           </Link>

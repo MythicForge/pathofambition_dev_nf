@@ -19,29 +19,38 @@ export default function PageHeader({ title, subtitle, count, countLabel, childre
         <div>
           <h1 style={{
             fontFamily: 'var(--font-heading)',
-            fontWeight: 700,
-            fontSize: '1.75rem',
-            color: 'var(--text)',
-            lineHeight: 1.2,
+            fontStyle: 'italic',
+            fontWeight: 500,
+            fontSize: '2rem',
+            color: 'var(--text-primary)',
+            lineHeight: 1.15,
+            letterSpacing: '-0.5px',
           }}>
             {title}
           </h1>
           {subtitle && (
-            <p style={{ color: 'var(--text-muted)', marginTop: '0.375rem', fontSize: '0.95rem' }}>
+            <p style={{
+              color: 'var(--text-tertiary)',
+              marginTop: '0.5rem',
+              fontSize: '0.75rem',
+              fontFamily: 'var(--font-mono)',
+              letterSpacing: '0.04em',
+              lineHeight: 1.5,
+            }}>
               {subtitle}
             </p>
           )}
         </div>
         {count !== undefined && (
           <span style={{
-            backgroundColor: 'var(--bg-nav)',
+            backgroundColor: 'var(--panel)',
             border: '1px solid var(--border)',
-            borderRadius: '9999px',
-            padding: '0.2rem 0.75rem',
-            fontSize: '0.8rem',
-            fontFamily: 'var(--font-heading)',
+            borderRadius: '6px',
+            padding: '0.2rem 0.625rem',
+            fontSize: '0.7rem',
+            fontFamily: 'var(--font-mono)',
             fontWeight: 500,
-            color: 'var(--text-muted)',
+            color: 'var(--text-tertiary)',
             whiteSpace: 'nowrap',
             alignSelf: 'flex-start',
             marginTop: '0.25rem',
