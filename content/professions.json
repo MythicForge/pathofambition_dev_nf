@@ -239,7 +239,7 @@
       "wound_bonus_per_tier": 1,
       "proficiencies": {
         "vitals_skills": ["Choose one", "Awareness", "Lore", "Social"],
-        "armaments": ["Catalysts", "one of choice"],
+        "armaments": ["Catalysts", "Simple"],
         "protection": ["None"],
         "tool_kits": ["Crafting", "Engineering or Medicine"],
         "raw": "**V.I.T.A.L.S. Skills** Choose one, Awareness, Lore, Social\n**Armaments** Catalysts, one of choice\n**Protection** None\n**Tool Kit** Crafting, Engineering or Medicine"
@@ -386,7 +386,7 @@
         "starting_currency": "7 gold",
         "raw": "**Weapons:** two simple melee weapons of choice\n**Armor:** Light armor\n**Kit:** Survival Kit\n**Inventory:** Nature press kit, Waterskin, weather cloak\n**Starting Currency:** 7 gold"
       },
-      "path_options": [],
+      "path_options": ["Conduit", "Kineticist"],
       "features": [
         {
           "id": "professions-elementalist-base-font-of-energy",

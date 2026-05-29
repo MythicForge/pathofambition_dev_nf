@@ -6,23 +6,26 @@ import FilterBar from './FilterBar';
 import type { FilterOption } from './FilterBar';
 import type { Profession } from '@/lib/types';
 
-type ProfCategory = 'combat' | 'magic' | 'stealth';
+type ProfCategory = 'combat' | 'magic' | 'stealth' | 'hybrid';
 
 const PROF_CATEGORY: Record<string, ProfCategory> = {
-  Berserker: 'combat', Fighter: 'combat', Mercenary: 'combat', Oathbound: 'combat',
-  Mage: 'magic', Mesmer: 'magic', Eidolon: 'magic', Stygian: 'magic',
-  Agent: 'stealth', Drifter: 'stealth', Duelist: 'stealth', Warden: 'stealth',
+  Berserker: 'combat', Fighter: 'combat', Mercenary: 'combat',
+  Mage: 'magic', Mesmer: 'magic', Eidolon: 'magic', Shaman: 'magic',
+  Agent: 'combat',
+  Oathbound: 'hybrid', Elementalist: 'hybrid', Warden: 'hybrid',
 };
 
 const CAT_COLOR: Record<ProfCategory, string> = {
   combat:  'var(--c-action)',
   magic:   'var(--c-spell)',
   stealth: 'var(--c-feat)',
+  hybrid:  'var(--c-hybrid)',
 };
 const CAT_RGB: Record<ProfCategory, string> = {
   combat:  '--c-action-rgb',
   magic:   '--c-spell-rgb',
   stealth: '--c-feat-rgb',
+  hybrid:  '--c-hybrid-rgb',
 };
 
 interface Props { professions: Profession[] }
@@ -58,10 +61,11 @@ export default function ProfessionsClient({ professions }: Props) {
   });
 
   const filterOptions: FilterOption[] = [
-    { value: 'combat',  label: 'Combat',          count: counts.combat },
-    { value: 'magic',   label: 'Magic',            count: counts.magic },
+    { value: 'combat',  label: 'Martial',          count: counts.combat },
+    { value: 'magic',   label: 'Spellcaster',      count: counts.magic },
     { value: 'stealth', label: 'Stealth & Skill',  count: counts.stealth },
-  ];
+    { value: 'hybrid',  label: 'Hybrid',           count: counts.hybrid },
+  ].filter(o => o.count);
 
   return (
     <div>
