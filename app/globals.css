@@ -32,6 +32,15 @@
     --c-action:         #e26a62;
     --c-equip:          #b8a36c;
 
+    /* Spell tier accent colors */
+    --c-tier-cantrip:   #a8b8c8;
+    --c-tier-1:         #7ab87a;
+    --c-tier-2:         #50bdd6;
+    --c-tier-3:         #9b7ad4;
+    --c-tier-4:         #d4804a;
+    --c-tier-5:         #d45a5a;
+    --c-tier-6:         #f0c040;
+
     /* Category RGB companions (for tinting) */
     --c-prof-rgb:       212 167 76;
     --c-origin-rgb:     132 193 125;
@@ -99,6 +108,15 @@
     --c-feat:           #b0532a;
     --c-action:         #c0413f;
     --c-equip:          #6f6a2e;
+
+    /* Spell tier accent colors */
+    --c-tier-cantrip:   #5a7080;
+    --c-tier-1:         #2e6e2e;
+    --c-tier-2:         #1f7e92;
+    --c-tier-3:         #5a3a9a;
+    --c-tier-4:         #8a4010;
+    --c-tier-5:         #8a1a1a;
+    --c-tier-6:         #7a5a08;
 
     /* Category RGB companions */
     --c-prof-rgb:       154 116 22;
