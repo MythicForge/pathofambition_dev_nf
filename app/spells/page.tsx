@@ -10,8 +10,9 @@ export default function SpellsPage() {
   return (
     <div>
       <PageHeader
+        eyebrow="Reference · Spells"
         title="Spells"
-        subtitle="All spells organized by tier. Filter by Source or Sphere, or search by name."
+        subtitle="All spells organized by tier. Filter by school, source, or tier — or search by name."
         count={spells.length}
         countLabel="spells"
       />

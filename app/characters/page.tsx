@@ -11,7 +11,8 @@ export default function CharactersPage() {
   return (
     <div>
       <PageHeader
-        title="Characters"
+        eyebrow="Characters"
+        title="My Characters"
         subtitle="Your saved adventurers. Create new characters or continue an existing one."
       />
       <CharacterList professions={professions} />

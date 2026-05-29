@@ -14,6 +14,7 @@ export default function FeatsPage() {
   return (
     <div>
       <PageHeader
+        eyebrow="Reference · Feats"
         title="Feats"
         subtitle="Special abilities earned through origins and profession advancement."
         count={total}

@@ -1275,7 +1275,7 @@ export default function CharacterSheetPage({
       borderBottom: "1px solid var(--border)",
       backgroundColor: "var(--bg-nav)",
       fontSize: "10px",
-      fontFamily: "monospace",
+      fontFamily: "var(--font-mono)",
       letterSpacing: "0.16em",
       textTransform: "uppercase" as const,
       color: "var(--text-muted)",
@@ -1303,7 +1303,7 @@ export default function CharacterSheetPage({
                   >
                     <span
                       style={{
-                        fontFamily: "monospace",
+                        fontFamily: "var(--font-mono)",
                         fontSize: "9px",
                         letterSpacing: "0.14em",
                         textTransform: "uppercase" as const,
@@ -1351,7 +1351,7 @@ export default function CharacterSheetPage({
                 >
                   <span
                     style={{
-                      fontFamily: "monospace",
+                      fontFamily: "var(--font-mono)",
                       fontSize: "9px",
                       letterSpacing: "0.14em",
                       textTransform: "uppercase" as const,
@@ -1398,7 +1398,7 @@ export default function CharacterSheetPage({
                           <span
                             style={{
                               fontSize: "11px",
-                              fontFamily: "monospace",
+                              fontFamily: "var(--font-mono)",
                               color: "var(--text-muted)",
                             }}
                           >
@@ -1412,7 +1412,7 @@ export default function CharacterSheetPage({
                           <span
                             style={{
                               fontSize: "11px",
-                              fontFamily: "monospace",
+                              fontFamily: "var(--font-mono)",
                               color: "var(--text)",
                             }}
                           >
@@ -1438,7 +1438,7 @@ export default function CharacterSheetPage({
                           <span
                             style={{
                               fontSize: "11px",
-                              fontFamily: "monospace",
+                              fontFamily: "var(--font-mono)",
                               color: "var(--text-muted)",
                             }}
                           >
@@ -1461,10 +1461,10 @@ export default function CharacterSheetPage({
                         <span
                           style={{
                             fontSize: "11px",
-                            fontFamily: "monospace",
+                            fontFamily: "var(--font-mono)",
                             color:
                               shieldPool === 0
-                                ? "#c66464"
+                                ? "var(--fail)"
                                 : "var(--text-muted)",
                           }}
                         >
@@ -1559,7 +1559,7 @@ export default function CharacterSheetPage({
                     <span
                       style={{
                         fontSize: "10px",
-                        fontFamily: "monospace",
+                        fontFamily: "var(--font-mono)",
                         letterSpacing: "0.06em",
                         color: active ? "var(--primary)" : "var(--text-muted)",
                         fontWeight: active ? 700 : 400,
@@ -1600,7 +1600,7 @@ export default function CharacterSheetPage({
                         <span
                           style={{
                             fontSize: "11px",
-                            fontFamily: "monospace",
+                            fontFamily: "var(--font-mono)",
                             color: "var(--primary)",
                             fontWeight: 700,
                             minWidth: "12px",
@@ -1646,7 +1646,7 @@ export default function CharacterSheetPage({
                 <div
                   style={{
                     fontSize: "9px",
-                    fontFamily: "monospace",
+                    fontFamily: "var(--font-mono)",
                     letterSpacing: "0.12em",
                     textTransform: "uppercase" as const,
                     color: "var(--text-muted)",
@@ -1676,7 +1676,7 @@ export default function CharacterSheetPage({
                       >
                         <span
                           style={{
-                            fontFamily: "monospace",
+                            fontFamily: "var(--font-mono)",
                             fontSize: "10px",
                             fontWeight: 700,
                             color: "var(--primary)",
@@ -1851,7 +1851,7 @@ export default function CharacterSheetPage({
                       borderRadius: "9999px",
                       backgroundColor: "var(--accent-light)",
                       color: "var(--accent)",
-                      border: "1px solid #FCD34D",
+                      border: "1px solid rgb(var(--gold-rgb) / 0.40)",
                     }}
                   >
                     {activationRaw}
@@ -2458,7 +2458,7 @@ export default function CharacterSheetPage({
                                       padding: "0.1rem 0.35rem",
                                       borderRadius: "9999px",
                                       backgroundColor: "var(--accent-light)",
-                                      border: "1px solid #FCD34D",
+                                      border: "1px solid rgb(var(--gold-rgb) / 0.40)",
                                     }}
                                   >
                                     {feat.activationRaw}
@@ -2874,9 +2874,9 @@ export default function CharacterSheetPage({
                     <div
                       style={{
                         fontSize: "0.72rem",
-                        color: "#856404",
-                        backgroundColor: "#fff3cd",
-                        border: "1px solid #ffc107",
+                        color: "var(--gold-dim)",
+                        backgroundColor: "rgb(var(--gold-rgb) / 0.09)",
+                        border: "1px solid rgb(var(--gold-rgb) / 0.40)",
                         borderRadius: "0.375rem",
                         padding: "0.375rem 0.625rem",
                         marginBottom: "0.625rem",
@@ -3125,11 +3125,11 @@ export default function CharacterSheetPage({
                       <div
                         style={{
                           padding: "0.5rem 0.75rem",
-                          backgroundColor: "#fff3cd",
-                          border: "1px solid #ffc107",
+                          backgroundColor: "rgb(var(--gold-rgb) / 0.09)",
+                          border: "1px solid rgb(var(--gold-rgb) / 0.40)",
                           borderRadius: "0.375rem",
                           fontSize: "0.75rem",
-                          color: "#856404",
+                          color: "var(--gold-dim)",
                           marginBottom: "1rem",
                         }}
                       >
@@ -3553,10 +3553,10 @@ export default function CharacterSheetPage({
                     style={{
                       padding: "0.5rem 0.75rem",
                       backgroundColor: "var(--accent-light)",
-                      border: "1px solid #FCD34D",
+                      border: "1px solid rgb(var(--gold-rgb) / 0.40)",
                       borderRadius: "0.375rem",
                       fontSize: "0.8rem",
-                      color: "#92400E",
+                      color: "var(--gold-dim)",
                       marginBottom: "1rem",
                     }}
                   >
@@ -3806,10 +3806,10 @@ export default function CharacterSheetPage({
               marginBottom: "0.75rem",
               padding: "0.5rem 0.875rem",
               backgroundColor: "var(--section-alert-bg)",
-              border: "1px solid #ff7979",
+              border: "1px solid rgb(var(--fail-rgb) / 0.70)",
               borderRadius: "0.5rem",
               fontSize: "0.82rem",
-              color: "#cc2222",
+              color: "var(--fail)",
               fontFamily: "var(--font-heading)",
               fontWeight: 700,
             }}
@@ -3875,7 +3875,7 @@ export default function CharacterSheetPage({
                         : displayItem
                           ? "var(--primary-light)"
                           : "var(--bg-nav)",
-                      border: `1.5px solid ${slotAlert ? "#ff7979" : displayItem ? "var(--primary)" : pickerOpen ? "var(--primary)" : "var(--border)"}`,
+                      border: `1.5px solid ${slotAlert ? "rgb(var(--fail-rgb) / 0.70)" : displayItem ? "var(--primary)" : pickerOpen ? "var(--primary)" : "var(--border)"}`,
                       borderRadius: pickerOpen ? "0.5rem 0.5rem 0 0" : "0.5rem",
                     }}
                   >
@@ -3886,7 +3886,7 @@ export default function CharacterSheetPage({
                         textTransform: "uppercase",
                         letterSpacing: "0.06em",
                         color: slotAlert
-                          ? "#ff7979"
+                          ? "rgb(var(--fail-rgb) / 0.70)"
                           : displayItem
                             ? "var(--primary)"
                             : "var(--text-muted)",
@@ -3989,7 +3989,7 @@ export default function CharacterSheetPage({
                               style={{
                                 fontSize: "0.7rem",
                                 color: shieldBroken
-                                  ? "#ff7979"
+                                  ? "rgb(var(--fail-rgb) / 0.70)"
                                   : "var(--primary)",
                                 fontFamily: "var(--font-heading)",
                                 fontWeight: 600,
@@ -4011,7 +4011,7 @@ export default function CharacterSheetPage({
                                   style={{
                                     fontSize: "0.62rem",
                                     color: shieldBroken
-                                      ? "#ff7979"
+                                      ? "rgb(var(--fail-rgb) / 0.70)"
                                       : "var(--text-muted)",
                                     fontFamily: "var(--font-heading)",
                                   }}
@@ -4030,10 +4030,10 @@ export default function CharacterSheetPage({
                                     style={{
                                       fontSize: "0.55rem",
                                       padding: "0.05rem 0.35rem",
-                                      border: "1px solid #ff7979",
+                                      border: "1px solid rgb(var(--fail-rgb) / 0.70)",
                                       borderRadius: "0.2rem",
                                       backgroundColor: "transparent",
-                                      color: "#ff7979",
+                                      color: "rgb(var(--fail-rgb) / 0.70)",
                                       cursor: "pointer",
                                       fontFamily: "var(--font-heading)",
                                       fontWeight: 700,
@@ -4185,7 +4185,7 @@ export default function CharacterSheetPage({
             style={{
               fontSize: "0.78rem",
               color:
-                totalCarried > carryWeight ? "#EF4444" : "var(--text-muted)",
+                totalCarried > carryWeight ? "var(--fail)" : "var(--text-muted)",
             }}
           >
             Weight: {totalCarried.toFixed(1)} / {carryWeight}
@@ -4481,7 +4481,7 @@ export default function CharacterSheetPage({
                                 backgroundColor: active
                                   ? "var(--primary)"
                                   : "transparent",
-                                color: active ? "#fff" : "var(--text-muted)",
+                                color: active ? "var(--bg)" : "var(--text-muted)",
                                 cursor: "pointer",
                                 whiteSpace: "nowrap",
                               }}
@@ -6360,7 +6360,7 @@ export default function CharacterSheetPage({
                     ? "var(--accent)"
                     : "var(--text-muted)",
                   border: spell.isCantrip
-                    ? "1px solid #FCD34D"
+                    ? "1px solid rgb(var(--gold-rgb) / 0.40)"
                     : "1px solid var(--border)",
                 }}
               >
@@ -6408,9 +6408,9 @@ export default function CharacterSheetPage({
                 <span
                   style={{
                     ...badgeStyle,
-                    backgroundColor: "#FEF3C7",
-                    color: "#92400E",
-                    border: "1px solid #FCD34D",
+                    backgroundColor: "rgb(var(--gold-rgb) / 0.09)",
+                    color: "var(--gold-dim)",
+                    border: "1px solid rgb(var(--gold-rgb) / 0.40)",
                   }}
                 >
                   Amps
@@ -6469,8 +6469,8 @@ export default function CharacterSheetPage({
                   style={{
                     marginTop: "0.75rem",
                     padding: "0.625rem 0.75rem",
-                    backgroundColor: "#FFFBEB",
-                    border: "1px solid #FCD34D",
+                    backgroundColor: "rgb(var(--gold-rgb) / 0.06)",
+                    border: "1px solid rgb(var(--gold-rgb) / 0.40)",
                     borderRadius: "0.375rem",
                   }}
                 >
@@ -6480,7 +6480,7 @@ export default function CharacterSheetPage({
                       fontWeight: 700,
                       textTransform: "uppercase",
                       letterSpacing: "0.06em",
-                      color: "#92400E",
+                      color: "var(--gold-dim)",
                       fontFamily: "var(--font-heading)",
                       marginBottom: "0.375rem",
                     }}
@@ -6504,9 +6504,9 @@ export default function CharacterSheetPage({
                             width: "100%",
                             textAlign: "left",
                             padding: "0.375rem 0.625rem",
-                            border: `1.5px solid ${active ? "#D97706" : "#FCD34D"}`,
+                            border: `1.5px solid ${active ? "var(--gold)" : "rgb(var(--gold-rgb) / 0.40)"}`,
                             borderRadius: "0.375rem",
-                            backgroundColor: active ? "#FEF3C7" : "#FFFBEB",
+                            backgroundColor: active ? "rgb(var(--gold-rgb) / 0.09)" : "rgb(var(--gold-rgb) / 0.06)",
                             cursor: "pointer",
                             display: "flex",
                             gap: "0.5rem",
@@ -6518,7 +6518,7 @@ export default function CharacterSheetPage({
                               fontFamily: "var(--font-heading)",
                               fontWeight: 700,
                               fontSize: "0.72rem",
-                              color: active ? "#92400E" : "#D97706",
+                              color: active ? "var(--gold-dim)" : "var(--gold)",
                               whiteSpace: "nowrap",
                               minWidth: "50px",
                             }}
@@ -6528,7 +6528,7 @@ export default function CharacterSheetPage({
                           <span
                             style={{
                               fontSize: "0.78rem",
-                              color: "#78350F",
+                              color: "var(--gold-dim)",
                               lineHeight: 1.45,
                             }}
                           >
@@ -6540,7 +6540,7 @@ export default function CharacterSheetPage({
                                 marginLeft: "auto",
                                 fontSize: "0.65rem",
                                 fontWeight: 700,
-                                color: "#92400E",
+                                color: "var(--gold-dim)",
                                 fontFamily: "var(--font-heading)",
                               }}
                             >
@@ -6556,7 +6556,7 @@ export default function CharacterSheetPage({
                       style={{
                         marginTop: "0.375rem",
                         fontSize: "0.72rem",
-                        color: "#92400E",
+                        color: "var(--gold-dim)",
                         fontFamily: "var(--font-heading)",
                         fontWeight: 600,
                       }}
@@ -6601,7 +6601,7 @@ export default function CharacterSheetPage({
                       <span
                         style={{
                           fontSize: "0.72rem",
-                          color: "#EF4444",
+                          color: "var(--fail)",
                           fontStyle: "italic",
                         }}
                       >
@@ -6830,8 +6830,8 @@ export default function CharacterSheetPage({
                   fontFamily: "var(--font-heading)",
                   padding: "0.05rem 0.3rem",
                   borderRadius: "9999px",
-                  border: `1px solid ${cantripAtCap ? "#EF4444" : "var(--primary)"}`,
-                  color: cantripAtCap ? "#EF4444" : "var(--primary)",
+                  border: `1px solid ${cantripAtCap ? "var(--fail)" : "var(--primary)"}`,
+                  color: cantripAtCap ? "var(--fail)" : "var(--primary)",
                 }}
               >
                 {myCantripsAll.length}/{cantripCap}
@@ -7130,7 +7130,7 @@ export default function CharacterSheetPage({
                         fontSize: "0.62rem",
                         fontFamily: "var(--font-heading)",
                         fontWeight: 700,
-                        color: cantripAtCap ? "#EF4444" : "var(--text-muted)",
+                        color: cantripAtCap ? "var(--fail)" : "var(--text-muted)",
                       }}
                     >
                       Cantrips: {myCantripsAll.length}/{cantripCap}
@@ -7140,11 +7140,11 @@ export default function CharacterSheetPage({
                     <div
                       style={{
                         padding: "0.3rem 0.625rem",
-                        backgroundColor: "#FEF2F2",
-                        border: "1px solid #FCA5A5",
+                        backgroundColor: "rgb(var(--fail-rgb) / 0.09)",
+                        border: "1px solid rgb(var(--fail-rgb) / 0.40)",
                         borderRadius: "0.375rem",
                         fontSize: "0.75rem",
-                        color: "#EF4444",
+                        color: "var(--fail)",
                         marginBottom: "0.375rem",
                         fontFamily: "var(--font-heading)",
                       }}
@@ -7202,7 +7202,7 @@ export default function CharacterSheetPage({
                                 backgroundColor: active
                                   ? "var(--primary)"
                                   : "var(--bg-card)",
-                                color: active ? "#fff" : "var(--text-muted)",
+                                color: active ? "var(--bg)" : "var(--text-muted)",
                                 cursor: "pointer",
                               }}
                             >
@@ -7261,7 +7261,7 @@ export default function CharacterSheetPage({
                                 backgroundColor: active
                                   ? "var(--accent)"
                                   : "var(--bg-card)",
-                                color: active ? "#fff" : "var(--text-muted)",
+                                color: active ? "var(--bg)" : "var(--text-muted)",
                                 cursor: "pointer",
                               }}
                             >
@@ -7740,7 +7740,7 @@ export default function CharacterSheetPage({
                   <div
                     style={{
                       fontSize: "9px",
-                      fontFamily: "monospace",
+                      fontFamily: "var(--font-mono)",
                       letterSpacing: "0.16em",
                       textTransform: "uppercase" as const,
                       color: "var(--text-muted)",
@@ -7751,7 +7751,7 @@ export default function CharacterSheetPage({
                   </div>
                   <div
                     style={{
-                      fontFamily: "'Cormorant Garamond', Georgia, serif",
+                      fontFamily: "var(--font-heading)",
                       fontSize: "28px",
                       fontWeight: 700,
                       color: isHighest ? "var(--primary)" : "var(--text)",
@@ -7763,7 +7763,7 @@ export default function CharacterSheetPage({
                   <div
                     style={{
                       fontSize: "9px",
-                      fontFamily: "monospace",
+                      fontFamily: "var(--font-mono)",
                       color: "var(--text-muted)",
                       marginTop: "3px",
                       letterSpacing: "0.08em",
@@ -7933,10 +7933,10 @@ export default function CharacterSheetPage({
                 style={{
                   padding: "0.4rem 0.75rem",
                   backgroundColor: "var(--section-alert-bg)",
-                  border: "1px solid #ff7979",
+                  border: "1px solid rgb(var(--fail-rgb) / 0.70)",
                   borderRadius: "0.375rem",
                   fontSize: "0.78rem",
-                  color: "#cc2222",
+                  color: "var(--fail)",
                   fontFamily: "var(--font-heading)",
                   fontWeight: 700,
                 }}
@@ -7950,10 +7950,10 @@ export default function CharacterSheetPage({
                 style={{
                   padding: "0.4rem 0.75rem",
                   backgroundColor: "var(--accent-light)",
-                  border: "1px solid #FCD34D",
+                  border: "1px solid rgb(var(--gold-rgb) / 0.40)",
                   borderRadius: "0.375rem",
                   fontSize: "0.8rem",
-                  color: "(#92400E)",
+                  color: "var(--gold-dim)",
                   fontFamily: "var(--font-heading)",
                   fontWeight: 700,
                 }}
@@ -8108,8 +8108,8 @@ export default function CharacterSheetPage({
                             padding: "1px 7px",
                             borderRadius: "5px",
                             backgroundColor: "var(--bg-nav)",
-                            color: "#cc2222",
-                            border: "1px solid #cc2222",
+                            color: "var(--fail)",
+                            border: "1px solid var(--fail)",
                           }}
                         >
                           {penalizedDisplay}
@@ -8322,7 +8322,7 @@ export default function CharacterSheetPage({
               alignItems: "center",
               cursor: "pointer",
               fontSize: "10px",
-              fontFamily: "monospace",
+              fontFamily: "var(--font-mono)",
               letterSpacing: "0.16em",
               textTransform: "uppercase" as const,
               color: "var(--text-muted)",
@@ -8517,7 +8517,7 @@ export default function CharacterSheetPage({
           };
           const sectionLabelStyle: React.CSSProperties = {
             fontSize: "9px",
-            fontFamily: "monospace",
+            fontFamily: "var(--font-mono)",
             letterSpacing: "0.16em",
             textTransform: "uppercase",
             color: "var(--text-muted)",
@@ -8545,7 +8545,7 @@ export default function CharacterSheetPage({
                   alignItems: "center",
                   cursor: "pointer",
                   fontSize: "10px",
-                  fontFamily: "monospace",
+                  fontFamily: "var(--font-mono)",
                   letterSpacing: "0.16em",
                   textTransform: "uppercase" as const,
                   color: "var(--text-muted)",
@@ -8699,7 +8699,7 @@ export default function CharacterSheetPage({
               fontFamily: "var(--font-heading)",
               fontWeight: 800,
               fontSize: "0.72rem",
-              color: showPortraitSidebar ? "#fff" : "var(--primary)",
+              color: showPortraitSidebar ? "var(--bg)" : "var(--primary)",
               letterSpacing: "0.06em",
             }}
           >
@@ -8735,7 +8735,7 @@ export default function CharacterSheetPage({
               fontFamily: "var(--font-heading)",
               fontWeight: 800,
               fontSize: "0.72rem",
-              color: showFavsSidebar ? "#fff" : "var(--primary)",
+              color: showFavsSidebar ? "var(--bg)" : "var(--primary)",
               letterSpacing: "0.06em",
             }}
           >
@@ -8770,7 +8770,7 @@ export default function CharacterSheetPage({
               fontFamily: "var(--font-heading)",
               fontWeight: 800,
               fontSize: "0.72rem",
-              color: showRefSidebar ? "#fff" : "var(--primary)",
+              color: showRefSidebar ? "var(--bg)" : "var(--primary)",
               letterSpacing: "0.06em",
             }}
           >
@@ -9291,7 +9291,7 @@ export default function CharacterSheetPage({
               };
               const sectionLabel: React.CSSProperties = {
                 fontSize: "9px",
-                fontFamily: "monospace",
+                fontFamily: "var(--font-mono)",
                 letterSpacing: "0.16em",
                 textTransform: "uppercase" as const,
                 color: "var(--text-muted)",
@@ -9425,7 +9425,7 @@ export default function CharacterSheetPage({
             style={{
               marginTop: "5px",
               fontSize: "11px",
-              fontFamily: "monospace",
+              fontFamily: "var(--font-mono)",
               color: "var(--text-muted)",
               letterSpacing: "0.06em",
               display: "flex",
@@ -9502,7 +9502,7 @@ export default function CharacterSheetPage({
               <span
                 style={{
                   fontSize: "9px",
-                  fontFamily: "monospace",
+                  fontFamily: "var(--font-mono)",
                   letterSpacing: "0.14em",
                   textTransform: "uppercase" as const,
                   color: "var(--text-muted)",
@@ -9558,7 +9558,7 @@ export default function CharacterSheetPage({
                   border: "1px solid var(--primary)",
                   backgroundColor: "var(--bg-nav)",
                   color: "var(--text)",
-                  fontFamily: "monospace",
+                  fontFamily: "var(--font-mono)",
                   fontSize: "0.75rem",
                   textAlign: "center" as const,
                   outline: "none",
@@ -9620,7 +9620,7 @@ export default function CharacterSheetPage({
               </button>
               <span
                 style={{
-                  fontFamily: "monospace",
+                  fontFamily: "var(--font-mono)",
                   fontSize: "10px",
                   color: "var(--text-muted)",
                   letterSpacing: "0.04em",
@@ -9652,7 +9652,7 @@ export default function CharacterSheetPage({
               </button>
               <span
                 style={{
-                  fontFamily: "monospace",
+                  fontFamily: "var(--font-mono)",
                   fontSize: "9px",
                   letterSpacing: "0.1em",
                   textTransform: "uppercase" as const,
@@ -9670,7 +9670,7 @@ export default function CharacterSheetPage({
               <div
                 style={{
                   fontSize: "9px",
-                  fontFamily: "monospace",
+                  fontFamily: "var(--font-mono)",
                   letterSpacing: "0.14em",
                   textTransform: "uppercase" as const,
                   color: "var(--text-muted)",
@@ -9682,7 +9682,7 @@ export default function CharacterSheetPage({
               <div
                 style={{
                   fontSize: "28px",
-                  fontFamily: "'Cormorant Garamond', Georgia, serif",
+                  fontFamily: "var(--font-heading)",
                   fontWeight: 700,
                   color: "var(--primary)",
                   lineHeight: 1,
@@ -9810,7 +9810,7 @@ export default function CharacterSheetPage({
                   </div>
                   <div
                     style={{
-                      fontFamily: "'Cormorant Garamond', Georgia, serif",
+                      fontFamily: "var(--font-heading)",
                       fontSize: "32px",
                       fontWeight: 700,
                       color: spellArmorOn ? "var(--primary)" : "var(--text)",
@@ -9850,7 +9850,7 @@ export default function CharacterSheetPage({
                         backgroundColor: spellArmorOn
                           ? "var(--primary)"
                           : "var(--bg-card)",
-                        color: spellArmorOn ? "#fff" : "var(--text-muted)",
+                        color: spellArmorOn ? "var(--bg)" : "var(--text-muted)",
                         cursor: "pointer",
                       }}
                     >
@@ -9979,7 +9979,7 @@ export default function CharacterSheetPage({
                 </div>
                 <div
                   style={{
-                    fontFamily: "'Cormorant Garamond', Georgia, serif",
+                    fontFamily: "var(--font-heading)",
                     fontSize: "32px",
                     fontWeight: 700,
                     color: "var(--text)",
@@ -10053,7 +10053,7 @@ export default function CharacterSheetPage({
                       fontSize: "10px",
                       letterSpacing: "0.16em",
                       textTransform: "uppercase" as const,
-                      color: "#7a9d6f",
+                      color: "var(--ok)",
                       marginBottom: "10px",
                     }}
                   >
@@ -10102,7 +10102,7 @@ export default function CharacterSheetPage({
                         </button>
                         <span
                           style={{
-                            fontFamily: "'Cormorant Garamond', Georgia, serif",
+                            fontFamily: "var(--font-heading)",
                             fontSize: "30px",
                             fontWeight: 700,
                             color: "var(--text)",
@@ -10139,7 +10139,7 @@ export default function CharacterSheetPage({
                       </div>
                       <div
                         style={{
-                          fontFamily: "'Cormorant Garamond', Georgia, serif",
+                          fontFamily: "var(--font-heading)",
                           fontSize: "30px",
                           fontWeight: 700,
                           color: "var(--text-muted)",
@@ -10193,7 +10193,7 @@ export default function CharacterSheetPage({
                         </button>
                         <span
                           style={{
-                            fontFamily: "'Cormorant Garamond', Georgia, serif",
+                            fontFamily: "var(--font-heading)",
                             fontSize: "30px",
                             fontWeight: 700,
                             color:
@@ -10255,7 +10255,7 @@ export default function CharacterSheetPage({
                           border: "1px solid var(--primary)",
                           backgroundColor: "var(--bg-nav)",
                           color: "var(--text)",
-                          fontFamily: "monospace",
+                          fontFamily: "var(--font-mono)",
                           fontSize: "0.85rem",
                           textAlign: "center" as const,
                           outline: "none",
@@ -10281,7 +10281,7 @@ export default function CharacterSheetPage({
                           height: "100%",
                           width: `${vitPct}%`,
                           background:
-                            "linear-gradient(90deg, #4a6042, #7a9d6f)",
+                            "linear-gradient(90deg, var(--ok-dim, var(--ok)), var(--ok))",
                           borderRadius: "3px",
                           transition: "width 0.3s",
                         }}
@@ -10352,7 +10352,7 @@ export default function CharacterSheetPage({
                         fontSize: "10px",
                         letterSpacing: "0.16em",
                         textTransform: "uppercase" as const,
-                        color: "#c66464",
+                        color: "var(--fail)",
                         marginBottom: "8px",
                       }}
                     >
@@ -10378,10 +10378,10 @@ export default function CharacterSheetPage({
                             width: "14px",
                             height: "14px",
                             borderRadius: "50%",
-                            border: `1px solid ${i < (c.currentWounds ?? 0) ? "#c66464" : "var(--border)"}`,
+                            border: `1px solid ${i < (c.currentWounds ?? 0) ? "var(--fail)" : "var(--border)"}`,
                             backgroundColor:
                               i < (c.currentWounds ?? 0)
-                                ? "#c66464"
+                                ? "var(--fail)"
                                 : "transparent",
                             cursor: "pointer",
                             boxShadow:
@@ -10658,7 +10658,7 @@ export default function CharacterSheetPage({
                       fontSize: "10px",
                       letterSpacing: "0.16em",
                       textTransform: "uppercase" as const,
-                      color: "#c66464",
+                      color: "var(--fail)",
                       marginBottom: "10px",
                     }}
                   >
@@ -10705,11 +10705,11 @@ export default function CharacterSheetPage({
                         padding: "0.3rem 0.75rem",
                         border: "none",
                         borderRadius: "0.375rem",
-                        backgroundColor: "#EF4444",
-                        color: "#fff",
+                        backgroundColor: "var(--fail)",
+                        color: "var(--bg)",
                         cursor: "pointer",
-                        fontFamily: "var(--font-heading)",
-                        fontWeight: 700,
+                        fontFamily: "var(--font-mono)",
+                        fontWeight: 600,
                         fontSize: "0.8rem",
                       }}
                     >
@@ -10873,12 +10873,12 @@ export default function CharacterSheetPage({
                             shieldPool === 0
                               ? "var(--section-alert-bg)"
                               : "var(--bg-nav)",
-                          border: `1px solid ${shieldPool === 0 ? "#ff7979" : "var(--border)"}`,
+                          border: `1px solid ${shieldPool === 0 ? "rgb(var(--fail-rgb) / 0.70)" : "var(--border)"}`,
                           borderRadius: "9999px",
                           fontSize: "0.62rem",
                           fontFamily: "var(--font-heading)",
                           color:
-                            shieldPool === 0 ? "#ff7979" : "var(--text-muted)",
+                            shieldPool === 0 ? "rgb(var(--fail-rgb) / 0.70)" : "var(--text-muted)",
                           fontWeight: 700,
                         }}
                       >
@@ -11079,7 +11079,7 @@ export default function CharacterSheetPage({
                     <span
                       style={{
                         fontSize: "9px",
-                        fontFamily: "monospace",
+                        fontFamily: "var(--font-mono)",
                         letterSpacing: "0.12em",
                         textTransform: "uppercase" as const,
                         color: "var(--text-muted)",
@@ -11112,7 +11112,7 @@ export default function CharacterSheetPage({
                     </button>
                     <span
                       style={{
-                        fontFamily: "'Cormorant Garamond', Georgia, serif",
+                        fontFamily: "var(--font-heading)",
                         fontWeight: 700,
                         fontSize: "1.3rem",
                         color: "var(--primary)",
@@ -11124,7 +11124,7 @@ export default function CharacterSheetPage({
                         style={{
                           fontSize: "0.62rem",
                           color: "var(--text-muted)",
-                          fontFamily: "monospace",
+                          fontFamily: "var(--font-mono)",
                         }}
                       >
                         /{maxReservoir}
@@ -11178,7 +11178,7 @@ export default function CharacterSheetPage({
                       <span
                         style={{
                           fontSize: "9px",
-                          fontFamily: "monospace",
+                          fontFamily: "var(--font-mono)",
                           letterSpacing: "0.1em",
                           textTransform: "uppercase" as const,
                           color: "var(--text-muted)",
@@ -11188,7 +11188,7 @@ export default function CharacterSheetPage({
                       </span>
                       <span
                         style={{
-                          fontFamily: "'Cormorant Garamond', Georgia, serif",
+                          fontFamily: "var(--font-heading)",
                           fontWeight: 700,
                           fontSize: "1.3rem",
                           color: "var(--text)",
@@ -11344,7 +11344,7 @@ export default function CharacterSheetPage({
                     <span
                       style={{
                         fontSize: "9px",
-                        fontFamily: "monospace",
+                        fontFamily: "var(--font-mono)",
                         letterSpacing: "0.12em",
                         textTransform: "uppercase" as const,
                         color: "var(--text-muted)",
@@ -11357,7 +11357,7 @@ export default function CharacterSheetPage({
                     </button>
                     <span
                       style={{
-                        fontFamily: "'Cormorant Garamond', Georgia, serif",
+                        fontFamily: "var(--font-heading)",
                         fontWeight: 700,
                         fontSize: "1.3rem",
                         color: "var(--primary)",
@@ -11370,7 +11370,7 @@ export default function CharacterSheetPage({
                           style={{
                             fontSize: "0.62rem",
                             color: "var(--text-muted)",
-                            fontFamily: "monospace",
+                            fontFamily: "var(--font-mono)",
                           }}
                         >
                           /{resourceMax}
@@ -11408,7 +11408,7 @@ export default function CharacterSheetPage({
                       border: "none",
                       cursor: "pointer",
                       backgroundColor: "transparent",
-                      fontFamily: "'JetBrains Mono', monospace",
+                      fontFamily: "var(--font-mono)",
                       fontStyle: "normal",
                       fontWeight: 500,
                       fontSize: "0.7rem",
@@ -11464,10 +11464,10 @@ export default function CharacterSheetPage({
                 style={{
                   padding: "0.4rem 0.75rem",
                   backgroundColor: "var(--section-alert-bg)",
-                  border: "1px solid #ff7979",
+                  border: "1px solid rgb(var(--fail-rgb) / 0.70)",
                   borderRadius: "0.375rem",
                   fontSize: "0.78rem",
-                  color: "#cc2222",
+                  color: "var(--fail)",
                   fontFamily: "var(--font-heading)",
                   fontWeight: 700,
                 }}
@@ -11491,10 +11491,10 @@ export default function CharacterSheetPage({
                   style={{
                     padding: "0.4rem 0.75rem",
                     backgroundColor: "var(--accent-light)",
-                    border: "1px solid #FCD34D",
+                    border: "1px solid rgb(var(--gold-rgb) / 0.40)",
                     borderRadius: "0.375rem",
                     fontSize: "0.8rem",
-                    color: "(#92400E)",
+                    color: "var(--gold-dim)",
                     fontFamily: "var(--font-heading)",
                     fontWeight: 700,
                   }}
@@ -11685,8 +11685,8 @@ export default function CharacterSheetPage({
                               padding: "1px 7px",
                               borderRadius: "5px",
                               backgroundColor: "var(--bg-nav)",
-                              color: "#cc2222",
-                              border: "1px solid #cc2222",
+                              color: "var(--fail)",
+                              border: "1px solid var(--fail)",
                             }}
                           >
                             {penalizedDisplay}

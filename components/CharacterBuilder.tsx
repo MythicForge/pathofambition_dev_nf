@@ -1153,7 +1153,7 @@ export default function CharacterBuilder({
               borderRadius: "0.5rem",
               cursor: canConfirm ? "pointer" : "not-allowed",
               backgroundColor: canConfirm ? "var(--primary)" : "var(--border)",
-              color: canConfirm ? "#fff" : "var(--text-muted)",
+              color: canConfirm ? "var(--bg)" : "var(--text-muted)",
               fontFamily: "var(--font-heading)",
               fontWeight: 600,
               fontSize: "0.875rem",
@@ -1223,23 +1223,32 @@ export default function CharacterBuilder({
                     })
                   }
                   style={{
+                    position: "relative",
                     padding: "0.875rem 0.5rem",
                     textAlign: "center",
-                    borderRadius: "0.5rem",
+                    borderRadius: "6px",
                     cursor: "pointer",
-                    border: `2px solid ${sel ? "var(--primary)" : "var(--border)"}`,
-                    backgroundColor: sel
-                      ? "var(--primary-light)"
-                      : "var(--bg-card)",
+                    border: `1px solid ${sel ? "var(--gold)" : "var(--border)"}`,
+                    backgroundColor: sel ? "var(--panel-hi)" : "var(--panel)",
+                    boxShadow: sel ? "0 0 0 2px var(--gold)" : "none",
                     transition: "all 0.12s",
                   }}
                 >
+                  {sel && (
+                    <div style={{
+                      position: "absolute", top: "5px", right: "5px",
+                      width: "15px", height: "15px", borderRadius: "50%",
+                      backgroundColor: "var(--gold)", color: "var(--bg)",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: "8px", fontWeight: 700,
+                    }}>✓</div>
+                  )}
                   <div
                     style={{
-                      fontFamily: "var(--font-heading)",
-                      fontWeight: 700,
+                      fontFamily: "var(--font-mono)",
+                      fontWeight: 600,
                       fontSize: "1.5rem",
-                      color: sel ? "var(--primary)" : "var(--text)",
+                      color: sel ? "var(--gold)" : "var(--text-primary)",
                       lineHeight: 1,
                     }}
                   >
@@ -1248,9 +1257,9 @@ export default function CharacterBuilder({
                   <div
                     style={{
                       fontSize: "0.6rem",
-                      fontWeight: 700,
-                      fontFamily: "var(--font-heading)",
-                      color: "var(--text-muted)",
+                      fontWeight: 600,
+                      fontFamily: "var(--font-mono)",
+                      color: "var(--text-tertiary)",
                       textTransform: "uppercase",
                       letterSpacing: "0.05em",
                       marginTop: "0.25rem",
@@ -1261,10 +1270,10 @@ export default function CharacterBuilder({
                   <div
                     style={{
                       fontSize: "0.65rem",
-                      color: sel ? "var(--primary)" : "var(--text-muted)",
+                      color: sel ? "var(--gold)" : "var(--text-secondary)",
                       marginTop: "0.3rem",
-                      fontFamily: "var(--font-heading)",
-                      fontWeight: 600,
+                      fontFamily: "var(--font-mono)",
+                      fontWeight: 500,
                     }}
                   >
                     {allowance} feat{allowance !== 1 ? "s" : ""}
@@ -1297,12 +1306,16 @@ export default function CharacterBuilder({
   function renderStep2() {
     return (
       <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
-        {/* Compact selectable list */}
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
+        {/* Profession card grid */}
+        <div style={{
+          display: "grid",
+          gridTemplateColumns: "repeat(3, 1fr)",
+          gap: "0.5rem",
+        }}>
           {professions.map((p) => {
             const sel = draft.professionId === p.id;
             return (
-              <button
+              <div
                 key={p.id}
                 onClick={() => {
                   update({
@@ -1318,20 +1331,42 @@ export default function CharacterBuilder({
                   setProfDetail(p.id);
                 }}
                 style={{
-                  padding: "0.3rem 0.75rem",
-                  borderRadius: "9999px",
+                  position: "relative",
+                  padding: "0.75rem",
+                  borderRadius: "6px",
                   cursor: "pointer",
-                  fontFamily: "var(--font-heading)",
-                  fontWeight: 600,
-                  fontSize: "0.85rem",
-                  border: `1.5px solid ${sel ? "var(--primary)" : "var(--border)"}`,
-                  backgroundColor: sel ? "var(--primary)" : "var(--bg-card)",
-                  color: sel ? "#fff" : "var(--text-muted)",
+                  border: `1px solid ${sel ? "var(--gold)" : "var(--border)"}`,
+                  backgroundColor: sel ? "var(--panel-hi)" : "var(--panel)",
+                  boxShadow: sel ? "0 0 0 2px var(--gold)" : "none",
                   transition: "all 0.12s",
                 }}
               >
-                {p.name}
-              </button>
+                {sel && (
+                  <div style={{
+                    position: "absolute", top: "5px", right: "5px",
+                    width: "15px", height: "15px", borderRadius: "50%",
+                    backgroundColor: "var(--gold)", color: "var(--bg)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontSize: "8px", fontWeight: 700,
+                  }}>✓</div>
+                )}
+                <div style={{
+                  fontFamily: "var(--font-heading)", fontStyle: "italic",
+                  fontWeight: 500, fontSize: "0.9rem",
+                  color: sel ? "var(--text-primary)" : "var(--text-secondary)",
+                  marginBottom: "3px",
+                  paddingRight: sel ? "16px" : 0,
+                }}>
+                  {p.name}
+                </div>
+                <div style={{
+                  fontFamily: "var(--font-mono)", fontSize: "9px",
+                  color: sel ? "var(--gold)" : "var(--text-tertiary)",
+                  letterSpacing: "0.04em",
+                }}>
+                  {p.startingVitality} HP{p.casterType ? " · CASTER" : ""}
+                </div>
+              </div>
             );
           })}
         </div>
@@ -1501,9 +1536,9 @@ export default function CharacterBuilder({
                         fontSize: "0.78rem",
                         padding: "0.2rem 0.6rem",
                         borderRadius: "9999px",
-                        backgroundColor: "var(--accent-light)",
-                        color: "var(--accent)",
-                        border: "1px solid #FCD34D",
+                        backgroundColor: "rgb(var(--gold-rgb) / 0.09)",
+                        color: "var(--gold)",
+                        border: "1px solid rgb(var(--gold-rgb) / 0.40)",
                         fontFamily: "var(--font-heading)",
                         fontWeight: 600,
                       }}
@@ -1682,11 +1717,15 @@ export default function CharacterBuilder({
         {/* Origin list */}
         <div>
           <SectionLabel>Origin</SectionLabel>
-          <div style={{ display: "flex", flexWrap: "wrap", gap: "0.4rem" }}>
+          <div style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(3, 1fr)",
+            gap: "0.5rem",
+          }}>
             {origins.map((o) => {
               const sel = draft.originId === o.id;
               return (
-                <button
+                <div
                   key={o.id}
                   onClick={() => {
                     update({
@@ -1705,20 +1744,42 @@ export default function CharacterBuilder({
                     setVocDetail(null);
                   }}
                   style={{
-                    padding: "0.3rem 0.75rem",
-                    borderRadius: "9999px",
+                    position: "relative",
+                    padding: "0.75rem",
+                    borderRadius: "6px",
                     cursor: "pointer",
-                    fontFamily: "var(--font-heading)",
-                    fontWeight: 600,
-                    fontSize: "0.85rem",
-                    border: `1.5px solid ${sel ? "var(--primary)" : "var(--border)"}`,
-                    backgroundColor: sel ? "var(--primary)" : "var(--bg-card)",
-                    color: sel ? "#fff" : "var(--text-muted)",
+                    border: `1px solid ${sel ? "var(--c-origin)" : "var(--border)"}`,
+                    backgroundColor: sel ? "var(--panel-hi)" : "var(--panel)",
+                    boxShadow: sel ? "0 0 0 2px var(--c-origin)" : "none",
                     transition: "all 0.12s",
                   }}
                 >
-                  {o.name}
-                </button>
+                  {sel && (
+                    <div style={{
+                      position: "absolute", top: "5px", right: "5px",
+                      width: "15px", height: "15px", borderRadius: "50%",
+                      backgroundColor: "var(--c-origin)", color: "var(--bg)",
+                      display: "flex", alignItems: "center", justifyContent: "center",
+                      fontSize: "8px", fontWeight: 700,
+                    }}>✓</div>
+                  )}
+                  <div style={{
+                    fontFamily: "var(--font-heading)", fontStyle: "italic",
+                    fontWeight: 500, fontSize: "0.9rem",
+                    color: sel ? "var(--text-primary)" : "var(--text-secondary)",
+                    marginBottom: "3px",
+                    paddingRight: sel ? "16px" : 0,
+                  }}>
+                    {o.name}
+                  </div>
+                  <div style={{
+                    fontFamily: "var(--font-mono)", fontSize: "9px",
+                    color: sel ? "var(--c-origin)" : "var(--text-tertiary)",
+                    letterSpacing: "0.04em",
+                  }}>
+                    {o.vocations.length} VOCATION{o.vocations.length !== 1 ? "S" : ""}
+                  </div>
+                </div>
               );
             })}
           </div>
@@ -1893,7 +1954,7 @@ export default function CharacterBuilder({
                       fontSize: "0.85rem",
                       border: `1.5px solid ${sel ? "var(--accent)" : previewing ? "var(--border)" : "var(--border)"}`,
                       backgroundColor: sel ? "var(--accent)" : "var(--bg-card)",
-                      color: sel ? "#fff" : "var(--text-muted)",
+                      color: sel ? "var(--bg)" : "var(--text-muted)",
                       transition: "all 0.12s",
                     }}
                   >
@@ -2434,7 +2495,7 @@ export default function CharacterBuilder({
                     border: `1.5px solid ${active ? "var(--primary)" : "var(--border)"}`,
                     backgroundColor: active ? "var(--primary)" : "transparent",
                     color: active
-                      ? "#fff"
+                      ? "var(--bg)"
                       : atLimit
                         ? "var(--border)"
                         : "var(--text-muted)",
@@ -3300,7 +3361,7 @@ export default function CharacterBuilder({
                 : atFeatCap
                   ? "var(--accent-light)"
                   : "var(--primary-light)",
-            border: `1px solid ${allowance === 0 ? "var(--border)" : atFeatCap ? "#FCD34D" : "var(--primary)"}`,
+            border: `1px solid ${allowance === 0 ? "var(--border)" : atFeatCap ? "rgb(var(--gold-rgb) / 0.40)" : "var(--primary)"}`,
             borderRadius: "0.5rem",
             fontSize: "0.85rem",
             display: "flex",
@@ -3920,59 +3981,104 @@ export default function CharacterBuilder({
 
   return (
     <div style={{ maxWidth: "720px" }}>
-      {/* Progress bar */}
+      {/* ── Step rail ── */}
       <div style={{ marginBottom: "2rem" }}>
-        <div
-          style={{ display: "flex", gap: "0.2rem", marginBottom: "0.875rem" }}
-        >
-          {STEPS.map((s) => (
-            <button
-              key={s.id}
-              onClick={() => s.id < step && setStep(s.id)}
-              title={s.label}
-              style={{
-                flex: "1 1 0",
-                height: "4px",
-                borderRadius: "2px",
-                border: "none",
-                backgroundColor:
-                  s.id < step
-                    ? "var(--primary)"
-                    : s.id === step
-                      ? "var(--accent)"
-                      : "var(--border)",
-                cursor: s.id < step ? "pointer" : "default",
-                transition: "background-color 0.2s",
-              }}
-            />
-          ))}
+        {/* Dots + connecting lines */}
+        <div style={{ display: "flex", alignItems: "center", marginBottom: "0.5rem" }}>
+          {STEPS.map((s, i) => {
+            const done   = s.id < step;
+            const active = s.id === step;
+            return (
+              <div
+                key={s.id}
+                style={{
+                  display: "flex", alignItems: "center",
+                  flex: i === 0 ? "none" : 1,
+                }}
+              >
+                {i > 0 && (
+                  <div style={{
+                    flex: 1, height: "1px",
+                    backgroundColor: done ? "var(--gold)" : "var(--border)",
+                    transition: "background-color 0.2s",
+                  }} />
+                )}
+                <button
+                  onClick={() => done && setStep(s.id)}
+                  title={s.label}
+                  style={{
+                    width: "26px", height: "26px",
+                    borderRadius: "50%",
+                    border: active
+                      ? "2px solid var(--gold)"
+                      : done
+                        ? "none"
+                        : "1.5px solid var(--border)",
+                    backgroundColor: done
+                      ? "var(--gold)"
+                      : active
+                        ? "rgb(var(--gold-rgb) / 0.1)"
+                        : "var(--bg-2)",
+                    color: done
+                      ? "var(--bg)"
+                      : active
+                        ? "var(--gold)"
+                        : "var(--text-tertiary)",
+                    cursor: done ? "pointer" : "default",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    fontFamily: "var(--font-mono)",
+                    fontSize: "0.6rem", fontWeight: 600,
+                    flexShrink: 0, padding: 0,
+                    transition: "all 0.2s",
+                  }}
+                >
+                  {done ? "✓" : s.id}
+                </button>
+              </div>
+            );
+          })}
         </div>
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "baseline",
-          }}
-        >
-          <h2
-            style={{
-              fontFamily: "var(--font-heading)",
-              fontWeight: 700,
-              fontSize: "1.25rem",
-              color: "var(--text)",
-              margin: 0,
-            }}
-          >
+        {/* Step labels */}
+        <div style={{ display: "flex", marginBottom: "1.25rem" }}>
+          {STEPS.map((s, i) => {
+            const done   = s.id < step;
+            const active = s.id === step;
+            return (
+              <div
+                key={s.id}
+                style={{
+                  flex: i === 0 ? "none" : 1,
+                  minWidth: 0,
+                  fontFamily: "var(--font-mono)", fontSize: "8.5px",
+                  letterSpacing: "0.04em", textTransform: "uppercase",
+                  color: active ? "var(--gold)" : done ? "var(--text-secondary)" : "var(--text-tertiary)",
+                  textAlign: i === 0 ? "left" : "center",
+                  transition: "color 0.2s",
+                  overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap",
+                  paddingLeft: i === 0 ? 0 : undefined,
+                }}
+              >
+                {s.label}
+              </div>
+            );
+          })}
+        </div>
+        {/* Step title */}
+        <div style={{
+          display: "flex", justifyContent: "space-between", alignItems: "baseline",
+        }}>
+          <h2 style={{
+            fontFamily: "var(--font-heading)", fontStyle: "italic",
+            fontWeight: 500, fontSize: "1.5rem",
+            color: "var(--text-primary)", margin: 0,
+          }}>
             {choiceQueue.length > 0 ? "Feature Choices" : STEP_TITLES[step]}
           </h2>
-          <span
-            style={{
-              fontSize: "0.75rem",
-              color: "var(--text-muted)",
-              fontFamily: "var(--font-heading)",
-            }}
-          >
-            {step} / {STEPS.length}
+          <span style={{
+            fontFamily: "var(--font-mono)", fontSize: "0.7rem",
+            color: "var(--text-tertiary)", letterSpacing: "0.04em",
+          }}>
+            STEP {step} / {STEPS.length}
           </span>
         </div>
       </div>
@@ -4025,7 +4131,7 @@ export default function CharacterBuilder({
                 backgroundColor: canAdvance()
                   ? "var(--primary)"
                   : "var(--border)",
-                color: canAdvance() ? "#fff" : "var(--text-muted)",
+                color: canAdvance() ? "var(--bg)" : "var(--text-muted)",
                 fontFamily: "var(--font-heading)",
                 fontWeight: 600,
                 fontSize: "0.875rem",
@@ -4042,10 +4148,10 @@ export default function CharacterBuilder({
                 borderRadius: "0.5rem",
                 cursor: "pointer",
                 backgroundColor: "var(--primary)",
-                color: "#fff",
-                fontFamily: "var(--font-heading)",
-                fontWeight: 700,
-                fontSize: "0.9rem",
+                color: "var(--bg)",
+                fontFamily: "var(--font-mono)",
+                fontWeight: 600,
+                fontSize: "0.875rem",
               }}
             >
               Save Character →

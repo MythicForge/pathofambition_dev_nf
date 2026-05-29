@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 import Sidebar from "@/components/Sidebar";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import CommandPaletteServer from "@/components/CommandPaletteServer";
 
 export const metadata: Metadata = {
   icons: {
@@ -36,6 +37,7 @@ export default function RootLayout({
       </head>
       <body>
         <ThemeProvider>
+          <CommandPaletteServer />
           <div className="flex min-h-screen">
             <Sidebar />
             <main className="flex-1 min-w-0 pt-14 lg:pt-0">

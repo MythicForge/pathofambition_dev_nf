@@ -509,27 +509,29 @@ function KnownSpellsTable() {
 function Section({ section }: { section: RulesSection }) {
   return (
     <section id={section.slug} style={{ marginBottom: "3rem" }}>
-      <h2
-        style={{
-          fontFamily: "var(--font-heading)",
-          fontWeight: 700,
-          fontSize: "1.25rem",
-          color: "var(--text)",
-          marginBottom: "0.25rem",
-          paddingBottom: "0.5rem",
-          borderBottom: "2px solid var(--primary)",
-          display: "inline-block",
-        }}
-      >
-        {section.title}
-      </h2>
+      <div style={{ marginBottom: "14px" }}>
+        <h2
+          style={{
+            fontFamily: "var(--font-heading)",
+            fontStyle: "italic",
+            fontWeight: 500,
+            fontSize: "1.75rem",
+            color: "var(--text-primary)",
+            margin: 0,
+            letterSpacing: "-0.5px",
+          }}
+        >
+          {section.title}
+        </h2>
+        <div style={{ height: "1px", background: "linear-gradient(90deg, var(--gold) 0%, var(--border) 55%, transparent 100%)", marginTop: "8px" }} />
+      </div>
       {section.summary && (
         <p
           style={{
-            fontSize: "0.85rem",
-            color: "var(--text-muted)",
+            fontSize: "0.9rem",
+            color: "var(--text-secondary)",
             marginBottom: "1rem",
-            marginTop: "0.25rem",
+            lineHeight: 1.65,
           }}
         >
           {section.summary}
@@ -576,6 +578,7 @@ export default function RulesPage() {
   return (
     <div>
       <PageHeader
+        eyebrow="Rules Reference"
         title="Rules Reference"
         subtitle="Core mechanics — dice systems, skill checks, action points, stealth, and spellcasting."
       />
@@ -585,55 +588,45 @@ export default function RulesPage() {
         aria-label="Rules sections"
         style={{
           marginBottom: "2.5rem",
-          padding: "1rem 1.25rem",
-          backgroundColor: "var(--bg-nav)",
+          padding: "14px 18px",
+          backgroundColor: "var(--panel)",
           border: "1px solid var(--border)",
-          borderRadius: "0.625rem",
+          borderRadius: "12px",
         }}
       >
-        <div
-          style={{
-            fontSize: "0.7rem",
-            fontWeight: 700,
-            letterSpacing: "0.08em",
-            textTransform: "uppercase",
-            color: "var(--text-muted)",
-            marginBottom: "0.5rem",
-            fontFamily: "var(--font-heading)",
-          }}
-        >
+        <div style={{
+          fontFamily: "var(--font-mono)",
+          fontSize: "9px",
+          letterSpacing: "1.8px",
+          textTransform: "uppercase",
+          color: "var(--text-tertiary)",
+          marginBottom: "10px",
+        }}>
           On this page
         </div>
-        <ul
-          style={{
-            listStyle: "none",
-            margin: 0,
-            padding: 0,
-            display: "flex",
-            flexWrap: "wrap",
-            gap: "0.4rem",
-          }}
-        >
+        <div style={{ display: "flex", flexWrap: "wrap", gap: "6px" }}>
           {toc.map((item) => (
-            <li key={item.id}>
-              <a
-                href={`#${item.id}`}
-                style={{
-                  fontSize: "0.85rem",
-                  color: "var(--primary)",
-                  textDecoration: "none",
-                  fontFamily: "var(--font-heading)",
-                  fontWeight: 500,
-                  padding: "0.2rem 0.6rem",
-                  borderRadius: "0.375rem",
-                  backgroundColor: "var(--primary-light)",
-                }}
-              >
-                {item.title}
-              </a>
-            </li>
+            <a
+              key={item.id}
+              href={`#${item.id}`}
+              style={{
+                fontSize: "0.72rem",
+                color: "var(--gold)",
+                textDecoration: "none",
+                fontFamily: "var(--font-mono)",
+                fontWeight: 500,
+                padding: "4px 12px",
+                borderRadius: "20px",
+                backgroundColor: "transparent",
+                border: "1px solid var(--border)",
+                letterSpacing: "0.02em",
+                transition: "border-color 0.15s, background-color 0.15s",
+              }}
+            >
+              {item.title}
+            </a>
           ))}
-        </ul>
+        </div>
       </nav>
 
       {sections.map((section) => (

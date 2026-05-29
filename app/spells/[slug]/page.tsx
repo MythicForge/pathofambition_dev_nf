@@ -2,7 +2,9 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import { getSpells, getSpell } from '@/lib/data';
 import MarkdownContent from '@/components/MarkdownContent';
-import TraitBadge from '@/components/TraitBadge';
+import StatTile from '@/components/StatTile';
+import TypeBadge from '@/components/TypeBadge';
+import SpellActions from '@/components/SpellActions';
 import type { Metadata } from 'next';
 
 interface Props { params: Promise<{ slug: string }> }
@@ -17,142 +19,261 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   return { title: spell?.name ?? 'Not Found' };
 }
 
-const SCHOOL_COLORS: Record<string, { bg: string; text: string }> = {
-  Conjuration: { bg: '#DBEAFE', text: '#1D4ED8' },
-  Aberration: { bg: '#F3E8FF', text: '#7C3AED' },
-  Mortification: { bg: '#FCE7F3', text: '#9D174D' },
-  Illumination: { bg: '#FEF9C3', text: '#854D0E' },
-  Elemental: { bg: '#D1FAE5', text: '#065F46' },
-  Transmutation: { bg: '#FEF3C7', text: '#92400E' },
-  Divination: { bg: '#E0F2FE', text: '#075985' },
-};
-
-function schoolStyle(school: string) {
-  return SCHOOL_COLORS[school] ?? { bg: 'var(--bg-nav)', text: 'var(--text-muted)' };
-}
+const ICON_RANGE = (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
+  </svg>
+);
+const ICON_DURATION = (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+    <circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/>
+  </svg>
+);
+const ICON_AREA = (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+    <path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/>
+  </svg>
+);
+const ICON_COST = (
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" strokeLinejoin="round">
+    <polygon points="13,2 3,14 12,14 11,22 21,10 12,10 13,2"/>
+  </svg>
+);
 
 export default async function SpellDetailPage({ params }: Props) {
   const { slug } = await params;
   const spell = getSpell(slug);
   if (!spell) notFound();
 
-  const sc = schoolStyle(spell.school);
+  const related = spell.school
+    ? getSpells()
+        .filter((s) => s.school === spell.school && s.slug !== slug && !s.reference_only)
+        .slice(0, 5)
+    : [];
+
+  const statTiles = [
+    { label: 'Range', value: spell.range || '—', icon: ICON_RANGE },
+    { label: 'Duration', value: spell.duration || '—', icon: ICON_DURATION },
+    ...(spell.area ? [{ label: 'Area', value: spell.area, icon: ICON_AREA }] : []),
+    ...(spell.cost ? [{ label: 'Cost', value: spell.cost, icon: ICON_COST }] : []),
+  ];
+
+  const metaChips: { key: string; val: string }[] = [
+    ...(spell.school ? [{ key: 'School', val: spell.school }] : []),
+    ...(spell.sources?.length ? [{ key: 'Source', val: spell.sources.join(', ') }] : []),
+    ...(spell.spheres?.length && spell.spheres[0] ? [{ key: 'Sphere', val: spell.spheres.join(', ') }] : []),
+  ];
+
+  const chipStyle: React.CSSProperties = {
+    display: 'inline-flex',
+    alignItems: 'center',
+    gap: '6px',
+    padding: '4px 10px',
+    borderRadius: '6px',
+    border: '1px solid var(--border)',
+    backgroundColor: 'var(--bg-2)',
+    fontFamily: 'var(--font-mono)',
+    fontSize: '0.7rem',
+  };
 
   return (
-    <div>
+    <div style={{ maxWidth: '900px' }}>
       {/* Breadcrumb */}
-      <nav aria-label="Breadcrumb" style={{ marginBottom: '1rem', fontSize: '0.85rem' }}>
-        <Link href="/spells" style={{ color: 'var(--primary)', textDecoration: 'none' }}>Spells</Link>
-        <span style={{ color: 'var(--text-muted)', margin: '0 0.4rem' }}>›</span>
-        <span style={{ color: 'var(--text-muted)' }}>{spell.name}</span>
+      <nav aria-label="Breadcrumb" style={{ display: 'flex', alignItems: 'center', gap: '6px', marginBottom: '20px', fontFamily: 'var(--font-mono)', fontSize: '0.7rem', letterSpacing: '0.08em', textTransform: 'uppercase' }}>
+        <Link href="/spells" style={{ color: 'var(--c-spell)', textDecoration: 'none' }}>Spells</Link>
+        {spell.school && (
+          <>
+            <span style={{ color: 'var(--text-tertiary)' }}>›</span>
+            <Link href={`/spells?school=${encodeURIComponent(spell.school)}`} style={{ color: 'var(--text-tertiary)', textDecoration: 'none' }}>{spell.school}</Link>
+          </>
+        )}
+        <span style={{ color: 'var(--text-tertiary)' }}>›</span>
+        <span style={{ color: 'var(--text-secondary)' }}>{spell.name}</span>
       </nav>
 
-      {/* Header */}
-      <div style={{ marginBottom: '1.5rem', paddingBottom: '1.25rem', borderBottom: '1px solid var(--border)' }}>
-        <div style={{ display: 'flex', alignItems: 'flex-start', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '0.75rem' }}>
-          <h1 style={{ fontFamily: 'var(--font-heading)', fontWeight: 700, fontSize: '2rem', color: 'var(--text)', margin: 0 }}>
-            {spell.name}
-          </h1>
-          {spell.is_cantrip && <TraitBadge trait="Cantrip" variant="muted" />}
+      {/* Title row */}
+      <div style={{ display: 'flex', alignItems: 'flex-start', gap: '20px', marginBottom: '18px', flexWrap: 'wrap' }}>
+        <h1 style={{
+          fontFamily: 'var(--font-heading)',
+          fontStyle: 'italic',
+          fontWeight: 500,
+          fontSize: 'clamp(2.5rem, 5vw, 4rem)',
+          letterSpacing: '-1.2px',
+          color: 'var(--text-primary)',
+          margin: 0,
+          flex: 1,
+          minWidth: 0,
+          lineHeight: 1.05,
+        }}>
+          {spell.name}
+        </h1>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '10px', paddingTop: '6px', flexShrink: 0 }}>
+          <TypeBadge label={spell.is_cantrip ? 'Cantrip' : spell.tier_label} category="spell" />
+          <SpellActions />
         </div>
+      </div>
 
-        <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap' }}>
-          <span style={{
-            fontSize: '0.75rem', fontWeight: 700, fontFamily: 'var(--font-heading)',
-            letterSpacing: '0.04em', textTransform: 'uppercase',
-            padding: '0.2rem 0.6rem', borderRadius: '9999px',
-            backgroundColor: sc.bg, color: sc.text,
-          }}>
-            {spell.school}
-          </span>
-          <span style={{
-            fontSize: '0.75rem', fontWeight: 600, fontFamily: 'var(--font-heading)',
-            padding: '0.2rem 0.6rem', borderRadius: '9999px',
-            backgroundColor: 'var(--primary-light)', color: 'var(--primary)',
-          }}>
-            {spell.tier_label}
-          </span>
-          {(spell.sources ?? []).map((src) => (
-            <span key={src} style={{
-              fontSize: '0.75rem', fontWeight: 600, fontFamily: 'var(--font-heading)',
-              padding: '0.2rem 0.6rem', borderRadius: '9999px',
-              backgroundColor: 'var(--bg-nav)', color: 'var(--text-muted)', border: '1px solid var(--border)',
-            }}>
-              {src}
+      {/* Meta chips */}
+      {metaChips.length > 0 && (
+        <div style={{ display: 'flex', gap: '8px', marginBottom: '20px', flexWrap: 'wrap' }}>
+          {metaChips.map(({ key, val }) => (
+            <span key={key} style={chipStyle}>
+              <span style={{ color: 'var(--text-tertiary)', letterSpacing: '0.1em', textTransform: 'uppercase', fontSize: '0.65rem' }}>{key}</span>
+              <span style={{ color: 'var(--c-spell)' }}>{val}</span>
             </span>
           ))}
         </div>
-      </div>
+      )}
 
-      {/* Spell stats */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(160px, 1fr))', gap: '0.625rem', marginBottom: '1.5rem' }}>
-        {[
-          { label: 'Range', value: spell.range },
-          { label: 'Duration', value: spell.duration },
-          ...(spell.cost ? [{ label: 'Cost', value: spell.cost }] : []),
-        ].map((stat) => (
-          <div key={stat.label} style={{
-            padding: '0.75rem 1rem',
-            backgroundColor: 'var(--bg-nav)',
-            borderRadius: '0.5rem',
+      {/* Cyan fading divider */}
+      <div style={{
+        height: '1px',
+        background: 'linear-gradient(90deg, var(--c-spell) 0%, var(--border) 55%, transparent 100%)',
+        marginBottom: '28px',
+      }} />
+
+      {/* Two-column body */}
+      <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: '28px', marginBottom: '36px' }}>
+        {/* Left: StatTile stack */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
+          {statTiles.map((t) => (
+            <StatTile key={t.label} label={t.label} value={t.value} icon={t.icon} category="spell" />
+          ))}
+        </div>
+
+        {/* Right: Effect card + amps */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '14px', minWidth: 0 }}>
+          {/* Leading effect card */}
+          <div style={{
+            background: 'linear-gradient(90deg, rgb(var(--c-spell-rgb) / 0.06) 0%, transparent 75%)',
             border: '1px solid var(--border)',
+            borderLeft: '2px solid var(--c-spell)',
+            borderRadius: '12px',
+            padding: '20px 22px',
           }}>
-            <div style={{ fontSize: '0.65rem', fontWeight: 700, letterSpacing: '0.07em', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '0.2rem', fontFamily: 'var(--font-heading)' }}>
-              {stat.label}
+            <div style={{
+              fontFamily: 'var(--font-mono)',
+              fontSize: '9.5px',
+              letterSpacing: '1.8px',
+              textTransform: 'uppercase',
+              color: 'var(--c-spell)',
+              marginBottom: '12px',
+            }}>
+              Effect
             </div>
-            <div style={{ fontSize: '0.95rem', fontWeight: 500, color: 'var(--text)', fontFamily: 'var(--font-heading)' }}>
-              {stat.value}
+            <div style={{
+              fontFamily: 'var(--font-heading)',
+              fontStyle: 'italic',
+              fontSize: '18px',
+              fontWeight: 500,
+              color: 'var(--text-primary)',
+              lineHeight: 1.65,
+            }}>
+              <MarkdownContent content={spell.description_markdown} />
             </div>
           </div>
-        ))}
-      </div>
 
-      {/* Description */}
-      <div style={{ marginBottom: '1.5rem', padding: '1.25rem', backgroundColor: 'var(--bg-card)', border: '1px solid var(--border)', borderRadius: '0.75rem' }}>
-        <MarkdownContent content={spell.description_markdown} />
-      </div>
-
-      {/* Amps */}
-      {spell.amps && spell.amps.length > 0 && (
-        <div style={{ marginBottom: '1.5rem' }}>
-          <h2 style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '1rem', color: 'var(--text)', marginBottom: '0.625rem' }}>
-            Amp Options
-          </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            {spell.amps.map((amp, i) => (
-              <div key={i} style={{
-                display: 'flex',
-                gap: '0.75rem',
-                padding: '0.75rem 1rem',
-                backgroundColor: 'var(--accent-light)',
-                border: '1px solid #FCD34D',
-                borderRadius: '0.5rem',
-                alignItems: 'flex-start',
+          {/* Amps */}
+          {spell.amps && spell.amps.length > 0 && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div style={{
+                fontFamily: 'var(--font-mono)',
+                fontSize: '9.5px',
+                letterSpacing: '1.8px',
+                textTransform: 'uppercase',
+                color: 'var(--text-tertiary)',
+                marginBottom: '4px',
               }}>
-                <span style={{
-                  flexShrink: 0,
-                  fontFamily: 'var(--font-heading)',
-                  fontWeight: 700,
-                  fontSize: '0.85rem',
-                  color: 'var(--accent)',
-                  whiteSpace: 'nowrap',
-                }}>
-                  Amp {amp.cost}
-                </span>
-                <span style={{ fontSize: '0.9rem', color: 'var(--text)', lineHeight: 1.55 }}>
-                  {amp.effect}
-                </span>
+                Amp Options
               </div>
+              {spell.amps.map((amp, i) => (
+                <div key={i} style={{
+                  display: 'flex',
+                  gap: '12px',
+                  padding: '11px 15px',
+                  backgroundColor: 'rgb(var(--c-spell-rgb) / 0.07)',
+                  border: '1px solid rgb(var(--c-spell-rgb) / 0.30)',
+                  borderRadius: '10px',
+                  alignItems: 'flex-start',
+                }}>
+                  <span style={{
+                    flexShrink: 0,
+                    fontFamily: 'var(--font-mono)',
+                    fontWeight: 700,
+                    fontSize: '0.7rem',
+                    letterSpacing: '0.04em',
+                    color: 'var(--c-spell)',
+                    whiteSpace: 'nowrap',
+                    paddingTop: '1px',
+                  }}>
+                    AMP {amp.cost}
+                  </span>
+                  <span style={{ fontSize: '0.9rem', color: 'var(--text-secondary)', lineHeight: 1.55 }}>
+                    {amp.effect}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Related spells rail */}
+      {related.length > 0 && (
+        <div style={{
+          borderTop: '1px solid var(--border)',
+          paddingTop: '24px',
+        }}>
+          <div style={{
+            fontFamily: 'var(--font-mono)',
+            fontSize: '9.5px',
+            letterSpacing: '1.8px',
+            textTransform: 'uppercase',
+            color: 'var(--text-tertiary)',
+            marginBottom: '12px',
+          }}>
+            Related · {spell.school}
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '5px' }}>
+            {related.map((s) => (
+              <Link
+                key={s.slug}
+                href={`/spells/${s.slug}`}
+                style={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '12px',
+                  padding: '10px 14px',
+                  backgroundColor: 'var(--panel)',
+                  border: '1px solid var(--border)',
+                  borderLeft: '2px solid var(--c-spell)',
+                  borderRadius: '8px',
+                  textDecoration: 'none',
+                  transition: 'border-color 0.15s, background-color 0.15s',
+                }}
+                className="card-hover-spell"
+              >
+                <span style={{
+                  fontFamily: 'var(--font-heading)',
+                  fontStyle: 'italic',
+                  fontSize: '16px',
+                  fontWeight: 500,
+                  color: 'var(--text-primary)',
+                  flex: 1,
+                }}>
+                  {s.name}
+                </span>
+                {s.is_cantrip ? (
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '9.5px', letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--c-spell)', opacity: 0.7 }}>Cantrip</span>
+                ) : (
+                  <span style={{ fontFamily: 'var(--font-mono)', fontSize: '9.5px', letterSpacing: '1px', textTransform: 'uppercase', color: 'var(--text-tertiary)' }}>{s.tier_label}</span>
+                )}
+                <span style={{ color: 'var(--c-spell)', fontSize: '14px', opacity: 0.8 }}>→</span>
+              </Link>
             ))}
           </div>
         </div>
       )}
-
-      <div style={{ borderTop: '1px solid var(--border)', paddingTop: '1rem' }}>
-        <Link href="/spells" style={{ fontSize: '0.85rem', color: 'var(--primary)', textDecoration: 'none' }}>
-          ← Back to Spells
-        </Link>
-      </div>
     </div>
   );
 }
