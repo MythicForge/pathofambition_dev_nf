@@ -1232,7 +1232,7 @@ export default function CharacterSheetPage({
       borderBottom: "1px solid var(--border)",
       backgroundColor: "var(--bg-nav)",
       fontSize: "10px",
-      fontFamily: "monospace",
+      fontFamily: "var(--font-mono)",
       letterSpacing: "0.16em",
       textTransform: "uppercase" as const,
       color: "var(--text-muted)",
@@ -1260,7 +1260,7 @@ export default function CharacterSheetPage({
                   >
                     <span
                       style={{
-                        fontFamily: "monospace",
+                        fontFamily: "var(--font-mono)",
                         fontSize: "9px",
                         letterSpacing: "0.14em",
                         textTransform: "uppercase" as const,
@@ -1308,7 +1308,7 @@ export default function CharacterSheetPage({
                 >
                   <span
                     style={{
-                      fontFamily: "monospace",
+                      fontFamily: "var(--font-mono)",
                       fontSize: "9px",
                       letterSpacing: "0.14em",
                       textTransform: "uppercase" as const,
@@ -1355,7 +1355,7 @@ export default function CharacterSheetPage({
                           <span
                             style={{
                               fontSize: "11px",
-                              fontFamily: "monospace",
+                              fontFamily: "var(--font-mono)",
                               color: "var(--text-muted)",
                             }}
                           >
@@ -1369,7 +1369,7 @@ export default function CharacterSheetPage({
                           <span
                             style={{
                               fontSize: "11px",
-                              fontFamily: "monospace",
+                              fontFamily: "var(--font-mono)",
                               color: "var(--text)",
                             }}
                           >
@@ -1394,7 +1394,7 @@ export default function CharacterSheetPage({
                           <span
                             style={{
                               fontSize: "11px",
-                              fontFamily: "monospace",
+                              fontFamily: "var(--font-mono)",
                               color: "var(--text-muted)",
                             }}
                           >
@@ -1417,7 +1417,7 @@ export default function CharacterSheetPage({
                         <span
                           style={{
                             fontSize: "11px",
-                            fontFamily: "monospace",
+                            fontFamily: "var(--font-mono)",
                             color:
                               shieldPool === 0
                                 ? "var(--fail)"
@@ -1515,7 +1515,7 @@ export default function CharacterSheetPage({
                     <span
                       style={{
                         fontSize: "10px",
-                        fontFamily: "monospace",
+                        fontFamily: "var(--font-mono)",
                         letterSpacing: "0.06em",
                         color: active ? "var(--primary)" : "var(--text-muted)",
                         fontWeight: active ? 700 : 400,
@@ -1556,7 +1556,7 @@ export default function CharacterSheetPage({
                         <span
                           style={{
                             fontSize: "11px",
-                            fontFamily: "monospace",
+                            fontFamily: "var(--font-mono)",
                             color: "var(--primary)",
                             fontWeight: 700,
                             minWidth: "12px",
@@ -1602,7 +1602,7 @@ export default function CharacterSheetPage({
                 <div
                   style={{
                     fontSize: "9px",
-                    fontFamily: "monospace",
+                    fontFamily: "var(--font-mono)",
                     letterSpacing: "0.12em",
                     textTransform: "uppercase" as const,
                     color: "var(--text-muted)",
@@ -1632,7 +1632,7 @@ export default function CharacterSheetPage({
                       >
                         <span
                           style={{
-                            fontFamily: "monospace",
+                            fontFamily: "var(--font-mono)",
                             fontSize: "10px",
                             fontWeight: 700,
                             color: "var(--primary)",
@@ -7545,7 +7545,7 @@ export default function CharacterSheetPage({
                   <div
                     style={{
                       fontSize: "9px",
-                      fontFamily: "monospace",
+                      fontFamily: "var(--font-mono)",
                       letterSpacing: "0.16em",
                       textTransform: "uppercase" as const,
                       color: "var(--text-muted)",
@@ -7556,7 +7556,7 @@ export default function CharacterSheetPage({
                   </div>
                   <div
                     style={{
-                      fontFamily: "'Cormorant Garamond', Georgia, serif",
+                      fontFamily: "var(--font-heading)",
                       fontSize: "28px",
                       fontWeight: 700,
                       color: isHighest ? "var(--primary)" : "var(--text)",
@@ -7568,7 +7568,7 @@ export default function CharacterSheetPage({
                   <div
                     style={{
                       fontSize: "9px",
-                      fontFamily: "monospace",
+                      fontFamily: "var(--font-mono)",
                       color: "var(--text-muted)",
                       marginTop: "3px",
                       letterSpacing: "0.08em",
@@ -8127,7 +8127,7 @@ export default function CharacterSheetPage({
               alignItems: "center",
               cursor: "pointer",
               fontSize: "10px",
-              fontFamily: "monospace",
+              fontFamily: "var(--font-mono)",
               letterSpacing: "0.16em",
               textTransform: "uppercase" as const,
               color: "var(--text-muted)",
@@ -8322,7 +8322,7 @@ export default function CharacterSheetPage({
           };
           const sectionLabelStyle: React.CSSProperties = {
             fontSize: "9px",
-            fontFamily: "monospace",
+            fontFamily: "var(--font-mono)",
             letterSpacing: "0.16em",
             textTransform: "uppercase",
             color: "var(--text-muted)",
@@ -8350,7 +8350,7 @@ export default function CharacterSheetPage({
                   alignItems: "center",
                   cursor: "pointer",
                   fontSize: "10px",
-                  fontFamily: "monospace",
+                  fontFamily: "var(--font-mono)",
                   letterSpacing: "0.16em",
                   textTransform: "uppercase" as const,
                   color: "var(--text-muted)",
@@ -9096,7 +9096,7 @@ export default function CharacterSheetPage({
               };
               const sectionLabel: React.CSSProperties = {
                 fontSize: "9px",
-                fontFamily: "monospace",
+                fontFamily: "var(--font-mono)",
                 letterSpacing: "0.16em",
                 textTransform: "uppercase" as const,
                 color: "var(--text-muted)",
@@ -9230,7 +9230,7 @@ export default function CharacterSheetPage({
             style={{
               marginTop: "5px",
               fontSize: "11px",
-              fontFamily: "monospace",
+              fontFamily: "var(--font-mono)",
               color: "var(--text-muted)",
               letterSpacing: "0.06em",
               display: "flex",
@@ -9307,7 +9307,7 @@ export default function CharacterSheetPage({
               <span
                 style={{
                   fontSize: "9px",
-                  fontFamily: "monospace",
+                  fontFamily: "var(--font-mono)",
                   letterSpacing: "0.14em",
                   textTransform: "uppercase" as const,
                   color: "var(--text-muted)",
@@ -9363,7 +9363,7 @@ export default function CharacterSheetPage({
                   border: "1px solid var(--primary)",
                   backgroundColor: "var(--bg-nav)",
                   color: "var(--text)",
-                  fontFamily: "monospace",
+                  fontFamily: "var(--font-mono)",
                   fontSize: "0.75rem",
                   textAlign: "center" as const,
                   outline: "none",
@@ -9425,7 +9425,7 @@ export default function CharacterSheetPage({
               </button>
               <span
                 style={{
-                  fontFamily: "monospace",
+                  fontFamily: "var(--font-mono)",
                   fontSize: "10px",
                   color: "var(--text-muted)",
                   letterSpacing: "0.04em",
@@ -9457,7 +9457,7 @@ export default function CharacterSheetPage({
               </button>
               <span
                 style={{
-                  fontFamily: "monospace",
+                  fontFamily: "var(--font-mono)",
                   fontSize: "9px",
                   letterSpacing: "0.1em",
                   textTransform: "uppercase" as const,
@@ -9475,7 +9475,7 @@ export default function CharacterSheetPage({
               <div
                 style={{
                   fontSize: "9px",
-                  fontFamily: "monospace",
+                  fontFamily: "var(--font-mono)",
                   letterSpacing: "0.14em",
                   textTransform: "uppercase" as const,
                   color: "var(--text-muted)",
@@ -9487,7 +9487,7 @@ export default function CharacterSheetPage({
               <div
                 style={{
                   fontSize: "28px",
-                  fontFamily: "'Cormorant Garamond', Georgia, serif",
+                  fontFamily: "var(--font-heading)",
                   fontWeight: 700,
                   color: "var(--primary)",
                   lineHeight: 1,
@@ -9615,7 +9615,7 @@ export default function CharacterSheetPage({
                   </div>
                   <div
                     style={{
-                      fontFamily: "'Cormorant Garamond', Georgia, serif",
+                      fontFamily: "var(--font-heading)",
                       fontSize: "32px",
                       fontWeight: 700,
                       color: spellArmorOn ? "var(--primary)" : "var(--text)",
@@ -9742,7 +9742,7 @@ export default function CharacterSheetPage({
                 </div>
                 <div
                   style={{
-                    fontFamily: "'Cormorant Garamond', Georgia, serif",
+                    fontFamily: "var(--font-heading)",
                     fontSize: "32px",
                     fontWeight: 700,
                     color: "var(--text)",
@@ -9865,7 +9865,7 @@ export default function CharacterSheetPage({
                         </button>
                         <span
                           style={{
-                            fontFamily: "'Cormorant Garamond', Georgia, serif",
+                            fontFamily: "var(--font-heading)",
                             fontSize: "30px",
                             fontWeight: 700,
                             color: "var(--text)",
@@ -9902,7 +9902,7 @@ export default function CharacterSheetPage({
                       </div>
                       <div
                         style={{
-                          fontFamily: "'Cormorant Garamond', Georgia, serif",
+                          fontFamily: "var(--font-heading)",
                           fontSize: "30px",
                           fontWeight: 700,
                           color: "var(--text-muted)",
@@ -9956,7 +9956,7 @@ export default function CharacterSheetPage({
                         </button>
                         <span
                           style={{
-                            fontFamily: "'Cormorant Garamond', Georgia, serif",
+                            fontFamily: "var(--font-heading)",
                             fontSize: "30px",
                             fontWeight: 700,
                             color:
@@ -10018,7 +10018,7 @@ export default function CharacterSheetPage({
                           border: "1px solid var(--primary)",
                           backgroundColor: "var(--bg-nav)",
                           color: "var(--text)",
-                          fontFamily: "monospace",
+                          fontFamily: "var(--font-mono)",
                           fontSize: "0.85rem",
                           textAlign: "center" as const,
                           outline: "none",
@@ -10842,7 +10842,7 @@ export default function CharacterSheetPage({
                     <span
                       style={{
                         fontSize: "9px",
-                        fontFamily: "monospace",
+                        fontFamily: "var(--font-mono)",
                         letterSpacing: "0.12em",
                         textTransform: "uppercase" as const,
                         color: "var(--text-muted)",
@@ -10875,7 +10875,7 @@ export default function CharacterSheetPage({
                     </button>
                     <span
                       style={{
-                        fontFamily: "'Cormorant Garamond', Georgia, serif",
+                        fontFamily: "var(--font-heading)",
                         fontWeight: 700,
                         fontSize: "1.3rem",
                         color: "var(--primary)",
@@ -10887,7 +10887,7 @@ export default function CharacterSheetPage({
                         style={{
                           fontSize: "0.62rem",
                           color: "var(--text-muted)",
-                          fontFamily: "monospace",
+                          fontFamily: "var(--font-mono)",
                         }}
                       >
                         /{maxReservoir}
@@ -10941,7 +10941,7 @@ export default function CharacterSheetPage({
                       <span
                         style={{
                           fontSize: "9px",
-                          fontFamily: "monospace",
+                          fontFamily: "var(--font-mono)",
                           letterSpacing: "0.1em",
                           textTransform: "uppercase" as const,
                           color: "var(--text-muted)",
@@ -10951,7 +10951,7 @@ export default function CharacterSheetPage({
                       </span>
                       <span
                         style={{
-                          fontFamily: "'Cormorant Garamond', Georgia, serif",
+                          fontFamily: "var(--font-heading)",
                           fontWeight: 700,
                           fontSize: "1.3rem",
                           color: "var(--text)",
@@ -11107,7 +11107,7 @@ export default function CharacterSheetPage({
                     <span
                       style={{
                         fontSize: "9px",
-                        fontFamily: "monospace",
+                        fontFamily: "var(--font-mono)",
                         letterSpacing: "0.12em",
                         textTransform: "uppercase" as const,
                         color: "var(--text-muted)",
@@ -11120,7 +11120,7 @@ export default function CharacterSheetPage({
                     </button>
                     <span
                       style={{
-                        fontFamily: "'Cormorant Garamond', Georgia, serif",
+                        fontFamily: "var(--font-heading)",
                         fontWeight: 700,
                         fontSize: "1.3rem",
                         color: "var(--primary)",
@@ -11133,7 +11133,7 @@ export default function CharacterSheetPage({
                           style={{
                             fontSize: "0.62rem",
                             color: "var(--text-muted)",
-                            fontFamily: "monospace",
+                            fontFamily: "var(--font-mono)",
                           }}
                         >
                           /{resourceMax}
@@ -11171,7 +11171,7 @@ export default function CharacterSheetPage({
                       border: "none",
                       cursor: "pointer",
                       backgroundColor: "transparent",
-                      fontFamily: "'JetBrains Mono', monospace",
+                      fontFamily: "var(--font-mono)",
                       fontStyle: "normal",
                       fontWeight: 500,
                       fontSize: "0.7rem",

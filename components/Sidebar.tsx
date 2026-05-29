@@ -385,7 +385,11 @@ export default function Sidebar() {
 
         {/* SearchField */}
         <div style={{ padding: "10px 12px 4px" }}>
-          <SearchField placeholder="Search compendium…" style={{ fontSize: "0.75rem" }} />
+          <SearchField
+            placeholder="Search compendium…"
+            style={{ fontSize: "0.75rem", cursor: "pointer" }}
+            onFocus={() => window.dispatchEvent(new CustomEvent("palette:open"))}
+          />
         </div>
 
         {/* Nav sections */}

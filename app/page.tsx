@@ -186,7 +186,7 @@ export default function HomePage() {
           }}>Six sections</span>
         </div>
 
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(260px, 1fr))', gap: '14px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '14px' }}>
           {SECTIONS.map((s) => {
             const rgb = CAT_RGB[s.category];
             const color = CAT_VAR[s.category];

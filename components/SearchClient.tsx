@@ -1,95 +1,99 @@
 'use client';
 
-import { useState, useCallback } from 'react';
+import { useState, useCallback, useMemo } from 'react';
 import Link from 'next/link';
 import Fuse from 'fuse.js';
+import FilterBar from './FilterBar';
 import type { SearchResult } from '@/lib/types';
 
-const TYPE_LABELS: Record<string, string> = {
-  profession: 'Profession',
-  spell: 'Spell',
-  origin: 'Origin',
-  feat: 'Feat',
-  action: 'Action',
-  equipment: 'Equipment',
+const TYPE_CONFIG: Record<string, {
+  label: string;
+  color: string;
+  colorRgb: string;
+  href: (slug: string) => string;
+}> = {
+  profession: { label: 'Profession', color: '--c-prof',   colorRgb: '--c-prof-rgb',   href: (slug) => `/professions/${slug}` },
+  spell:      { label: 'Spell',      color: '--c-spell',  colorRgb: '--c-spell-rgb',  href: (slug) => `/spells/${slug}` },
+  origin:     { label: 'Origin',     color: '--c-origin', colorRgb: '--c-origin-rgb', href: (slug) => `/origins/${slug}` },
+  feat:       { label: 'Feat',       color: '--c-feat',   colorRgb: '--c-feat-rgb',   href: () => `/feats` },
+  action:     { label: 'Action',     color: '--c-action', colorRgb: '--c-action-rgb', href: () => `/actions` },
+  equipment:  { label: 'Equipment',  color: '--c-equip',  colorRgb: '--c-equip-rgb',  href: () => `/equipment` },
 };
 
-const TYPE_HREFS: Record<string, (slug: string) => string> = {
-  profession: (slug) => `/professions/${slug}`,
-  spell: (slug) => `/spells/${slug}`,
-  origin: (slug) => `/origins/${slug}`,
-  feat: (slug) => `/feats`,
-  action: (slug) => `/actions`,
-  equipment: (slug) => `/equipment`,
-};
-
-const TYPE_COLORS: Record<string, React.CSSProperties> = {
-  profession: { backgroundColor: '#DBEAFE', color: '#1D4ED8' },
-  spell: { backgroundColor: '#F3E8FF', color: '#7C3AED' },
-  origin: { backgroundColor: '#D1FAE5', color: '#065F46' },
-  feat: { backgroundColor: 'var(--accent-light)', color: 'var(--accent)' },
-  action: { backgroundColor: '#FEE2E2', color: '#B91C1C' },
-  equipment: { backgroundColor: 'var(--bg-nav)', color: 'var(--text-muted)' },
-};
+const TYPE_ORDER = ['profession', 'origin', 'spell', 'feat', 'action', 'equipment'];
 
 interface Props {
   index: SearchResult[];
 }
 
 export default function SearchClient({ index }: Props) {
-  const [query, setQuery] = useState('');
-  const [results, setResults] = useState<SearchResult[]>([]);
-  const [searched, setSearched] = useState(false);
+  const [query, setQuery]           = useState('');
+  const [results, setResults]       = useState<SearchResult[]>([]);
+  const [searched, setSearched]     = useState(false);
+  const [activeTypes, setActiveTypes] = useState<Set<string>>(new Set());
 
   const fuse = useCallback(
-    () =>
-      new Fuse(index, {
-        keys: [
-          { name: 'name', weight: 2 },
-          { name: 'description', weight: 1 },
-          { name: 'tags', weight: 0.5 },
-        ],
-        threshold: 0.35,
-        minMatchCharLength: 2,
-      }),
+    () => new Fuse(index, {
+      keys: [
+        { name: 'name', weight: 2 },
+        { name: 'description', weight: 1 },
+        { name: 'tags', weight: 0.5 },
+      ],
+      threshold: 0.35,
+      minMatchCharLength: 2,
+    }),
     [index]
   );
 
-  const handleSearch = useCallback(
-    (q: string) => {
-      setQuery(q);
-      if (q.trim().length < 2) {
-        setResults([]);
-        setSearched(false);
-        return;
-      }
-      const hits = fuse().search(q).map((r) => r.item);
-      setResults(hits);
-      setSearched(true);
-    },
-    [fuse]
+  const handleSearch = useCallback((q: string) => {
+    setQuery(q);
+    if (q.trim().length < 2) { setResults([]); setSearched(false); return; }
+    setResults(fuse().search(q).map((r) => r.item));
+    setSearched(true);
+  }, [fuse]);
+
+  const toggleType = (type: string) => {
+    setActiveTypes((prev) => {
+      const next = new Set(prev);
+      next.has(type) ? next.delete(type) : next.add(type);
+      return next;
+    });
+  };
+
+  const allGrouped = useMemo(() =>
+    results.reduce<Record<string, SearchResult[]>>((acc, r) => {
+      (acc[r.type] ??= []).push(r); return acc;
+    }, {}),
+    [results]
   );
 
-  // Group results by type
-  const grouped = results.reduce<Record<string, SearchResult[]>>((acc, r) => {
-    if (!acc[r.type]) acc[r.type] = [];
-    acc[r.type].push(r);
-    return acc;
-  }, {});
+  const filteredResults = useMemo(() =>
+    activeTypes.size === 0 ? results : results.filter((r) => activeTypes.has(r.type)),
+    [results, activeTypes]
+  );
+
+  const filteredGrouped = useMemo(() =>
+    filteredResults.reduce<Record<string, SearchResult[]>>((acc, r) => {
+      (acc[r.type] ??= []).push(r); return acc;
+    }, {}),
+    [filteredResults]
+  );
+
+  const filterOptions = TYPE_ORDER
+    .filter((t) => allGrouped[t]?.length)
+    .map((t) => ({ value: t, label: TYPE_CONFIG[t].label, count: allGrouped[t].length }));
 
   return (
     <div>
       {/* Search input */}
-      <div style={{ position: 'relative', marginBottom: '1.5rem' }}>
+      <div style={{ position: 'relative', marginBottom: '1.25rem' }}>
         <div style={{
-          position: 'absolute',
-          left: '0.875rem',
-          top: '50%',
+          position: 'absolute', left: '1rem', top: '50%',
           transform: 'translateY(-50%)',
-          color: 'var(--text-muted)',
-          pointerEvents: 'none',
+          color: 'var(--text-secondary)', pointerEvents: 'none',
         }}>
-          <svg className="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} aria-hidden="true">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"
+            stroke="currentColor" strokeWidth={2} aria-hidden="true">
             <circle cx="11" cy="11" r="8" />
             <path d="M21 21l-4.35-4.35" strokeLinecap="round" />
           </svg>
@@ -98,135 +102,223 @@ export default function SearchClient({ index }: Props) {
           type="search"
           value={query}
           onChange={(e) => handleSearch(e.target.value)}
-          placeholder="Search professions, spells, feats, actions…"
+          placeholder="Search professions, spells, feats, origins, actions…"
           aria-label="Search game content"
+          autoFocus
           style={{
             width: '100%',
-            padding: '0.75rem 1rem 0.75rem 2.75rem',
-            fontSize: '1rem',
+            padding: '0.9375rem 1rem 0.9375rem 3rem',
+            fontSize: '1.0625rem',
             fontFamily: 'var(--font-body)',
             border: '1.5px solid var(--border)',
-            borderRadius: '0.5rem',
-            backgroundColor: 'var(--bg-card)',
-            color: 'var(--text)',
+            borderRadius: '10px',
+            backgroundColor: 'var(--panel)',
+            color: 'var(--text-primary)',
             outline: 'none',
-            transition: 'border-color 0.15s',
+            transition: 'border-color 0.15s, box-shadow 0.15s',
           }}
-          onFocus={(e) => { e.target.style.borderColor = 'var(--primary)'; }}
-          onBlur={(e) => { e.target.style.borderColor = 'var(--border)'; }}
+          onFocus={(e) => {
+            e.target.style.borderColor = 'var(--gold)';
+            e.target.style.boxShadow = '0 0 0 3px rgb(var(--gold-rgb) / 0.12)';
+          }}
+          onBlur={(e) => {
+            e.target.style.borderColor = 'var(--border)';
+            e.target.style.boxShadow = 'none';
+          }}
         />
       </div>
 
-      {/* Results */}
-      {searched && results.length === 0 && (
-        <p style={{ color: 'var(--text-muted)', textAlign: 'center', padding: '2rem' }}>
-          No results for &ldquo;{query}&rdquo;
-        </p>
+      {/* FilterBar — shown when results exist with > 1 category */}
+      {searched && filterOptions.length > 1 && (
+        <FilterBar
+          options={filterOptions}
+          active={activeTypes}
+          onToggle={toggleType}
+          allLabel="All types"
+          style={{ marginBottom: '1.25rem' }}
+        />
       )}
 
-      {searched && results.length > 0 && (
-        <div>
-          <p style={{ fontSize: '0.85rem', color: 'var(--text-muted)', marginBottom: '1rem' }}>
-            {results.length} result{results.length !== 1 ? 's' : ''} for &ldquo;{query}&rdquo;
+      {/* Pre-search empty state */}
+      {!searched && (
+        <div style={{ textAlign: 'center', padding: '4rem 1rem' }}>
+          <div style={{
+            width: 64, height: 64, margin: '0 auto 1.25rem',
+            borderRadius: '16px',
+            backgroundColor: 'rgb(var(--gold-rgb) / 0.07)',
+            border: '1px solid var(--border)',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+          }}>
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none"
+              stroke="currentColor" strokeWidth={1.5}
+              style={{ color: 'var(--gold-dim)' }} aria-hidden="true">
+              <circle cx="11" cy="11" r="8" />
+              <path d="M21 21l-4.35-4.35" strokeLinecap="round" />
+            </svg>
+          </div>
+          <p style={{
+            fontFamily: 'var(--font-heading)', fontStyle: 'italic',
+            fontSize: '1.1rem', color: 'var(--text-secondary)', marginBottom: '0.375rem',
+          }}>
+            Search the compendium
           </p>
-
-          {Object.entries(grouped).map(([type, items]) => (
-            <div key={type} style={{ marginBottom: '1.5rem' }}>
-              <h2 style={{
-                fontFamily: 'var(--font-heading)',
-                fontWeight: 600,
-                fontSize: '0.75rem',
-                letterSpacing: '0.08em',
-                textTransform: 'uppercase',
-                color: 'var(--text-muted)',
-                marginBottom: '0.5rem',
-              }}>
-                {TYPE_LABELS[type]} ({items.length})
-              </h2>
-              <div className="space-y-2">
-                {items.slice(0, 20).map((item) => (
-                  <Link
-                    key={item.id}
-                    href={TYPE_HREFS[item.type]?.(item.slug) ?? '#'}
-                    style={{
-                      display: 'block',
-                      padding: '0.75rem 1rem',
-                      backgroundColor: 'var(--bg-card)',
-                      border: '1px solid var(--border)',
-                      borderRadius: '0.5rem',
-                      textDecoration: 'none',
-                      transition: 'border-color 0.15s, box-shadow 0.15s',
-                      cursor: 'pointer',
-                    }}
-                    onMouseEnter={(e) => {
-                      e.currentTarget.style.borderColor = 'var(--primary)';
-                      e.currentTarget.style.boxShadow = '0 1px 6px rgba(15,118,110,0.1)';
-                    }}
-                    onMouseLeave={(e) => {
-                      e.currentTarget.style.borderColor = 'var(--border)';
-                      e.currentTarget.style.boxShadow = 'none';
-                    }}
-                  >
-                    <div className="flex items-start gap-2.5">
-                      <span style={{
-                        ...TYPE_COLORS[item.type],
-                        fontSize: '0.65rem',
-                        fontWeight: 700,
-                        fontFamily: 'var(--font-heading)',
-                        letterSpacing: '0.06em',
-                        textTransform: 'uppercase',
-                        padding: '0.15rem 0.45rem',
-                        borderRadius: '9999px',
-                        whiteSpace: 'nowrap',
-                        marginTop: '0.1rem',
-                        flexShrink: 0,
-                      }}>
-                        {TYPE_LABELS[item.type]}
-                      </span>
-                      <div>
-                        <div style={{
-                          fontFamily: 'var(--font-heading)',
-                          fontWeight: 600,
-                          fontSize: '0.95rem',
-                          color: 'var(--text)',
-                          marginBottom: '0.15rem',
-                        }}>
-                          {item.name}
-                        </div>
-                        {item.description && (
-                          <div style={{
-                            fontSize: '0.8rem',
-                            color: 'var(--text-muted)',
-                            lineHeight: 1.5,
-                            display: '-webkit-box',
-                            WebkitLineClamp: 2,
-                            WebkitBoxOrient: 'vertical',
-                            overflow: 'hidden',
-                          }}>
-                            {item.description}
-                          </div>
-                        )}
-                      </div>
-                    </div>
-                  </Link>
-                ))}
-              </div>
-            </div>
-          ))}
+          <p style={{
+            fontFamily: 'var(--font-mono)', fontSize: '0.7rem',
+            color: 'var(--text-tertiary)', letterSpacing: '0.04em',
+          }}>
+            {index.length} ENTRIES INDEXED
+          </p>
         </div>
       )}
 
-      {!searched && (
-        <div style={{
-          textAlign: 'center',
-          padding: '3rem 1rem',
-          color: 'var(--text-muted)',
-        }}>
-          <svg className="w-12 h-12 mx-auto mb-3" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} style={{ color: 'var(--border-hover)' }} aria-hidden="true">
-            <circle cx="11" cy="11" r="8" />
-            <path d="M21 21l-4.35-4.35" strokeLinecap="round" />
-          </svg>
-          <p style={{ fontSize: '0.95rem' }}>Type to search across all game content</p>
+      {/* No results */}
+      {searched && results.length === 0 && (
+        <div style={{ textAlign: 'center', padding: '3rem 1rem' }}>
+          <p style={{
+            fontFamily: 'var(--font-heading)', fontStyle: 'italic',
+            fontSize: '1rem', color: 'var(--text-secondary)', marginBottom: '0.375rem',
+          }}>
+            No results for &ldquo;{query}&rdquo;
+          </p>
+          <p style={{
+            fontFamily: 'var(--font-mono)', fontSize: '0.7rem',
+            color: 'var(--text-tertiary)', letterSpacing: '0.04em',
+          }}>
+            TRY A DIFFERENT TERM
+          </p>
+        </div>
+      )}
+
+      {/* Results */}
+      {searched && filteredResults.length > 0 && (
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+          <p style={{
+            fontFamily: 'var(--font-mono)', fontSize: '0.7rem',
+            color: 'var(--text-tertiary)', letterSpacing: '0.04em',
+          }}>
+            {filteredResults.length} RESULT{filteredResults.length !== 1 ? 'S' : ''} · &ldquo;{query}&rdquo;
+          </p>
+
+          {TYPE_ORDER.filter((t) => filteredGrouped[t]?.length).map((type) => {
+            const cfg = TYPE_CONFIG[type];
+            const items = filteredGrouped[type];
+            return (
+              <div key={type} style={{
+                backgroundColor: 'var(--panel)',
+                border: '1px solid var(--border)',
+                borderRadius: '10px',
+                overflow: 'hidden',
+              }}>
+                {/* Group header */}
+                <div style={{
+                  display: 'flex', alignItems: 'center', justifyContent: 'space-between',
+                  padding: '8px 16px',
+                  borderBottom: '1px solid var(--border)',
+                  backgroundColor: `rgb(var(${cfg.colorRgb}) / 0.06)`,
+                }}>
+                  <span style={{
+                    fontFamily: 'var(--font-mono)', fontSize: '10px', fontWeight: 600,
+                    letterSpacing: '2px', textTransform: 'uppercase' as const,
+                    color: `var(${cfg.color})`,
+                  }}>
+                    {cfg.label}
+                  </span>
+                  <span style={{
+                    fontFamily: 'var(--font-mono)', fontSize: '10px',
+                    color: 'var(--text-tertiary)', letterSpacing: '0.04em',
+                  }}>
+                    {items.length}
+                  </span>
+                </div>
+
+                {/* Result rows */}
+                <div>
+                  {items.slice(0, 20).map((item, i) => (
+                    <Link
+                      key={item.id}
+                      href={cfg.href(item.slug)}
+                      style={{
+                        display: 'flex', alignItems: 'center',
+                        borderTop: i > 0 ? '1px solid var(--border)' : 'none',
+                        textDecoration: 'none',
+                        transition: 'background-color 0.1s',
+                      }}
+                      onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = 'var(--panel-hi)';
+                        const bar = e.currentTarget.querySelector<HTMLElement>('[data-bar]');
+                        if (bar) bar.style.opacity = '1';
+                        const name = e.currentTarget.querySelector<HTMLElement>('[data-name]');
+                        if (name) name.style.color = 'var(--gold)';
+                      }}
+                      onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = 'transparent';
+                        const bar = e.currentTarget.querySelector<HTMLElement>('[data-bar]');
+                        if (bar) bar.style.opacity = '0';
+                        const name = e.currentTarget.querySelector<HTMLElement>('[data-name]');
+                        if (name) name.style.color = 'var(--text-primary)';
+                      }}
+                    >
+                      {/* Category left bar */}
+                      <div
+                        data-bar=""
+                        style={{
+                          width: '2px', alignSelf: 'stretch', flexShrink: 0,
+                          backgroundColor: `var(${cfg.color})`,
+                          opacity: 0, transition: 'opacity 0.1s',
+                        }}
+                      />
+                      <div style={{
+                        flex: 1, padding: '0.625rem 1rem',
+                        display: 'flex', alignItems: 'center', gap: '0.875rem',
+                      }}>
+                        <div style={{ flex: 1, minWidth: 0 }}>
+                          <div
+                            data-name=""
+                            style={{
+                              fontFamily: 'var(--font-heading)', fontStyle: 'italic',
+                              fontWeight: 500, fontSize: '0.9375rem',
+                              color: 'var(--text-primary)',
+                              whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+                              transition: 'color 0.1s',
+                            }}
+                          >
+                            {item.name}
+                          </div>
+                          {item.description && (
+                            <div style={{
+                              fontSize: '0.775rem', color: 'var(--text-secondary)',
+                              lineHeight: 1.45, marginTop: '2px',
+                              display: '-webkit-box',
+                              WebkitLineClamp: 1,
+                              WebkitBoxOrient: 'vertical' as const,
+                              overflow: 'hidden',
+                            }}>
+                              {item.description}
+                            </div>
+                          )}
+                        </div>
+                        <span style={{
+                          fontFamily: 'var(--font-mono)', fontSize: '9px',
+                          fontWeight: 600, letterSpacing: '1.5px', textTransform: 'uppercase' as const,
+                          color: `var(${cfg.color})`,
+                          backgroundColor: `rgb(var(${cfg.colorRgb}) / 0.1)`,
+                          padding: '2px 6px', borderRadius: '4px', flexShrink: 0,
+                        }}>
+                          {cfg.label}
+                        </span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none"
+                          stroke="currentColor" strokeWidth={2}
+                          style={{ color: 'var(--text-tertiary)', flexShrink: 0 }}
+                          aria-hidden="true">
+                          <path d="M9 18l6-6-6-6" strokeLinecap="round" strokeLinejoin="round" />
+                        </svg>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            );
+          })}
         </div>
       )}
     </div>
