@@ -109,11 +109,11 @@ export default async function OriginDetailPage({ params }: Props) {
         }}>
           {origin.name}
         </h1>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', paddingTop: '8px', flexShrink: 0 }}>
+        <div className="detail-title-actions" style={{ display: 'flex', alignItems: 'center', gap: '10px', paddingTop: '8px' }}>
           <TypeBadge label="Origin" category="origin" />
           <div style={{ display: 'flex', gap: '8px' }}>
-            <button style={ghostBtn}>☆ Favorite</button>
-            <button style={ghostBtn}>＋ Add to Sheet</button>
+            <button style={ghostBtn}>☆<span className="btn-label"> Favorite</span></button>
+            <button style={ghostBtn}>＋<span className="btn-label"> Add to Sheet</span></button>
           </div>
         </div>
       </div>
@@ -147,7 +147,7 @@ export default async function OriginDetailPage({ params }: Props) {
       }} />
 
       {/* Two-column body */}
-      <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: '28px', marginBottom: '36px' }}>
+      <div className="detail-two-col">
 
         {/* Left: StatTile stack */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>

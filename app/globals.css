@@ -488,6 +488,49 @@ h6 {
     white-space: nowrap;
 }
 
+/* ── Reference detail pages: responsive layout ───────── */
+.spell-list-grid {
+    display: grid;
+    grid-template-columns: 1fr 120px 100px 80px 24px;
+    gap: 12px;
+    align-items: center;
+}
+
+.detail-two-col {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    gap: 28px;
+    margin-bottom: 36px;
+}
+
+@media (max-width: 640px) {
+    .detail-two-col {
+        grid-template-columns: 1fr;
+        gap: 20px;
+    }
+
+    /* Title row: badge+buttons group can shrink and wrap */
+    .detail-title-actions {
+        flex-shrink: 1 !important;
+        flex-wrap: wrap !important;
+        gap: 6px !important;
+    }
+
+    /* Icon-only buttons: hide text label, keep symbol */
+    .btn-label {
+        display: none;
+    }
+
+    /* Spell list table: hide school + source columns */
+    .spell-list-col-school,
+    .spell-list-col-source {
+        display: none;
+    }
+    .spell-list-grid {
+        grid-template-columns: 1fr 64px 20px !important;
+    }
+}
+
 /* ── Mobile ≤ 480px fixes ────────────────────────────── */
 @media (max-width: 480px) {
     /* P0: defense 4-col → 2×2 */

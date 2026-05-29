@@ -34,14 +34,14 @@ export default function SpellActions() {
         onMouseEnter={(e) => { if (!favorited) { e.currentTarget.style.color = 'var(--gold)'; e.currentTarget.style.borderColor = 'var(--border-hi)'; } }}
         onMouseLeave={(e) => { if (!favorited) { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.borderColor = 'var(--border)'; } }}
       >
-        {favorited ? '★' : '☆'} Favorite
+        {favorited ? '★' : '☆'}<span className="btn-label"> Favorite</span>
       </button>
       <button
         style={BASE}
         onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--gold)'; e.currentTarget.style.borderColor = 'var(--border-hi)'; }}
         onMouseLeave={(e) => { e.currentTarget.style.color = 'var(--text-secondary)'; e.currentTarget.style.borderColor = 'var(--border)'; }}
       >
-        ＋ Add to Sheet
+        ＋<span className="btn-label"> Add to Sheet</span>
       </button>
     </div>
   );

@@ -133,7 +133,7 @@ export default async function SpellDetailPage({ params }: Props) {
       }} />
 
       {/* Two-column body */}
-      <div style={{ display: 'grid', gridTemplateColumns: '220px 1fr', gap: '28px', marginBottom: '36px' }}>
+      <div className="detail-two-col">
         {/* Left: StatTile stack */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
           {statTiles.map((t) => (

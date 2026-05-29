@@ -458,10 +458,8 @@ export default function SpellsClient({ spells }: Props) {
         >
           {/* Table header */}
           <div
+            className="spell-list-grid"
             style={{
-              display: "grid",
-              gridTemplateColumns: "1fr 120px 100px 80px 24px",
-              gap: "12px",
               padding: "8px 16px 8px 20px",
               borderBottom: "1px solid var(--border)",
               fontFamily: "var(--font-mono)",
@@ -472,8 +470,8 @@ export default function SpellsClient({ spells }: Props) {
             }}
           >
             <span>Name</span>
-            <span>School</span>
-            <span>Source</span>
+            <span className="spell-list-col-school">School</span>
+            <span className="spell-list-col-source">Source</span>
             <span>Tier</span>
             <span />
           </div>
@@ -482,10 +480,8 @@ export default function SpellsClient({ spells }: Props) {
             <Link
               key={spell.id}
               href={`/spells/${spell.slug}`}
+              className="spell-list-grid"
               style={{
-                display: "grid",
-                gridTemplateColumns: "1fr 120px 100px 80px 24px",
-                gap: "12px",
                 padding: "11px 16px 11px 18px",
                 borderLeft: `4px solid ${getTierColor(spell)}`,
                 borderBottom:
@@ -519,6 +515,7 @@ export default function SpellsClient({ spells }: Props) {
 
               {/* School */}
               <span
+                className="spell-list-col-school"
                 style={{
                   fontFamily: "var(--font-mono)",
                   fontSize: "9.5px",
@@ -534,6 +531,7 @@ export default function SpellsClient({ spells }: Props) {
 
               {/* Source */}
               <span
+                className="spell-list-col-source"
                 style={{
                   fontFamily: "var(--font-mono)",
                   fontSize: "9.5px",
