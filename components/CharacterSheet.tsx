@@ -1417,6 +1417,7 @@ export default function CharacterSheetPage({
                             }}
                           >
                             {dmgStr}
+                            {fmtAttr(attrs[modKey])}
                           </span>
                           {typeStr && (
                             <span
