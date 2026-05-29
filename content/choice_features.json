@@ -2,7 +2,7 @@
   "features": [
     {
       "entity_type": "profession",
-      "entity_name": "Drifter",
+      "entity_name": "Shaman",
       "source_kind": "base_feature",
       "feature_name": "Primeval Vessels",
       "tier": null,
@@ -27,7 +27,7 @@
     },
     {
       "entity_type": "profession",
-      "entity_name": "Drifter",
+      "entity_name": "Shaman",
       "source_kind": "tier_feat",
       "feature_name": "Primal Origins",
       "tier": 1,
@@ -76,89 +76,11 @@
     },
     {
       "entity_type": "profession",
-      "entity_name": "Drifter",
-      "source_kind": "tier_feat",
-      "feature_name": "Harmonious Existence",
-      "tier": 1,
-      "path": "Channeler",
-      "choice_type": "permanent_choice",
-      "selection_rule": "fixed_count",
-      "min_choices": 2,
-      "max_choices": 2,
-      "selection_timing": "on_gain",
-      "branches_from_feature": null,
-      "notes": "Upgrades to Full-caster, gains Conjuration, and grants choice of 2 Channeler cantrips.",
-      "options": [
-        {
-          "name": "Primeval Lure",
-          "effect_text": "Pull effect with 1d6 elemental."
-        },
-        {
-          "name": "Primeval Rebuke",
-          "effect_text": "Aura; when the target is hit, it releases 2d4 elemental."
-        },
-        {
-          "name": "Primeval Ward",
-          "effect_text": "Gain resistance to a chosen elemental equal to your spellcasting modifier."
-        },
-        {
-          "name": "Primordial Arrow",
-          "effect_text": "Hit deals 1d6 puncture + 2d4 chosen elemental."
-        },
-        {
-          "name": "Spirit\u2019s Burden",
-          "effect_text": "Hit deals 2d4 slash; critical hit prevents Dash until your next turn."
-        },
-        {
-          "name": "Unseen Messenger",
-          "effect_text": "Short message delivery."
-        },
-        {
-          "name": "Verdant Hand",
-          "effect_text": "Causes small plant growth or bloom for 1 hour."
-        }
-      ]
-    },
-    {
-      "entity_type": "profession",
-      "entity_name": "Drifter",
-      "source_kind": "tier_feat",
-      "feature_name": "Altered Skin",
-      "tier": 1,
-      "path": "Conduit",
-      "choice_type": "permanent_choice",
-      "selection_rule": "fixed_count",
-      "min_choices": 2,
-      "max_choices": 2,
-      "selection_timing": "on_gain",
-      "branches_from_feature": null,
-      "notes": "Gain 2 Altered Skin options.",
-      "options": [
-        {
-          "name": "Annealed",
-          "effect_text": "Skin can receive a magical augmentation."
-        },
-        {
-          "name": "Prowler",
-          "effect_text": "Gain low-light and dim-light vision within Close."
-        },
-        {
-          "name": "Shimmer",
-          "effect_text": "Gain Resolve on stealth-related checks."
-        },
-        {
-          "name": "Regenerative",
-          "effect_text": "During a respite, restore extra vitality equal to Will."
-        }
-      ]
-    },
-    {
-      "entity_type": "profession",
-      "entity_name": "Drifter",
+      "entity_name": "Shaman",
       "source_kind": "tier_feat",
       "feature_name": "Mantle of Elements",
       "tier": 2,
-      "path": "Channeler",
+      "path": "Anima",
       "choice_type": "prepared_choice",
       "selection_rule": "single",
       "min_choices": 1,
@@ -191,102 +113,11 @@
     },
     {
       "entity_type": "profession",
-      "entity_name": "Drifter",
-      "source_kind": "tier_feat",
-      "feature_name": "Primordial Vessels",
-      "tier": 2,
-      "path": "Channeler",
-      "choice_type": "activation_menu",
-      "selection_rule": "single",
-      "min_choices": 1,
-      "max_choices": 1,
-      "selection_timing": "on_activation",
-      "branches_from_feature": null,
-      "notes": "Adds new summonable spirit aspects; select the relevant aspect when using the feature.",
-      "options": [
-        {
-          "name": "Hastened Spirit",
-          "effect_text": "Grants +1 AP once per ally in its zone."
-        },
-        {
-          "name": "Protecting Spirit",
-          "effect_text": "Grants 2d12 floating shield when an ally first steps within Touch."
-        },
-        {
-          "name": "Soothing",
-          "effect_text": "Heals 1 Wound on interaction within Touch."
-        },
-        {
-          "name": "Vengeful Spirit",
-          "effect_text": "Makes ranged attacks when allies in its zone are hit, dealing 2d4 fire."
-        }
-      ]
-    },
-    {
-      "entity_type": "profession",
-      "entity_name": "Drifter",
-      "source_kind": "tier_feat",
-      "feature_name": "Adaptive Mutation",
-      "tier": 3,
-      "path": "Conduit",
-      "choice_type": "permanent_choice",
-      "selection_rule": "fixed_count",
-      "min_choices": 2,
-      "max_choices": 2,
-      "selection_timing": "on_gain",
-      "branches_from_feature": "Altered Skin",
-      "notes": "Gain 2 new Altered Skin options.",
-      "options": [
-        {
-          "name": "Aquatic Gills",
-          "effect_text": "Breathe underwater and swim through strong currents."
-        },
-        {
-          "name": "Redundant Organs",
-          "effect_text": "Immune to poison damage; gain Resolve against poisoned."
-        },
-        {
-          "name": "Conductive Nerves",
-          "effect_text": "After taking damage, your next melee attack deals +1d6 electric."
-        },
-        {
-          "name": "Thermal Conversion",
-          "effect_text": "Gain resistance to fire and cold; extreme temperatures do not cause weakened."
-        }
-      ]
-    },
-    {
-      "entity_type": "profession",
-      "entity_name": "Drifter",
-      "source_kind": "tier_feat",
-      "feature_name": "Branching Genetics",
-      "tier": 3,
-      "path": "Conduit",
-      "choice_type": "permanent_choice",
-      "selection_rule": "single",
-      "min_choices": 1,
-      "max_choices": 1,
-      "selection_timing": "on_gain",
-      "branches_from_feature": null,
-      "notes": "Choose additional evolved-form access.",
-      "options": [
-        {
-          "name": "Monstrosities",
-          "effect_text": "Gain evolved-form access to Monstrosities."
-        },
-        {
-          "name": "Occult",
-          "effect_text": "Gain evolved-form access to Occult."
-        }
-      ]
-    },
-    {
-      "entity_type": "profession",
-      "entity_name": "Drifter",
+      "entity_name": "Shaman",
       "source_kind": "tier_feat",
       "feature_name": "Primordial Form",
       "tier": 3,
-      "path": "Channeler",
+      "path": "Anima",
       "choice_type": "activation_menu",
       "selection_rule": "single",
       "min_choices": 1,
@@ -318,209 +149,6 @@
         {
           "name": "Vengeful",
           "effect_text": "When hit, the attacker takes 2d4 elemental of your choice."
-        }
-      ]
-    },
-    {
-      "entity_type": "profession",
-      "entity_name": "Duelist",
-      "source_kind": "tier_feat",
-      "feature_name": "Valiant Stance",
-      "tier": 1,
-      "path": "Gladiator",
-      "choice_type": "permanent_choice",
-      "selection_rule": "single",
-      "min_choices": 1,
-      "max_choices": 1,
-      "selection_timing": "on_gain",
-      "branches_from_feature": null,
-      "notes": null,
-      "options": [
-        {
-          "name": "Dueling",
-          "effect_text": "+2 to attacks while wielding only a single one-handed weapon."
-        },
-        {
-          "name": "Hand-to-Hand",
-          "effect_text": "Add Tier to unarmed or cestus damage."
-        },
-        {
-          "name": "Steel & Shield",
-          "effect_text": "+2 Defense against Compelled targets while wielding a shield."
-        }
-      ]
-    },
-    {
-      "entity_type": "profession",
-      "entity_name": "Duelist",
-      "source_kind": "tier_feat",
-      "feature_name": "Valiant Flourish",
-      "tier": 1,
-      "path": "Gladiator",
-      "choice_type": "derived_branch",
-      "selection_rule": "single",
-      "min_choices": 1,
-      "max_choices": 1,
-      "selection_timing": "derived",
-      "branches_from_feature": "Valiant Stance",
-      "notes": "Uses your chosen Valiant Stance.",
-      "options": [
-        {
-          "name": "Dueling",
-          "effect_text": "Enemies not engaged or compelled by you suffer \u22122 to hit you."
-        },
-        {
-          "name": "Hand-to-Hand",
-          "effect_text": "On hit, make an additional Weapon Strike for 1 AP with no penalty."
-        },
-        {
-          "name": "Steel & Shield",
-          "effect_text": "When using Deflect Strike, you may immediately make a weapon attack."
-        }
-      ]
-    },
-    {
-      "entity_type": "profession",
-      "entity_name": "Duelist",
-      "source_kind": "tier_feat",
-      "feature_name": "Warmonger\u2019s Stance",
-      "tier": 1,
-      "path": "Marauder",
-      "choice_type": "permanent_choice",
-      "selection_rule": "single",
-      "min_choices": 1,
-      "max_choices": 1,
-      "selection_timing": "on_gain",
-      "branches_from_feature": null,
-      "notes": null,
-      "options": [
-        {
-          "name": "Dual Wielding",
-          "effect_text": "+1 Defense while wielding two light weapons."
-        },
-        {
-          "name": "Snapshot",
-          "effect_text": "No penalty using ranged weapons while engaged."
-        },
-        {
-          "name": "Lancer",
-          "effect_text": "As a trigger, spend 1 AP to attack an enemy entering melee range while using a polearm or spear."
-        }
-      ]
-    },
-    {
-      "entity_type": "profession",
-      "entity_name": "Duelist",
-      "source_kind": "tier_feat",
-      "feature_name": "Warmonger Rhythm",
-      "tier": 1,
-      "path": "Marauder",
-      "choice_type": "derived_branch",
-      "selection_rule": "single",
-      "min_choices": 1,
-      "max_choices": 1,
-      "selection_timing": "derived",
-      "branches_from_feature": "Warmonger\u2019s Stance",
-      "notes": "Uses your chosen Warmonger\u2019s Stance.",
-      "options": [
-        {
-          "name": "Dual Wielding",
-          "effect_text": "On a critical hit, split damage between enemies in engagement."
-        },
-        {
-          "name": "Snapshot",
-          "effect_text": "During Multi-Attack, strike two targets in the same engagement with +2 to hit."
-        },
-        {
-          "name": "Lancer",
-          "effect_text": "On hit, make a blunt-end polearm attack for 1d6 bludgeoning."
-        }
-      ]
-    },
-    {
-      "entity_type": "profession",
-      "entity_name": "Duelist",
-      "source_kind": "tier_feat",
-      "feature_name": "Technical Power",
-      "tier": 2,
-      "path": "Gladiator",
-      "choice_type": "derived_branch",
-      "selection_rule": "single",
-      "min_choices": 1,
-      "max_choices": 1,
-      "selection_timing": "derived",
-      "branches_from_feature": "Valiant Stance",
-      "notes": "Uses your Valiant Stance.",
-      "options": [
-        {
-          "name": "Dueling",
-          "effect_text": "Make a multi-attack roll with +2 and +1d4 extra damage vs heavy armor or heavy natural armor."
-        },
-        {
-          "name": "Hand-to-Hand",
-          "effect_text": "Attack vs Body; on hit deal +2d4 bludgeoning; a critical hit stuns for 1 round."
-        },
-        {
-          "name": "Steel & Shield",
-          "effect_text": "Make an attack roll adding Ambition; armor increases by the Ambition rolled until your next turn."
-        }
-      ]
-    },
-    {
-      "entity_type": "profession",
-      "entity_name": "Duelist",
-      "source_kind": "tier_feat",
-      "feature_name": "Death March",
-      "tier": 3,
-      "path": "Marauder",
-      "choice_type": "derived_branch",
-      "selection_rule": "single",
-      "min_choices": 1,
-      "max_choices": 1,
-      "selection_timing": "derived",
-      "branches_from_feature": "Warmonger\u2019s Stance",
-      "notes": "Uses your Marauder style.",
-      "options": [
-        {
-          "name": "Dual Wielding",
-          "effect_text": "Add Calculated Precision at no cost to attack and damage; make two Weapon Strikes; a critical hit deals maximum weapon damage."
-        },
-        {
-          "name": "Snapshot",
-          "effect_text": "Dash can move two zones; each time you start in or enter a new zone, make two ranged attacks at \u22123; hit targets gain Strain on attacks until end of their turn."
-        },
-        {
-          "name": "Lancer",
-          "effect_text": "Make attacks against each enemy along movement or reach at \u22123; each hit adds an extra weapon die; you remain unengaged until a miss or no valid targets remain."
-        }
-      ]
-    },
-    {
-      "entity_type": "profession",
-      "entity_name": "Duelist",
-      "source_kind": "tier_feat",
-      "feature_name": "Noble Crescendo",
-      "tier": 3,
-      "path": "Gladiator",
-      "choice_type": "derived_branch",
-      "selection_rule": "single",
-      "min_choices": 1,
-      "max_choices": 1,
-      "selection_timing": "derived",
-      "branches_from_feature": "Valiant Stance",
-      "notes": "Uses your current stance.",
-      "options": [
-        {
-          "name": "Dueling",
-          "effect_text": "Attack all enemies in engagement at +2 to hit; a critical hit may trigger a second attack on the same target."
-        },
-        {
-          "name": "Hand-to-Hand",
-          "effect_text": "Make three unarmed or cestus attacks against different targets in engagement; if all hit, free grapple one hit target."
-        },
-        {
-          "name": "Steel & Shield",
-          "effect_text": "Gain +3 armor and reflect the first melee miss back at the attacker."
         }
       ]
     },
@@ -781,6 +409,100 @@
         {
           "name": "Wyrm",
           "effect_text": "Gain a reduction pool equal to 2 \u00d7 Reservoir/Resonance spent."
+        }
+      ]
+    },
+    {
+      "entity_type": "profession",
+      "entity_name": "Elementalist",
+      "source_kind": "base_feature",
+      "feature_name": "Elemental Core",
+      "tier": null,
+      "path": null,
+      "choice_type": "permanent_choice",
+      "selection_rule": "single",
+      "min_choices": 1,
+      "max_choices": 1,
+      "selection_timing": "on_gain",
+      "branches_from_feature": null,
+      "notes": null,
+      "options": [
+        {
+          "name": "Flame",
+          "effect_text": "Fire, Spirit(Combat)"
+        },
+        {
+          "name": "Forest",
+          "effect_text": "Wood, Vitality (Support and Defense"
+        },
+        {
+          "name": "Land",
+          "effect_text": "Stone, Metal (Defense and Utility)"
+        },
+        {
+          "name": "Ocean",
+          "effect_text": "Water, Ice (Control and Healing)"
+        },
+        {
+          "name": "Sky",
+          "effect_text": "Air, Gravity (Stealth)"
+        },
+        {
+          "name": "Tempest",
+          "effect_text": "Electric, Light (Combat)"
+        }
+      ]
+    },
+
+    {
+      "entity_type": "profession",
+      "entity_name": "Elementalist",
+      "source_kind": "tier_feat",
+      "feature_name": "Core Cultivation",
+      "tier": 2,
+      "path": "Elementalist",
+      "choice_type": "permanent_choice",
+      "selection_rule": "single",
+      "min_choices": 1,
+      "max_choices": 1,
+      "selection_timing": "on_gain",
+      "branches_from_feature": null,
+      "notes": "Pick Fragmented or Regal first; follow-up picks the core(s).",
+      "options": [
+        {
+          "name": "Fragmented",
+          "effect_text": "Gain access to a second Elemental Core and any abilities your previously selected Feats would give.",
+          "sub_core_count": 1,
+          "sub_core_choice": [
+            { "name": "Flame", "effect_text": "Fire, Spirit (Combat)" },
+            {
+              "name": "Forest",
+              "effect_text": "Wood, Vitality (Support and Defense)"
+            },
+            {
+              "name": "Land",
+              "effect_text": "Stone, Metal (Defense and Utility)"
+            },
+            {
+              "name": "Ocean",
+              "effect_text": "Water, Ice (Control and Healing)"
+            },
+            { "name": "Sky", "effect_text": "Air, Gravity (Stealth)" },
+            { "name": "Tempest", "effect_text": "Electric, Light (Combat)" }
+          ]
+        },
+        {
+          "name": "Regal",
+          "effect_text": "Gain access to another element for Primordial Strike; Elemental Art actions add your melee die to damage or healing total.",
+          "sub_core_count": 1,
+          "sub_core_choice": [
+            { "name": "Flame", "effect_text": "Spirit" },
+            { "name": "Forest", "effect_text": "Poison" },
+            { "name": "Land", "effect_text": "Void" },
+            { "name": "Ocean", "effect_text": "Arcane" },
+            { "name": "Sky", "effect_text": "Gravity" },
+            { "name": "Tempest", "effect_text": "Ether" }
+          ]
         }
       ]
     },

@@ -115,12 +115,12 @@ export function clearFeatChoices(
 
 export function getTotalAttributes(char: Character): CharacterAttributes {
   const b = char.vocationAttributeBonus;
+  const ba = char.baseAttributes as unknown as Record<string, number | undefined>;
   return {
-    brawn: char.baseAttributes.brawn + (b.attribute === "brawn" ? b.value : 0),
-    finesse:
-      char.baseAttributes.finesse + (b.attribute === "finesse" ? b.value : 0),
-    mind: char.baseAttributes.mind + (b.attribute === "mind" ? b.value : 0),
-    will: char.baseAttributes.will + (b.attribute === "will" ? b.value : 0),
+    brawn:   (ba.brawn   ?? ba.body ?? 0) + (b.attribute === "brawn"   ? b.value : 0),
+    finesse: (ba.finesse ?? 0)            + (b.attribute === "finesse" ? b.value : 0),
+    mind:    (ba.mind    ?? 0)            + (b.attribute === "mind"    ? b.value : 0),
+    will:    (ba.will    ?? 0)            + (b.attribute === "will"    ? b.value : 0),
   };
 }
 

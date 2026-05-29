@@ -83,13 +83,34 @@ export default function EquipmentPage() {
   const inventory = rules?.inventory as Record<string, unknown>;
   const masterwork = eq.masterwork_quality as Record<string, unknown> | undefined;
 
-  // Group weapons by first group
+  // Canonical group order per redesign/item sort.md
+  const GROUP_ORDER = ['Simple', 'Martial', 'Finesse', 'Ranged', 'Catalyst'];
+  const GROUP_DESC: Record<string, string> = {
+    Simple:   'Basic arms and thrown tools usable by nearly anyone. Some overlap with Finesse or Ranged for lightweight or thrown weapons.',
+    Martial:  'Standard arms of trained warriors and soldiers. Includes both one-handed and two-handed battle weapons.',
+    Finesse:  'Weapons relying on precision, agility, and dexterity.',
+    Ranged:   'Projectile or thrown weapons used from a distance.',
+    Catalyst: 'Implements for channeling or storing mystical energy. Required for most spellcasting unless stated otherwise.',
+  };
+
+  // Each weapon appears under ALL its groups (not just first)
   const weaponsByGroup: Record<string, Weapon[]> = {};
+  GROUP_ORDER.forEach((g) => { weaponsByGroup[g] = []; });
+
   weapons.forEach((w) => {
-    const g = w.groups[0] ?? 'Other';
-    if (!weaponsByGroup[g]) weaponsByGroup[g] = [];
-    weaponsByGroup[g].push(w);
+    const matched = w.groups.filter((g) => GROUP_ORDER.includes(g));
+    if (matched.length > 0) {
+      matched.forEach((g) => { weaponsByGroup[g].push(w); });
+    } else {
+      // Unrecognized group — bucket into first group or Other
+      const fallback = w.groups[0] ?? 'Other';
+      if (!weaponsByGroup[fallback]) weaponsByGroup[fallback] = [];
+      weaponsByGroup[fallback].push(w);
+    }
   });
+
+  const orderedGroups = [...GROUP_ORDER, ...Object.keys(weaponsByGroup).filter(g => !GROUP_ORDER.includes(g))]
+    .filter((g) => weaponsByGroup[g]?.length > 0);
 
   return (
     <div>
@@ -203,56 +224,130 @@ export default function EquipmentPage() {
       {weapons.length > 0 && (
         <div style={{ marginBottom: '2.5rem' }}>
           <SectionTitle>Weapons</SectionTitle>
-          {Object.entries(weaponsByGroup).map(([group, groupWeapons]) => (
-            <div key={group} style={{ marginBottom: '1.5rem', marginTop: '1rem' }}>
-              <h3 style={{ fontFamily: 'var(--font-heading)', fontWeight: 600, fontSize: '0.75rem', color: 'var(--text-muted)', letterSpacing: '0.06em', textTransform: 'uppercase', marginBottom: '0.625rem' }}>
-                {group} ({groupWeapons.length})
-              </h3>
-              <div style={{ overflowX: 'auto' }}>
-                <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.875rem' }}>
-                  <thead>
-                    <tr>
-                      {['Weapon', 'Damage', 'Type', 'Range', 'Traits', 'Cost'].map((h) => (
-                        <th key={h} style={{
-                          padding: '0.5rem 0.75rem',
-                          backgroundColor: 'var(--bg-nav)',
-                          borderBottom: '1px solid var(--border)',
-                          fontFamily: 'var(--font-heading)',
-                          fontWeight: 600,
-                          fontSize: '0.75rem',
-                          textTransform: 'uppercase',
-                          letterSpacing: '0.05em',
-                          color: 'var(--text-muted)',
-                          textAlign: 'left',
-                          whiteSpace: 'nowrap',
-                        }}>
-                          {h}
-                        </th>
-                      ))}
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {groupWeapons.map((w, i) => (
-                      <tr key={w.id} style={{ backgroundColor: i % 2 === 0 ? 'var(--bg-card)' : 'var(--bg-nav)' }}>
-                        <td style={{ padding: '0.5rem 0.75rem', fontWeight: 500, color: 'var(--text)', whiteSpace: 'nowrap', borderBottom: '1px solid var(--border)' }}>{w.name}</td>
-                        <td style={{ padding: '0.5rem 0.75rem', color: 'var(--primary)', fontFamily: 'var(--font-heading)', fontWeight: 600, borderBottom: '1px solid var(--border)' }}>{w.damage}</td>
-                        <td style={{ padding: '0.5rem 0.75rem', color: 'var(--text-muted)', borderBottom: '1px solid var(--border)' }}>{w.damage_types.map(d => d.name).join(', ')}</td>
-                        <td style={{ padding: '0.5rem 0.75rem', color: 'var(--text-muted)', borderBottom: '1px solid var(--border)' }}>{w.range_bands.map(r => r.name).join(', ')}</td>
-                        <td style={{ padding: '0.5rem 0.75rem', borderBottom: '1px solid var(--border)' }}>
-                          <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
-                            {w.traits.map(t => <TraitBadge key={t.name} trait={t.name} variant="muted" />)}
-                          </div>
-                        </td>
-                        <td style={{ padding: '0.5rem 0.75rem', color: 'var(--text-muted)', borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap' }}>
-                          {w.cost != null ? `${w.cost}g` : '—'}
-                        </td>
+          {orderedGroups.map((group) => {
+            const groupWeapons = weaponsByGroup[group];
+            return (
+              <div key={group} style={{ marginBottom: '2rem', marginTop: '1.25rem' }}>
+                {/* Group header */}
+                <div style={{ marginBottom: '0.75rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'baseline', gap: '10px', marginBottom: '4px' }}>
+                    <h3 style={{
+                      fontFamily: 'var(--font-heading)', fontStyle: 'italic',
+                      fontWeight: 600, fontSize: '1.0625rem',
+                      color: 'var(--text-primary)', margin: 0,
+                    }}>
+                      {group} Weapons
+                    </h3>
+                    <span style={{
+                      fontFamily: 'var(--font-mono)', fontSize: '9.5px',
+                      color: 'var(--text-tertiary)', letterSpacing: '0.04em',
+                    }}>
+                      {groupWeapons.length}
+                    </span>
+                  </div>
+                  {GROUP_DESC[group] && (
+                    <p style={{
+                      fontFamily: 'var(--font-body)', fontSize: '0.8125rem',
+                      color: 'var(--text-secondary)', margin: 0, lineHeight: 1.55,
+                    }}>
+                      {GROUP_DESC[group]}
+                    </p>
+                  )}
+                </div>
+                <div style={{ overflowX: 'auto' }}>
+                  <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.8125rem' }}>
+                    <thead>
+                      <tr>
+                        {['Weapon', 'Groups', 'Damage', 'Type', 'Range', 'Traits', 'Cost'].map((h) => (
+                          <th key={h} style={{
+                            padding: '6px 12px',
+                            backgroundColor: 'var(--panel)',
+                            borderBottom: '1.5px solid var(--border)',
+                            borderTop: '1px solid var(--border)',
+                            fontFamily: 'var(--font-mono)',
+                            fontWeight: 500,
+                            fontSize: '9px',
+                            textTransform: 'uppercase',
+                            letterSpacing: '0.1em',
+                            color: 'var(--text-tertiary)',
+                            textAlign: 'left',
+                            whiteSpace: 'nowrap',
+                          }}>
+                            {h}
+                          </th>
+                        ))}
                       </tr>
-                    ))}
-                  </tbody>
-                </table>
+                    </thead>
+                    <tbody>
+                      {groupWeapons.map((w, i) => (
+                        <tr key={w.id} style={{
+                          backgroundColor: i % 2 === 0 ? 'var(--panel)' : 'var(--bg-2)',
+                          transition: 'background-color 0.1s',
+                        }}>
+                          <td style={{
+                            padding: '7px 12px', fontFamily: 'var(--font-heading)',
+                            fontStyle: 'italic', fontWeight: 500,
+                            fontSize: '0.875rem', color: 'var(--text-primary)',
+                            whiteSpace: 'nowrap', borderBottom: '1px solid var(--border)',
+                          }}>
+                            {w.name}
+                          </td>
+                          <td style={{ padding: '7px 12px', borderBottom: '1px solid var(--border)' }}>
+                            <div style={{ display: 'flex', gap: '3px', flexWrap: 'wrap' }}>
+                              {w.groups.filter(g => g !== group).map(g => (
+                                <span key={g} style={{
+                                  fontFamily: 'var(--font-mono)', fontSize: '8px',
+                                  fontWeight: 600, letterSpacing: '0.06em',
+                                  textTransform: 'uppercase',
+                                  color: 'var(--c-equip)',
+                                  backgroundColor: 'rgb(var(--c-equip-rgb) / 0.1)',
+                                  border: '1px solid rgb(var(--c-equip-rgb) / 0.3)',
+                                  padding: '1px 5px', borderRadius: '3px',
+                                  whiteSpace: 'nowrap',
+                                }}>
+                                  {g}
+                                </span>
+                              ))}
+                              {w.groups.length === 1 && (
+                                <span style={{ color: 'var(--text-tertiary)', fontSize: '0.75rem' }}>—</span>
+                              )}
+                            </div>
+                          </td>
+                          <td style={{
+                            padding: '7px 12px', color: 'var(--gold)',
+                            fontFamily: 'var(--font-mono)', fontWeight: 600,
+                            fontSize: '0.8rem', borderBottom: '1px solid var(--border)',
+                            whiteSpace: 'nowrap',
+                          }}>
+                            {w.damage}
+                          </td>
+                          <td style={{ padding: '7px 12px', color: 'var(--text-secondary)', borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap' }}>
+                            {w.damage_types.map(d => d.name).join(', ')}
+                          </td>
+                          <td style={{ padding: '7px 12px', color: 'var(--text-secondary)', borderBottom: '1px solid var(--border)', whiteSpace: 'nowrap' }}>
+                            {w.range_bands.map(r => r.name).join(', ')}
+                          </td>
+                          <td style={{ padding: '7px 12px', borderBottom: '1px solid var(--border)' }}>
+                            <div style={{ display: 'flex', gap: '0.25rem', flexWrap: 'wrap' }}>
+                              {w.traits.map(t => <TraitBadge key={t.name} trait={t.name} variant="muted" />)}
+                            </div>
+                          </td>
+                          <td style={{
+                            padding: '7px 12px', color: 'var(--text-tertiary)',
+                            borderBottom: '1px solid var(--border)',
+                            fontFamily: 'var(--font-mono)', fontSize: '0.75rem',
+                            whiteSpace: 'nowrap',
+                          }}>
+                            {w.cost != null ? `${w.cost}g` : '—'}
+                          </td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
         </div>
       )}
 

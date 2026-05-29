@@ -167,6 +167,8 @@ export interface ChoiceFeatureOption {
   effect_text: string;
   expertise_skill_count?: number;
   expertise_bump_count?: number;
+  sub_core_count?: number;
+  sub_core_choice?: { name: string; effect_text: string }[];
 }
 
 export interface ChoiceFeature {

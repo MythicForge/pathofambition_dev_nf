@@ -2178,32 +2178,55 @@ export default function CharacterSheetPage({
       const extraQueue: ChoiceFeature[] = [];
       for (const optionName of shopCurrentSels) {
         const opt = current.options.find((o) => o.name === optionName);
-        if (!opt?.expertise_skill_count) continue;
-        const skillCount = opt.expertise_skill_count;
-        const bumpCount = opt.expertise_bump_count ?? 1;
-        const syntheticName = `${current.feature_name} Expertise ×${bumpCount}`;
-        const syntheticKey = `${current.entity_name}__${syntheticName}`;
-        if (!updatedSelections[syntheticKey]) {
-          extraQueue.push({
-            entity_type: current.entity_type,
-            entity_name: current.entity_name,
-            source_kind: current.source_kind,
-            feature_name: syntheticName,
-            tier: current.tier,
-            path: current.path,
-            choice_type: "permanent_choice",
-            selection_rule: skillCount === 1 ? "single" : "fixed_count",
-            min_choices: skillCount,
-            max_choices: skillCount,
-            selection_timing: "on_gain",
-            branches_from_feature: current.feature_name,
-            notes: `Choose ${skillCount} VITALS skill(s) to gain Expertise in.`,
-            grants_expertise: true,
-            options: VITALS_SKILLS.map((s) => ({
-              name: s,
-              effect_text: `Gain Expertise in ${s}.`,
-            })),
-          });
+        if (opt?.expertise_skill_count) {
+          const skillCount = opt.expertise_skill_count;
+          const bumpCount = opt.expertise_bump_count ?? 1;
+          const syntheticName = `${current.feature_name} Expertise ×${bumpCount}`;
+          const syntheticKey = `${current.entity_name}__${syntheticName}`;
+          if (!updatedSelections[syntheticKey]) {
+            extraQueue.push({
+              entity_type: current.entity_type,
+              entity_name: current.entity_name,
+              source_kind: current.source_kind,
+              feature_name: syntheticName,
+              tier: current.tier,
+              path: current.path,
+              choice_type: "permanent_choice",
+              selection_rule: skillCount === 1 ? "single" : "fixed_count",
+              min_choices: skillCount,
+              max_choices: skillCount,
+              selection_timing: "on_gain",
+              branches_from_feature: current.feature_name,
+              notes: `Choose ${skillCount} VITALS skill(s) to gain Expertise in.`,
+              grants_expertise: true,
+              options: VITALS_SKILLS.map((s) => ({
+                name: s,
+                effect_text: `Gain Expertise in ${s}.`,
+              })),
+            });
+          }
+        } else if (opt?.sub_core_count && Array.isArray(opt?.sub_core_choice)) {
+          const coreCount = opt.sub_core_count as number;
+          const syntheticName = `${current.feature_name} Core (${optionName})`;
+          const syntheticKey = `${current.entity_name}__${syntheticName}`;
+          if (!updatedSelections[syntheticKey]) {
+            extraQueue.push({
+              entity_type: current.entity_type,
+              entity_name: current.entity_name,
+              source_kind: current.source_kind,
+              feature_name: syntheticName,
+              tier: current.tier,
+              path: current.path,
+              choice_type: "permanent_choice",
+              selection_rule: coreCount === 1 ? "single" : "fixed_count",
+              min_choices: coreCount,
+              max_choices: coreCount,
+              selection_timing: "on_gain",
+              branches_from_feature: current.feature_name,
+              notes: `Choose ${coreCount} Elemental Core(s).`,
+              options: opt.sub_core_choice as { name: string; effect_text: string }[],
+            });
+          }
         }
       }
 
@@ -2289,35 +2312,55 @@ export default function CharacterSheetPage({
         (f) => f.feature_name === feat.name && f.entity_name === feat.ownerName,
       );
       if (!cf) return;
-      // Build follow-up queue if selected option has expertise_skill_count
+      // Build follow-up queue if selected option has expertise_skill_count or sub_core_count
       const VITALS_SKILLS = [...VITALS_SET];
       const extraQueue: ChoiceFeature[] = [];
       for (const optionName of editChoiceSels) {
         const opt = cf.options.find((o) => o.name === optionName);
-        if (!opt?.expertise_skill_count) continue;
-        const skillCount = opt.expertise_skill_count;
-        const bumpCount = opt.expertise_bump_count ?? 1;
-        const syntheticName = `${cf.feature_name} Expertise ×${bumpCount}`;
-        extraQueue.push({
-          entity_type: cf.entity_type,
-          entity_name: cf.entity_name,
-          source_kind: cf.source_kind,
-          feature_name: syntheticName,
-          tier: cf.tier,
-          path: cf.path,
-          choice_type: "permanent_choice",
-          selection_rule: skillCount === 1 ? "single" : "fixed_count",
-          min_choices: skillCount,
-          max_choices: skillCount,
-          selection_timing: "on_gain",
-          branches_from_feature: cf.feature_name,
-          notes: `Choose ${skillCount} VITALS skill(s) to gain Expertise in.`,
-          grants_expertise: true,
-          options: VITALS_SKILLS.map((s) => ({
-            name: s,
-            effect_text: `Gain Expertise in ${s}.`,
-          })),
-        });
+        if (opt?.expertise_skill_count) {
+          const skillCount = opt.expertise_skill_count;
+          const bumpCount = opt.expertise_bump_count ?? 1;
+          const syntheticName = `${cf.feature_name} Expertise ×${bumpCount}`;
+          extraQueue.push({
+            entity_type: cf.entity_type,
+            entity_name: cf.entity_name,
+            source_kind: cf.source_kind,
+            feature_name: syntheticName,
+            tier: cf.tier,
+            path: cf.path,
+            choice_type: "permanent_choice",
+            selection_rule: skillCount === 1 ? "single" : "fixed_count",
+            min_choices: skillCount,
+            max_choices: skillCount,
+            selection_timing: "on_gain",
+            branches_from_feature: cf.feature_name,
+            notes: `Choose ${skillCount} VITALS skill(s) to gain Expertise in.`,
+            grants_expertise: true,
+            options: VITALS_SKILLS.map((s) => ({
+              name: s,
+              effect_text: `Gain Expertise in ${s}.`,
+            })),
+          });
+        } else if (opt?.sub_core_count && Array.isArray(opt?.sub_core_choice)) {
+          const coreCount = opt.sub_core_count as number;
+          const syntheticName = `${cf.feature_name} Core (${optionName})`;
+          extraQueue.push({
+            entity_type: cf.entity_type,
+            entity_name: cf.entity_name,
+            source_kind: cf.source_kind,
+            feature_name: syntheticName,
+            tier: cf.tier,
+            path: cf.path,
+            choice_type: "permanent_choice",
+            selection_rule: coreCount === 1 ? "single" : "fixed_count",
+            min_choices: coreCount,
+            max_choices: coreCount,
+            selection_timing: "on_gain",
+            branches_from_feature: cf.feature_name,
+            notes: `Choose ${coreCount} Elemental Core(s).`,
+            options: opt.sub_core_choice as { name: string; effect_text: string }[],
+          });
+        }
       }
       if (extraQueue.length > 0) {
         setShopChoiceQueue(extraQueue);
@@ -7636,10 +7679,10 @@ export default function CharacterSheetPage({
   function renderLeftRail() {
     const totalAvailableBase = TIER_TOTAL_SLOTS[effectiveTier - 1] ?? 5;
     const currentTotalBase =
-      c.baseAttributes.brawn +
-      c.baseAttributes.finesse +
-      c.baseAttributes.mind +
-      c.baseAttributes.will;
+      (c.baseAttributes.brawn   ?? 0) +
+      (c.baseAttributes.finesse ?? 0) +
+      (c.baseAttributes.mind    ?? 0) +
+      (c.baseAttributes.will    ?? 0);
     const dynamicUnspent = totalAvailableBase - currentTotalBase;
     const totalAvailableSkill = 4 + 2 * Math.floor((c.featsPurchased ?? 0) / 2);
     const totalSpentSkill = Object.values(c.skillPoints ?? {}).reduce(

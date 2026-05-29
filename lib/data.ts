@@ -69,7 +69,7 @@ export function getOriginFeats(): { owners: FeatOwner[]; feats: Feat[] } {
   const data = readJSON<{ owners: FeatOwner[]; feats: Feat[] }>(
     "origin_feats.json",
   );
-  return data;
+  return { owners: data.owners ?? [], feats: data.feats ?? [] };
 }
 
 // ─── Profession Feats ─────────────────────────────────────────────────────────
@@ -78,7 +78,7 @@ export function getProfessionFeats(): { owners: FeatOwner[]; feats: Feat[] } {
   const data = readJSON<{ owners: FeatOwner[]; feats: Feat[] }>(
     "profession_feats.json",
   );
-  return data;
+  return { owners: data.owners ?? [], feats: data.feats ?? [] };
 }
 
 // ─── Actions ──────────────────────────────────────────────────────────────────

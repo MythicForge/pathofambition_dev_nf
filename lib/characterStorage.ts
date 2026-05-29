@@ -43,15 +43,19 @@ export function getCharacter(id: string): Character | null {
   const found = loadCharacters().find((c) => c.id === id) ?? null;
   if (!found) return null;
   // Backfill fields added after initial release
-  // Migrate old Body attribute to Brawn+Finesse split
-  if ('body' in (found.baseAttributes as object) && !('brawn' in (found.baseAttributes as object))) {
-    (found as Character).baseAttributes = {
-      brawn: 0,
-      finesse: 0,
-      mind: (found.baseAttributes as unknown as Record<string, number>).mind ?? 0,
-      will: (found.baseAttributes as unknown as Record<string, number>).will ?? 0,
-    };
-    (found as Character).unspentAttributePoints = 5;
+  // Migrate old Body attribute to Brawn+Finesse split; also backfill if keys missing entirely
+  {
+    const ba = found.baseAttributes as unknown as Record<string, number | undefined>;
+    if (!('brawn' in ba) || !('finesse' in ba)) {
+      const hadBody = 'body' in ba;
+      (found as Character).baseAttributes = {
+        brawn:   ba.brawn   ?? ba.body ?? 0,
+        finesse: ba.finesse ?? 0,
+        mind:    ba.mind    ?? 0,
+        will:    ba.will    ?? 0,
+      };
+      if (!hadBody && !('brawn' in ba)) (found as Character).unspentAttributePoints = 5;
+    }
   }
   // Migrate vocationAttributeBonus "body" → "brawn", normalize any Title-case values
   {

@@ -1,8 +1,7 @@
 {
   "metadata": {
     "schema_version": "poa.content.v1",
-    "collection": "origins",
-    "migrated_from": "origin_data.json"
+    "collection": "origins"
   },
   "origins": [
     {
@@ -22,10 +21,17 @@
               "Sanctified water (3 vials)"
             ]
           },
-          "kits": { "raw": "Healer's kit", "items": ["Healer's kit"] },
+          "kits": {
+            "raw": "Healer's kit",
+            "items": [
+              "Healer's kit"
+            ]
+          },
           "clothing": {
             "raw": "Ceremonial vestments",
-            "items": ["Ceremonial vestments"]
+            "items": [
+              "Ceremonial vestments"
+            ]
           },
           "misc": {
             "raw": "Holy symbol, Prayer book, Religious texts (2), Donation box",
@@ -46,8 +52,8 @@
           "name": "Pilgrim",
           "slug": "pilgrim",
           "attribute_bonus": {
-            "raw": "+1 Brawn",
-            "attribute": "brawn",
+            "raw": "+1 Body",
+            "attribute": "body",
             "value": 1
           },
           "flavor": "You've traveled long and hard in search of answers to life, to death, to immortality, or to whatever answer it is you seek to find. Long have you traveled this path, and continue on you shall.",
@@ -61,11 +67,14 @@
               "owner_id": "acolyte-pilgrim",
               "owner_name": "Pilgrim",
               "tag": "Pilgrim",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
@@ -85,11 +94,7 @@
             "value": 1
           },
           "flavor": "You're connection to the weave of fate, deities, nature, or even the deathless have led you to become in tune with the fabrics of reality. Will you seek to continue your journey of duties you hold sacred, or will you give into your own ambition?",
-          "caster": {
-            "casterType": "limited",
-            "casterSource": "Primeval",
-            "casterModifierOptions": ["mind"]
-          },
+          "caster": null,
           "features": [
             {
               "id": "origins-acolyte-shaman-base-ritual-practice",
@@ -99,11 +104,14 @@
               "owner_id": "acolyte-shaman",
               "owner_name": "Shaman",
               "tag": "Shaman",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
@@ -119,9 +127,12 @@
               "owner_id": "acolyte-shaman",
               "owner_name": "Shaman",
               "tag": "Shaman",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
                 "raw": "-",
                 "resources": {},
@@ -129,50 +140,7 @@
                 "notes": []
               },
               "description_markdown": "You have learned to channel sacred rites into direct magic. Gain access to actions and spells that require spell casting. Your spellcasting features are as follows:\n- You are a **Limited-caster**.\n- Your **source** is **Primeval**.\n- Your **Spellcasting Modifier** is **Mind**.\n- Your total **reservoir** equals _(½ × Tier) + Spellcasting Modifier_ (rounded up).\n- Start with Two **Known Spells** at Tier 1.\n- Your **prepared spells** equal your **Spellcasting Modifier**.\n- Your **Spell DC** = 10 + Spell Tier + Spellcasting Modifier.\n- Each **Respite** restores spell points equal to your **Spellcasting Modifier** (minimum 3).\n- You gain two **Cantrips** from the **Primeval** source.",
-              "raw_markdown": "**Trait** Passive | **Cost** -\nYou have learned to channel sacred rites into direct magic. Gain access to actions and spells that require spell casting.",
-              "spellcasting": {
-                "caster_type": "Limited-caster",
-                "source": "Primeval",
-                "spellcasting_modifier": "Mind",
-                "reservoir_formula": "(½ × Tier) + Spellcasting Modifier (rounded up)",
-                "known_spells": "Start with Two Known Spells at Tier 1.",
-                "prepared_spells": "your Spellcasting Modifier",
-                "spell_dc": "10 + Spell Tier + Spellcasting Modifier.",
-                "respite_recovery": "Each Respite restores spell points equal to your Spellcasting Modifier (minimum 3).",
-                "cantrip_notes": [
-                  "You gain two Cantrips from the Primeval source."
-                ]
-              },
-              "cantrips": [
-                {
-                  "name": "Primeval Lure",
-                  "is_cantrip": true,
-                  "range": "Close",
-                  "duration": "Instant",
-                  "description_markdown": "You lash out with a ethereal line, pulling a target closer to you. Make a **spell attack roll** against the **body** of the target. On hit, deal 1d6 **elemental** damage of choice, on a **critical hit** move the target one range closer towards you."
-                },
-                {
-                  "name": "Primeval Rebuke",
-                  "is_cantrip": true,
-                  "range": "Close",
-                  "duration": "1 Minute",
-                  "description_markdown": "You place an **aura** around a willing target which creates a energy of primeval energy. When the target with this **aura** is hit, it releases the energy in a **elemental** damage type of choice, dealing 2d4 of that damage type."
-                },
-                {
-                  "name": "Primeval Ward",
-                  "is_cantrip": true,
-                  "range": "Touch",
-                  "duration": "1 Round",
-                  "description_markdown": "You touch an ally or yourself, and until the end of your next turn, that target gains **resistance** to a **elemental** damage type of your choice equal to your **spell casting modifier**."
-                },
-                {
-                  "name": "Unseen Messenger",
-                  "is_cantrip": true,
-                  "range": "Far",
-                  "duration": "Instant",
-                  "description_markdown": "You can send a message to known target within range that is 5 seconds in length. The messenger is ethereal and cannot be physically seen or stopped by non-magical means."
-                }
-              ]
+              "raw_markdown": "**Trait** Passive | **Cost** -\nYou have learned to channel sacred rites into direct magic. Gain access to actions and spells that require spell casting. Your spellcasting features are as follows:\n- You are a **Limited-caster**.\n- Your **source** is **Primeval**.\n- Your **Spellcasting Modifier** is **Mind**.\n- Your total **reservoir** equals _(½ × Tier) + Spellcasting Modifier_ (rounded up).\n- Start with Two **Known Spells** at Tier 1.\n- Your **prepared spells** equal your **Spellcasting Modifier**.\n- Your **Spell DC** = 10 + Spell Tier + Spellcasting Modifier.\n- Each **Respite** restores spell points equal to your **Spellcasting Modifier** (minimum 3).\n- You gain two **Cantrips** from the **Primeval** source.\n###### Cantrips\n\n**Primeval Lure**\n**Range** Close | **Duration** Instant\nYou lash out with a ethereal line, pulling a target closer to you. Make a **spell attack roll** against the **body** of the target. On hit, deal 1d6 **elemental** damage of choice, on a **critical hit** move the target one range closer towards you.\n\n**Primeval Rebuke**\n**Range** Close | **Duration** 1 Minute\nYou place an **aura** around a willing target which creates a energy of primeval energy. When the target with this **aura** is hit, it releases the energy in a **elemental** damage type of choice, dealing 2d4 of that damage type.\n\n**Primeval Ward** \n**Range** Touch | **Duration** 1 Round\nYou touch an ally or yourself, and until the end of your next turn, that target gains **resistance** to a **elemental** damage type of your choice equal to your **spell casting modifier**.\n\n**Unseen Messenger** \n**Range** Far | **Duration** Instant\nYou can send a message to known target within range that is 5 seconds in length. The messenger is ethereal and cannot be physically seen or stopped by non-magical means."
             }
           ]
         },
@@ -196,17 +164,20 @@
               "owner_id": "acolyte-zealot",
               "owner_name": "Zealot",
               "tag": "Zealot",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
               },
-              "description_markdown": "Your path is true and righteous, your will allows you to protect yourself or your allies. Once per day, regardless of spell casting abilities, you can cast *shield of faith* at tier 1.",
-              "raw_markdown": "**Trait** Passive\nYour path is true and righteous, your will allows you to protect yourself or your allies. Once per day, regardless of spell casting abilities, you can cast *shield of faith* at tier 1."
+              "description_markdown": "Your path is true and righteous, your will allows you to protect yourself or your allies. Once per day, regardless of spell casting abilities, you can cast *[[Chapter 4.5 - Spell List (Old)#Shield of Faith|shield of faith]]* at tier 1.",
+              "raw_markdown": "**Trait** Passive\nYour path is true and righteous, your will allows you to protect yourself or your allies. Once per day, regardless of spell casting abilities, you can cast *[[Chapter 4.5 - Spell List (Old)#Shield of Faith|shield of faith]]* at tier 1."
             }
           ]
         }
@@ -223,7 +194,9 @@
         "parsed": {
           "consumables": {
             "raw": "Material samples worth 20 gold",
-            "items": ["Material samples worth 20 gold"]
+            "items": [
+              "Material samples worth 20 gold"
+            ]
           },
           "kits": {
             "raw": "Craftsman's tools (relevant to chosen craft), Repair kit, Sizing tools",
@@ -233,7 +206,12 @@
               "Sizing tools"
             ]
           },
-          "clothing": { "raw": "None", "items": [] },
+          "clothing": {
+            "raw": "None",
+            "items": [
+              "None"
+            ]
+          },
           "misc": {
             "raw": "Masterwork sample, Design sketches, Apprentice certificate, Merchant contacts list, Unfinished project",
             "items": [
@@ -269,11 +247,14 @@
               "owner_id": "apprentice-artisan",
               "owner_name": "Artisan",
               "tag": "Artisan",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
@@ -288,8 +269,8 @@
           "name": "Builder",
           "slug": "builder",
           "attribute_bonus": {
-            "raw": "+1 Brawn",
-            "attribute": "Brawn",
+            "raw": "+1 Body",
+            "attribute": "body",
             "value": 1
           },
           "flavor": "The walls of the city weren't built in one day, the grand wonders of the world were not made by one man, but the were for sure built by people like you. The work you've done has given you strength above the common folk, and while you may have enjoyed your apprenticeship, it's time to build your own legacy.",
@@ -303,12 +284,17 @@
               "owner_id": "apprentice-builder",
               "owner_name": "Builder",
               "tag": "Builder",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Maneuver",
-              "traits": ["Maneuver"],
+              "traits": [
+                "Maneuver"
+              ],
               "activation": {
                 "raw": "1 AP",
-                "resources": { "ap": 1 },
+                "resources": {
+                  "ap": 1
+                },
                 "properties": {},
                 "notes": []
               },
@@ -322,8 +308,8 @@
           "name": "Designer",
           "slug": "designer",
           "attribute_bonus": {
-            "raw": "+1 Finesse",
-            "attribute": "finesse",
+            "raw": "+1 Will",
+            "attribute": "will",
             "value": 1
           },
           "flavor": "Skill and strength are all fine and well, but unless someone has a clear vision or experience to guide their hands, what more can they do? You spent your early years training and learning from your master the eye of discernment, now it's time to go show others all of what you can do for them.",
@@ -337,11 +323,14 @@
               "owner_id": "apprentice-designer",
               "owner_name": "Designer",
               "tag": "Designer",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
@@ -360,19 +349,26 @@
       "pack_name": "Borough Pack",
       "flavor": "You were raised among stone and spectacle, where voices echo through narrow streets and power shifts between coin, law, and influence. The city shaped you — teaching you when to speak, when to stand firm, and when to bend the rules in your favor.",
       "origin_pack": {
-        "raw": "**Consumables:** None  \n**Kits:** Writing Implements or Street Performer's Tools, Local Map  \n**Clothing:** Well-worn urban attire  \n**Misc. (Pick 2):** Familiar route tokens, Rumor ledger, Guild insignia, City pass writ, Hidden safehouse key",
+        "raw": "**Consumables:** None  \n**Kits:** Writing Implements or Street Performer’s Tools, Local Map  \n**Clothing:** Well-worn urban attire  \n**Misc. (Pick 2):** Familiar route tokens, Rumor ledger, Guild insignia, City pass writ, Hidden safehouse key",
         "parsed": {
-          "consumables": { "raw": "None", "items": [] },
-          "kits": {
-            "raw": "Writing Implements or Street Performer's Tools, Local Map",
+          "consumables": {
+            "raw": "None",
             "items": [
-              "Writing Implements or Street Performer's Tools",
+              "None"
+            ]
+          },
+          "kits": {
+            "raw": "Writing Implements or Street Performer’s Tools, Local Map",
+            "items": [
+              "Writing Implements or Street Performer’s Tools",
               "Local Map"
             ]
           },
           "clothing": {
             "raw": "Well-worn urban attire",
-            "items": ["Well-worn urban attire"]
+            "items": [
+              "Well-worn urban attire"
+            ]
           },
           "misc": {
             "raw": "Familiar route tokens, Rumor ledger, Guild insignia, City pass writ, Hidden safehouse key",
@@ -398,7 +394,7 @@
             "attribute": "will",
             "value": 1
           },
-          "flavor": "The crowd is your stage and attention is your currency. You've learned how to command eyes, stir emotion, and shape the mood of any gathering through presence alone.",
+          "flavor": "The crowd is your stage and attention is your currency. You’ve learned how to command eyes, stir emotion, and shape the mood of any gathering through presence alone.",
           "caster": null,
           "features": [
             {
@@ -409,11 +405,14 @@
               "owner_id": "boroughborn-entertainer",
               "owner_name": "Entertainer",
               "tag": "Entertainer",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
@@ -443,12 +442,17 @@
               "owner_id": "boroughborn-informant",
               "owner_name": "Informant",
               "tag": "Informant",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Narrative",
-              "traits": ["Narrative"],
+              "traits": [
+                "Narrative"
+              ],
               "activation": {
                 "raw": "1 Ambition",
-                "resources": {},
+                "resources": {
+                  "ambition": 1
+                },
                 "properties": {},
                 "notes": []
               },
@@ -462,8 +466,8 @@
           "name": "City Watch",
           "slug": "city-watch",
           "attribute_bonus": {
-            "raw": "+1 Brawn",
-            "attribute": "brawn",
+            "raw": "+1 Body",
+            "attribute": "body",
             "value": 1
           },
           "flavor": "You are the law given form. Whether driven by duty or necessity, you learned how to assert presence and maintain order through force, discipline, and authority.",
@@ -477,12 +481,17 @@
               "owner_id": "boroughborn-city-watch",
               "owner_name": "City Watch",
               "tag": "City Watch",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Trigger",
-              "traits": ["Trigger"],
+              "traits": [
+                "Trigger"
+              ],
               "activation": {
                 "raw": "1 AP",
-                "resources": { "ap": 1 },
+                "resources": {
+                  "ap": 1
+                },
                 "properties": {},
                 "notes": []
               },
@@ -502,11 +511,23 @@
       "origin_pack": {
         "raw": "**Consumables:** None\n**Kits:** Divination tools\n**Clothing:** Ceremonial attire\n**Misc. (Pick 2):** Celestial trinket, Silver mirror, Dream journal, Star chart, Mysterious glowing crystal, Family prophecy scroll, Unusual birthmark",
         "parsed": {
-          "consumables": { "raw": "None", "items": [] },
-          "kits": { "raw": "Divination tools", "items": ["Divination tools"] },
+          "consumables": {
+            "raw": "None",
+            "items": [
+              "None"
+            ]
+          },
+          "kits": {
+            "raw": "Divination tools",
+            "items": [
+              "Divination tools"
+            ]
+          },
           "clothing": {
             "raw": "Ceremonial attire",
-            "items": ["Ceremonial attire"]
+            "items": [
+              "Ceremonial attire"
+            ]
           },
           "misc": {
             "raw": "Celestial trinket, Silver mirror, Dream journal, Star chart, Mysterious glowing crystal, Family prophecy scroll, Unusual birthmark",
@@ -530,16 +551,12 @@
           "name": "Starborn",
           "slug": "starborn",
           "attribute_bonus": {
-            "raw": "+1 Finesse",
-            "attribute": "finesse",
+            "raw": "+1 Body",
+            "attribute": "body",
             "value": 1
           },
-          "flavor": "The stars aligned at your birth, and the world's momentum has always seemed to push you forward. You believe the heavens hold purpose for you—if you can only move fast enough to meet it.",
-          "caster": {
-            "casterType": "limited",
-            "casterSource": "Anima",
-            "casterModifierOptions": ["will"]
-          },
+          "flavor": "The stars aligned at your birth, and the world’s momentum has always seemed to push you forward. You believe the heavens hold purpose for you—if you can only move fast enough to meet it.",
+          "caster": null,
           "features": [
             {
               "id": "origins-chosen-starborn-base-ancestral-magic",
@@ -549,11 +566,14 @@
               "owner_id": "chosen-starborn",
               "owner_name": "Starborn",
               "tag": "Starborn",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
@@ -569,9 +589,12 @@
               "owner_id": "chosen-starborn",
               "owner_name": "Starborn",
               "tag": "Starborn",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
                 "raw": "-",
                 "resources": {},
@@ -579,50 +602,7 @@
                 "notes": []
               },
               "description_markdown": "You carry celestial magic within you and can wield it directly. Gain access to actions and spells that require spell casting. Your spellcasting features are as follows:\n- You are a **Limited-caster**.\n- Your **source** is **Anima**.\n- Your **Spellcasting Modifier** is **Will**.\n- Your total **reservoir** equals _(½ × Tier) + Spellcasting Modifier_ (rounded up).\n- Start with Two **Known Spells** at Tier 1.\n- Your **prepared spells** equal your **Spellcasting Modifier**.\n- Your **Spell DC** = 10 + Spell Tier + Spellcasting Modifier.\n- Each **Respite** restores spell points equal to your **Spellcasting Modifier** (minimum 3).\n- You gain two **Cantrips** from the **Anima** source.",
-              "raw_markdown": "**Trait** Passive | **Cost** -\nYou carry celestial magic within you and can wield it directly. Gain access to actions and spells that require spell casting.",
-              "spellcasting": {
-                "caster_type": "Limited-caster",
-                "source": "Anima",
-                "spellcasting_modifier": "Will",
-                "reservoir_formula": "(½ × Tier) + Spellcasting Modifier (rounded up)",
-                "known_spells": "Start with Two Known Spells at Tier 1.",
-                "prepared_spells": "your Spellcasting Modifier",
-                "spell_dc": "10 + Spell Tier + Spellcasting Modifier.",
-                "respite_recovery": "Each Respite restores spell points equal to your Spellcasting Modifier (minimum 3).",
-                "cantrip_notes": [
-                  "You gain two Cantrips from the Anima source."
-                ]
-              },
-              "cantrips": [
-                {
-                  "name": "Mending Bond",
-                  "is_cantrip": true,
-                  "range": "Touch",
-                  "duration": "Instant",
-                  "description_markdown": "You create a bond using magical energy to reinforce or mend small fractures or tears in objects no larger than 1 ft / 0.3 m. This cannot restore a magical item's effects if it was destroyed."
-                },
-                {
-                  "name": "Starfall",
-                  "is_cantrip": true,
-                  "range": "Nearby",
-                  "duration": "Instant",
-                  "description_markdown": "You launch loose debris and objects of minimal mass. Make a **spell attack roll**, on a hit deal 1d8 **gravity** plus **spell casting modifier**."
-                },
-                {
-                  "name": "Starlight",
-                  "is_cantrip": true,
-                  "range": "Self",
-                  "duration": "1 hour (Focused)",
-                  "description_markdown": "You create a small torch-sized light which emits 20 ft / 6 m of **dim-light** that hovers around you and follows you. It can be moved to any location within your **zone** once per turn, and follows if you change **zones**."
-                },
-                {
-                  "name": "Radiant Dart",
-                  "is_cantrip": true,
-                  "range": "Self",
-                  "duration": "Instant",
-                  "description_markdown": "You send a bolt of bright energy at a target. Make a **spell attack roll**, on a hit deal 1d4 **ether**, and on a **critical hit** that target is illuminated and cannot be a state of **hidden** or **Obscured**."
-                }
-              ]
+              "raw_markdown": "**Trait** Passive | **Cost** -\nYou carry celestial magic within you and can wield it directly. Gain access to actions and spells that require spell casting. Your spellcasting features are as follows:\n- You are a **Limited-caster**.\n- Your **source** is **Anima**.\n- Your **Spellcasting Modifier** is **Will**.\n- Your total **reservoir** equals _(½ × Tier) + Spellcasting Modifier_ (rounded up).\n- Start with Two **Known Spells** at Tier 1.\n- Your **prepared spells** equal your **Spellcasting Modifier**.\n- Your **Spell DC** = 10 + Spell Tier + Spellcasting Modifier.\n- Each **Respite** restores spell points equal to your **Spellcasting Modifier** (minimum 3).\n- You gain two **Cantrips** from the **Anima** source.\n\n###### Cantrips\n\n**Mending Bond** \n**Range** Touch | **Duration** Instant\nYou create a bond using magical energy to reinforce or mend small fractures or tears in objects no larger than 1 ft / 0.3 m. This cannot restore a magical item's effects if it was destroyed.\n\n**Starfall**\n**Range** Nearby | **Duration** Instant\nYou launch loose debris and objects of minimal mass. Make a **spell attack roll**, on a hit deal 1d8 **gravity** plus **spell casting modifier**.\n\n**Starlight** \n**Range** Self | **Duration** 1 hour *(Focused)*\nYou create a small torch-sized light which emits 20 ft / 6 m of **dim-light** that hovers around you and follows you. It can be moved to any location within your **zone** once per turn, and follows if you change **zones**.\n\n**Radiant Dart**\n**Range** Self | **Duration** Instant\nYou send a bolt of bright energy at a target. Make a **spell attack roll**, on a hit deal 1d4 **ether**, and on a **critical hit** that target is illuminated and cannot be a state of **hidden** or **Obscured**."
             }
           ]
         },
@@ -646,12 +626,17 @@
               "owner_id": "chosen-anointed",
               "owner_name": "Anointed",
               "tag": "Anointed",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Support",
-              "traits": ["Support"],
+              "traits": [
+                "Support"
+              ],
               "activation": {
                 "raw": "1 AP",
-                "resources": { "ap": 1 },
+                "resources": {
+                  "ap": 1
+                },
                 "properties": {},
                 "notes": []
               },
@@ -669,7 +654,7 @@
             "attribute": "will",
             "value": 1
           },
-          "flavor": "You began life as nothing—or so you believe. Yet fate continues to spare you, nudging you toward a future you haven't yet deciphered. You refuse to fall before you discover why.",
+          "flavor": "You began life as nothing—or so you believe. Yet fate continues to spare you, nudging you toward a future you haven’t yet deciphered. You refuse to fall before you discover why.",
           "caster": null,
           "features": [
             {
@@ -680,11 +665,14 @@
               "owner_id": "chosen-fated",
               "owner_name": "Fated",
               "tag": "Fated",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Trigger",
-              "traits": ["Trigger"],
+              "traits": [
+                "Trigger"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
@@ -707,15 +695,21 @@
         "parsed": {
           "consumables": {
             "raw": "1 Week of Rations",
-            "items": ["1 Week of Rations"]
+            "items": [
+              "1 Week of Rations"
+            ]
           },
           "kits": {
             "raw": "Vocation dependent",
-            "items": ["Vocation dependent"]
+            "items": [
+              "Vocation dependent"
+            ]
           },
           "clothing": {
             "raw": "Homemade clothing",
-            "items": ["Homemade clothing"]
+            "items": [
+              "Homemade clothing"
+            ]
           },
           "misc": {
             "raw": "Picture Locket, Traditional family heirloom, Rough Regional map, Walking stick, Waterproof bag",
@@ -737,8 +731,8 @@
           "name": "Mariner",
           "slug": "mariner",
           "attribute_bonus": {
-            "raw": "+1 Brawn",
-            "attribute": "brawn",
+            "raw": "+1 Body",
+            "attribute": "body",
             "value": 1
           },
           "flavor": "Your town grew up close to the water, and you were a small fishing community that provided fish supplies to some of the larger cities. You have gain a lot of strength from working with aquatic life and also have heard some fascinating stories from the merchants who came to trade.",
@@ -752,11 +746,14 @@
               "owner_id": "commonfolk-mariner",
               "owner_name": "Mariner",
               "tag": "Mariner",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
@@ -786,17 +783,20 @@
               "owner_id": "commonfolk-tavernhand",
               "owner_name": "Tavernhand",
               "tag": "Tavern Hand",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
                 "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
               },
-              "description_markdown": "You've learned to move through packed tables, drunk patrons, and tight crowds.  \nWhile **engaged by two or more enemies**, the **Dodge** action costs **1 AP less** (minimum 1).",
-              "raw_markdown": "**Trait** Passive | **Cost** -\nYou've learned to move through packed tables, drunk patrons, and tight crowds.  \nWhile **engaged by two or more enemies**, the **Dodge** action costs **1 AP less** (minimum 1)."
+              "description_markdown": "You’ve learned to move through packed tables, drunk patrons, and tight crowds.  \nWhile **engaged by two or more enemies**, the **Dodge** action costs **1 AP less** (minimum 1).",
+              "raw_markdown": "**Trait** Passive | **Cost** -\nYou’ve learned to move through packed tables, drunk patrons, and tight crowds.  \nWhile **engaged by two or more enemies**, the **Dodge** action costs **1 AP less** (minimum 1)."
             }
           ]
         },
@@ -820,11 +820,14 @@
               "owner_id": "commonfolk-oddjob",
               "owner_name": "Oddjob",
               "tag": "Oddjob",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
@@ -853,10 +856,17 @@
               "Symptom control potions (3)"
             ]
           },
-          "kits": { "raw": "None", "items": [] },
+          "kits": {
+            "raw": "None",
+            "items": [
+              "None"
+            ]
+          },
           "clothing": {
             "raw": "Concealing clothing/makeup",
-            "items": ["Concealing clothing/makeup"]
+            "items": [
+              "Concealing clothing/makeup"
+            ]
           },
           "misc": {
             "raw": "Cursed trinket (cannot be discarded), Journal of curse research, Protective amulet, Warning symbols, Family history scroll",
@@ -870,11 +880,6 @@
           }
         }
       },
-      "caster": {
-        "casterType": "limited",
-        "casterSource": "Soul",
-        "casterModifierOptions": ["will"]
-      },
       "origin_features": [
         {
           "id": "origins-cursed-base-spellcasting",
@@ -884,9 +889,12 @@
           "owner_id": "cursed",
           "owner_name": "Cursed",
           "tag": "Cursed",
+          "tier": 0,
           "trait_label": "Trait",
           "trait_raw": "Passive",
-          "traits": ["Passive"],
+          "traits": [
+            "Passive"
+          ],
           "activation": {
             "raw": "-",
             "resources": {},
@@ -894,58 +902,18 @@
             "notes": []
           },
           "description_markdown": "Your curse grants you access to dangerous supernatural power. Gain access to actions and spells that require spell casting. Your spellcasting features are as follows:\n- You are a **Limited-caster**.\n- Your **source** is **Soul**.\n- Your **Spellcasting Modifier** is **Will**.\n- Your total **reservoir** equals _(½ × Tier) + Spellcasting Modifier_ (rounded up).\n- Start with Two **Known Spells** at Tier 1.\n- Your **prepared spells** equal your **Spellcasting Modifier**.\n- Your **Spell DC** = 10 + Spell Tier + Spellcasting Modifier.\n- Each **Respite** restores spell points equal to your **Spellcasting Modifier** (minimum 3).\n- You gain two **Cantrips** from the **Soul** source.",
-          "raw_markdown": "**Trait** Passive | **Cost** -\nYour curse grants you access to dangerous supernatural power. Gain access to actions and spells that require spell casting.",
-          "spellcasting": {
-            "caster_type": "Limited-caster",
-            "source": "Soul",
-            "spellcasting_modifier": "Will",
-            "reservoir_formula": "(½ × Tier) + Spellcasting Modifier (rounded up)",
-            "known_spells": "Start with Two Known Spells at Tier 1.",
-            "prepared_spells": "your Spellcasting Modifier",
-            "spell_dc": "10 + Spell Tier + Spellcasting Modifier.",
-            "respite_recovery": "Each Respite restores spell points equal to your Spellcasting Modifier (minimum 3).",
-            "cantrip_notes": ["You gain two Cantrips from the Soul source."]
-          },
-          "cantrips": [
-            {
-              "name": "Blight Touch",
-              "is_cantrip": true,
-              "range": "Close",
-              "duration": "1 Round",
-              "description_markdown": "Make a **spell attack roll**, on a hit deal 2d4 **poison** or **void**. On a **critical hit**, reduce the target's **body** by -2 until the end of its next turn. The target is also, considered **hexed** until the end of your next turn."
-            },
-            {
-              "name": "Grim Knowledge",
-              "is_cantrip": true,
-              "range": "Nearby",
-              "duration": "Instant",
-              "description_markdown": "You are well acquainted with curses and hexes. You cast magic to detect if a creature within range has either a magic or spell effect from a curse or hex placed upon them."
-            },
-            {
-              "name": "Hex Barb",
-              "is_cantrip": true,
-              "range": "Nearby",
-              "duration": "Instant",
-              "description_markdown": "Make a **spell attack roll**, on a hit deal 1d6 **void** and if the target is **hexed** or is suffering from a **condition**, damage increase to 1d12."
-            },
-            {
-              "name": "Shallow Darkness",
-              "is_cantrip": true,
-              "range": "Touch",
-              "duration": "1 minute",
-              "description_markdown": "You cast a **aura** upon a willing target, the next **stealth** check from that target gains a +2."
-            }
-          ]
+          "raw_markdown": "**Trait** Passive | **Cost** -\nYour curse grants you access to dangerous supernatural power. Gain access to actions and spells that require spell casting. Your spellcasting features are as follows:\n- You are a **Limited-caster**.\n- Your **source** is **Soul**.\n- Your **Spellcasting Modifier** is **Will**.\n- Your total **reservoir** equals _(½ × Tier) + Spellcasting Modifier_ (rounded up).\n- Start with Two **Known Spells** at Tier 1.\n- Your **prepared spells** equal your **Spellcasting Modifier**.\n- Your **Spell DC** = 10 + Spell Tier + Spellcasting Modifier.\n- Each **Respite** restores spell points equal to your **Spellcasting Modifier** (minimum 3).\n- You gain two **Cantrips** from the **Soul** source.\n\n###### Cantrips\n\n**Blight Touch** \n**Range** Close | **Duration** 1 Round\nMake a **spell attack roll**, on a hit deal 2d4 **poison** or **void**. On a **critical hit**, reduce the target's **body** by -2 until the end of its next turn. The target is also, considered **hexed** until the end of your next turn. \n\n**Grim Knowledge** \n**Range** Nearby | **Duration** Instant\nYou are well acquainted with curses and hexes. You cast magic to detect if a creature within range has either a magic or spell effect from a curse or hex placed upon them.\n\n**Hex Barb**\n**Range** Nearby | **Duration** Instant\nMake a **spell attack roll**, on a hit deal 1d6 **void** and if the target is **hexed** or is suffering from a **condition**, damage increase to 1d12.\n\n**Shallow Darkness** \n**Range** Touch | **Duration** 1 minute\nYou cast a **aura** upon a willing target, the next **stealth** check from that target gains a +2."
         }
       ],
+      "caster": null,
       "vocations": [
         {
           "id": "cursed-exile",
           "name": "Exile",
           "slug": "exile",
           "attribute_bonus": {
-            "raw": "+1 Finesse",
-            "attribute": "finesse",
+            "raw": "+1 Body",
+            "attribute": "body",
             "value": 1
           },
           "flavor": "Left in the cold, no one remembers your name, or at least they have tried to erase it from memory. Your blood runs deep with a curse no history has ever recalled. You have grown tired of this exile, whether you succumb to this curse or remove it, this exile will end.",
@@ -959,11 +927,14 @@
               "owner_id": "cursed-exile",
               "owner_name": "Exile",
               "tag": "Exile",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Trigger",
-              "traits": ["Trigger"],
+              "traits": [
+                "Trigger"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
@@ -986,24 +957,27 @@
           "caster": null,
           "features": [
             {
-              "id": "origins-cursed-host-base-whispers-of-insanity",
-              "name": "Whispers of Insanity",
-              "slug": "whispers-of-insanity",
+              "id": "origins-cursed-host-base-already-claimed",
+              "name": "Already Claimed",
+              "slug": "already-claimed",
               "owner_type": "vocation",
               "owner_id": "cursed-host",
               "owner_name": "Host",
               "tag": "Host",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
               },
-              "description_markdown": "You can cast spells without a **Spell Catalyst**, and without speaking.",
-              "raw_markdown": "**Trait** Passive\nYou can cast spells without a **Spell Catalyst**, and without speaking."
+              "description_markdown": "You can cast spells without a **Spell Catalyst**, and without speaking, and have **Resolve** on saving throws against magical effects that attempt to **control**, **charm**, or **manipulate** you.",
+              "raw_markdown": "**Trait** Passive\nYou can cast spells without a **Spell Catalyst**, and without speaking, and have **Resolve** on saving throws against magical effects that attempt to **control**, **charm**, or **manipulate** you."
             }
           ]
         },
@@ -1020,24 +994,27 @@
           "caster": null,
           "features": [
             {
-              "id": "origins-cursed-visitor-base-already-claimed",
-              "name": "Already Claimed",
-              "slug": "already-claimed",
+              "id": "origins-cursed-visitor-base-soul-brand",
+              "name": "Soul Brand",
+              "slug": "soul-brand",
               "owner_type": "vocation",
               "owner_id": "cursed-visitor",
               "owner_name": "Visitor",
               "tag": "Visitor",
+              "tier": 0,
               "trait_label": "Trait",
-              "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "trait_raw": "Narrative (Resource)",
+              "traits": [
+                "Narrative"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
               },
-              "description_markdown": "Whether you like it or not, you've already been claimed for. You have **Resolve** on saving throws against magical effects that attempt to **control**, **charm**, or **manipulate** you.",
-              "raw_markdown": "**Trait** Passive\nWhether you like it or not, you've already been claimed for. You have **Resolve** on saving throws against magical effects that attempt to **control**, **charm**, or **manipulate** you."
+              "description_markdown": "Not sure how why you started collecting, only that you were told to. Choose a target within **far** range and mark it with your **Soul Brand**. When you kill a marked target you gain a **Soul Token**; these tokens can be used in place of **Ambition** cost. You can hold 2 at a time.",
+              "raw_markdown": "**Trait** Narrative (Resource) | **Cost** -\nNot sure how why you started collecting, only that you were told to. Choose a target within **far** range and mark it with your **Soul Brand**. When you kill a marked target you gain a **Soul Token**; these tokens can be used in place of **Ambition** cost. You can hold 2 at a time."
             }
           ]
         }
@@ -1062,11 +1039,15 @@
           },
           "kits": {
             "raw": "Animal handling kit",
-            "items": ["Animal handling kit"]
+            "items": [
+              "Animal handling kit"
+            ]
           },
           "clothing": {
             "raw": "Sturdy work clothes",
-            "items": ["Sturdy work clothes"]
+            "items": [
+              "Sturdy work clothes"
+            ]
           },
           "misc": {
             "raw": "Farming tools, Weather prediction almanac, Harvest festival token, Animal whistle",
@@ -1102,11 +1083,14 @@
               "owner_id": "farmhand-caretaker",
               "owner_name": "Caretaker",
               "tag": "Caretaker",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
@@ -1121,8 +1105,8 @@
           "name": "Fieldhand",
           "slug": "fieldhand",
           "attribute_bonus": {
-            "raw": "+1 Brawn",
-            "attribute": "brawn",
+            "raw": "+1 Body",
+            "attribute": "body",
             "value": 1
           },
           "flavor": "The soil has been your companion, your hands calloused from years of hard labor. You know every inch of the land, every furrow, every seed planted. But the world beyond the fields calls, and you're ready to see what else life has in store for you.",
@@ -1136,11 +1120,14 @@
               "owner_id": "farmhand-fieldhand",
               "owner_name": "Fieldhand",
               "tag": "Field Hand",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
@@ -1170,11 +1157,14 @@
               "owner_id": "farmhand-brewer",
               "owner_name": "Brewer",
               "tag": "Brewer",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
@@ -1195,14 +1185,24 @@
       "origin_pack": {
         "raw": "**Consumables:** None\n**Kits:** Trade tools, Trade sample case\n**Clothing:** Guild uniform/attire\n**Misc. (Pick 2):** Guild membership badge, Official documents, Guild rulebook, Networking contact list, Contract templates, Official seal or stamp",
         "parsed": {
-          "consumables": { "raw": "None", "items": [] },
+          "consumables": {
+            "raw": "None",
+            "items": [
+              "None"
+            ]
+          },
           "kits": {
             "raw": "Trade tools, Trade sample case",
-            "items": ["Trade tools", "Trade sample case"]
+            "items": [
+              "Trade tools",
+              "Trade sample case"
+            ]
           },
           "clothing": {
             "raw": "Guild uniform/attire",
-            "items": ["Guild uniform/attire"]
+            "items": [
+              "Guild uniform/attire"
+            ]
           },
           "misc": {
             "raw": "Guild membership badge, Official documents, Guild rulebook, Networking contact list, Contract templates, Official seal or stamp",
@@ -1240,11 +1240,14 @@
               "owner_id": "guildmate-accountant",
               "owner_name": "Accountant",
               "tag": "Accountant",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
@@ -1259,8 +1262,8 @@
           "name": "Courier",
           "slug": "courier",
           "attribute_bonus": {
-            "raw": "+1 Finesse",
-            "attribute": "finesse",
+            "raw": "+1 Body",
+            "attribute": "body",
             "value": 1
           },
           "flavor": "Speed is your greatest asset, and reliability your reputation. Through wind, rain, or treacherous roads, you've never failed to deliver. The guild taught you more than just how to carry messages—they taught you how to survive.",
@@ -1274,11 +1277,14 @@
               "owner_id": "guildmate-courier",
               "owner_name": "Courier",
               "tag": "Courier",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
@@ -1308,12 +1314,17 @@
               "owner_id": "guildmate-hireling",
               "owner_name": "Hireling",
               "tag": "Hireling",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Trigger",
-              "traits": ["Trigger"],
+              "traits": [
+                "Trigger"
+              ],
               "activation": {
                 "raw": "1 AP",
-                "resources": { "ap": 1 },
+                "resources": {
+                  "ap": 1
+                },
                 "properties": {},
                 "notes": []
               },
@@ -1335,10 +1346,22 @@
         "parsed": {
           "consumables": {
             "raw": "Alchemical ingredients",
-            "items": ["Alchemical ingredients"]
+            "items": [
+              "Alchemical ingredients"
+            ]
           },
-          "kits": { "raw": "None", "items": [] },
-          "clothing": { "raw": "Academic robes", "items": ["Academic robes"] },
+          "kits": {
+            "raw": "None",
+            "items": [
+              "None"
+            ]
+          },
+          "clothing": {
+            "raw": "Academic robes",
+            "items": [
+              "Academic robes"
+            ]
+          },
           "misc": {
             "raw": "Student's spellbook, Practice wand, Magical theory texts, Enchanted quill, Scroll of a tier 1 spell, Academy badge or token, Practice target dummy",
             "items": [
@@ -1353,11 +1376,6 @@
           }
         }
       },
-      "caster": {
-        "casterType": "limited",
-        "casterSource": "Mana",
-        "casterModifierOptions": ["mind"]
-      },
       "origin_features": [
         {
           "id": "origins-magic-initiate-base-spellcasting",
@@ -1367,9 +1385,12 @@
           "owner_id": "magic-initiate",
           "owner_name": "Magic Initiate",
           "tag": "Magic Initiate",
+          "tier": 0,
           "trait_label": "Trait",
           "trait_raw": "Passive",
-          "traits": ["Passive"],
+          "traits": [
+            "Passive"
+          ],
           "activation": {
             "raw": "-",
             "resources": {},
@@ -1377,52 +1398,10 @@
             "notes": []
           },
           "description_markdown": "You gain access to **limited spell casting** using **Mana** if you do not already have a **Spellcasting** feat. Gain access to actions and spells that require spell casting. Your spellcasting features are as follows:\n- You are a **Limited-caster**.\n- Your **source** is **Mana**.\n- Your **Spellcasting Modifier** is **Mind**.\n- Your total **reservoir** equals _(½ × Tier) + Spellcasting Modifier_ (rounded up).\n- Start with Two **Known Spells** at Tier 1.\n- Your **prepared spells** equal your **Spellcasting Modifier**.\n- Your **Spell DC** = 10 + Spell Tier + Spellcasting Modifier.\n- Each **Respite** restores spell points equal to your **Spellcasting Modifier** (minimum 3).\n- You gain two **Cantrips** from the **Magic Initiate** list.",
-          "raw_markdown": "**Trait** Passive | **Cost** -\nYou gain access to **limited spell casting** using **Mana** if you do not already have a **Spellcasting** feat. Gain access to actions and spells that require spell casting.",
-          "spellcasting": {
-            "caster_type": "Limited-caster",
-            "source": "Mana",
-            "spellcasting_modifier": "Mind",
-            "reservoir_formula": "(½ × Tier) + Spellcasting Modifier (rounded up)",
-            "known_spells": "Start with Two Known Spells at Tier 1.",
-            "prepared_spells": "your Spellcasting Modifier",
-            "spell_dc": "10 + Spell Tier + Spellcasting Modifier.",
-            "respite_recovery": "Each Respite restores spell points equal to your Spellcasting Modifier (minimum 3).",
-            "cantrip_notes": [
-              "You gain two Cantrips from the Magic Initiate list."
-            ]
-          },
-          "cantrips": [
-            {
-              "name": "Apprentice's Artifice",
-              "is_cantrip": true,
-              "range": "Close",
-              "duration": "Instant",
-              "description_markdown": "You perform a minor magical feats using your abilities such as:\n- **Alteration** You can change the physical state of an object's color, cleanliness, and temperature. If color or temperature the effect only lasts for 10 minutes.\n- **Illumination** You can instantly adjust the state of an object which can be lit by fire, or create small bursts of dim-light\n- **Sensory** Create small instant auditory, visual, or aroma effect, which is harmless in nature."
-            },
-            {
-              "name": "Mana Dart",
-              "is_cantrip": true,
-              "range": "Close",
-              "duration": "Instant",
-              "description_markdown": "Make a **spell attack roll**, on hit deal 1d4 **arcane** damage. On a **critical hit**, deal one extra dice per your current **tier**."
-            },
-            {
-              "name": "Swift Scribe",
-              "is_cantrip": true,
-              "range": "Touch",
-              "duration": "Instant",
-              "description_markdown": "Using your magic you can copy visual text or symbols by etching and imprinting onto objects. These copies are non-magical in nature."
-            },
-            {
-              "name": "System Shock",
-              "is_cantrip": true,
-              "range": "Melee",
-              "duration": "Instant",
-              "description_markdown": "Make **spell attack roll**, on a hit deal 2d4 **arcane** damage. On a **critical hit**, the target is **dazed** until the end of their next turn."
-            }
-          ]
+          "raw_markdown": "**Trait** Passive | **Cost** -\nYou gain access to **limited spell casting** using **Mana** if you do not already have a **Spellcasting** feat. Gain access to actions and spells that require spell casting. Your spellcasting features are as follows:\n- You are a **Limited-caster**.\n- Your **source** is **Mana**.\n- Your **Spellcasting Modifier** is **Mind**.\n- Your total **reservoir** equals _(½ × Tier) + Spellcasting Modifier_ (rounded up).\n- Start with Two **Known Spells** at Tier 1.\n- Your **prepared spells** equal your **Spellcasting Modifier**.\n- Your **Spell DC** = 10 + Spell Tier + Spellcasting Modifier.\n- Each **Respite** restores spell points equal to your **Spellcasting Modifier** (minimum 3).\n- You gain two **Cantrips** from the **Magic Initiate** list.\n\n###### Cantrips \n\n**Apprentice's Artifice**\n**Range** Close | **Duration** Instant\nYou perform a minor magical feats using your abilities such as:\n- **Alteration** You can change the physical state of an object's color, cleanliness, and temperature. If color or temperature the effect only lasts for 10 minutes. \n- **Illumination** You can instantly adjust the state of an object which can be lit by fire, or create small bursts of dim-light\n- **Sensory** Create small instant auditory, visual, or aroma effect, which is harmless in nature.\n\n**Mana Dart**\n**Range** Close | **Duration** Instant\nMake a **spell attack roll**, on hit deal 1d4 **arcane** damage. On a **critical hit**, deal one extra dice per your current **tier**.\n\n**Swift Scribe** \n**Range** Touch | **Duration** Instant\nUsing your magic you can copy visual text or symbols by etching and imprinting onto objects. These copies are non-magical in nature.\n\n**System Shock**\n**Range** Melee | **Duration** Instant\nMake **spell attack roll**, on a hit deal 2d4 **arcane** damage. On a **critical hit**, the target is **dazed** until the end of their next turn."
         }
       ],
+      "caster": null,
       "vocations": [
         {
           "id": "magic-initiate-academic",
@@ -1444,12 +1423,17 @@
               "owner_id": "magic-initiate-academic",
               "owner_name": "Academic",
               "tag": "Academic",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Narrative",
-              "traits": ["Narrative"],
+              "traits": [
+                "Narrative"
+              ],
               "activation": {
                 "raw": "2 AP",
-                "resources": { "ap": 2 },
+                "resources": {
+                  "ap": 2
+                },
                 "properties": {},
                 "notes": []
               },
@@ -1463,8 +1447,8 @@
           "name": "Self-taught",
           "slug": "self-taught",
           "attribute_bonus": {
-            "raw": "+1 Finesse",
-            "attribute": "finesse",
+            "raw": "+1 Will",
+            "attribute": "will",
             "value": 1
           },
           "flavor": "No master could contain your curiosity, no traditional path could guide your unique approach. You've pieced together magical knowledge through stolen scrolls, whispered secrets, and relentless practice. The world is your classroom, and magic bends to your will.",
@@ -1478,11 +1462,14 @@
               "owner_id": "magic-initiate-self-taught",
               "owner_name": "Self-taught",
               "tag": "Self-taught",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
@@ -1497,8 +1484,8 @@
           "name": "Forbidden",
           "slug": "forbidden",
           "attribute_bonus": {
-            "raw": "+1 Will",
-            "attribute": "will",
+            "raw": "+1 Brawn",
+            "attribute": "brawn",
             "value": 1
           },
           "flavor": "The darkest tomes, the most dangerous rituals—these are the paths you've chosen. Others warn you of the risks, but they don't understand the call of forbidden knowledge. Something within you knows there are secrets worth any price.",
@@ -1512,17 +1499,22 @@
               "owner_id": "magic-initiate-forbidden",
               "owner_name": "Forbidden",
               "tag": "Forbidden",
+              "tier": 0,
               "trait_label": "Trait",
-              "trait_raw": "Narrative",
-              "traits": ["Narrative"],
+              "trait_raw": "Passive",
+              "traits": [
+                "Passive"
+              ],
               "activation": {
-                "raw": "1 AP",
-                "resources": { "ap": 1 },
+                "raw": "1 Ambition",
+                "resources": {
+                  "ambition": 1
+                },
                 "properties": {},
                 "notes": []
               },
-              "description_markdown": "The darkness that resides in you gives you power, but it will be obvious when used. Once per **respite**, you may use the **Dark Boon** in one of the following ways.\n- Gain resistance to the next damage you take for 1 minute\n- Add your **Will** to an attack or damage roll\n- Add your **Ambition** to any roll with no penalty of failure",
-              "raw_markdown": "**Trait** Narrative | **Cost** 1 AP\nThe darkness that resides in you gives you power, but it will be obvious when used. Once per **respite**, you may use the **Dark Boon** in one of the following ways.\n- Gain resistance to the next damage you take for 1 minute\n- Add your **Will** to an attack or damage roll\n- Add your **Ambition** to any roll with no penalty of failure"
+              "description_markdown": "You may expend **Vitality** equal to two times the **Tier** of spell in place of **Reservoir**.",
+              "raw_markdown": "**Trait** Passive | **Cost** 1 Ambition\nYou may expend **Vitality** equal to two times the **Tier** of spell in place of **Reservoir**."
             }
           ]
         }
@@ -1537,14 +1529,23 @@
       "origin_pack": {
         "raw": "**Consumables:** None\n**Kits:** Personal grooming kit\n**Clothing:** Fine clothing (3 sets)\n**Misc. (Pick 2):** Signet ring, Family crest, Letters of introduction, Servant's whistle, Small lockbox, Family tree document, Small purse of silver coins",
         "parsed": {
-          "consumables": { "raw": "None", "items": [] },
+          "consumables": {
+            "raw": "None",
+            "items": [
+              "None"
+            ]
+          },
           "kits": {
             "raw": "Personal grooming kit",
-            "items": ["Personal grooming kit"]
+            "items": [
+              "Personal grooming kit"
+            ]
           },
           "clothing": {
             "raw": "Fine clothing (3 sets)",
-            "items": ["Fine clothing (3 sets)"]
+            "items": [
+              "Fine clothing (3 sets)"
+            ]
           },
           "misc": {
             "raw": "Signet ring, Family crest, Letters of introduction, Servant's whistle, Small lockbox, Family tree document, Small purse of silver coins",
@@ -1583,11 +1584,14 @@
               "owner_id": "nobility-educated",
               "owner_name": "Educated",
               "tag": "Educated",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
@@ -1617,12 +1621,17 @@
               "owner_id": "nobility-socialite",
               "owner_name": "Socialite",
               "tag": "Socialite",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Support",
-              "traits": ["Support"],
+              "traits": [
+                "Support"
+              ],
               "activation": {
                 "raw": "2 AP",
-                "resources": { "ap": 2 },
+                "resources": {
+                  "ap": 2
+                },
                 "properties": {},
                 "notes": []
               },
@@ -1636,8 +1645,8 @@
           "name": "Warfare",
           "slug": "warfare",
           "attribute_bonus": {
-            "raw": "+1 Finesse",
-            "attribute": "finesse",
+            "raw": "+1 Body",
+            "attribute": "body",
             "value": 1
           },
           "flavor": "War runs in your blood, as does your desire for glory. You've studied strategy, trained with the finest weapons, and understand that true power sometimes comes from the point of a sword. The battlefield is where legends are born.",
@@ -1651,11 +1660,14 @@
               "owner_id": "nobility-warfare",
               "owner_name": "Warfare",
               "tag": "Warfare",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Trigger | Range Engagement",
-              "traits": ["Trigger | Range Engagement"],
+              "traits": [
+                "Trigger | Range Engagement"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
@@ -1683,8 +1695,18 @@
               "Trading goods from different regions"
             ]
           },
-          "kits": { "raw": "Survival kit", "items": ["Survival kit"] },
-          "clothing": { "raw": "None", "items": [] },
+          "kits": {
+            "raw": "Survival kit",
+            "items": [
+              "Survival kit"
+            ]
+          },
+          "clothing": {
+            "raw": "None",
+            "items": [
+              "None"
+            ]
+          },
           "misc": {
             "raw": "Weather-resistant tent, Map (partially filled), Star navigation tools, Cultural tokens from various regions, Multi-purpose walking staff, Water purification stones",
             "items": [
@@ -1714,18 +1736,21 @@
           "caster": null,
           "features": [
             {
-              "id": "origins-nomad-herbalist-base-natures-cure",
+              "id": "origins-nomad-herbalist-base-nature-s-cure",
               "name": "Nature's Cure",
-              "slug": "natures-cure",
+              "slug": "nature-s-cure",
               "owner_type": "vocation",
               "owner_id": "nomad-herbalist",
               "owner_name": "Herbalist",
               "tag": "Nomad",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
@@ -1740,28 +1765,33 @@
           "name": "Hunter",
           "slug": "hunter",
           "attribute_bonus": {
-            "raw": "+1 Finesse",
-            "attribute": "finesse",
+            "raw": "+1 Body",
+            "attribute": "body",
             "value": 1
           },
           "flavor": "The wilderness is your home, prey your conversation. Every track tells a story, every movement a potential meal. You've learned to become one with the hunt, to survive where others would perish.",
           "caster": null,
           "features": [
             {
-              "id": "origins-nomad-hunter-base-hunters-mark",
+              "id": "origins-nomad-hunter-base-hunter-s-mark",
               "name": "Hunter's Mark",
-              "slug": "hunters-mark",
+              "slug": "hunter-s-mark",
               "owner_type": "vocation",
               "owner_id": "nomad-hunter",
               "owner_name": "Hunter",
               "tag": "Hunter",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Utility",
-              "traits": ["Utility"],
+              "traits": [
+                "Utility"
+              ],
               "activation": {
-                "raw": "2 AP",
-                "resources": { "ap": 2 },
-                "properties": { "duration": "1 Minute" },
+                "raw": "2 AP | Duration 1 Minute",
+                "resources": {
+                  "ap": 2
+                },
+                "properties": {},
                 "notes": []
               },
               "description_markdown": "Once per **respite**, you mark the target with your chosen marking tool, guiding your weapons to their heart. While the target is **Marked**, you can add 1d4 to damage and attack rolls. If the target escapes, you have **Resolve** to track them for two hours.",
@@ -1789,11 +1819,14 @@
               "owner_id": "nomad-pathfinder",
               "owner_name": "Pathfinder",
               "tag": "Pathfinder",
+              "tier": 0,
               "trait_label": "Activation",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
@@ -1814,14 +1847,24 @@
       "origin_pack": {
         "raw": "**Consumables:** None\n**Kits:** Disguise kit or Forgery tools, Lockpicks\n**Clothing:** Dark hooded cloak\n**Misc. (Pick 2):** False identities (3), Warning signals handbook, Stolen item fence contacts, Suspicious maps with marked locations, Emergency escape tools",
         "parsed": {
-          "consumables": { "raw": "None", "items": [] },
+          "consumables": {
+            "raw": "None",
+            "items": [
+              "None"
+            ]
+          },
           "kits": {
             "raw": "Disguise kit or Forgery tools, Lockpicks",
-            "items": ["Disguise kit or Forgery tools", "Lockpicks"]
+            "items": [
+              "Disguise kit or Forgery tools",
+              "Lockpicks"
+            ]
           },
           "clothing": {
             "raw": "Dark hooded cloak",
-            "items": ["Dark hooded cloak"]
+            "items": [
+              "Dark hooded cloak"
+            ]
           },
           "misc": {
             "raw": "False identities (3), Warning signals handbook, Stolen item fence contacts, Suspicious maps with marked locations, Emergency escape tools",
@@ -1843,8 +1886,8 @@
           "name": "Brute",
           "slug": "brute",
           "attribute_bonus": {
-            "raw": "+1 Brawn",
-            "attribute": "brawn",
+            "raw": "+1 Body",
+            "attribute": "body",
             "value": 1
           },
           "flavor": "Strength is your answer to most problems. Subtlety was never your style—why whisper when you can make a statement with your fists? The world respects power, and you've got more than enough to spare.",
@@ -1858,11 +1901,14 @@
               "owner_id": "outlaw-brute",
               "owner_name": "Brute",
               "tag": "Brute",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Trigger",
-              "traits": ["Trigger"],
+              "traits": [
+                "Trigger"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
@@ -1892,11 +1938,14 @@
               "owner_id": "outlaw-hotshot",
               "owner_name": "Hotshot",
               "tag": "Hotshot",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
@@ -1911,8 +1960,8 @@
           "name": "Thief",
           "slug": "thief",
           "attribute_bonus": {
-            "raw": "+1 Finesse",
-            "attribute": "finesse",
+            "raw": "+1 Mind",
+            "attribute": "mind",
             "value": 1
           },
           "flavor": "Locks are puzzles, security a challenge. You don't just steal—you perform. Each heist is a work of art, each stolen item a testament to your skill. The world is full of treasures, and you know exactly how to claim them.",
@@ -1926,11 +1975,14 @@
               "owner_id": "outlaw-thief",
               "owner_name": "Thief",
               "tag": "Thief",
+              "tier": 0,
               "trait_label": "Activation",
               "trait_raw": "Passive",
-              "traits": ["Passive"],
+              "traits": [
+                "Passive"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
                 "properties": {},
                 "notes": []
@@ -1953,15 +2005,22 @@
         "parsed": {
           "consumables": {
             "raw": "Field rations (1 week), Tobacco or herb pipe",
-            "items": ["Field rations (1 week)", "Tobacco or herb pipe"]
+            "items": [
+              "Field rations (1 week)",
+              "Tobacco or herb pipe"
+            ]
           },
           "kits": {
             "raw": "Injury treatment supplies",
-            "items": ["Injury treatment supplies"]
+            "items": [
+              "Injury treatment supplies"
+            ]
           },
           "clothing": {
             "raw": "Uniform (modified for civilian use)",
-            "items": ["Uniform (modified for civilian use)"]
+            "items": [
+              "Uniform (modified for civilian use)"
+            ]
           },
           "misc": {
             "raw": "Medal or insignia, Military manual, War stories journal, Regulation mess kit, Former unit banner piece",
@@ -1998,13 +2057,18 @@
               "owner_id": "soldier-medic",
               "owner_name": "Medic",
               "tag": "Medic",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Offensive",
-              "traits": ["Offensive"],
+              "traits": [
+                "Offensive"
+              ],
               "activation": {
-                "raw": "3 AP",
-                "resources": { "ap": 3 },
-                "properties": { "range": "Touch" },
+                "raw": "3 AP | Range Touch",
+                "resources": {
+                  "ap": 3
+                },
+                "properties": {},
                 "notes": []
               },
               "description_markdown": "You attempt to repair the **body** of a target and keep it from bleeding out any further. Make an **intellect** roll against the targets **body** to heal **Vitality** equal to your **intellect**. On **critical success**, you add 2d4. This can only be used once **long rest** per target.",
@@ -2017,8 +2081,8 @@
           "name": "Infantry",
           "slug": "infantry",
           "attribute_bonus": {
-            "raw": "+1 Brawn",
-            "attribute": "brawn",
+            "raw": "+1 Body",
+            "attribute": "body",
             "value": 1
           },
           "flavor": "The front lines were your classroom, survival your most important lesson. You've marched through hell, stood when others fell, and learned that true strength is about more than just muscle. Though now that your lord's war is over, maybe it's time to find a less hellish venture.",
@@ -2032,13 +2096,18 @@
               "owner_id": "soldier-infantry",
               "owner_name": "Infantry",
               "tag": "Infantry",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Offensive",
-              "traits": ["Offensive"],
+              "traits": [
+                "Offensive"
+              ],
               "activation": {
-                "raw": "2 AP",
-                "resources": { "ap": 2 },
-                "properties": { "range": "Close" },
+                "raw": "2 AP | Range Close",
+                "resources": {
+                  "ap": 2
+                },
+                "properties": {},
                 "notes": []
               },
               "description_markdown": "You charge into an enemy you were not **engaged** with and make an **attack** roll. Your attack roll has a +2 to hit. After your attack, regardless of hit or miss you and the target become **Engaged**.",
@@ -2066,13 +2135,16 @@
               "owner_id": "soldier-thane",
               "owner_name": "Thane",
               "tag": "Thane",
+              "tier": 0,
               "trait_label": "Trait",
               "trait_raw": "Trigger | Range Close",
-              "traits": ["Trigger | Range Close"],
+              "traits": [
+                "Trigger | Range Close"
+              ],
               "activation": {
-                "raw": null,
+                "raw": "-",
                 "resources": {},
-                "properties": { "range": "Close" },
+                "properties": {},
                 "notes": []
               },
               "description_markdown": "When an ally nearby would have their **Ambition** reduced to 0, you inspire them to keep moving forward. They regain **Ambition** equal to your **ambition** dice. A target may only benefit from this once per **rest**.",

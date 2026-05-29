@@ -613,7 +613,7 @@
               ]
             },
             {
-              "name": "Drifter",
+              "name": "Shaman",
               "role": "Adaptive primal half-caster mixing survival, shapeshifting, and spirit magic.",
               "favored_attributes": "Will or Mind, Body",
               "vitality": "Start 9 + Body; +2d10 per Tier",
@@ -875,7 +875,7 @@
                   "text": "Path of the Frenzied; Path of the Titan"
                 },
                 {
-                  "name": "Drifter",
+                  "name": "Shaman",
                   "text": "Path of the Conduit; Path of the Channeler"
                 },
                 {
@@ -947,7 +947,7 @@
                   "text": "Rapier or longsword; short sword or cestus; buckler; base light armor."
                 },
                 {
-                  "name": "Drifter",
+                  "name": "Shaman",
                   "text": "Quarterstaff; two daggers; component pouch; wilderness survival kit; base light armor."
                 },
                 {
