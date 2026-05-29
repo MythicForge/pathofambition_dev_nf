@@ -453,7 +453,6 @@
         }
       ]
     },
-
     {
       "entity_type": "profession",
       "entity_name": "Elementalist",
@@ -472,37 +471,70 @@
         {
           "name": "Fragmented",
           "effect_text": "Gain access to a second Elemental Core and any abilities your previously selected Feats would give.",
-          "sub_core_count": 1,
-          "sub_core_choice": [
-            { "name": "Flame", "effect_text": "Fire, Spirit (Combat)" },
-            {
-              "name": "Forest",
-              "effect_text": "Wood, Vitality (Support and Defense)"
-            },
-            {
-              "name": "Land",
-              "effect_text": "Stone, Metal (Defense and Utility)"
-            },
-            {
-              "name": "Ocean",
-              "effect_text": "Water, Ice (Control and Healing)"
-            },
-            { "name": "Sky", "effect_text": "Air, Gravity (Stealth)" },
-            { "name": "Tempest", "effect_text": "Electric, Light (Combat)" }
-          ]
+          "follow_up": {
+            "count": 1,
+            "pool": "inline",
+            "options": [
+              {
+                "name": "Flame",
+                "effect_text": "Fire, Spirit (Combat)"
+              },
+              {
+                "name": "Forest",
+                "effect_text": "Wood, Vitality (Support and Defense)"
+              },
+              {
+                "name": "Land",
+                "effect_text": "Stone, Metal (Defense and Utility)"
+              },
+              {
+                "name": "Ocean",
+                "effect_text": "Water, Ice (Control and Healing)"
+              },
+              {
+                "name": "Sky",
+                "effect_text": "Air, Gravity (Stealth)"
+              },
+              {
+                "name": "Tempest",
+                "effect_text": "Electric, Light (Combat)"
+              }
+            ]
+          }
         },
         {
           "name": "Regal",
           "effect_text": "Gain access to another element for Primordial Strike; Elemental Art actions add your melee die to damage or healing total.",
-          "sub_core_count": 1,
-          "sub_core_choice": [
-            { "name": "Flame", "effect_text": "Spirit" },
-            { "name": "Forest", "effect_text": "Poison" },
-            { "name": "Land", "effect_text": "Void" },
-            { "name": "Ocean", "effect_text": "Arcane" },
-            { "name": "Sky", "effect_text": "Gravity" },
-            { "name": "Tempest", "effect_text": "Ether" }
-          ]
+          "follow_up": {
+            "count": 1,
+            "pool": "inline",
+            "options": [
+              {
+                "name": "Flame",
+                "effect_text": "Spirit"
+              },
+              {
+                "name": "Forest",
+                "effect_text": "Poison"
+              },
+              {
+                "name": "Land",
+                "effect_text": "Void"
+              },
+              {
+                "name": "Ocean",
+                "effect_text": "Arcane"
+              },
+              {
+                "name": "Sky",
+                "effect_text": "Gravity"
+              },
+              {
+                "name": "Tempest",
+                "effect_text": "Ether"
+              }
+            ]
+          }
         }
       ]
     },
@@ -1868,7 +1900,12 @@
         {
           "name": "Inquisition",
           "effect_text": "You gain *Expertise* in **1 Tool Kit** and **1 Skill of Choice; gain Resolve on Scan and Intuition/Awareness checks involving Mortals.",
-          "expertise_skill_count": 1
+          "follow_up": {
+            "count": 1,
+            "pool": "vitals_skills",
+            "grants_expertise": true,
+            "bump_count": 1
+          }
         },
         {
           "name": "Severance",
@@ -2393,14 +2430,22 @@
         {
           "name": "Double Rank (1 skill)",
           "effect_text": "Choose 1 VITALS skill and gain 2 Expertise ranks in it.",
-          "expertise_skill_count": 1,
-          "expertise_bump_count": 2
+          "follow_up": {
+            "count": 1,
+            "pool": "vitals_skills",
+            "grants_expertise": true,
+            "bump_count": 2
+          }
         },
         {
           "name": "Split Rank (2 skills)",
           "effect_text": "Choose 2 VITALS skills and gain 1 Expertise rank in each.",
-          "expertise_skill_count": 2,
-          "expertise_bump_count": 1
+          "follow_up": {
+            "count": 2,
+            "pool": "vitals_skills",
+            "grants_expertise": true,
+            "bump_count": 1
+          }
         }
       ]
     }

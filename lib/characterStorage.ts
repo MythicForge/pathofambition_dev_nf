@@ -200,5 +200,15 @@ export function getCharacter(id: string): Character | null {
     return item;
   });
 
+  // Migrate named resource fields → customResources map
+  const cr = found as unknown as Record<string, unknown>;
+  if (!found.customResources) found.customResources = {};
+  if (typeof cr.currentAdrenaline === "number" && found.customResources.adrenaline === undefined) {
+    found.customResources.adrenaline = cr.currentAdrenaline;
+  }
+  if (typeof cr.currentResonance === "number" && found.customResources.resonance === undefined) {
+    found.customResources.resonance = cr.currentResonance;
+  }
+
   return found;
 }

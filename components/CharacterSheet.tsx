@@ -34,6 +34,8 @@ import {
   computeExpertiseBumps,
   clearFeatChoices,
   computeKnownSpheres,
+  evalResourceMax,
+  applyResourceRestore,
   VITALS_SET,
   TIER_TOTAL_SLOTS,
 } from "@/lib/characterCalc";
@@ -886,10 +888,21 @@ export default function CharacterSheetPage({
   }
 
   // ─── Rest actions ────────────────────────────────────────────────────────
+  function restoreCustomResource(
+    type: "respite" | "long_rest" | "full_rest",
+  ): Record<string, number> | undefined {
+    if (!prof?.customResource) return undefined;
+    const def = prof.customResource;
+    const max = evalResourceMax(def, attrs, effectiveTier);
+    const next = applyResourceRestore(c.customResources ?? {}, def, type, max);
+    return { ...c.customResources, [def.key]: next };
+  }
+
   function takeRespite() {
     if (currentRespites <= 0) return;
     const vitRestore = Math.max(4, 4 + attrs.brawn * 2);
     const ambRestore = Math.max(4, attrs.will);
+    const cr = restoreCustomResource("respite");
     persist({
       currentRespites: currentRespites - 1,
       currentVitality: Math.min(
@@ -900,6 +913,7 @@ export default function CharacterSheetPage({
         maxAmbition,
         (c.currentAmbition ?? 0) + ambRestore,
       ),
+      ...(cr ? { customResources: cr } : {}),
     });
   }
 
@@ -907,6 +921,7 @@ export default function CharacterSheetPage({
     const vitRestore = Math.max(10, attrs.brawn * 3);
     const ambRestore = Math.max(10, attrs.will * 2);
     const resRestore = isCaster ? Math.max(9, modVal * 2) : 0;
+    const cr = restoreCustomResource("long_rest");
     persist({
       currentRespites: Math.min(3, currentRespites + 1),
       currentVitality: Math.min(
@@ -918,17 +933,20 @@ export default function CharacterSheetPage({
         (c.currentAmbition ?? 0) + ambRestore,
       ),
       currentReservoir: Math.min(maxReservoir, currentReservoir + resRestore),
+      ...(cr ? { customResources: cr } : {}),
     });
   }
 
   function takeFullRest() {
     const resRestore = isCaster ? Math.max(18, modVal * 3) : 0;
+    const cr = restoreCustomResource("full_rest");
     persist({
       currentRespites: 3,
       currentVitality: derivedMaxVitality,
       currentAmbition: maxAmbition,
       currentReservoir: Math.min(maxReservoir, currentReservoir + resRestore),
       currentWounds: Math.max(0, (c.currentWounds ?? 0) - 1),
+      ...(cr ? { customResources: cr } : {}),
     });
   }
 
@@ -1732,7 +1750,7 @@ export default function CharacterSheetPage({
     function getResolvedOptions(
       featureName: string,
       entityName: string,
-    ): { name: string; effectText: string }[] | null {
+    ): { name: string; effectText: string; sub?: { name: string; effectText: string }[] }[] | null {
       const key = `${entityName}__${featureName}`;
       const selected = c.choiceSelections?.[key];
       if (!selected?.length) return null;
@@ -1740,9 +1758,19 @@ export default function CharacterSheetPage({
         (f) => f.feature_name === featureName && f.entity_name === entityName,
       );
       if (!cf) return null;
+      const prefix = `${entityName}__${featureName} `;
       return cf.options
         .filter((o) => selected.includes(o.name))
-        .map((o) => ({ name: o.name, effectText: o.effect_text }));
+        .map((o) => {
+          // Check for synthetic follow-up selections keyed as "Entity__FeatureName Core (OptionName)"
+          // or "Entity__FeatureName Expertise ×N"
+          const synthSel = c.choiceSelections?.[`${prefix}Core (${o.name})`]
+            ?? c.choiceSelections?.[`${prefix}Expertise ×${o.follow_up?.bump_count ?? 1}`];
+          const sub = synthSel?.length
+            ? synthSel.map((s) => ({ name: s, effectText: "" }))
+            : undefined;
+          return { name: o.name, effectText: o.effect_text, sub };
+        });
     }
 
     function FeatRow({
@@ -1765,7 +1793,7 @@ export default function CharacterSheetPage({
       descriptionMarkdown: string;
       required?: string | null;
       pathInvestment?: string | null;
-      resolvedOptions?: { name: string; effectText: string }[] | null;
+      resolvedOptions?: { name: string; effectText: string; sub?: { name: string; effectText: string }[] }[] | null;
       ownerName?: string;
     }) {
       const expanded = expandedFeats.has(id);
@@ -1807,8 +1835,9 @@ export default function CharacterSheetPage({
               >
                 {name}
               </span>
-              {resolvedOptions && resolvedOptions.length > 0 && (
+              {resolvedOptions && resolvedOptions.length > 0 && resolvedOptions.map((o, i) => (
                 <span
+                  key={i}
                   style={{
                     fontSize: "0.65rem",
                     fontFamily: "var(--font-heading)",
@@ -1820,9 +1849,9 @@ export default function CharacterSheetPage({
                     border: "1px solid var(--primary)",
                   }}
                 >
-                  {resolvedOptions.map((o) => o.name).join(", ")}
+                  {o.sub?.length ? `${o.name} → ${o.sub.map((s) => s.name).join(", ")}` : o.name}
                 </span>
-              )}
+              ))}
               {tier !== undefined && (
                 <span
                   style={{
@@ -1969,6 +1998,17 @@ export default function CharacterSheetPage({
                       >
                         {o.effectText}
                       </span>
+                      {o.sub?.length ? (
+                        <span
+                          style={{
+                            fontSize: "0.75rem",
+                            color: "var(--text-muted)",
+                            marginLeft: "0.5rem",
+                          }}
+                        >
+                          → {o.sub.map((s) => s.name).join(", ")}
+                        </span>
+                      ) : null}
                     </div>
                   ))}
                 </div>
@@ -2173,60 +2213,42 @@ export default function CharacterSheetPage({
       );
       persist({ choiceSelections: updatedSelections, ...expertise });
 
-      // Build follow-up synthetic skill picks for options with expertise_skill_count
-      const VITALS_SKILLS = [...VITALS_SET];
+      // Build follow-up synthetic choices for options with follow_up spec
       const extraQueue: ChoiceFeature[] = [];
       for (const optionName of shopCurrentSels) {
         const opt = current.options.find((o) => o.name === optionName);
-        if (opt?.expertise_skill_count) {
-          const skillCount = opt.expertise_skill_count;
-          const bumpCount = opt.expertise_bump_count ?? 1;
-          const syntheticName = `${current.feature_name} Expertise ×${bumpCount}`;
-          const syntheticKey = `${current.entity_name}__${syntheticName}`;
-          if (!updatedSelections[syntheticKey]) {
-            extraQueue.push({
-              entity_type: current.entity_type,
-              entity_name: current.entity_name,
-              source_kind: current.source_kind,
-              feature_name: syntheticName,
-              tier: current.tier,
-              path: current.path,
-              choice_type: "permanent_choice",
-              selection_rule: skillCount === 1 ? "single" : "fixed_count",
-              min_choices: skillCount,
-              max_choices: skillCount,
-              selection_timing: "on_gain",
-              branches_from_feature: current.feature_name,
-              notes: `Choose ${skillCount} VITALS skill(s) to gain Expertise in.`,
-              grants_expertise: true,
-              options: VITALS_SKILLS.map((s) => ({
-                name: s,
-                effect_text: `Gain Expertise in ${s}.`,
-              })),
-            });
-          }
-        } else if (opt?.sub_core_count && Array.isArray(opt?.sub_core_choice)) {
-          const coreCount = opt.sub_core_count as number;
-          const syntheticName = `${current.feature_name} Core (${optionName})`;
-          const syntheticKey = `${current.entity_name}__${syntheticName}`;
-          if (!updatedSelections[syntheticKey]) {
-            extraQueue.push({
-              entity_type: current.entity_type,
-              entity_name: current.entity_name,
-              source_kind: current.source_kind,
-              feature_name: syntheticName,
-              tier: current.tier,
-              path: current.path,
-              choice_type: "permanent_choice",
-              selection_rule: coreCount === 1 ? "single" : "fixed_count",
-              min_choices: coreCount,
-              max_choices: coreCount,
-              selection_timing: "on_gain",
-              branches_from_feature: current.feature_name,
-              notes: `Choose ${coreCount} Elemental Core(s).`,
-              options: opt.sub_core_choice as { name: string; effect_text: string }[],
-            });
-          }
+        if (!opt?.follow_up) continue;
+        const fu = opt.follow_up;
+        const count = fu.count;
+        const syntheticName = fu.grants_expertise
+          ? `${current.feature_name} Expertise ×${fu.bump_count ?? 1}`
+          : `${current.feature_name} Core (${optionName})`;
+        const syntheticKey = `${current.entity_name}__${syntheticName}`;
+        if (!updatedSelections[syntheticKey]) {
+          const options =
+            fu.pool === "vitals_skills"
+              ? [...VITALS_SET].map((s) => ({
+                  name: s,
+                  effect_text: `Gain Expertise in ${s}.`,
+                }))
+              : (fu.options ?? []);
+          extraQueue.push({
+            entity_type: current.entity_type,
+            entity_name: current.entity_name,
+            source_kind: current.source_kind,
+            feature_name: syntheticName,
+            tier: current.tier,
+            path: current.path,
+            choice_type: "permanent_choice",
+            selection_rule: count === 1 ? "single" : "fixed_count",
+            min_choices: count,
+            max_choices: count,
+            selection_timing: "on_gain",
+            branches_from_feature: current.feature_name,
+            notes: fu.label ?? `Choose ${count} option(s).`,
+            grants_expertise: fu.grants_expertise ?? false,
+            options,
+          });
         }
       }
 
@@ -2312,55 +2334,40 @@ export default function CharacterSheetPage({
         (f) => f.feature_name === feat.name && f.entity_name === feat.ownerName,
       );
       if (!cf) return;
-      // Build follow-up queue if selected option has expertise_skill_count or sub_core_count
-      const VITALS_SKILLS = [...VITALS_SET];
+      // Build follow-up queue for options with follow_up spec
       const extraQueue: ChoiceFeature[] = [];
       for (const optionName of editChoiceSels) {
         const opt = cf.options.find((o) => o.name === optionName);
-        if (opt?.expertise_skill_count) {
-          const skillCount = opt.expertise_skill_count;
-          const bumpCount = opt.expertise_bump_count ?? 1;
-          const syntheticName = `${cf.feature_name} Expertise ×${bumpCount}`;
-          extraQueue.push({
-            entity_type: cf.entity_type,
-            entity_name: cf.entity_name,
-            source_kind: cf.source_kind,
-            feature_name: syntheticName,
-            tier: cf.tier,
-            path: cf.path,
-            choice_type: "permanent_choice",
-            selection_rule: skillCount === 1 ? "single" : "fixed_count",
-            min_choices: skillCount,
-            max_choices: skillCount,
-            selection_timing: "on_gain",
-            branches_from_feature: cf.feature_name,
-            notes: `Choose ${skillCount} VITALS skill(s) to gain Expertise in.`,
-            grants_expertise: true,
-            options: VITALS_SKILLS.map((s) => ({
-              name: s,
-              effect_text: `Gain Expertise in ${s}.`,
-            })),
-          });
-        } else if (opt?.sub_core_count && Array.isArray(opt?.sub_core_choice)) {
-          const coreCount = opt.sub_core_count as number;
-          const syntheticName = `${cf.feature_name} Core (${optionName})`;
-          extraQueue.push({
-            entity_type: cf.entity_type,
-            entity_name: cf.entity_name,
-            source_kind: cf.source_kind,
-            feature_name: syntheticName,
-            tier: cf.tier,
-            path: cf.path,
-            choice_type: "permanent_choice",
-            selection_rule: coreCount === 1 ? "single" : "fixed_count",
-            min_choices: coreCount,
-            max_choices: coreCount,
-            selection_timing: "on_gain",
-            branches_from_feature: cf.feature_name,
-            notes: `Choose ${coreCount} Elemental Core(s).`,
-            options: opt.sub_core_choice as { name: string; effect_text: string }[],
-          });
-        }
+        if (!opt?.follow_up) continue;
+        const fu = opt.follow_up;
+        const count = fu.count;
+        const syntheticName = fu.grants_expertise
+          ? `${cf.feature_name} Expertise ×${fu.bump_count ?? 1}`
+          : `${cf.feature_name} Core (${optionName})`;
+        const options =
+          fu.pool === "vitals_skills"
+            ? [...VITALS_SET].map((s) => ({
+                name: s,
+                effect_text: `Gain Expertise in ${s}.`,
+              }))
+            : (fu.options ?? []);
+        extraQueue.push({
+          entity_type: cf.entity_type,
+          entity_name: cf.entity_name,
+          source_kind: cf.source_kind,
+          feature_name: syntheticName,
+          tier: cf.tier,
+          path: cf.path,
+          choice_type: "permanent_choice",
+          selection_rule: count === 1 ? "single" : "fixed_count",
+          min_choices: count,
+          max_choices: count,
+          selection_timing: "on_gain",
+          branches_from_feature: cf.feature_name,
+          notes: fu.label ?? `Choose ${count} option(s).`,
+          grants_expertise: fu.grants_expertise ?? false,
+          options,
+        });
       }
       if (extraQueue.length > 0) {
         setShopChoiceQueue(extraQueue);
@@ -11275,91 +11282,11 @@ export default function CharacterSheetPage({
                   )}
                 </>
               )}
-              {/* Class resource inline (Duelist/Fighter/Eidolon/Stygian only) */}
-              {(() => {
-                const isDuelist = c.professionName === "Duelist";
-                const isFighter = c.professionName === "Fighter";
-                const isEidolon = c.professionName === "Eidolon";
-                const isStygian = c.professionName === "Stygian";
-                if (!isDuelist && !isFighter && !isEidolon && !isStygian)
-                  return null;
-                const maxAdrenaline = attrs.brawn + effectiveTier;
-                const resourceName = isDuelist
-                  ? "Cadence"
-                  : isFighter
-                    ? "Adrenaline"
-                    : isEidolon
-                      ? "Resonance"
-                      : "Soul Tokens";
-                const resourceVal = isDuelist
-                  ? (c.currentCadence ?? effectiveTier)
-                  : isFighter
-                    ? (c.currentAdrenaline ?? maxAdrenaline)
-                    : isEidolon
-                      ? (c.currentResonance ?? spellThreshold)
-                      : (c.currentSoulTokens ?? 1);
-                const resourceMax = isFighter
-                  ? maxAdrenaline
-                  : isStygian
-                    ? 3
-                    : null;
-                const onDec = isDuelist
-                  ? () =>
-                      persist({
-                        currentCadence: Math.max(
-                          0,
-                          (c.currentCadence ?? effectiveTier) - 1,
-                        ),
-                      })
-                  : isFighter
-                    ? () =>
-                        persist({
-                          currentAdrenaline: Math.max(
-                            0,
-                            (c.currentAdrenaline ?? maxAdrenaline) - 1,
-                          ),
-                        })
-                    : isEidolon
-                      ? () =>
-                          persist({
-                            currentResonance: Math.max(
-                              0,
-                              (c.currentResonance ?? spellThreshold) - 1,
-                            ),
-                          })
-                      : () =>
-                          persist({
-                            currentSoulTokens: Math.max(
-                              0,
-                              (c.currentSoulTokens ?? 1) - 1,
-                            ),
-                          });
-                const onInc = isDuelist
-                  ? () =>
-                      persist({
-                        currentCadence: (c.currentCadence ?? effectiveTier) + 1,
-                      })
-                  : isFighter
-                    ? () =>
-                        persist({
-                          currentAdrenaline: Math.min(
-                            maxAdrenaline,
-                            (c.currentAdrenaline ?? maxAdrenaline) + 1,
-                          ),
-                        })
-                    : isEidolon
-                      ? () =>
-                          persist({
-                            currentResonance:
-                              (c.currentResonance ?? spellThreshold) + 1,
-                          })
-                      : () =>
-                          persist({
-                            currentSoulTokens: Math.min(
-                              3,
-                              (c.currentSoulTokens ?? 1) + 1,
-                            ),
-                          });
+              {/* Class resource inline (data-driven via profession.customResource) */}
+              {prof?.customResource && (() => {
+                const def = prof.customResource!;
+                const resourceMax = evalResourceMax(def, attrs, effectiveTier);
+                const resourceVal = c.customResources?.[def.key] ?? resourceMax;
                 const btnSm: React.CSSProperties = {
                   width: "18px",
                   height: "18px",
@@ -11390,12 +11317,22 @@ export default function CharacterSheetPage({
                         fontFamily: "var(--font-mono)",
                         letterSpacing: "0.12em",
                         textTransform: "uppercase" as const,
-                        color: "var(--text-muted)",
+                        color: def.color ?? "var(--text-muted)",
                       }}
                     >
-                      {resourceName}
+                      {def.label}
                     </span>
-                    <button onClick={onDec} style={btnSm}>
+                    <button
+                      onClick={() =>
+                        persist({
+                          customResources: {
+                            ...c.customResources,
+                            [def.key]: Math.max(0, resourceVal - 1),
+                          },
+                        })
+                      }
+                      style={btnSm}
+                    >
                       −
                     </button>
                     <span
@@ -11408,19 +11345,27 @@ export default function CharacterSheetPage({
                       }}
                     >
                       {resourceVal}
-                      {resourceMax != null && (
-                        <span
-                          style={{
-                            fontSize: "0.62rem",
-                            color: "var(--text-muted)",
-                            fontFamily: "var(--font-mono)",
-                          }}
-                        >
-                          /{resourceMax}
-                        </span>
-                      )}
+                      <span
+                        style={{
+                          fontSize: "0.62rem",
+                          color: "var(--text-muted)",
+                          fontFamily: "var(--font-mono)",
+                        }}
+                      >
+                        /{resourceMax}
+                      </span>
                     </span>
-                    <button onClick={onInc} style={btnSm}>
+                    <button
+                      onClick={() =>
+                        persist({
+                          customResources: {
+                            ...c.customResources,
+                            [def.key]: Math.min(resourceMax, resourceVal + 1),
+                          },
+                        })
+                      }
+                      style={btnSm}
+                    >
                       +
                     </button>
                   </div>

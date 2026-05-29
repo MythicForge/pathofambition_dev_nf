@@ -21,6 +21,7 @@ import {
   computeExpertiseBumps,
   clearFeatChoices,
   computeKnownSpheres,
+  evalResourceMax,
 } from "@/lib/characterCalc";
 import type {
   BuilderProfession,
@@ -442,17 +443,23 @@ export default function CharacterBuilder({
       choiceSelections: { ...clearedSelections, [key]: currentSelections },
     });
 
-    // Build follow-up VITALS skill picks for any option with expertise_skill_count
+    // Build follow-up choices for any option with follow_up spec
     const VITALS_SKILLS = ["Vigor", "Intuition", "Talent", "Awareness", "Lore", "Social"];
     const extraQueue: ChoiceFeature[] = [];
     for (const optionName of currentSelections) {
       const opt = cf.options.find((o) => o.name === optionName);
-      if (!opt?.expertise_skill_count) continue;
-      const skillCount = opt.expertise_skill_count;
-      const bumpCount = opt.expertise_bump_count ?? 1;
-      const syntheticName = `${cf.feature_name} Expertise ×${bumpCount}`;
+      if (!opt?.follow_up) continue;
+      const fu = opt.follow_up;
+      const count = fu.count;
+      const syntheticName = fu.grants_expertise
+        ? `${cf.feature_name} Expertise ×${fu.bump_count ?? 1}`
+        : `${cf.feature_name} Core (${optionName})`;
       const syntheticKey = `${cf.entity_name}__${syntheticName}`;
       if (!draft.choiceSelections[syntheticKey]) {
+        const options =
+          fu.pool === "vitals_skills"
+            ? VITALS_SKILLS.map((s) => ({ name: s, effect_text: `Gain Expertise in ${s}.` }))
+            : (fu.options ?? []);
         extraQueue.push({
           entity_type: cf.entity_type,
           entity_name: cf.entity_name,
@@ -461,17 +468,14 @@ export default function CharacterBuilder({
           tier: cf.tier,
           path: cf.path,
           choice_type: "permanent_choice",
-          selection_rule: skillCount === 1 ? "single" : "fixed_count",
-          min_choices: skillCount,
-          max_choices: skillCount,
+          selection_rule: count === 1 ? "single" : "fixed_count",
+          min_choices: count,
+          max_choices: count,
           selection_timing: "on_gain",
           branches_from_feature: cf.feature_name,
-          notes: `Choose ${skillCount} VITALS skill(s) to gain Expertise in.`,
-          grants_expertise: true,
-          options: VITALS_SKILLS.map((s) => ({
-            name: s,
-            effect_text: `Gain Expertise in ${s}.`,
-          })),
+          notes: fu.label ?? `Choose ${count} option(s).`,
+          grants_expertise: fu.grants_expertise ?? false,
+          options,
         });
       }
     }
@@ -936,15 +940,15 @@ export default function CharacterBuilder({
       featsPurchased: startingFeatsPurchased,
       activeFeedSpellIds: draft.knownSpellIds,
       armamentProficiencyTags: [...new Set(armamentProficiencyTags)],
-      currentCadence:
-        draft.professionName === "Duelist" ? draft.tier : undefined,
-      currentAdrenaline:
-        draft.professionName === "Fighter"
-          ? totalAttributes.brawn + draft.tier
-          : undefined,
-      currentResonance:
-        draft.professionName === "Eidolon" ? startingSpellThreshold : undefined,
-      currentSoulTokens: draft.professionName === "Stygian" ? 1 : undefined,
+      customResources: selectedProf?.customResource
+        ? {
+            [selectedProf.customResource.key]: evalResourceMax(
+              selectedProf.customResource,
+              totalAttributes,
+              draft.tier,
+            ),
+          }
+        : {},
       unspentAttributePoints: 0,
       skillPoints: {},
       unspentSkillPoints: 3,

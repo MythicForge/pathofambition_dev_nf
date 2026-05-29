@@ -134,11 +134,13 @@ export interface Character {
   renown: number;
   featsPurchased: number;
 
-  // Profession-specific resources (undefined if not applicable)
-  currentCadence?: number; // Duelist — starting pool = Tier, no max
-  currentAdrenaline?: number; // Fighter — starting pool = Brawn + Tier, max = Brawn + Tier
-  currentResonance?: number; // Eidolon — starting pool = Spellcasting Threshold, no max
-  currentSoulTokens?: number; // Stygian — starting = 1, max = 3
+  // Generic profession resource pool (data-driven via profession.customResource)
+  customResources?: Record<string, number>;
+
+  /** @deprecated migrated to customResources.adrenaline */
+  currentAdrenaline?: number;
+  /** @deprecated migrated to customResources.resonance */
+  currentResonance?: number;
 
   // V.I.T.A.L.S. skill points & attribute system
   unspentAttributePoints: number;
@@ -162,13 +164,19 @@ export interface Character {
 
 // ─── Choice feature resolution ────────────────────────────────────────────────
 
+export interface ChoiceFeatureFollowUp {
+  label?: string;
+  count: number;
+  pool: "vitals_skills" | "inline";
+  options?: { name: string; effect_text: string }[];
+  grants_expertise?: boolean;
+  bump_count?: number;
+}
+
 export interface ChoiceFeatureOption {
   name: string;
   effect_text: string;
-  expertise_skill_count?: number;
-  expertise_bump_count?: number;
-  sub_core_count?: number;
-  sub_core_choice?: { name: string; effect_text: string }[];
+  follow_up?: ChoiceFeatureFollowUp;
 }
 
 export interface ChoiceFeature {
@@ -187,6 +195,22 @@ export interface ChoiceFeature {
   notes: string | null;
   grants_expertise?: boolean;
   options: ChoiceFeatureOption[];
+}
+
+// ─── Custom resource definition (data-driven class resource) ─────────────────
+
+export interface CustomResourceDef {
+  key: string;
+  label: string;
+  max_formula: "tier" | "attr + tier" | `static:${number}`;
+  max_attr?: AttributeKey;
+  default_value?: "max" | string;
+  color?: string;
+  restore: {
+    respite?: number | "max";
+    long_rest?: number | "max";
+    full_rest?: number | "max";
+  };
 }
 
 // ─── Builder data shapes (passed from server to client) ──────────────────────
@@ -238,6 +262,7 @@ export interface BuilderProfession {
   casterModifierOptions: AttributeKey[];
   startingPack: BuilderStartingPack;
   baseFeatures: BuilderFeatureEntry[];
+  customResource?: CustomResourceDef;
 }
 
 export interface BuilderVocation {
@@ -273,6 +298,7 @@ export interface BuilderFeat {
   traits: string[];
   activationRaw: string | null;
   casterInfo: BuilderVocationCaster | null;
+  fixedExpertise?: string[];
 }
 
 export interface BuilderSpell {

@@ -258,6 +258,7 @@ export function getBuilderProfessions(): BuilderProfession[] {
         traits: f.traits ?? [],
         activationRaw: f.activation?.raw ?? null,
       })),
+      customResource: ((prof as Record<string, unknown>).custom_resource as import("./characterTypes").CustomResourceDef | undefined) ?? undefined,
     } satisfies BuilderProfession;
   });
 }
@@ -385,6 +386,7 @@ export function getBuilderFeats(): {
       traits: (f.traits as string[]) ?? [],
       activationRaw: (f.activation as { raw?: string })?.raw ?? null,
       casterInfo,
+      fixedExpertise: (f.fixed_expertise as string[] | undefined) ?? undefined,
     };
   }
 

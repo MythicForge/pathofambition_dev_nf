@@ -5,16 +5,8 @@ import type {
   BuilderProfession,
   BuilderFeat,
   ChoiceFeature,
+  CustomResourceDef,
 } from "./characterTypes";
-
-export const FIXED_EXPERTISE_BY_FEAT: Record<string, string[]> = {
-  "No Pain No Gain": ["Vigor"],
-  "Vessel of Nature": ["Lore"],
-  "Primal Instinct": ["Vigor"],
-  "Known Reputation": ["Social"],
-  "Crafted Stories": ["Social"],
-  "Arbiter's Insight": ["Lore"],
-};
 
 export const VITALS_SET = new Set([
   "Vigor",
@@ -72,7 +64,7 @@ export function computeExpertiseBumps(
   for (const id of selectedFeatIds) {
     const feat = allFeats.find((f) => f.id === id);
     if (!feat) continue;
-    for (const skill of FIXED_EXPERTISE_BY_FEAT[feat.name] ?? []) {
+    for (const skill of feat.fixedExpertise ?? []) {
       bumps[skill] = (bumps[skill] ?? 0) + 1;
     }
   }
@@ -496,4 +488,30 @@ export function calcAmbition(
     dice: DICE[Math.max(willIdx, tierIdx)],
     max: 5 + Math.floor(will / 3) + tier,
   };
+}
+
+export function evalResourceMax(
+  def: CustomResourceDef,
+  attrs: CharacterAttributes,
+  tier: number,
+): number {
+  if (def.max_formula === "tier") return tier;
+  if (def.max_formula.startsWith("static:"))
+    return parseInt(def.max_formula.slice(7), 10);
+  if (def.max_formula === "attr + tier" && def.max_attr)
+    return attrs[def.max_attr] + tier;
+  return 0;
+}
+
+export function applyResourceRestore(
+  customResources: Record<string, number>,
+  def: CustomResourceDef,
+  restoreType: "respite" | "long_rest" | "full_rest",
+  max: number,
+): number {
+  const current = customResources[def.key] ?? max;
+  const amount = def.restore[restoreType];
+  if (amount === undefined) return current;
+  if (amount === "max") return max;
+  return Math.min(max, current + amount);
 }

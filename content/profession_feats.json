@@ -61,7 +61,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -85,7 +87,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -109,7 +113,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -133,7 +139,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -157,7 +165,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -181,7 +191,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -205,7 +217,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -229,7 +243,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "2 Ambition",
         "resources": {
@@ -255,7 +271,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -279,7 +297,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -303,7 +323,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "2 AP",
         "resources": {
@@ -329,7 +351,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -353,7 +377,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -377,7 +403,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Maneuver",
-      "traits": ["Maneuver"],
+      "traits": [
+        "Maneuver"
+      ],
       "activation": {
         "raw": "2 Ambition",
         "resources": {
@@ -403,7 +431,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -427,7 +457,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -451,7 +483,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "Once per respite",
         "resources": {},
@@ -475,7 +509,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -499,7 +535,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -523,7 +561,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": ["Offensive"],
+      "traits": [
+        "Offensive"
+      ],
       "activation": {
         "raw": "3 AP (once per respite)",
         "resources": {
@@ -549,15 +589,17 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": ["Narrative"],
+      "traits": [
+        "Narrative"
+      ],
       "activation": {
         "raw": "Once per turn",
         "resources": {},
         "properties": {},
         "notes": []
       },
-      "description_markdown": "You’ve mastered the art of rapid adaptation. You convert an **Alchemical** item from your *Concoction Kit* into another item from your list.",
-      "raw_markdown": "**Required** - | **Path Investment** *Four Alchemist Feats*\n**Trait** Narrative |**Cost** *Once per turn*\n\nYou’ve mastered the art of rapid adaptation. You convert an **Alchemical** item from your *Concoction Kit* into another item from your list.",
+      "description_markdown": "You\u2019ve mastered the art of rapid adaptation. You convert an **Alchemical** item from your *Concoction Kit* into another item from your list.",
+      "raw_markdown": "**Required** - | **Path Investment** *Four Alchemist Feats*\n**Trait** Narrative |**Cost** *Once per turn*\n\nYou\u2019ve mastered the art of rapid adaptation. You convert an **Alchemical** item from your *Concoction Kit* into another item from your list.",
       "collection_type": "profession_feat",
       "required": null,
       "path_investment": "Four Alchemist Feats"
@@ -573,7 +615,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -584,7 +628,10 @@
       "raw_markdown": "**Required** - | **Path Investment** -\n**Trait** Passive  | **Cost** -\n\nWhile in a state of **rage**, you reduce damage to **Vitality** equal to your **Body**, and **Skill checks** using **Vigor** are upgraded in dice size.",
       "collection_type": "profession_feat",
       "required": null,
-      "path_investment": null
+      "path_investment": null,
+      "fixed_expertise": [
+        "Vigor"
+      ]
     },
     {
       "id": "profession-feats-berserker-1-frenzied-rage",
@@ -597,7 +644,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": ["Narrative"],
+      "traits": [
+        "Narrative"
+      ],
       "activation": {
         "raw": "2 Ambition",
         "resources": {
@@ -623,7 +672,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "1 Ambition",
         "resources": {
@@ -649,7 +700,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -673,7 +726,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": ["Narrative"],
+      "traits": [
+        "Narrative"
+      ],
       "activation": {
         "raw": "2 Ambition",
         "resources": {
@@ -699,7 +754,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Maneuver",
-      "traits": ["Maneuver"],
+      "traits": [
+        "Maneuver"
+      ],
       "activation": {
         "raw": "2 AP",
         "resources": {
@@ -725,7 +782,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -749,7 +808,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "Once per turn",
         "resources": {},
@@ -773,7 +834,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -797,7 +860,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "1 Ambition",
         "resources": {
@@ -823,7 +888,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": ["Offensive"],
+      "traits": [
+        "Offensive"
+      ],
       "activation": {
         "raw": "3 AP and 3 Ambition",
         "resources": {
@@ -849,7 +916,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Maneuver",
-      "traits": ["Maneuver"],
+      "traits": [
+        "Maneuver"
+      ],
       "activation": {
         "raw": "2 AP and 2 Ambition",
         "resources": {
@@ -875,7 +944,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": ["Narrative"],
+      "traits": [
+        "Narrative"
+      ],
       "activation": {
         "raw": "1 Ambition",
         "resources": {
@@ -901,7 +972,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -925,7 +998,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -949,7 +1024,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": ["Offensive"],
+      "traits": [
+        "Offensive"
+      ],
       "activation": {
         "raw": "3 AP",
         "resources": {
@@ -975,7 +1052,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "Once per respite",
         "resources": {},
@@ -983,9 +1062,9 @@
         "notes": []
       },
       "description_markdown": "While **raging** if you would be reduced to 0 **vitality**, instead take 1 **Wound** and restore **Vitality** equal to two times your **Body**",
-      "raw_markdown": "**Required** *Indomitable Presence, Titan’s Stride*  | **Path Investment** -\n**Trait** Trigger  | **Cost** *Once per respite*\n\nWhile **raging** if you would be reduced to 0 **vitality**, instead take 1 **Wound** and restore **Vitality** equal to two times your **Body**",
+      "raw_markdown": "**Required** *Indomitable Presence, Titan\u2019s Stride*  | **Path Investment** -\n**Trait** Trigger  | **Cost** *Once per respite*\n\nWhile **raging** if you would be reduced to 0 **vitality**, instead take 1 **Wound** and restore **Vitality** equal to two times your **Body**",
       "collection_type": "profession_feat",
-      "required": "Indomitable Presence, Titan’s Stride",
+      "required": "Indomitable Presence, Titan\u2019s Stride",
       "path_investment": null
     },
     {
@@ -999,7 +1078,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "3 Ambition",
         "resources": {
@@ -1025,7 +1106,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "Once per respite",
         "resources": {},
@@ -1049,7 +1132,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -1073,7 +1158,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -1097,7 +1184,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": ["Narrative"],
+      "traits": [
+        "Narrative"
+      ],
       "activation": {
         "raw": "2 Resonance",
         "resources": {},
@@ -1121,7 +1210,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "2 Resonance per Tier",
         "resources": {},
@@ -1145,7 +1236,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -1169,7 +1262,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "2 AP + 2 Resonance |",
         "resources": {
@@ -1195,7 +1290,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -1219,15 +1316,17 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "2 Resonance",
         "resources": {},
         "properties": {},
         "notes": []
       },
-      "description_markdown": "You understand the flow of magic through your body and are able to shape it new ways. You gain the following **spell shapes** for your knowledge. In addition, you now may have four prepared **spell shapes** a day.\n- **Fluctuating Resonance** When you cast a spell, Alter the damage type to another within the same damage category (**Arcane** → **Ether**/**Void**/**Psi**)\n- **Acute Resonance** When you cast a spell, reroll 1's and 2's once when rolling for damage and take the second roll.\n- **Reverberating Resonance** When you cast a **Tier 1** or **2** Spell with a **Duration** of 10 minutes or longer and no *Focused* trait, you may extend the duration to last until you being a **Long Rest**\n- **Shifting Resonance** When you cast a spell, spend 2 **Resonance** x the spell's **Tier**, and change the size of the effect spell. (Single → Burst (Touch) → Burst(Close) → Wave (1 Zone) → Wave (2 Zone) → etc.)\n- **Surging Resonance** When you use a *Decimation* spell, spend 2 **Resonance** and add 2d4 **elemental** damage of choice to damage.",
-      "raw_markdown": "**Trait** Trigger | **Cost** 2 Resonance\nYou understand the flow of magic through your body and are able to shape it new ways. You gain the following **spell shapes** for your knowledge. In addition, you now may have four prepared **spell shapes** a day.\n- **Fluctuating Resonance** When you cast a spell, Alter the damage type to another within the same damage category (**Arcane** → **Ether**/**Void**/**Psi**)\n- **Acute Resonance** When you cast a spell, reroll 1's and 2's once when rolling for damage and take the second roll.\n- **Reverberating Resonance** When you cast a **Tier 1** or **2** Spell with a **Duration** of 10 minutes or longer and no *Focused* trait, you may extend the duration to last until you being a **Long Rest**\n- **Shifting Resonance** When you cast a spell, spend 2 **Resonance** x the spell's **Tier**, and change the size of the effect spell. (Single → Burst (Touch) → Burst(Close) → Wave (1 Zone) → Wave (2 Zone) → etc.)\n- **Surging Resonance** When you use a *Decimation* spell, spend 2 **Resonance** and add 2d4 **elemental** damage of choice to damage.",
+      "description_markdown": "You understand the flow of magic through your body and are able to shape it new ways. You gain the following **spell shapes** for your knowledge. In addition, you now may have four prepared **spell shapes** a day.\n- **Fluctuating Resonance** When you cast a spell, Alter the damage type to another within the same damage category (**Arcane** \u2192 **Ether**/**Void**/**Psi**)\n- **Acute Resonance** When you cast a spell, reroll 1's and 2's once when rolling for damage and take the second roll.\n- **Reverberating Resonance** When you cast a **Tier 1** or **2** Spell with a **Duration** of 10 minutes or longer and no *Focused* trait, you may extend the duration to last until you being a **Long Rest**\n- **Shifting Resonance** When you cast a spell, spend 2 **Resonance** x the spell's **Tier**, and change the size of the effect spell. (Single \u2192 Burst (Touch) \u2192 Burst(Close) \u2192 Wave (1 Zone) \u2192 Wave (2 Zone) \u2192 etc.)\n- **Surging Resonance** When you use a *Decimation* spell, spend 2 **Resonance** and add 2d4 **elemental** damage of choice to damage.",
+      "raw_markdown": "**Trait** Trigger | **Cost** 2 Resonance\nYou understand the flow of magic through your body and are able to shape it new ways. You gain the following **spell shapes** for your knowledge. In addition, you now may have four prepared **spell shapes** a day.\n- **Fluctuating Resonance** When you cast a spell, Alter the damage type to another within the same damage category (**Arcane** \u2192 **Ether**/**Void**/**Psi**)\n- **Acute Resonance** When you cast a spell, reroll 1's and 2's once when rolling for damage and take the second roll.\n- **Reverberating Resonance** When you cast a **Tier 1** or **2** Spell with a **Duration** of 10 minutes or longer and no *Focused* trait, you may extend the duration to last until you being a **Long Rest**\n- **Shifting Resonance** When you cast a spell, spend 2 **Resonance** x the spell's **Tier**, and change the size of the effect spell. (Single \u2192 Burst (Touch) \u2192 Burst(Close) \u2192 Wave (1 Zone) \u2192 Wave (2 Zone) \u2192 etc.)\n- **Surging Resonance** When you use a *Decimation* spell, spend 2 **Resonance** and add 2d4 **elemental** damage of choice to damage.",
       "collection_type": "profession_feat",
       "required": null,
       "path_investment": null
@@ -1243,7 +1342,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "2 AP",
         "resources": {
@@ -1252,8 +1353,8 @@
         "properties": {},
         "notes": []
       },
-      "description_markdown": "Choose a **tier 1 spell** you’ve cast this **Skirmish**. Until the end of the skirmish, you may cast it again as once per turn, without spending **Reservoir**, but it must target a different creature each time.",
-      "raw_markdown": "**Trait** Utility | **Cost** 2 AP  \nChoose a **tier 1 spell** you’ve cast this **Skirmish**. Until the end of the skirmish, you may cast it again as once per turn, without spending **Reservoir**, but it must target a different creature each time.",
+      "description_markdown": "Choose a **tier 1 spell** you\u2019ve cast this **Skirmish**. Until the end of the skirmish, you may cast it again as once per turn, without spending **Reservoir**, but it must target a different creature each time.",
+      "raw_markdown": "**Trait** Utility | **Cost** 2 AP  \nChoose a **tier 1 spell** you\u2019ve cast this **Skirmish**. Until the end of the skirmish, you may cast it again as once per turn, without spending **Reservoir**, but it must target a different creature each time.",
       "collection_type": "profession_feat",
       "required": null,
       "path_investment": null
@@ -1269,7 +1370,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -1293,7 +1396,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -1317,7 +1422,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -1341,7 +1448,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -1365,7 +1474,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "3 AP + 3 Resonance",
         "resources": {
@@ -1391,7 +1502,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "1 AP",
         "resources": {
@@ -1417,7 +1530,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "2 Resonance",
         "resources": {},
@@ -1441,7 +1556,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -1465,15 +1582,17 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
-        "raw": "—",
+        "raw": "\u2014",
         "resources": {},
         "properties": {},
         "notes": []
       },
-      "description_markdown": "You can manifest weapons of pure primal energy. Attack rolls made utilizing these armaments utilize your **Will + Tier** instead of physical attributes. You gain a specific weapon manifestation based on your chosen Elemental Core:\n\n\n- **Flame — Flame Blades**\n    You manifest either a blazing *Greatsword* ($1d10$ Fire) or a pair of crackling heat *Daggers* ($1d4$ Fire). They use your Will for attack and damage rolls. Critical hits inflict **Burning 1**.\n\n\n- **Forest — Bastion**\n    You manifest a *Mace* and a *Light Shield* grown from dense, iron-hard wood. The Mace deals $1d6$ Bludgeoning + Will damage. While wielding the shield, once per turn if you would take *Physical* or *Elemental* damage (except *Fire*), you gain **Resistance** against that specific attack. Critical hits with the Mace apply the **Dazed** condition to the target until the start of your next turn.\n    \n- **Land — Iron Spike** \n    You forge a throwing *Javelin* of solid, heavy metal. **Damage:** $1d8$ + Will | **Type:** Piercing/Metal | **Range:** Close. The weapon automatically flies back to your hand after the attack resolves. On a critical hit, you may attempt to *Grapple* the target and pull them up to one zone closer to you.\n   \n- **Ocean — Ice Knives**\n    You shape and hurl floating *Throwing Knives* of supernatural frost. **Damage:** $2$ Puncture + $1d4$ Ice + Will | **Range:** Close. Critical hits apply the **Sapped** condition to the target until the start of your next turn.\n    \n   \n- **Sky — Zephyr Bow**\n    You manifest a spectral bow formed of tightly pressurized, whistling air. **Damage:** $1d6$ Puncture + Will | **Range:** Far. Critical hits compress the atmosphere around the target, forcing them to succeed on a Fortitude save or fall **Prone**.\n    \n   \n- **Tempest — Stormbringer**\n    You call down a crackling, fluid melee weapon formed of pure lightning that possesses the _Rend_ trait. **Damage:** $1d6$ Electric + Will | **Range:** Melee. Critical hits detonate in a flash of brilliant radiance, applying the **Blinded** condition to the target until the end of their next turn.",
-      "raw_markdown": "**Trait** Passive | **Cost** —\n\nYou can manifest weapons of pure primal energy. Attack rolls made utilizing these armaments utilize your **Will + Tier** instead of physical attributes. You gain a specific weapon manifestation based on your chosen Elemental Core:\n\n\n- **Flame — Flame Blades**\n    You manifest either a blazing *Greatsword* ($1d10$ Fire) or a pair of crackling heat *Daggers* ($1d4$ Fire). They use your Will for attack and damage rolls. Critical hits inflict **Burning 1**.\n\n\n- **Forest — Bastion**\n    You manifest a *Mace* and a *Light Shield* grown from dense, iron-hard wood. The Mace deals $1d6$ Bludgeoning + Will damage. While wielding the shield, once per turn if you would take *Physical* or *Elemental* damage (except *Fire*), you gain **Resistance** against that specific attack. Critical hits with the Mace apply the **Dazed** condition to the target until the start of your next turn.\n    \n- **Land — Iron Spike** \n    You forge a throwing *Javelin* of solid, heavy metal. **Damage:** $1d8$ + Will | **Type:** Piercing/Metal | **Range:** Close. The weapon automatically flies back to your hand after the attack resolves. On a critical hit, you may attempt to *Grapple* the target and pull them up to one zone closer to you.\n   \n- **Ocean — Ice Knives**\n    You shape and hurl floating *Throwing Knives* of supernatural frost. **Damage:** $2$ Puncture + $1d4$ Ice + Will | **Range:** Close. Critical hits apply the **Sapped** condition to the target until the start of your next turn.\n    \n   \n- **Sky — Zephyr Bow**\n    You manifest a spectral bow formed of tightly pressurized, whistling air. **Damage:** $1d6$ Puncture + Will | **Range:** Far. Critical hits compress the atmosphere around the target, forcing them to succeed on a Fortitude save or fall **Prone**.\n    \n   \n- **Tempest — Stormbringer**\n    You call down a crackling, fluid melee weapon formed of pure lightning that possesses the _Rend_ trait. **Damage:** $1d6$ Electric + Will | **Range:** Melee. Critical hits detonate in a flash of brilliant radiance, applying the **Blinded** condition to the target until the end of their next turn.",
+      "description_markdown": "You can manifest weapons of pure primal energy. Attack rolls made utilizing these armaments utilize your **Will + Tier** instead of physical attributes. You gain a specific weapon manifestation based on your chosen Elemental Core:\n\n\n- **Flame \u2014 Flame Blades**\n    You manifest either a blazing *Greatsword* ($1d10$ Fire) or a pair of crackling heat *Daggers* ($1d4$ Fire). They use your Will for attack and damage rolls. Critical hits inflict **Burning 1**.\n\n\n- **Forest \u2014 Bastion**\n    You manifest a *Mace* and a *Light Shield* grown from dense, iron-hard wood. The Mace deals $1d6$ Bludgeoning + Will damage. While wielding the shield, once per turn if you would take *Physical* or *Elemental* damage (except *Fire*), you gain **Resistance** against that specific attack. Critical hits with the Mace apply the **Dazed** condition to the target until the start of your next turn.\n    \n- **Land \u2014 Iron Spike** \n    You forge a throwing *Javelin* of solid, heavy metal. **Damage:** $1d8$ + Will | **Type:** Piercing/Metal | **Range:** Close. The weapon automatically flies back to your hand after the attack resolves. On a critical hit, you may attempt to *Grapple* the target and pull them up to one zone closer to you.\n   \n- **Ocean \u2014 Ice Knives**\n    You shape and hurl floating *Throwing Knives* of supernatural frost. **Damage:** $2$ Puncture + $1d4$ Ice + Will | **Range:** Close. Critical hits apply the **Sapped** condition to the target until the start of your next turn.\n    \n   \n- **Sky \u2014 Zephyr Bow**\n    You manifest a spectral bow formed of tightly pressurized, whistling air. **Damage:** $1d6$ Puncture + Will | **Range:** Far. Critical hits compress the atmosphere around the target, forcing them to succeed on a Fortitude save or fall **Prone**.\n    \n   \n- **Tempest \u2014 Stormbringer**\n    You call down a crackling, fluid melee weapon formed of pure lightning that possesses the _Rend_ trait. **Damage:** $1d6$ Electric + Will | **Range:** Melee. Critical hits detonate in a flash of brilliant radiance, applying the **Blinded** condition to the target until the end of their next turn.",
+      "raw_markdown": "**Trait** Passive | **Cost** \u2014\n\nYou can manifest weapons of pure primal energy. Attack rolls made utilizing these armaments utilize your **Will + Tier** instead of physical attributes. You gain a specific weapon manifestation based on your chosen Elemental Core:\n\n\n- **Flame \u2014 Flame Blades**\n    You manifest either a blazing *Greatsword* ($1d10$ Fire) or a pair of crackling heat *Daggers* ($1d4$ Fire). They use your Will for attack and damage rolls. Critical hits inflict **Burning 1**.\n\n\n- **Forest \u2014 Bastion**\n    You manifest a *Mace* and a *Light Shield* grown from dense, iron-hard wood. The Mace deals $1d6$ Bludgeoning + Will damage. While wielding the shield, once per turn if you would take *Physical* or *Elemental* damage (except *Fire*), you gain **Resistance** against that specific attack. Critical hits with the Mace apply the **Dazed** condition to the target until the start of your next turn.\n    \n- **Land \u2014 Iron Spike** \n    You forge a throwing *Javelin* of solid, heavy metal. **Damage:** $1d8$ + Will | **Type:** Piercing/Metal | **Range:** Close. The weapon automatically flies back to your hand after the attack resolves. On a critical hit, you may attempt to *Grapple* the target and pull them up to one zone closer to you.\n   \n- **Ocean \u2014 Ice Knives**\n    You shape and hurl floating *Throwing Knives* of supernatural frost. **Damage:** $2$ Puncture + $1d4$ Ice + Will | **Range:** Close. Critical hits apply the **Sapped** condition to the target until the start of your next turn.\n    \n   \n- **Sky \u2014 Zephyr Bow**\n    You manifest a spectral bow formed of tightly pressurized, whistling air. **Damage:** $1d6$ Puncture + Will | **Range:** Far. Critical hits compress the atmosphere around the target, forcing them to succeed on a Fortitude save or fall **Prone**.\n    \n   \n- **Tempest \u2014 Stormbringer**\n    You call down a crackling, fluid melee weapon formed of pure lightning that possesses the _Rend_ trait. **Damage:** $1d6$ Electric + Will | **Range:** Melee. Critical hits detonate in a flash of brilliant radiance, applying the **Blinded** condition to the target until the end of their next turn.",
       "collection_type": "profession_feat",
       "required": null,
       "path_investment": null
@@ -1489,7 +1608,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "1 AP + 1 Energy",
         "resources": {
@@ -1515,7 +1636,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -1539,15 +1662,17 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
         "properties": {},
         "notes": []
       },
-      "description_markdown": "Based upon your *Core* you gain two new *Elemental Arts*\n\n\n**Flame**\n- *Flame Shield* | **Cost** 3 Energy — You gain a *Flame Shield* with 3 Charges, when you are hit you may expend a charge to reduce the damage by 1d6 + **Will**, and deal that much damage back in **Fire** damage \n- *Burning Grasp* | **Cost** 2 Energy — You make a melee attack against a target's **Fortitude**, on hit the target is ***Restrained*** by you and takes 3d4 Fire.\n\n**Forest**\n- *Entangle* | **Cost** 2 Energy; **Range** Close — Make a ranged attack against a target's Fortitude using your **Will**. On a hit, the target becomes ***Immobilized***. Target may attempt to break free using 1 **AP** against your *Arts DC*\n- *Splinter* | **Cost** 2 Energy — You make a melee attack against a target, On hit the target takes attack damage plus an additional 2d4 **Puncture**. The target also gains ***Bleeding 1***, and on a **critical hits** enemies in the same **Engagement** to also gain ***Bleeding 1***.\n\n**Land**\n- *Bone Crusher* | **Cost** 2 Energy — You form a monolithic mass of stone or metal and slam it into a target. Make a melee attack roll, on a hit the target takes 2d6 **Blunt** + **Will**, and gains ***Crippled*** until the end of it's next turn.\n- *Floating Disc* | **Cost** 1 Energy; **Duration** 1 Minute; **Range** Close — You create a platform of earth or metal that you can move up to 20ft/6m away in any direction. The platform is a disc in 10ft/3m radius and can hold up to 500lbs. The duration can be extended indefinitely by maintaining concentration on the disc, but you can only **Dash**, **Disengage**, **Stand** while maintaining concentration; if passed the 1 minute duration it instantly crumbles, or you go **Unconscious** \n\n**Ocean**\n- *Biting Shard* | **Cost** 2 Energy; **Range** Nearby — Make a ranged attack roll against a target's **Fortitude**, on hit the target takes 1d4 **Ice** + **Will**, and gains the ***Stunned*** condition.\n- *Restoring Source* | **Cost** 2 Energy; **Range** Touch — You touch a target within range, you restore 1d4 +**Tier** of a target's **Vitality**.\n\n**Sky**\n-  *Vacuum Seal* |**Cost** 1 Energy; **Range** Nearby — You select a target within range, and it gains the ***Defea***\n-  *Air Cutter* | **Cost** 2 Energy — Your next ranged attack deals an additional 2d4 **Slash**.\n\n**Tempest**\n- *Accelerated Strike* | **Cost** 1 Energy — The **AP** cost of your next *Power Attack* this turn is reduced by 1 AP (minimum 1 AP).\n- *Blinding Bolt* | **Cost** 2 Energy; **Range** Close — Make a ranged attack using **Will**. On a hit, target takes 1d4 **Electric** and is *Blinded* until end of next turn",
-      "raw_markdown": "**Required** *Primordial Attunment*\n**Trait** Passive \nBased upon your *Core* you gain two new *Elemental Arts*\n\n\n**Flame**\n- *Flame Shield* | **Cost** 3 Energy — You gain a *Flame Shield* with 3 Charges, when you are hit you may expend a charge to reduce the damage by 1d6 + **Will**, and deal that much damage back in **Fire** damage \n- *Burning Grasp* | **Cost** 2 Energy — You make a melee attack against a target's **Fortitude**, on hit the target is ***Restrained*** by you and takes 3d4 Fire.\n\n**Forest**\n- *Entangle* | **Cost** 2 Energy; **Range** Close — Make a ranged attack against a target's Fortitude using your **Will**. On a hit, the target becomes ***Immobilized***. Target may attempt to break free using 1 **AP** against your *Arts DC*\n- *Splinter* | **Cost** 2 Energy — You make a melee attack against a target, On hit the target takes attack damage plus an additional 2d4 **Puncture**. The target also gains ***Bleeding 1***, and on a **critical hits** enemies in the same **Engagement** to also gain ***Bleeding 1***.\n\n**Land**\n- *Bone Crusher* | **Cost** 2 Energy — You form a monolithic mass of stone or metal and slam it into a target. Make a melee attack roll, on a hit the target takes 2d6 **Blunt** + **Will**, and gains ***Crippled*** until the end of it's next turn.\n- *Floating Disc* | **Cost** 1 Energy; **Duration** 1 Minute; **Range** Close — You create a platform of earth or metal that you can move up to 20ft/6m away in any direction. The platform is a disc in 10ft/3m radius and can hold up to 500lbs. The duration can be extended indefinitely by maintaining concentration on the disc, but you can only **Dash**, **Disengage**, **Stand** while maintaining concentration; if passed the 1 minute duration it instantly crumbles, or you go **Unconscious** \n\n**Ocean**\n- *Biting Shard* | **Cost** 2 Energy; **Range** Nearby — Make a ranged attack roll against a target's **Fortitude**, on hit the target takes 1d4 **Ice** + **Will**, and gains the ***Stunned*** condition.\n- *Restoring Source* | **Cost** 2 Energy; **Range** Touch — You touch a target within range, you restore 1d4 +**Tier** of a target's **Vitality**.\n\n**Sky**\n-  *Vacuum Seal* |**Cost** 1 Energy; **Range** Nearby — You select a target within range, and it gains the ***Defea***\n-  *Air Cutter* | **Cost** 2 Energy — Your next ranged attack deals an additional 2d4 **Slash**.\n\n**Tempest**\n- *Accelerated Strike* | **Cost** 1 Energy — The **AP** cost of your next *Power Attack* this turn is reduced by 1 AP (minimum 1 AP).\n- *Blinding Bolt* | **Cost** 2 Energy; **Range** Close — Make a ranged attack using **Will**. On a hit, target takes 1d4 **Electric** and is *Blinded* until end of next turn",
+      "description_markdown": "Based upon your *Core* you gain two new *Elemental Arts*\n\n\n**Flame**\n- *Flame Shield* | **Cost** 3 Energy \u2014 You gain a *Flame Shield* with 3 Charges, when you are hit you may expend a charge to reduce the damage by 1d6 + **Will**, and deal that much damage back in **Fire** damage \n- *Burning Grasp* | **Cost** 2 Energy \u2014 You make a melee attack against a target's **Fortitude**, on hit the target is ***Restrained*** by you and takes 3d4 Fire.\n\n**Forest**\n- *Entangle* | **Cost** 2 Energy; **Range** Close \u2014 Make a ranged attack against a target's Fortitude using your **Will**. On a hit, the target becomes ***Immobilized***. Target may attempt to break free using 1 **AP** against your *Arts DC*\n- *Splinter* | **Cost** 2 Energy \u2014 You make a melee attack against a target, On hit the target takes attack damage plus an additional 2d4 **Puncture**. The target also gains ***Bleeding 1***, and on a **critical hits** enemies in the same **Engagement** to also gain ***Bleeding 1***.\n\n**Land**\n- *Bone Crusher* | **Cost** 2 Energy \u2014 You form a monolithic mass of stone or metal and slam it into a target. Make a melee attack roll, on a hit the target takes 2d6 **Blunt** + **Will**, and gains ***Crippled*** until the end of it's next turn.\n- *Floating Disc* | **Cost** 1 Energy; **Duration** 1 Minute; **Range** Close \u2014 You create a platform of earth or metal that you can move up to 20ft/6m away in any direction. The platform is a disc in 10ft/3m radius and can hold up to 500lbs. The duration can be extended indefinitely by maintaining concentration on the disc, but you can only **Dash**, **Disengage**, **Stand** while maintaining concentration; if passed the 1 minute duration it instantly crumbles, or you go **Unconscious** \n\n**Ocean**\n- *Biting Shard* | **Cost** 2 Energy; **Range** Nearby \u2014 Make a ranged attack roll against a target's **Fortitude**, on hit the target takes 1d4 **Ice** + **Will**, and gains the ***Stunned*** condition.\n- *Restoring Source* | **Cost** 2 Energy; **Range** Touch \u2014 You touch a target within range, you restore 1d4 +**Tier** of a target's **Vitality**.\n\n**Sky**\n-  *Vacuum Seal* |**Cost** 1 Energy; **Range** Nearby \u2014 You select a target within range, and it gains the ***Defea***\n-  *Air Cutter* | **Cost** 2 Energy \u2014 Your next ranged attack deals an additional 2d4 **Slash**.\n\n**Tempest**\n- *Accelerated Strike* | **Cost** 1 Energy \u2014 The **AP** cost of your next *Power Attack* this turn is reduced by 1 AP (minimum 1 AP).\n- *Blinding Bolt* | **Cost** 2 Energy; **Range** Close \u2014 Make a ranged attack using **Will**. On a hit, target takes 1d4 **Electric** and is *Blinded* until end of next turn",
+      "raw_markdown": "**Required** *Primordial Attunment*\n**Trait** Passive \nBased upon your *Core* you gain two new *Elemental Arts*\n\n\n**Flame**\n- *Flame Shield* | **Cost** 3 Energy \u2014 You gain a *Flame Shield* with 3 Charges, when you are hit you may expend a charge to reduce the damage by 1d6 + **Will**, and deal that much damage back in **Fire** damage \n- *Burning Grasp* | **Cost** 2 Energy \u2014 You make a melee attack against a target's **Fortitude**, on hit the target is ***Restrained*** by you and takes 3d4 Fire.\n\n**Forest**\n- *Entangle* | **Cost** 2 Energy; **Range** Close \u2014 Make a ranged attack against a target's Fortitude using your **Will**. On a hit, the target becomes ***Immobilized***. Target may attempt to break free using 1 **AP** against your *Arts DC*\n- *Splinter* | **Cost** 2 Energy \u2014 You make a melee attack against a target, On hit the target takes attack damage plus an additional 2d4 **Puncture**. The target also gains ***Bleeding 1***, and on a **critical hits** enemies in the same **Engagement** to also gain ***Bleeding 1***.\n\n**Land**\n- *Bone Crusher* | **Cost** 2 Energy \u2014 You form a monolithic mass of stone or metal and slam it into a target. Make a melee attack roll, on a hit the target takes 2d6 **Blunt** + **Will**, and gains ***Crippled*** until the end of it's next turn.\n- *Floating Disc* | **Cost** 1 Energy; **Duration** 1 Minute; **Range** Close \u2014 You create a platform of earth or metal that you can move up to 20ft/6m away in any direction. The platform is a disc in 10ft/3m radius and can hold up to 500lbs. The duration can be extended indefinitely by maintaining concentration on the disc, but you can only **Dash**, **Disengage**, **Stand** while maintaining concentration; if passed the 1 minute duration it instantly crumbles, or you go **Unconscious** \n\n**Ocean**\n- *Biting Shard* | **Cost** 2 Energy; **Range** Nearby \u2014 Make a ranged attack roll against a target's **Fortitude**, on hit the target takes 1d4 **Ice** + **Will**, and gains the ***Stunned*** condition.\n- *Restoring Source* | **Cost** 2 Energy; **Range** Touch \u2014 You touch a target within range, you restore 1d4 +**Tier** of a target's **Vitality**.\n\n**Sky**\n-  *Vacuum Seal* |**Cost** 1 Energy; **Range** Nearby \u2014 You select a target within range, and it gains the ***Defea***\n-  *Air Cutter* | **Cost** 2 Energy \u2014 Your next ranged attack deals an additional 2d4 **Slash**.\n\n**Tempest**\n- *Accelerated Strike* | **Cost** 1 Energy \u2014 The **AP** cost of your next *Power Attack* this turn is reduced by 1 AP (minimum 1 AP).\n- *Blinding Bolt* | **Cost** 2 Energy; **Range** Close \u2014 Make a ranged attack using **Will**. On a hit, target takes 1d4 **Electric** and is *Blinded* until end of next turn",
       "collection_type": "profession_feat",
       "required": "Primordial Attunment",
       "path_investment": null
@@ -1563,7 +1688,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -1587,7 +1714,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -1611,7 +1740,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": ["Narrative"],
+      "traits": [
+        "Narrative"
+      ],
       "activation": {
         "raw": "4 Adrenaline",
         "resources": {
@@ -1637,7 +1768,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -1661,7 +1794,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Manuever",
-      "traits": ["Manuever"],
+      "traits": [
+        "Manuever"
+      ],
       "activation": {
         "raw": "1 AP",
         "resources": {
@@ -1687,7 +1822,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Maneuver",
-      "traits": ["Maneuver"],
+      "traits": [
+        "Maneuver"
+      ],
       "activation": {
         "raw": "1 AP + 2 Adrenaline",
         "resources": {
@@ -1696,8 +1833,8 @@
         "properties": {},
         "notes": []
       },
-      "description_markdown": "You use your body as bastion of defense for warfare. You gain or cause effects based upon the activated **bulwark maneuver**. Chose two from the following five maneuvers:\n- **Bulwark Rally** Let the rush of danger be the the reason you and your ally survive. Until the start of your next turn, choose yourself and one ally with your **Engagement**, you both gain +1 to **armor** defense.\n- **Controlled Blows** You stead your weapon arm to insure your own safety. Until the start of your next turn, you decrease weapon dice size (min. d4) and gain +2 to **armor** defense. \n- **Counter Strike** You brace yourself for impact, and make yourself ready to retaliate against the next melee attack. When a target in your **Engagement** would target you with a **melee** attack, you retaliate with a single attack roll until the start of your next turn. Gain +2 to hit if the target's attack is a **critical miss**.\n- **Shield Charge** You raise your shield charging head first into the enemy and roll an attack with a **shield bash**. On a **critical hit**, target becomes **dazed** until the end of its turn. Gain +1 to hit if not **engaged** with the target.\n- **Weapon Disarm** You snatch or jam an opponent’s weapon. Until the start of your next turn, when a target within your **Engagement** makes a **melee weapon** attack against you, before the attack is rolled, make a **body** check against the target's **body** defense. On a **success**, you stop the attack from landing. On a **critical success**, the target's weapon is **dropped** between the two of you.",
-      "raw_markdown": "**Path Investment** *2 Sentinel Feats*\n**Trait** Maneuver   |  **Cost** 1 AP + 2 Adrenaline\nYou use your body as bastion of defense for warfare. You gain or cause effects based upon the activated **bulwark maneuver**. Chose two from the following five maneuvers:\n- **Bulwark Rally** Let the rush of danger be the the reason you and your ally survive. Until the start of your next turn, choose yourself and one ally with your **Engagement**, you both gain +1 to **armor** defense.\n- **Controlled Blows** You stead your weapon arm to insure your own safety. Until the start of your next turn, you decrease weapon dice size (min. d4) and gain +2 to **armor** defense. \n- **Counter Strike** You brace yourself for impact, and make yourself ready to retaliate against the next melee attack. When a target in your **Engagement** would target you with a **melee** attack, you retaliate with a single attack roll until the start of your next turn. Gain +2 to hit if the target's attack is a **critical miss**.\n- **Shield Charge** You raise your shield charging head first into the enemy and roll an attack with a **shield bash**. On a **critical hit**, target becomes **dazed** until the end of its turn. Gain +1 to hit if not **engaged** with the target.\n- **Weapon Disarm** You snatch or jam an opponent’s weapon. Until the start of your next turn, when a target within your **Engagement** makes a **melee weapon** attack against you, before the attack is rolled, make a **body** check against the target's **body** defense. On a **success**, you stop the attack from landing. On a **critical success**, the target's weapon is **dropped** between the two of you.",
+      "description_markdown": "You use your body as bastion of defense for warfare. You gain or cause effects based upon the activated **bulwark maneuver**. Chose two from the following five maneuvers:\n- **Bulwark Rally** Let the rush of danger be the the reason you and your ally survive. Until the start of your next turn, choose yourself and one ally with your **Engagement**, you both gain +1 to **armor** defense.\n- **Controlled Blows** You stead your weapon arm to insure your own safety. Until the start of your next turn, you decrease weapon dice size (min. d4) and gain +2 to **armor** defense. \n- **Counter Strike** You brace yourself for impact, and make yourself ready to retaliate against the next melee attack. When a target in your **Engagement** would target you with a **melee** attack, you retaliate with a single attack roll until the start of your next turn. Gain +2 to hit if the target's attack is a **critical miss**.\n- **Shield Charge** You raise your shield charging head first into the enemy and roll an attack with a **shield bash**. On a **critical hit**, target becomes **dazed** until the end of its turn. Gain +1 to hit if not **engaged** with the target.\n- **Weapon Disarm** You snatch or jam an opponent\u2019s weapon. Until the start of your next turn, when a target within your **Engagement** makes a **melee weapon** attack against you, before the attack is rolled, make a **body** check against the target's **body** defense. On a **success**, you stop the attack from landing. On a **critical success**, the target's weapon is **dropped** between the two of you.",
+      "raw_markdown": "**Path Investment** *2 Sentinel Feats*\n**Trait** Maneuver   |  **Cost** 1 AP + 2 Adrenaline\nYou use your body as bastion of defense for warfare. You gain or cause effects based upon the activated **bulwark maneuver**. Chose two from the following five maneuvers:\n- **Bulwark Rally** Let the rush of danger be the the reason you and your ally survive. Until the start of your next turn, choose yourself and one ally with your **Engagement**, you both gain +1 to **armor** defense.\n- **Controlled Blows** You stead your weapon arm to insure your own safety. Until the start of your next turn, you decrease weapon dice size (min. d4) and gain +2 to **armor** defense. \n- **Counter Strike** You brace yourself for impact, and make yourself ready to retaliate against the next melee attack. When a target in your **Engagement** would target you with a **melee** attack, you retaliate with a single attack roll until the start of your next turn. Gain +2 to hit if the target's attack is a **critical miss**.\n- **Shield Charge** You raise your shield charging head first into the enemy and roll an attack with a **shield bash**. On a **critical hit**, target becomes **dazed** until the end of its turn. Gain +1 to hit if not **engaged** with the target.\n- **Weapon Disarm** You snatch or jam an opponent\u2019s weapon. Until the start of your next turn, when a target within your **Engagement** makes a **melee weapon** attack against you, before the attack is rolled, make a **body** check against the target's **body** defense. On a **success**, you stop the attack from landing. On a **critical success**, the target's weapon is **dropped** between the two of you.",
       "collection_type": "profession_feat",
       "required": null,
       "path_investment": "2 Sentinel Feats"
@@ -1713,7 +1850,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": ["Narrative"],
+      "traits": [
+        "Narrative"
+      ],
       "activation": {
         "raw": "2 AP + 2 Adrenaline",
         "resources": {
@@ -1739,15 +1878,17 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
         "properties": {},
         "notes": []
       },
-      "description_markdown": "When attacking with a weapon of your **Signature School**, your **critical hits** occur on a roll of 19–20.",
-      "raw_markdown": "**Trait** Passive  \nWhen attacking with a weapon of your **Signature School**, your **critical hits** occur on a roll of 19–20.",
+      "description_markdown": "When attacking with a weapon of your **Signature School**, your **critical hits** occur on a roll of 19\u201320.",
+      "raw_markdown": "**Trait** Passive  \nWhen attacking with a weapon of your **Signature School**, your **critical hits** occur on a roll of 19\u201320.",
       "collection_type": "profession_feat",
       "required": null,
       "path_investment": null
@@ -1763,7 +1904,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": ["Offensive"],
+      "traits": [
+        "Offensive"
+      ],
       "activation": {
         "raw": "2 AP  +  2 Adrenaline",
         "resources": {
@@ -1789,15 +1932,17 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
         "properties": {},
         "notes": []
       },
-      "description_markdown": "You now gain the following **Technique** based upon your chosen school.\n\n| **School**   | **Technique**                                                                            |\n| ------------ | ---------------------------------------------------------------------------------------- |\n| **Defender** | Once per turn on hit, give ally in **Engagement** +1 **Armor**                           |\n| **Dueler**   | Once per turn, on a hit, target has **–2 to next attack**.                               |\n| **Enforcer** | Once per turn, on a hit, target **makes Body check or is Dazed** (end of its next turn). |\n| **Lancer**   | Once per turn on hit, gain *Shove* or *Trip* as a **Free Action**.                       |\n| **Ranger**   | Once per turn on hit, target cannot **Dash**.                                            |\n| **Slayer**   | Once per turn on hit, target has **–2 Armor** until your next turn.                      |",
-      "raw_markdown": "**Trait** Passive  \nYou now gain the following **Technique** based upon your chosen school.\n\n| **School**   | **Technique**                                                                            |\n| ------------ | ---------------------------------------------------------------------------------------- |\n| **Defender** | Once per turn on hit, give ally in **Engagement** +1 **Armor**                           |\n| **Dueler**   | Once per turn, on a hit, target has **–2 to next attack**.                               |\n| **Enforcer** | Once per turn, on a hit, target **makes Body check or is Dazed** (end of its next turn). |\n| **Lancer**   | Once per turn on hit, gain *Shove* or *Trip* as a **Free Action**.                       |\n| **Ranger**   | Once per turn on hit, target cannot **Dash**.                                            |\n| **Slayer**   | Once per turn on hit, target has **–2 Armor** until your next turn.                      |",
+      "description_markdown": "You now gain the following **Technique** based upon your chosen school.\n\n| **School**   | **Technique**                                                                            |\n| ------------ | ---------------------------------------------------------------------------------------- |\n| **Defender** | Once per turn on hit, give ally in **Engagement** +1 **Armor**                           |\n| **Dueler**   | Once per turn, on a hit, target has **\u20132 to next attack**.                               |\n| **Enforcer** | Once per turn, on a hit, target **makes Body check or is Dazed** (end of its next turn). |\n| **Lancer**   | Once per turn on hit, gain *Shove* or *Trip* as a **Free Action**.                       |\n| **Ranger**   | Once per turn on hit, target cannot **Dash**.                                            |\n| **Slayer**   | Once per turn on hit, target has **\u20132 Armor** until your next turn.                      |",
+      "raw_markdown": "**Trait** Passive  \nYou now gain the following **Technique** based upon your chosen school.\n\n| **School**   | **Technique**                                                                            |\n| ------------ | ---------------------------------------------------------------------------------------- |\n| **Defender** | Once per turn on hit, give ally in **Engagement** +1 **Armor**                           |\n| **Dueler**   | Once per turn, on a hit, target has **\u20132 to next attack**.                               |\n| **Enforcer** | Once per turn, on a hit, target **makes Body check or is Dazed** (end of its next turn). |\n| **Lancer**   | Once per turn on hit, gain *Shove* or *Trip* as a **Free Action**.                       |\n| **Ranger**   | Once per turn on hit, target cannot **Dash**.                                            |\n| **Slayer**   | Once per turn on hit, target has **\u20132 Armor** until your next turn.                      |",
       "collection_type": "profession_feat",
       "required": null,
       "path_investment": null
@@ -1813,7 +1958,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -1837,7 +1984,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -1861,7 +2010,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -1876,7 +2027,7 @@
     },
     {
       "id": "profession-feats-fighter-2-warrior-s-spirit",
-      "name": "Warrior’s Spirit",
+      "name": "Warrior\u2019s Spirit",
       "slug": "warrior-s-spirit",
       "owner_type": "profession",
       "owner_id": "fighter",
@@ -1885,7 +2036,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "1 AP + 2 Adrenaline",
         "resources": {
@@ -1894,8 +2047,8 @@
         "properties": {},
         "notes": []
       },
-      "description_markdown": "Gain **Resolve** on your next **attack roll**. On **critical**, gain temporary **vitality** equal to your **body** or regain **Ambition** equal to your **Tier** × 2.",
-      "raw_markdown": "**Path Investment** *2 Reaver Feats*\n**Trait** Utility |**Cost** 1 AP + 2 Adrenaline\nGain **Resolve** on your next **attack roll**. On **critical**, gain temporary **vitality** equal to your **body** or regain **Ambition** equal to your **Tier** × 2.",
+      "description_markdown": "Gain **Resolve** on your next **attack roll**. On **critical**, gain temporary **vitality** equal to your **body** or regain **Ambition** equal to your **Tier** \u00d7 2.",
+      "raw_markdown": "**Path Investment** *2 Reaver Feats*\n**Trait** Utility |**Cost** 1 AP + 2 Adrenaline\nGain **Resolve** on your next **attack roll**. On **critical**, gain temporary **vitality** equal to your **body** or regain **Ambition** equal to your **Tier** \u00d7 2.",
       "collection_type": "profession_feat",
       "required": null,
       "path_investment": "2 Reaver Feats"
@@ -1911,7 +2064,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "1 AP",
         "resources": {
@@ -1961,7 +2116,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -1985,7 +2142,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Maneuver",
-      "traits": ["Maneuver"],
+      "traits": [
+        "Maneuver"
+      ],
       "activation": {
         "raw": "3 AP (once per respite)",
         "resources": {
@@ -2011,7 +2170,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": ": 3 Adrenaline",
         "resources": {},
@@ -2035,15 +2196,17 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "Free Action (once per respite)",
         "resources": {},
         "properties": {},
         "notes": []
       },
-      "description_markdown": "As a free action at the start of any round, instantly switch your **sentinel armor’s** form,  reconfigure your signature armor’s resistance, even outside normal **Daily Preparation**.",
-      "raw_markdown": "**Required** *Sentinel Armor* | **Path Investment** *4 Sentinel Feats*\n**Trait** Utility |**Cost** Free Action (*once per respite*)\nAs a free action at the start of any round, instantly switch your **sentinel armor’s** form,  reconfigure your signature armor’s resistance, even outside normal **Daily Preparation**.",
+      "description_markdown": "As a free action at the start of any round, instantly switch your **sentinel armor\u2019s** form,  reconfigure your signature armor\u2019s resistance, even outside normal **Daily Preparation**.",
+      "raw_markdown": "**Required** *Sentinel Armor* | **Path Investment** *4 Sentinel Feats*\n**Trait** Utility |**Cost** Free Action (*once per respite*)\nAs a free action at the start of any round, instantly switch your **sentinel armor\u2019s** form,  reconfigure your signature armor\u2019s resistance, even outside normal **Daily Preparation**.",
       "collection_type": "profession_feat",
       "required": "Sentinel Armor",
       "path_investment": "4 Sentinel Feats"
@@ -2059,7 +2222,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "Once per Skirmish",
         "resources": {},
@@ -2083,7 +2248,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": ["Offensive"],
+      "traits": [
+        "Offensive"
+      ],
       "activation": {
         "raw": "3 AP",
         "resources": {
@@ -2109,7 +2276,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": ["Offensive"],
+      "traits": [
+        "Offensive"
+      ],
       "activation": {
         "raw": "2 AP + 2 Adrenaline",
         "resources": {
@@ -2135,7 +2304,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2159,7 +2330,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2183,15 +2356,17 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
         "properties": {},
         "notes": []
       },
-      "description_markdown": "When you **cast a spell**, gain **temporary vitality** equal to **Reservoir spent** + (tier × 2)",
-      "raw_markdown": "**Required** *Arcane Author*\n**Trait** Trigger | **Cost** -\nWhen you **cast a spell**, gain **temporary vitality** equal to **Reservoir spent** + (tier × 2)",
+      "description_markdown": "When you **cast a spell**, gain **temporary vitality** equal to **Reservoir spent** + (tier \u00d7 2)",
+      "raw_markdown": "**Required** *Arcane Author*\n**Trait** Trigger | **Cost** -\nWhen you **cast a spell**, gain **temporary vitality** equal to **Reservoir spent** + (tier \u00d7 2)",
       "collection_type": "profession_feat",
       "required": "Arcane Author",
       "path_investment": null
@@ -2207,7 +2382,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2231,7 +2408,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2255,7 +2434,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2279,7 +2460,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": ["Narrative"],
+      "traits": [
+        "Narrative"
+      ],
       "activation": {
         "raw": "2 AP",
         "resources": {
@@ -2305,7 +2488,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2329,7 +2514,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2353,7 +2540,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2377,7 +2566,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2401,7 +2592,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2425,7 +2618,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2449,7 +2644,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2473,7 +2670,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2497,7 +2696,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2521,7 +2722,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2545,7 +2748,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2569,7 +2774,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2580,7 +2787,10 @@
       "raw_markdown": "**Trait** Passive  \nYou gain *Expertise* in **Social** skill checks increasing Dice Size. In addition, skill checks to detect lies have their Difficulty decreased by one rank.",
       "collection_type": "profession_feat",
       "required": null,
-      "path_investment": null
+      "path_investment": null,
+      "fixed_expertise": [
+        "Social"
+      ]
     },
     {
       "id": "profession-feats-mercenary-1-fight-with-confidence",
@@ -2593,7 +2803,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2617,7 +2829,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "1 AP + 1 Ambition | Range Close",
         "resources": {
@@ -2643,7 +2857,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "2 Ambition |Range Close",
         "resources": {
@@ -2669,7 +2885,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Offensive",
-      "traits": ["Offensive"],
+      "traits": [
+        "Offensive"
+      ],
       "activation": {
         "raw": "1 AP + 1 Ambition | Range Adjacent",
         "resources": {
@@ -2695,7 +2913,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2719,7 +2939,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2743,7 +2965,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2767,7 +2991,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": ["Narrative"],
+      "traits": [
+        "Narrative"
+      ],
       "activation": {
         "raw": "1 AP | Range Close",
         "resources": {
@@ -2776,8 +3002,8 @@
         "properties": {},
         "notes": []
       },
-      "description_markdown": "You assert dominance over a target you’ve wounded or have **Resolve** against. Make an **Will** check against the target's **Will**.\n- On **success**, the target becomes **frightened** of you until end of your next turn.\n- On **critical success**, they are also unable to use **retreat** or **disengage** actions for 1 round.",
-      "raw_markdown": "**Trait** Narrative| **Cost** 1 AP | **Range** Close\nYou assert dominance over a target you’ve wounded or have **Resolve** against. Make an **Will** check against the target's **Will**.\n- On **success**, the target becomes **frightened** of you until end of your next turn.\n- On **critical success**, they are also unable to use **retreat** or **disengage** actions for 1 round.",
+      "description_markdown": "You assert dominance over a target you\u2019ve wounded or have **Resolve** against. Make an **Will** check against the target's **Will**.\n- On **success**, the target becomes **frightened** of you until end of your next turn.\n- On **critical success**, they are also unable to use **retreat** or **disengage** actions for 1 round.",
+      "raw_markdown": "**Trait** Narrative| **Cost** 1 AP | **Range** Close\nYou assert dominance over a target you\u2019ve wounded or have **Resolve** against. Make an **Will** check against the target's **Will**.\n- On **success**, the target becomes **frightened** of you until end of your next turn.\n- On **critical success**, they are also unable to use **retreat** or **disengage** actions for 1 round.",
       "collection_type": "profession_feat",
       "required": null,
       "path_investment": null
@@ -2793,7 +3019,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "2 Ambition",
         "resources": {
@@ -2819,7 +3047,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "2 AP + 2 Ambition",
         "resources": {
@@ -2845,7 +3075,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2869,7 +3101,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "1 AP + 1 Ambition | Range Close",
         "resources": {
@@ -2878,8 +3112,8 @@
         "properties": {},
         "notes": []
       },
-      "description_markdown": "You touch the Will of an ally and ignite their potential. Choose a creature within range; they gain a **Spark**. A creature with a **Spark** may add **tier + your Ambition die** to **one** skill check, **attack roll**, or spell attack they make. Only one **Spark** may be held at a time.\n\nThe **Spark** lasts until it is used or the creature finishes a **Respite** (whichever comes first).  \nWhether the roll succeeds or fails, the Spark then fades.\n\nYou may grant a number of **Sparks** per day equal to **your tier × 2**.",
-      "raw_markdown": "**Trait** Utility | **Cost** 1 AP + 1 Ambition | **Range** Close\nYou touch the Will of an ally and ignite their potential. Choose a creature within range; they gain a **Spark**. A creature with a **Spark** may add **tier + your Ambition die** to **one** skill check, **attack roll**, or spell attack they make. Only one **Spark** may be held at a time.\n\nThe **Spark** lasts until it is used or the creature finishes a **Respite** (whichever comes first).  \nWhether the roll succeeds or fails, the Spark then fades.\n\nYou may grant a number of **Sparks** per day equal to **your tier × 2**.",
+      "description_markdown": "You touch the Will of an ally and ignite their potential. Choose a creature within range; they gain a **Spark**. A creature with a **Spark** may add **tier + your Ambition die** to **one** skill check, **attack roll**, or spell attack they make. Only one **Spark** may be held at a time.\n\nThe **Spark** lasts until it is used or the creature finishes a **Respite** (whichever comes first).  \nWhether the roll succeeds or fails, the Spark then fades.\n\nYou may grant a number of **Sparks** per day equal to **your tier \u00d7 2**.",
+      "raw_markdown": "**Trait** Utility | **Cost** 1 AP + 1 Ambition | **Range** Close\nYou touch the Will of an ally and ignite their potential. Choose a creature within range; they gain a **Spark**. A creature with a **Spark** may add **tier + your Ambition die** to **one** skill check, **attack roll**, or spell attack they make. Only one **Spark** may be held at a time.\n\nThe **Spark** lasts until it is used or the creature finishes a **Respite** (whichever comes first).  \nWhether the roll succeeds or fails, the Spark then fades.\n\nYou may grant a number of **Sparks** per day equal to **your tier \u00d7 2**.",
       "collection_type": "profession_feat",
       "required": null,
       "path_investment": null
@@ -2895,9 +3129,11 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
-        "raw": "2 AP | Range Close",
+        "raw": "2 AP\u2003|\u2003Range Close",
         "resources": {
           "ap": 2
         },
@@ -2905,7 +3141,7 @@
         "notes": []
       },
       "description_markdown": "You speak words of lies into the mind of your enemies. Choose a target in range, make a check against their **Will** using your **Spellcasting Stat**. \n- On a **success**, their next attack roll is reduced by 1d4 \n- On a **critical**, you deal **psi** damage equal to your **Spellcasting Modifier**, and 1d4 applies to the next **two** attacks",
-      "raw_markdown": "**Trait** Utility | **Cost** 2 AP | **Range** Close\nYou speak words of lies into the mind of your enemies. Choose a target in range, make a check against their **Will** using your **Spellcasting Stat**. \n- On a **success**, their next attack roll is reduced by 1d4 \n- On a **critical**, you deal **psi** damage equal to your **Spellcasting Modifier**, and 1d4 applies to the next **two** attacks",
+      "raw_markdown": "**Trait** Utility\u2003|\u2003**Cost** 2 AP\u2003|\u2003**Range** Close\nYou speak words of lies into the mind of your enemies. Choose a target in range, make a check against their **Will** using your **Spellcasting Stat**. \n- On a **success**, their next attack roll is reduced by 1d4 \n- On a **critical**, you deal **psi** damage equal to your **Spellcasting Modifier**, and 1d4 applies to the next **two** attacks",
       "collection_type": "profession_feat",
       "required": null,
       "path_investment": null
@@ -2921,7 +3157,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": ["Narrative"],
+      "traits": [
+        "Narrative"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2929,10 +3167,13 @@
         "notes": []
       },
       "description_markdown": "You gain *Expertise* in **Social** skill checks increasing Dice Size. When you make a skill check related to **Deception**, you always start with 1 **success**\n> If using d20 skill checks you cannot roller than 10",
-      "raw_markdown": "**Trait** Narrative | **Cost** - \nYou gain *Expertise* in **Social** skill checks increasing Dice Size. When you make a skill check related to **Deception**, you always start with 1 **success**\n> If using d20 skill checks you cannot roller than 10",
+      "raw_markdown": "**Trait** Narrative\u2003|\u2003**Cost** -\u2003\nYou gain *Expertise* in **Social** skill checks increasing Dice Size. When you make a skill check related to **Deception**, you always start with 1 **success**\n> If using d20 skill checks you cannot roller than 10",
       "collection_type": "profession_feat",
       "required": null,
-      "path_investment": null
+      "path_investment": null,
+      "fixed_expertise": [
+        "Social"
+      ]
     },
     {
       "id": "profession-feats-mesmer-1-thread-weaving",
@@ -2945,7 +3186,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -2953,7 +3196,7 @@
         "notes": []
       },
       "description_markdown": "You learn to spin fragments of thought, memory, will, or soul into metaphysical **Threads**.  \nChoose **one** of the following Threads to awaken:\n\nYou gain a small pool of **Threads equal to 2 + your Spellcasting modifier**.\nThreads refresh on a **Long Rest**.\n\n| Style  | Cost                           | Effect                                                                                                                                                           |\n| ------ | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| Gnosis | Trigger, 2 Threads             | When a target within range of **close** is under the effects of a spell or magical effect and attempts a save, give the target either **Resolve** or **Strain**. |\n| Kardia | 1 AP + 1 Thread, per **range** | Heal a target for 2d6 **vitality** within range of **touch**. Expand the range by increase the cost of **AP** and **Threads** by 1 per range, up to **Nearby**.  |\n| Thara  | Trigger, 1 Thread              | When you make a **skill check**, **attack roll**, or **spell attack** using **Ambition**, increase your **Ambition** die by one step (1d12 > 2d8)                |",
-      "raw_markdown": "**Path Investment** *2 Weaver Feats*\n**Trait** Passive | **Cost** - \nYou learn to spin fragments of thought, memory, will, or soul into metaphysical **Threads**.  \nChoose **one** of the following Threads to awaken:\n\nYou gain a small pool of **Threads equal to 2 + your Spellcasting modifier**.\nThreads refresh on a **Long Rest**.\n\n| Style  | Cost                           | Effect                                                                                                                                                           |\n| ------ | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| Gnosis | Trigger, 2 Threads             | When a target within range of **close** is under the effects of a spell or magical effect and attempts a save, give the target either **Resolve** or **Strain**. |\n| Kardia | 1 AP + 1 Thread, per **range** | Heal a target for 2d6 **vitality** within range of **touch**. Expand the range by increase the cost of **AP** and **Threads** by 1 per range, up to **Nearby**.  |\n| Thara  | Trigger, 1 Thread              | When you make a **skill check**, **attack roll**, or **spell attack** using **Ambition**, increase your **Ambition** die by one step (1d12 > 2d8)                |",
+      "raw_markdown": "**Path Investment** *2 Weaver Feats*\n**Trait** Passive\u2003|\u2003**Cost** -\u2003\nYou learn to spin fragments of thought, memory, will, or soul into metaphysical **Threads**.  \nChoose **one** of the following Threads to awaken:\n\nYou gain a small pool of **Threads equal to 2 + your Spellcasting modifier**.\nThreads refresh on a **Long Rest**.\n\n| Style  | Cost                           | Effect                                                                                                                                                           |\n| ------ | ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |\n| Gnosis | Trigger, 2 Threads             | When a target within range of **close** is under the effects of a spell or magical effect and attempts a save, give the target either **Resolve** or **Strain**. |\n| Kardia | 1 AP + 1 Thread, per **range** | Heal a target for 2d6 **vitality** within range of **touch**. Expand the range by increase the cost of **AP** and **Threads** by 1 per range, up to **Nearby**.  |\n| Thara  | Trigger, 1 Thread              | When you make a **skill check**, **attack roll**, or **spell attack** using **Ambition**, increase your **Ambition** die by one step (1d12 > 2d8)                |",
       "collection_type": "profession_feat",
       "required": null,
       "path_investment": "2 Weaver Feats"
@@ -2969,7 +3212,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "2 AP | Range Close",
         "resources": {
@@ -2995,7 +3240,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "1 AP  | Range Close | Duration 1 Minute",
         "resources": {
@@ -3021,7 +3268,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "2 Reservoir",
         "resources": {},
@@ -3045,7 +3294,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -3069,15 +3320,17 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "- | Range Engagement",
         "resources": {},
         "properties": {},
         "notes": []
       },
-      "description_markdown": "You are practiced in weaving falsehoods and unraveling the fabric of others’ stories.  \nYou and allies within range gain **Resolve** on checks made to end the following conditions affecting you:\n- **Frightened**\n- **Charmed**\n- **Compelled**",
-      "raw_markdown": "**Trait** Passive | **Cost** - | **Range** Engagement\nYou are practiced in weaving falsehoods and unraveling the fabric of others’ stories.  \nYou and allies within range gain **Resolve** on checks made to end the following conditions affecting you:\n- **Frightened**\n- **Charmed**\n- **Compelled**",
+      "description_markdown": "You are practiced in weaving falsehoods and unraveling the fabric of others\u2019 stories.  \nYou and allies within range gain **Resolve** on checks made to end the following conditions affecting you:\n- **Frightened**\n- **Charmed**\n- **Compelled**",
+      "raw_markdown": "**Trait** Passive | **Cost** - | **Range** Engagement\nYou are practiced in weaving falsehoods and unraveling the fabric of others\u2019 stories.  \nYou and allies within range gain **Resolve** on checks made to end the following conditions affecting you:\n- **Frightened**\n- **Charmed**\n- **Compelled**",
       "collection_type": "profession_feat",
       "required": null,
       "path_investment": null
@@ -3093,7 +3346,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -3117,15 +3372,17 @@
       "tier": 2,
       "trait_label": "Activation",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
-        "raw": "1 Threads | Range Nearby",
+        "raw": "1 Threads\u2003| Range Nearby",
         "resources": {},
         "properties": {},
         "notes": []
       },
-      "description_markdown": "You manifest illusory threads to seize the target’s mind with distracting burdens. When a creature within range makes a hostile action requiring an attack or spell attack roll, and make a check against their **Mind** defense using your **Spellcasting Modifier**.\n\n- **Critical Success** — As success, and you recover **1 Thread**.\n- **Success** — The attack misses the target.\n- **Failure** — The creature gains **Strain** on its next **attack roll**.\n- **Critical Failure** — No effect",
-      "raw_markdown": "**Required** *Thread Weaving*\n**Activation** Trigger  | **Cost** 1 Threads | **Range** Nearby\nYou manifest illusory threads to seize the target’s mind with distracting burdens. When a creature within range makes a hostile action requiring an attack or spell attack roll, and make a check against their **Mind** defense using your **Spellcasting Modifier**.\n\n- **Critical Success** — As success, and you recover **1 Thread**.\n- **Success** — The attack misses the target.\n- **Failure** — The creature gains **Strain** on its next **attack roll**.\n- **Critical Failure** — No effect",
+      "description_markdown": "You manifest illusory threads to seize the target\u2019s mind with distracting burdens. When a creature within range makes a hostile action requiring an attack or spell attack roll, and make a check against their **Mind** defense using your **Spellcasting Modifier**.\n\n- **Critical Success** \u2014 As success, and you recover **1 Thread**.\n- **Success** \u2014 The attack misses the target.\n- **Failure** \u2014 The creature gains **Strain** on its next **attack roll**.\n- **Critical Failure** \u2014 No effect",
+      "raw_markdown": "**Required** *Thread Weaving*\n**Activation** Trigger \u2003|\u2003**Cost** 1 Threads\u2003| **Range** Nearby\nYou manifest illusory threads to seize the target\u2019s mind with distracting burdens. When a creature within range makes a hostile action requiring an attack or spell attack roll, and make a check against their **Mind** defense using your **Spellcasting Modifier**.\n\n- **Critical Success** \u2014 As success, and you recover **1 Thread**.\n- **Success** \u2014 The attack misses the target.\n- **Failure** \u2014 The creature gains **Strain** on its next **attack roll**.\n- **Critical Failure** \u2014 No effect",
       "collection_type": "profession_feat",
       "required": "Thread Weaving",
       "path_investment": null
@@ -3141,15 +3398,17 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
-        "raw": "1 Phantasm | Range Close",
+        "raw": "1 Phantasm\u2003|\u2003Range Close",
         "resources": {},
         "properties": {},
         "notes": []
       },
       "description_markdown": "You collapse one of your phantasms into a burst of protective illusion.  \nWhen you or an ally within **Close** range of one of your phantasms would be affected by one of the effects below, you destroy the **Phantasm** activating one option,\n\n**Choose one:**\n- **Barrier**  \n    Reduce the damage of the incoming attack by 2d8 + your **Spellcasting modifier**.\n- **Clarification**  \n    End one of the following conditions on the target:  \n    **Enraged, Frightened, Stunned, Dazed, or Inert**.\n- **Rupture**  \n    The next attack the targeted ally makes deals an additional **1d12 psychic damage** on its next attack that hits.",
-      "raw_markdown": "**Required** *Manifest Phantasm* | **Path Investment** *3 Spectre Feats*\n**Trait** Trigger | **Cost** 1 Phantasm | **Range** Close\nYou collapse one of your phantasms into a burst of protective illusion.  \nWhen you or an ally within **Close** range of one of your phantasms would be affected by one of the effects below, you destroy the **Phantasm** activating one option,\n\n**Choose one:**\n- **Barrier**  \n    Reduce the damage of the incoming attack by 2d8 + your **Spellcasting modifier**.\n- **Clarification**  \n    End one of the following conditions on the target:  \n    **Enraged, Frightened, Stunned, Dazed, or Inert**.\n- **Rupture**  \n    The next attack the targeted ally makes deals an additional **1d12 psychic damage** on its next attack that hits.",
+      "raw_markdown": "**Required** *Manifest Phantasm* | **Path Investment** *3 Spectre Feats*\n**Trait** Trigger\u2003|\u2003**Cost** 1 Phantasm\u2003|\u2003**Range** Close\nYou collapse one of your phantasms into a burst of protective illusion.  \nWhen you or an ally within **Close** range of one of your phantasms would be affected by one of the effects below, you destroy the **Phantasm** activating one option,\n\n**Choose one:**\n- **Barrier**  \n    Reduce the damage of the incoming attack by 2d8 + your **Spellcasting modifier**.\n- **Clarification**  \n    End one of the following conditions on the target:  \n    **Enraged, Frightened, Stunned, Dazed, or Inert**.\n- **Rupture**  \n    The next attack the targeted ally makes deals an additional **1d12 psychic damage** on its next attack that hits.",
       "collection_type": "profession_feat",
       "required": "Manifest Phantasm",
       "path_investment": "3 Spectre Feats"
@@ -3165,7 +3424,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -3189,7 +3450,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "1 AP | Duration 1 Round",
         "resources": {
@@ -3198,8 +3461,8 @@
         "properties": {},
         "notes": []
       },
-      "description_markdown": "You weave deceptive mirages around a creature’s perception.\nChoose one creature within range; it becomes *Hexed* for the duration.\n\nWhile *Hexed*, whenever the target is affected by an **Aberration** effect—including **Aberration** spells, or any magical illusion—they take 1d4 **psychic** damage, regardless of whether the effect succeeds or fails.\n\nYou also gain access to the Sphere of **Aberration**.",
-      "raw_markdown": "**Path Investment** *2 Spectre Feats*\n**Trait** Utility | **Cost** 1 AP | **Duration** 1 Round\nYou weave deceptive mirages around a creature’s perception.\nChoose one creature within range; it becomes *Hexed* for the duration.\n\nWhile *Hexed*, whenever the target is affected by an **Aberration** effect—including **Aberration** spells, or any magical illusion—they take 1d4 **psychic** damage, regardless of whether the effect succeeds or fails.\n\nYou also gain access to the Sphere of **Aberration**.",
+      "description_markdown": "You weave deceptive mirages around a creature\u2019s perception.\nChoose one creature within range; it becomes *Hexed* for the duration.\n\nWhile *Hexed*, whenever the target is affected by an **Aberration** effect\u2014including **Aberration** spells, or any magical illusion\u2014they take 1d4 **psychic** damage, regardless of whether the effect succeeds or fails.\n\nYou also gain access to the Sphere of **Aberration**.",
+      "raw_markdown": "**Path Investment** *2 Spectre Feats*\n**Trait** Utility | **Cost** 1 AP | **Duration** 1 Round\nYou weave deceptive mirages around a creature\u2019s perception.\nChoose one creature within range; it becomes *Hexed* for the duration.\n\nWhile *Hexed*, whenever the target is affected by an **Aberration** effect\u2014including **Aberration** spells, or any magical illusion\u2014they take 1d4 **psychic** damage, regardless of whether the effect succeeds or fails.\n\nYou also gain access to the Sphere of **Aberration**.",
       "collection_type": "profession_feat",
       "required": null,
       "path_investment": "2 Spectre Feats"
@@ -3215,7 +3478,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": ["Narrative"],
+      "traits": [
+        "Narrative"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -3239,15 +3504,17 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
         "properties": {},
         "notes": []
       },
-      "description_markdown": "You make a covenant and channel the aspect of your **Creed** into a tangible result. Based upon your Creeds you can emit the following based upon your **Creed**. You regain this at **dawn**. Your also gain the following features for **spellcasting**\n- You are a **Full-caster**.\n- Your total **reservoir** equals *(2 × Tier) + Spellcasting Modifier*.\n- Learn an additional Tier 1 Spell\n- Access Spheres: **Reclamation**",
-      "raw_markdown": "**Requirements** Cannot take or have *Ardent Retribution*\n**Trait** Passive\nYou make a covenant and channel the aspect of your **Creed** into a tangible result. Based upon your Creeds you can emit the following based upon your **Creed**. You regain this at **dawn**. Your also gain the following features for **spellcasting**\n- You are a **Full-caster**.\n- Your total **reservoir** equals *(2 × Tier) + Spellcasting Modifier*.\n- Learn an additional Tier 1 Spell\n- Access Spheres: **Reclamation**",
+      "description_markdown": "You make a covenant and channel the aspect of your **Creed** into a tangible result. Based upon your Creeds you can emit the following based upon your **Creed**. You regain this at **dawn**. Your also gain the following features for **spellcasting**\n- You are a **Full-caster**.\n- Your total **reservoir** equals *(2 \u00d7 Tier) + Spellcasting Modifier*.\n- Learn an additional Tier 1 Spell\n- Access Spheres: **Reclamation**",
+      "raw_markdown": "**Requirements** Cannot take or have *Ardent Retribution*\n**Trait** Passive\nYou make a covenant and channel the aspect of your **Creed** into a tangible result. Based upon your Creeds you can emit the following based upon your **Creed**. You regain this at **dawn**. Your also gain the following features for **spellcasting**\n- You are a **Full-caster**.\n- Your total **reservoir** equals *(2 \u00d7 Tier) + Spellcasting Modifier*.\n- Learn an additional Tier 1 Spell\n- Access Spheres: **Reclamation**",
       "collection_type": "profession_feat",
       "required": "Cannot take or have Ardent Retribution",
       "path_investment": null
@@ -3263,7 +3530,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "1 AP | Range Close",
         "resources": {
@@ -3289,7 +3558,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "2 AP",
         "resources": {
@@ -3315,7 +3586,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -3326,7 +3599,10 @@
       "raw_markdown": "**Trait** Passive\nYou can discern truth from falsehood when it matters most. You have *Expertise* on **Lore** checks, and always add **Ambition** at no cost when related to your **Creed** or your **Anathema**.",
       "collection_type": "profession_feat",
       "required": null,
-      "path_investment": null
+      "path_investment": null,
+      "fixed_expertise": [
+        "Lore"
+      ]
     },
     {
       "id": "profession-feats-oathbound-1-ardent-retribution",
@@ -3339,7 +3615,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -3363,7 +3641,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": ["Narrative"],
+      "traits": [
+        "Narrative"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -3378,7 +3658,7 @@
     },
     {
       "id": "profession-feats-oathbound-2-creed-s-echo",
-      "name": "Creed’s Echo",
+      "name": "Creed\u2019s Echo",
       "slug": "creed-s-echo",
       "owner_type": "profession",
       "owner_id": "oathbound",
@@ -3387,7 +3667,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -3411,7 +3693,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -3435,7 +3719,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": ["Narrative"],
+      "traits": [
+        "Narrative"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -3459,7 +3745,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -3483,7 +3771,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": ["Narrative"],
+      "traits": [
+        "Narrative"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -3507,7 +3797,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "1 AP + 1 Reservoir per condition removed",
         "resources": {
@@ -3533,7 +3825,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -3557,7 +3851,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -3581,15 +3877,17 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
         "properties": {},
         "notes": []
       },
-      "description_markdown": "Your presence alone is enough to bring stillness—or reverence. Whether bearing robes, relics, or simply your voice, your divine conviction leaves a mark. You gain the following effects:\n- During **travel**, your group cannot be **surprised** by those who are an **Anathema** to your **Creed**.\n- You can glimpse the cause of scared places that are **defiled**, **corrupted**, or **warded** by spending 10 minutes in silent observation or prayer.",
-      "raw_markdown": "**Path Investment** *Three Herald Feats*\n**Trait** Passive  \nYour presence alone is enough to bring stillness—or reverence. Whether bearing robes, relics, or simply your voice, your divine conviction leaves a mark. You gain the following effects:\n- During **travel**, your group cannot be **surprised** by those who are an **Anathema** to your **Creed**.\n- You can glimpse the cause of scared places that are **defiled**, **corrupted**, or **warded** by spending 10 minutes in silent observation or prayer.",
+      "description_markdown": "Your presence alone is enough to bring stillness\u2014or reverence. Whether bearing robes, relics, or simply your voice, your divine conviction leaves a mark. You gain the following effects:\n- During **travel**, your group cannot be **surprised** by those who are an **Anathema** to your **Creed**.\n- You can glimpse the cause of scared places that are **defiled**, **corrupted**, or **warded** by spending 10 minutes in silent observation or prayer.",
+      "raw_markdown": "**Path Investment** *Three Herald Feats*\n**Trait** Passive  \nYour presence alone is enough to bring stillness\u2014or reverence. Whether bearing robes, relics, or simply your voice, your divine conviction leaves a mark. You gain the following effects:\n- During **travel**, your group cannot be **surprised** by those who are an **Anathema** to your **Creed**.\n- You can glimpse the cause of scared places that are **defiled**, **corrupted**, or **warded** by spending 10 minutes in silent observation or prayer.",
       "collection_type": "profession_feat",
       "required": null,
       "path_investment": "Three Herald Feats"
@@ -3605,7 +3903,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "2 Ambition | Range Close",
         "resources": {
@@ -3631,7 +3931,9 @@
       "tier": 3,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "1 AP",
         "resources": {
@@ -3657,7 +3959,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -3668,7 +3972,10 @@
       "raw_markdown": "**Trait** Passive  \nYou gain *commune with animals* as a **cantrip** and may cast spells through your **Vessels**. In addition, you gain *Expertise* in **Lore**, upgrading the dice size for skill checks.",
       "collection_type": "profession_feat",
       "required": null,
-      "path_investment": null
+      "path_investment": null,
+      "fixed_expertise": [
+        "Lore"
+      ]
     },
     {
       "id": "profession-feats-shaman-1-vessel-healing",
@@ -3681,7 +3988,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "2 AP | Range Close",
         "resources": {
@@ -3707,7 +4016,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -3731,7 +4042,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "1 Vessel Charge | Range Close",
         "resources": {},
@@ -3755,7 +4068,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "1 AP + 1 Ambition | Range Close",
         "resources": {
@@ -3781,7 +4096,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "2 AP + 1 Ambition",
         "resources": {
@@ -3807,7 +4124,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -3831,7 +4150,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "1 AP   | Range Close",
         "resources": {
@@ -3857,7 +4178,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -3881,7 +4204,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Maneuver",
-      "traits": ["Maneuver"],
+      "traits": [
+        "Maneuver"
+      ],
       "activation": {
         "raw": "1 AP  + 2 Reservoir  | Range Nearby",
         "resources": {
@@ -3907,7 +4232,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -3931,7 +4258,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -3955,7 +4284,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -3979,7 +4310,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -4003,7 +4336,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "1 AP",
         "resources": {
@@ -4029,7 +4364,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Manuever",
-      "traits": ["Manuever"],
+      "traits": [
+        "Manuever"
+      ],
       "activation": {
         "raw": "1 AP & 1 Reservoir",
         "resources": {
@@ -4055,17 +4392,19 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Narrative",
-      "traits": ["Narrative"],
+      "traits": [
+        "Narrative"
+      ],
       "activation": {
-        "raw": "1 AP + Reservoir equal to the spell’s tier",
+        "raw": "1 AP + Reservoir equal to the spell\u2019s tier",
         "resources": {
           "ap": 1
         },
         "properties": {},
         "notes": []
       },
-      "description_markdown": "You channel magical power into your **Bound Armament**, storing an **offensive spell** within it.\n- You must pay the spell’s **Reservoir** cost when storing it.\n- When you hit a target with your Bound Armament, you may **unleash the stored spell** against that target.    \n- If the spell has an **area of effect**, it instead affects **only the chosen target**.\n- Power Strike **does not** effect the spell stored in the Bound Armament\n\nThe spell dissipates if not used by the end of the skirmish.",
-      "raw_markdown": "**Trait** Narrative | **Cost** 1 AP + Reservoir equal to the spell’s tier  \nYou channel magical power into your **Bound Armament**, storing an **offensive spell** within it.\n- You must pay the spell’s **Reservoir** cost when storing it.\n- When you hit a target with your Bound Armament, you may **unleash the stored spell** against that target.    \n- If the spell has an **area of effect**, it instead affects **only the chosen target**.\n- Power Strike **does not** effect the spell stored in the Bound Armament\n\nThe spell dissipates if not used by the end of the skirmish.",
+      "description_markdown": "You channel magical power into your **Bound Armament**, storing an **offensive spell** within it.\n- You must pay the spell\u2019s **Reservoir** cost when storing it.\n- When you hit a target with your Bound Armament, you may **unleash the stored spell** against that target.    \n- If the spell has an **area of effect**, it instead affects **only the chosen target**.\n- Power Strike **does not** effect the spell stored in the Bound Armament\n\nThe spell dissipates if not used by the end of the skirmish.",
+      "raw_markdown": "**Trait** Narrative | **Cost** 1 AP + Reservoir equal to the spell\u2019s tier  \nYou channel magical power into your **Bound Armament**, storing an **offensive spell** within it.\n- You must pay the spell\u2019s **Reservoir** cost when storing it.\n- When you hit a target with your Bound Armament, you may **unleash the stored spell** against that target.    \n- If the spell has an **area of effect**, it instead affects **only the chosen target**.\n- Power Strike **does not** effect the spell stored in the Bound Armament\n\nThe spell dissipates if not used by the end of the skirmish.",
       "collection_type": "profession_feat",
       "required": null,
       "path_investment": null
@@ -4081,7 +4420,9 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "2 Reservoir | Duration 1 Minute",
         "resources": {},
@@ -4105,15 +4446,17 @@
       "tier": 1,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
-        "raw": "Reservoir equal to the spell’s Tier",
+        "raw": "Reservoir equal to the spell\u2019s Tier",
         "resources": {},
         "properties": {},
         "notes": []
       },
-      "description_markdown": "When a **spell** targets or affects you, you may raise your **Bound Armament** to intercept the arcane force.\n\nReduce the spell’s damage by: \n- **Spellcasting Modifier** + 2d6\n\nIf this reduces the damage to **0**, you ignore any secondary or additional effects of the spell.\n\nYou also gain proficiency with **shields**.",
-      "raw_markdown": "**Path Investment** *2 Vanguard Feats*\n**Trait** Trigger | **Cost** Reservoir equal to the spell’s **Tier**\nWhen a **spell** targets or affects you, you may raise your **Bound Armament** to intercept the arcane force.\n\nReduce the spell’s damage by: \n- **Spellcasting Modifier** + 2d6\n\nIf this reduces the damage to **0**, you ignore any secondary or additional effects of the spell.\n\nYou also gain proficiency with **shields**.",
+      "description_markdown": "When a **spell** targets or affects you, you may raise your **Bound Armament** to intercept the arcane force.\n\nReduce the spell\u2019s damage by: \n- **Spellcasting Modifier** + 2d6\n\nIf this reduces the damage to **0**, you ignore any secondary or additional effects of the spell.\n\nYou also gain proficiency with **shields**.",
+      "raw_markdown": "**Path Investment** *2 Vanguard Feats*\n**Trait** Trigger | **Cost** Reservoir equal to the spell\u2019s **Tier**\nWhen a **spell** targets or affects you, you may raise your **Bound Armament** to intercept the arcane force.\n\nReduce the spell\u2019s damage by: \n- **Spellcasting Modifier** + 2d6\n\nIf this reduces the damage to **0**, you ignore any secondary or additional effects of the spell.\n\nYou also gain proficiency with **shields**.",
       "collection_type": "profession_feat",
       "required": null,
       "path_investment": "2 Vanguard Feats"
@@ -4129,7 +4472,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "Once per Respite",
         "resources": {},
@@ -4153,7 +4498,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "1 AP",
         "resources": {
@@ -4179,7 +4526,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Trigger",
-      "traits": ["Trigger"],
+      "traits": [
+        "Trigger"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -4203,7 +4552,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
@@ -4227,7 +4578,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Utility",
-      "traits": ["Utility"],
+      "traits": [
+        "Utility"
+      ],
       "activation": {
         "raw": "1 AP",
         "resources": {
@@ -4253,15 +4606,17 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
         "properties": {},
         "notes": []
       },
-      "description_markdown": "You have learned remnants of arcane power to enhance your equipment beyond the traditional methods of augmentation. As part of your ****Daily Preparation**s** you imbue **remnants** onto eligible items up to your **Tier**, and these do not take an augmentation slot. You choose one **remnant** to learn\n- **Chaotic** (*Accessory*) When you are below half **vitality** or half **wounds**, on **attack rolls** or **skill checks** rolls you may re-roll 1s once.\n- **Disruption** (*Weapon*) Once per **target**, when you hit a **spellcaster**, their next **spell attack** is rolled with **Strain**.\n- **Dissipation** (*Accessory/Weapon*) Once per **rest**, when a spell of equal **Tier** or less targets you, you may use your **maneuver** to collapse the effect—rolling the warden's **mind** vs caster’s **DC**, on success, the spell fizzles.\n- **Glint** (*Armor/Accessory*) Once per **respite**, reduce any damage by 1d12 and teleport 1 zone **away**.\n- **Prism** (*Armor/Shield*) Once per **respite**, when you take **elemental** damage you gain **Resistance** to that element until the end of your next turn, and may deal 2d4 of that **element** on your next attack.\n- **Phoenix** (*Armor/Weapon*) Once per **day**, when you receive damage and gain **Wounds**, reduce the damage to **0** and drop to 1 **vitality** instead.",
-      "raw_markdown": "**Path Investment** *3 Vanguard Feats*\n**Trait** Passive\nYou have learned remnants of arcane power to enhance your equipment beyond the traditional methods of augmentation. As part of your ****Daily Preparation**s** you imbue **remnants** onto eligible items up to your **Tier**, and these do not take an augmentation slot. You choose one **remnant** to learn\n- **Chaotic** (*Accessory*) When you are below half **vitality** or half **wounds**, on **attack rolls** or **skill checks** rolls you may re-roll 1s once.\n- **Disruption** (*Weapon*) Once per **target**, when you hit a **spellcaster**, their next **spell attack** is rolled with **Strain**.\n- **Dissipation** (*Accessory/Weapon*) Once per **rest**, when a spell of equal **Tier** or less targets you, you may use your **maneuver** to collapse the effect—rolling the warden's **mind** vs caster’s **DC**, on success, the spell fizzles.\n- **Glint** (*Armor/Accessory*) Once per **respite**, reduce any damage by 1d12 and teleport 1 zone **away**.\n- **Prism** (*Armor/Shield*) Once per **respite**, when you take **elemental** damage you gain **Resistance** to that element until the end of your next turn, and may deal 2d4 of that **element** on your next attack.\n- **Phoenix** (*Armor/Weapon*) Once per **day**, when you receive damage and gain **Wounds**, reduce the damage to **0** and drop to 1 **vitality** instead.",
+      "description_markdown": "You have learned remnants of arcane power to enhance your equipment beyond the traditional methods of augmentation. As part of your ****Daily Preparation**s** you imbue **remnants** onto eligible items up to your **Tier**, and these do not take an augmentation slot. You choose one **remnant** to learn\n- **Chaotic** (*Accessory*) When you are below half **vitality** or half **wounds**, on **attack rolls** or **skill checks** rolls you may re-roll 1s once.\n- **Disruption** (*Weapon*) Once per **target**, when you hit a **spellcaster**, their next **spell attack** is rolled with **Strain**.\n- **Dissipation** (*Accessory/Weapon*) Once per **rest**, when a spell of equal **Tier** or less targets you, you may use your **maneuver** to collapse the effect\u2014rolling the warden's **mind** vs caster\u2019s **DC**, on success, the spell fizzles.\n- **Glint** (*Armor/Accessory*) Once per **respite**, reduce any damage by 1d12 and teleport 1 zone **away**.\n- **Prism** (*Armor/Shield*) Once per **respite**, when you take **elemental** damage you gain **Resistance** to that element until the end of your next turn, and may deal 2d4 of that **element** on your next attack.\n- **Phoenix** (*Armor/Weapon*) Once per **day**, when you receive damage and gain **Wounds**, reduce the damage to **0** and drop to 1 **vitality** instead.",
+      "raw_markdown": "**Path Investment** *3 Vanguard Feats*\n**Trait** Passive\nYou have learned remnants of arcane power to enhance your equipment beyond the traditional methods of augmentation. As part of your ****Daily Preparation**s** you imbue **remnants** onto eligible items up to your **Tier**, and these do not take an augmentation slot. You choose one **remnant** to learn\n- **Chaotic** (*Accessory*) When you are below half **vitality** or half **wounds**, on **attack rolls** or **skill checks** rolls you may re-roll 1s once.\n- **Disruption** (*Weapon*) Once per **target**, when you hit a **spellcaster**, their next **spell attack** is rolled with **Strain**.\n- **Dissipation** (*Accessory/Weapon*) Once per **rest**, when a spell of equal **Tier** or less targets you, you may use your **maneuver** to collapse the effect\u2014rolling the warden's **mind** vs caster\u2019s **DC**, on success, the spell fizzles.\n- **Glint** (*Armor/Accessory*) Once per **respite**, reduce any damage by 1d12 and teleport 1 zone **away**.\n- **Prism** (*Armor/Shield*) Once per **respite**, when you take **elemental** damage you gain **Resistance** to that element until the end of your next turn, and may deal 2d4 of that **element** on your next attack.\n- **Phoenix** (*Armor/Weapon*) Once per **day**, when you receive damage and gain **Wounds**, reduce the damage to **0** and drop to 1 **vitality** instead.",
       "collection_type": "profession_feat",
       "required": null,
       "path_investment": "3 Vanguard Feats"
@@ -4277,7 +4632,9 @@
       "tier": 2,
       "trait_label": "Trait",
       "trait_raw": "Passive",
-      "traits": ["Passive"],
+      "traits": [
+        "Passive"
+      ],
       "activation": {
         "raw": "-",
         "resources": {},
