@@ -1,28 +1,28 @@
-@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=JetBrains+Mono:wght@400;500&family=Inter:wght@300;400;500;600;700&family=Source+Sans+3:wght@300;400;500;600;700&family=Cormorant+Garamond:ital,wght@0,500;0,600;1,500;1,600&display=swap");
 @import "tailwindcss";
 
 /* ── Dark mode (default) ─────────────────────────────── */
 :root,
 [data-theme="dark"] {
     /* Core surfaces */
-    --bg: #16120d;
-    --bg-2: #1d1812;
-    --panel: #231d14;
-    --panel-hi: #2c2318;
+    --bg: #14151a;
+    --bg-2: #14141c;
+    --panel: #181821;
+    --panel-hi: #1c1c26;
 
     /* Borders */
-    --border: #3b3122;
-    --border-hi: #544531;
+    --border: #2a2a35;
+    --border-hi: #3a3a48;
 
     /* Text */
-    --text-primary: #f4ecdb;
-    --text-secondary: #cebf9d;
-    --text-tertiary: #9b8b66;
+    --text-primary: #e8e3d6;
+    --text-secondary: #c4bfb0;
+    --text-tertiary: #a09a8c;
 
     /* Gold */
-    --gold: #d4a74c;
-    --gold-dim: #8a6d2e;
-    --gold-hi: #edc878;
+    --gold: #c9a96a;
+    --gold-dim: #8a7444;
+    --gold-hi: #e0c388;
 
     /* Category colors */
     --c-prof: #d4a74c;
@@ -50,13 +50,13 @@
     --c-action-rgb: 226 106 98;
     --c-equip-rgb: 184 163 108;
     --c-hybrid-rgb: 192 120 200;
-    --gold-rgb: 212 167 76;
+    --gold-rgb: 201 169 106;
 
     /* State */
-    --ok: #6cbd6c;
-    --fail: #e2706a;
-    --ok-rgb: 108 189 108;
-    --fail-rgb: 226 112 106;
+    --ok: #7a9d6f;
+    --fail: #c66464;
+    --ok-rgb: 122 157 111;
+    --fail-rgb: 198 100 100;
 
     /* Backward-compat aliases */
     --bg-page: var(--bg);
@@ -82,9 +82,11 @@
     --text-dim: #e2d6bd; /* between primary and secondary */
     --text-faint: var(--text-tertiary);
     --card: var(--panel);
-    --card-2: #1b160e; /* darker inset surface */
-    --border-soft: #2e2719;
-    --border-faint: #271f15;
+    --card-2: #1c1c26; /* darker inset surface */
+    --border-soft: #20202a;
+    --border-faint: #1e1e28;
+    --portrait-scrim: rgba(15, 15, 21, 0.85);
+    --portrait-ph-a: #2a2330;
 
     color-scheme: dark;
 }
@@ -240,6 +242,9 @@
     --font-heading: "Cormorant Garamond", Georgia, serif;
     --font-body: "Inter", "Source Sans 3", sans-serif;
     --font-mono: "IBM Plex Mono", monospace;
+    --serif: "Cormorant Garamond", Georgia, serif;
+    --sans: "IBM Plex Sans", -apple-system, sans-serif;
+    --mono: "JetBrains Mono", "IBM Plex Mono", monospace;
     --breakpoint-lg: 1300px;
 }
 
@@ -942,3 +947,11 @@ h6 {
     padding-top: 10px;
     padding-bottom: 10px;
 }
+
+/* ── Portrait thumbnail + modal ────────────────────────── */
+.header-portrait-thumb { width:56px; height:56px; border-radius:5px; border:1px solid var(--border); cursor:pointer; overflow:hidden; flex-shrink:0; transition:border-color 0.15s; }
+.header-portrait-thumb:hover { border-color: var(--gold); }
+.portrait-modal-overlay { position:fixed; inset:0; background:rgba(0,0,0,0.75); display:flex; align-items:center; justify-content:center; z-index:1000; }
+.portrait-modal { background:var(--card,var(--panel)); border:1px solid var(--border); border-radius:8px; max-width:420px; width:90vw; overflow:hidden; }
+.portrait-modal-btn { padding:4px 12px; border-radius:4px; border:1px solid var(--border); background:var(--bg-nav,var(--bg-2)); color:var(--text-primary); font-size:12px; cursor:pointer; }
+.portrait-modal-btn--danger { border-color:var(--fail); color:var(--fail); }

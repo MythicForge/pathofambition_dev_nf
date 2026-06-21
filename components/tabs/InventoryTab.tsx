@@ -1094,16 +1094,80 @@ export default function InventoryTab({
             </span>
           </div>
         ))}
-        <span
+        <div
           style={{
-            fontSize: "0.78rem",
-            color:
-              totalCarried > carryWeight ? "var(--fail)" : "var(--text-muted)",
+            backgroundColor: "var(--card, var(--panel))",
+            border: "1px solid var(--border)",
+            borderRadius: "6px",
+            padding: "10px 14px 12px",
+            minWidth: "120px",
           }}
         >
-          Weight: {totalCarried.toFixed(1)} / {carryWeight}
-          {totalCarried > carryWeight && <strong> ⚠ Over</strong>}
-        </span>
+          <div
+            style={{
+              fontFamily: "var(--font-heading)",
+              fontSize: "10px",
+              letterSpacing: "0.16em",
+              textTransform: "uppercase" as const,
+              color: "var(--primary)",
+              marginBottom: "6px",
+            }}
+          >
+            Carry
+          </div>
+          <div style={{ display: "flex", alignItems: "baseline", gap: "6px" }}>
+            <span
+              style={{
+                fontFamily: "var(--font-heading)",
+                fontSize: "22px",
+                fontWeight: 700,
+                color: totalCarried > carryWeight ? "var(--fail)" : "var(--text)",
+              }}
+            >
+              {totalCarried.toFixed(1)}
+            </span>
+            <span
+              style={{
+                fontFamily: "var(--font-heading)",
+                fontSize: "11px",
+                color: "var(--text-muted)",
+              }}
+            >
+              / {carryWeight} lb
+            </span>
+          </div>
+          <div
+            style={{
+              marginTop: "6px",
+              height: "4px",
+              borderRadius: "2px",
+              backgroundColor: "var(--border)",
+              overflow: "hidden",
+            }}
+          >
+            <div
+              style={{
+                height: "100%",
+                width: `${Math.min(100, carryWeight > 0 ? (totalCarried / carryWeight) * 100 : 0)}%`,
+                backgroundColor: totalCarried > carryWeight ? "var(--fail)" : "var(--primary)",
+                transition: "width 0.3s",
+              }}
+            />
+          </div>
+          {totalCarried > carryWeight && (
+            <div
+              style={{
+                marginTop: "4px",
+                fontSize: "10px",
+                fontFamily: "var(--font-heading)",
+                fontWeight: 700,
+                color: "var(--fail)",
+              }}
+            >
+              ⚠ Over
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Inventory list */}

@@ -20,6 +20,19 @@ import type {
 /** Signed attribute/mod formatter (+3 / -1). */
 const fmtAttr = (v: number) => (v >= 0 ? `+${v}` : String(v));
 
+const COND_CATEGORY: Record<string, string> = {
+  Bleeding: "damage", Burning: "damage",
+  Poisoned: "poison",
+  Blinded: "sense", Deafened: "sense",
+  Charmed: "mind", Compelled: "mind", Dominated: "mind", Frightened: "mind", Enraged: "mind",
+  Restrained: "control", Immobilized: "control", Stunned: "control", Inert: "control", Unconscious: "control", Prone: "control",
+  Dazed: "hinder", Weakened: "hinder", Sapped: "hinder", Crippled: "hinder", Maimed: "hinder", Silenced: "hinder",
+};
+const COND_COLOR: Record<string, string> = {
+  damage: "#e0623d", poison: "#5fae6b", sense: "#5f94d6",
+  mind: "#d877ab", control: "#9d80dd", hinder: "#cf9a4e",
+};
+
 interface CombatTabProps {
   c: Character;
   persist: (patch: Partial<Character>) => void;
@@ -40,6 +53,7 @@ export default function CombatTab({
   attrs,
 }: CombatTabProps) {
   const [conditionsCollapsed, setConditionsCollapsed] = useState(false);
+  const [showPicker, setShowPicker] = useState(false);
 
   const activeConds = c.activeConditions ?? {};
   const STACKING = new Set([
@@ -315,191 +329,144 @@ export default function CombatTab({
           </span>
         </div>
         {!conditionsCollapsed && (
-          <div
-            style={{
-              padding: "12px 14px",
-              display: "flex",
-              flexWrap: "wrap" as const,
-              gap: "6px",
-            }}
-          >
-            {(
-              Object.entries(CONDITIONS) as [
-                string,
-                { stack: boolean; tip: string },
-              ][]
-            ).map(([code, def]) => {
-              const count = activeConds[code] ?? 0;
-              const active = count > 0;
-              const isStack = STACKING.has(code);
-              return (
-                <div
-                  key={code}
-                  title={def.tip}
-                  style={{
-                    display: "inline-flex",
-                    alignItems: "center",
-                    gap: "4px",
-                    padding: active ? "3px 8px 3px 8px" : "3px 8px",
-                    borderRadius: "5px",
-                    border: `1px solid ${active ? "var(--primary)" : "var(--border)"}`,
-                    backgroundColor: active
-                      ? "var(--primary-light)"
-                      : "var(--bg-nav)",
-                    cursor: "pointer",
-                    transition: "all 0.1s",
-                  }}
-                  onClick={() =>
-                    setCondition(
-                      code,
-                      isStack ? (active ? 0 : 1) : active ? 0 : 1,
-                    )
-                  }
-                >
-                  <span
-                    style={{
-                      fontSize: "10px",
-                      fontFamily: "var(--font-mono)",
-                      letterSpacing: "0.06em",
-                      color: active ? "var(--primary)" : "var(--text-muted)",
-                      fontWeight: active ? 700 : 400,
-                    }}
-                  >
-                    {code}
-                  </span>
-                  {active && !isStack && (
-                    <span
-                      style={{
-                        fontSize: "9px",
-                        color: "var(--primary)",
-                        marginLeft: "1px",
-                      }}
-                    >
-                      ✓
-                    </span>
-                  )}
-                  {active && isStack && (
-                    <>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setCondition(code, count - 1);
-                        }}
-                        style={{
-                          background: "none",
-                          border: "none",
-                          cursor: "pointer",
-                          fontSize: "11px",
-                          color: "var(--primary)",
-                          padding: "0 1px",
-                          lineHeight: 1,
-                        }}
-                      >
-                        −
-                      </button>
-                      <span
-                        style={{
-                          fontSize: "11px",
-                          fontFamily: "var(--font-mono)",
-                          color: "var(--primary)",
-                          fontWeight: 700,
-                          minWidth: "12px",
-                          textAlign: "center" as const,
-                        }}
-                      >
-                        {count}
-                      </span>
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setCondition(code, count + 1);
-                        }}
-                        style={{
-                          background: "none",
-                          border: "none",
-                          cursor: "pointer",
-                          fontSize: "11px",
-                          color: "var(--primary)",
-                          padding: "0 1px",
-                          lineHeight: 1,
-                        }}
-                      >
-                        +
-                      </button>
-                    </>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
-        {!conditionsCollapsed &&
-          Object.values(activeConds).some((v) => v > 0) && (
+          <>
+            {/* Active chip row */}
             <div
               style={{
-                padding: "0 14px 10px",
+                padding: "10px 14px",
                 display: "flex",
-                flexDirection: "column" as const,
-                gap: "4px",
+                flexWrap: "wrap" as const,
+                gap: "6px",
+                alignItems: "center",
               }}
             >
-              <div
-                style={{
-                  fontSize: "9px",
-                  fontFamily: "var(--font-mono)",
-                  letterSpacing: "0.12em",
-                  textTransform: "uppercase" as const,
-                  color: "var(--text-muted)",
-                  marginBottom: "4px",
-                }}
-              >
-                Active
-              </div>
               {(Object.entries(activeConds) as [string, number][])
                 .filter(([, v]) => v > 0)
                 .map(([code, count]) => {
-                  const def = CONDITIONS[code as keyof typeof CONDITIONS];
-                  if (!def) return null;
+                  const cat = COND_CATEGORY[code] ?? "hinder";
+                  const color = COND_COLOR[cat] ?? "#cf9a4e";
+                  const isStack = STACKING.has(code);
                   return (
                     <div
                       key={code}
+                      title={(CONDITIONS[code as keyof typeof CONDITIONS])?.tip}
                       style={{
-                        display: "flex",
-                        gap: "8px",
-                        alignItems: "flex-start",
-                        padding: "6px 10px",
-                        backgroundColor: "var(--bg-nav)",
-                        border: "1px solid var(--primary)",
+                        display: "inline-flex",
+                        alignItems: "center",
+                        gap: "5px",
+                        padding: "3px 6px",
                         borderRadius: "5px",
-                        borderLeftWidth: "3px",
+                        border: `1px solid ${color}55`,
+                        backgroundColor: `${color}18`,
                       }}
                     >
                       <span
                         style={{
-                          fontFamily: "var(--font-mono)",
-                          fontSize: "10px",
-                          fontWeight: 700,
-                          color: "var(--primary)",
-                          minWidth: "32px",
+                          width: "8px",
+                          height: "8px",
+                          borderRadius: "50%",
+                          backgroundColor: color,
+                          flexShrink: 0,
+                          display: "inline-block",
                         }}
-                      >
-                        {code}
-                        {count > 1 ? ` ×${count}` : ""}
-                      </span>
+                      />
                       <span
                         style={{
                           fontSize: "11px",
-                          color: "var(--text-muted)",
-                          lineHeight: 1.4,
+                          fontFamily: "var(--font-mono)",
+                          letterSpacing: "0.04em",
+                          color: "var(--text)",
                         }}
                       >
-                        {def.tip}
+                        {code}
                       </span>
+                      {isStack ? (
+                        <>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setCondition(code, count - 1); }}
+                            style={{ background: "none", border: "none", cursor: "pointer", fontSize: "12px", color, padding: "0 1px", lineHeight: 1 }}
+                          >
+                            −
+                          </button>
+                          <span style={{ fontSize: "11px", fontFamily: "var(--font-mono)", color, fontWeight: 700 }}>
+                            {count}
+                          </span>
+                          <button
+                            onClick={(e) => { e.stopPropagation(); setCondition(code, count + 1); }}
+                            style={{ background: "none", border: "none", cursor: "pointer", fontSize: "12px", color, padding: "0 1px", lineHeight: 1 }}
+                          >
+                            +
+                          </button>
+                        </>
+                      ) : (
+                        <span style={{ fontSize: "10px", color: "var(--text-muted)" }}>∞</span>
+                      )}
+                      <button
+                        onClick={() => setCondition(code, 0)}
+                        style={{ background: "none", border: "none", cursor: "pointer", fontSize: "11px", color: "var(--text-muted)", padding: "0 1px", lineHeight: 1 }}
+                      >
+                        ×
+                      </button>
                     </div>
                   );
                 })}
+              <button
+                onClick={() => setShowPicker((v) => !v)}
+                style={{
+                  fontSize: "11px",
+                  fontFamily: "var(--font-mono)",
+                  padding: "2px 8px",
+                  borderRadius: "5px",
+                  border: "1px solid var(--border)",
+                  background: showPicker ? "var(--primary-light)" : "var(--bg-nav)",
+                  color: showPicker ? "var(--primary)" : "var(--text-muted)",
+                  cursor: "pointer",
+                }}
+              >
+                {showPicker ? "− hide" : "+ add"}
+              </button>
             </div>
-          )}
+
+            {/* Condition picker grid */}
+            {showPicker && (
+              <div
+                style={{
+                  borderTop: "1px solid var(--border)",
+                  padding: "10px 14px",
+                  display: "flex",
+                  flexWrap: "wrap" as const,
+                  gap: "5px",
+                }}
+              >
+                {(Object.entries(CONDITIONS) as [string, { stack: boolean; tip: string }][]).map(([code, def]) => {
+                  const count = activeConds[code] ?? 0;
+                  const active = count > 0;
+                  const cat = COND_CATEGORY[code] ?? "hinder";
+                  const color = COND_COLOR[cat] ?? "#cf9a4e";
+                  return (
+                    <button
+                      key={code}
+                      title={def.tip}
+                      onClick={() => setCondition(code, active ? 0 : 1)}
+                      style={{
+                        fontSize: "10px",
+                        fontFamily: "var(--font-mono)",
+                        padding: "2px 7px",
+                        borderRadius: "4px",
+                        border: `1px solid ${active ? color : "var(--border)"}`,
+                        backgroundColor: active ? `${color}18` : "var(--bg-nav)",
+                        color: active ? color : "var(--text-muted)",
+                        cursor: "pointer",
+                      }}
+                    >
+                      {code}
+                    </button>
+                  );
+                })}
+              </div>
+            )}
+          </>
+        )}
       </div>
     </>
   );

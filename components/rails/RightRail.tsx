@@ -8,9 +8,15 @@
  * favorites popout and portrait image are shared with overlays in the main
  * shell, so they arrive as props.
  */
-import { useState, type RefObject } from "react";
+import { useState } from "react";
+import {
+  calcBaseDiceFromAttr,
+  calcSkillAttrValue,
+  calcSkillPool,
+} from "@/lib/characterCalc";
 import type {
   Character,
+  AttributeKey,
   BuilderProfession,
   BuilderVocation,
   BuilderFeat,
@@ -31,9 +37,8 @@ interface RightRailProps {
   inventory: InventoryItem[];
   toggleFavorite: (type: "item" | "feat" | "spell", id: string) => void;
   setFavPopout: (v: FavRef) => void;
-  portraitUrl: string | null;
-  setPortraitUrl: (v: string | null) => void;
-  portraitInputRef: RefObject<HTMLInputElement | null>;
+  attrs: Record<AttributeKey, number>;
+  isArmorProficient: boolean;
 }
 
 export default function RightRail({
@@ -47,18 +52,24 @@ export default function RightRail({
   inventory,
   toggleFavorite,
   setFavPopout,
-  portraitUrl,
-  setPortraitUrl,
-  portraitInputRef,
+  attrs,
+  isArmorProficient,
 }: RightRailProps) {
-  const [portraitCollapsed, setPortraitCollapsed] = useState(false);
   const [favoritesCollapsed, setFavoritesCollapsed] = useState(false);
+
+  const totalAvailableSkill = 4 + 2 * Math.floor((c.featsPurchased ?? 0) / 2);
+  const totalSpentSkill = Object.values(c.skillPoints ?? {}).reduce(
+    (s, v) => s + v,
+    0,
+  );
+  const dynUnspentSkill = totalAvailableSkill - totalSpentSkill;
 
   return (
     <>
-      {/* Portrait */}
+      {/* V.I.T.A.L.S. */}
       <div
         style={{
+          backgroundColor: "var(--bg-card)",
           border: "1px solid var(--border)",
           borderRadius: "6px",
           overflow: "hidden",
@@ -66,148 +77,304 @@ export default function RightRail({
       >
         <div
           style={{
-            padding: "6px 14px",
+            padding: "0.5rem 1rem",
+            borderBottom: "1px solid var(--border)",
             backgroundColor: "var(--bg-nav)",
-            borderBottom: portraitCollapsed
-              ? "none"
-              : "1px solid var(--border)",
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            cursor: "pointer",
-            fontSize: "10px",
-            fontFamily: "var(--font-mono)",
-            letterSpacing: "0.16em",
-            textTransform: "uppercase" as const,
-            color: "var(--text-muted)",
           }}
-          onClick={() => setPortraitCollapsed((v) => !v)}
         >
-          <span>Portrait</span>
-          <span style={{ fontSize: "10px", opacity: 0.6 }}>
-            {portraitCollapsed ? "▶" : "▼"}
-          </span>
-        </div>
-        {!portraitCollapsed && (
-          <div
-            onClick={() => portraitInputRef.current?.click()}
-            title={
-              portraitUrl
-                ? "Click to change portrait"
-                : "Click to upload portrait"
-            }
+          <span
             style={{
-              position: "relative",
-              overflow: "hidden",
-              aspectRatio: "3/4",
-              backgroundColor: "var(--bg-nav)",
-              cursor: "pointer",
+              fontSize: "0.65rem",
+              fontFamily: "var(--font-heading)",
+              fontStyle: "italic",
+              letterSpacing: "0.12em",
+              color: "var(--text-muted)",
+              textTransform: "uppercase" as const,
             }}
           >
-            {portraitUrl ? (
-              <img
-                src={portraitUrl}
-                alt={c.name}
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  width: "100%",
-                  height: "100%",
-                  objectFit: "cover",
-                }}
-              />
-            ) : (
-              <div
-                style={{
-                  position: "absolute",
-                  inset: 0,
-                  background:
-                    "repeating-linear-gradient(135deg, transparent 0 12px, var(--border) 12px 13px)",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: "var(--font-heading)",
-                    fontSize: "10px",
-                    letterSpacing: "0.3em",
-                    color: "var(--text-muted)",
-                    textTransform: "uppercase" as const,
-                    opacity: 0.6,
-                  }}
-                >
-                  PORTRAIT
-                </div>
-              </div>
-            )}
+            V.I.T.A.L.S.
+          </span>
+        </div>
+        <div
+          style={{
+            padding: "0.875rem 1rem",
+            display: "flex",
+            flexDirection: "column" as const,
+            gap: "0.75rem",
+          }}
+        >
+          {!isArmorProficient && (
             <div
               style={{
-                position: "absolute",
-                inset: "auto 0 0 0",
-                padding: "14px 14px 12px",
-                background:
-                  "linear-gradient(180deg, transparent 0%, var(--bg-nav) 100%)",
+                padding: "0.4rem 0.75rem",
+                backgroundColor: "var(--section-alert-bg)",
+                border: "1px solid rgb(var(--fail-rgb) / 0.70)",
+                borderRadius: "0.375rem",
+                fontSize: "0.78rem",
+                color: "var(--fail)",
+                fontFamily: "var(--font-heading)",
+                fontWeight: 700,
               }}
             >
-              <div
-                style={{
-                  fontFamily: "var(--font-heading)",
-                  fontSize: "9px",
-                  letterSpacing: "0.2em",
-                  textTransform: "uppercase" as const,
-                  color: "var(--text-muted)",
-                }}
-              >
-                Character
-              </div>
-              <div
-                style={{
-                  fontFamily: "var(--font-heading)",
-                  fontStyle: "italic",
-                  fontWeight: 700,
-                  fontSize: "19px",
-                  color: "var(--text)",
-                  lineHeight: 1.1,
-                  marginTop: "2px",
-                }}
-              >
-                {c.name}
-              </div>
-              <div
-                style={{
-                  fontFamily: "var(--font-heading)",
-                  fontSize: "10px",
-                  letterSpacing: "0.08em",
-                  color: "var(--text-muted)",
-                  marginTop: "3px",
-                }}
-              >
-                {c.vocationName || c.professionName} · Tier {effectiveTier}
-              </div>
+              ⚠ Armor Penalty active — all skill dice reduced one step (min d4)
             </div>
+          )}
+          {dynUnspentSkill > 0 && (
+            <div
+              style={{
+                padding: "0.4rem 0.75rem",
+                backgroundColor: "var(--accent-light)",
+                border: "1px solid rgb(var(--gold-rgb) / 0.40)",
+                borderRadius: "0.375rem",
+                fontSize: "0.8rem",
+                color: "var(--gold-dim)",
+                fontFamily: "var(--font-heading)",
+                fontWeight: 700,
+              }}
+            >
+              ✦ {dynUnspentSkill} unspent Skill Point
+              {dynUnspentSkill !== 1 ? "s" : ""} — allocate below
+              <span style={{ fontWeight: 400, marginLeft: "0.5rem" }}>
+                ({totalSpentSkill} / {totalAvailableSkill} spent)
+              </span>
+            </div>
+          )}
+          <div
+            style={{
+              display: "flex",
+              flexDirection: "column" as const,
+              gap: "0.3rem",
+            }}
+          >
+            {[
+              "Vigor",
+              "Intuition",
+              "Talent",
+              "Awareness",
+              "Lore",
+              "Social",
+            ].map((skill) => {
+              const pool = calcSkillPool(
+                skill,
+                attrs,
+                c.vitalsProficiencies,
+                c.vitalsExpertiseBumps ?? {},
+                c.skillPoints ?? {},
+              );
+              const invested = c.skillPoints?.[skill] ?? 0;
+              const canAdd = dynUnspentSkill > 0 && invested < 12;
+              const canRemove = invested > 0;
+              const RANK_COLORS: Record<string, string> = {
+                Untrained: "var(--text-muted)",
+                Trained: "var(--primary)",
+                Expert: "var(--accent)",
+                Master: "#7C3AED",
+              };
+              const DIE_STEP = [4, 6, 8, 10, 12] as const;
+              function stepDown(faces: number): number {
+                const i = DIE_STEP.indexOf(faces as (typeof DIE_STEP)[number]);
+                return i > 0 ? DIE_STEP[i - 1] : 4;
+              }
+              const penalizedDisplay = (() => {
+                if (pool.profDieFaces !== null)
+                  return `${pool.baseDiceCount + pool.skillDiceCount}d${stepDown(pool.profDieFaces)}`;
+                const baseFaces = calcBaseDiceFromAttr(
+                  calcSkillAttrValue(skill, attrs),
+                );
+                return `${pool.baseDiceCount + pool.skillDiceCount}d${stepDown(baseFaces)}`;
+              })();
+              const dieFaces =
+                pool.profDieFaces ??
+                calcBaseDiceFromAttr(calcSkillAttrValue(skill, attrs));
+              const badgeStyle: React.CSSProperties =
+                dieFaces >= 10
+                  ? {
+                      backgroundColor: "var(--primary)",
+                      color: "var(--text-on-primary)",
+                    }
+                  : dieFaces === 8
+                    ? {
+                        backgroundColor: "var(--primary-light)",
+                        color: "var(--primary)",
+                        border: "1px solid var(--primary)",
+                      }
+                    : {
+                        backgroundColor: "var(--bg-nav)",
+                        color: "var(--text-muted)",
+                        border: "1px solid var(--border)",
+                      };
+              return (
+                <div
+                  key={skill}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    gap: "0.5rem",
+                    backgroundColor: "var(--bg-nav)",
+                    border: "1px solid var(--border)",
+                    borderRadius: "8px",
+                    padding: "0.375rem 0.625rem",
+                  }}
+                >
+                  <span
+                    style={{
+                      fontSize: "0.8rem",
+                      color: "var(--text)",
+                      flex: 1,
+                      letterSpacing: "0.01em",
+                    }}
+                  >
+                    {skill}
+                  </span>
+                  {pool.rank !== "Untrained" && (
+                    <span
+                      style={{
+                        fontSize: "0.6rem",
+                        fontWeight: 700,
+                        fontFamily: "var(--font-heading)",
+                        padding: "0.1rem 0.35rem",
+                        borderRadius: "9999px",
+                        border: `1px solid ${RANK_COLORS[pool.rank]}`,
+                        color: RANK_COLORS[pool.rank],
+                      }}
+                    >
+                      {pool.rank}
+                    </span>
+                  )}
+                  {isArmorProficient ? (
+                    <span
+                      style={{
+                        fontSize: "0.72rem",
+                        fontWeight: 700,
+                        fontFamily: "var(--font-heading)",
+                        padding: "1px 7px",
+                        borderRadius: "5px",
+                        ...badgeStyle,
+                      }}
+                    >
+                      {pool.display}
+                    </span>
+                  ) : (
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "0.2rem",
+                        alignItems: "center",
+                      }}
+                    >
+                      <span
+                        style={{
+                          fontSize: "0.72rem",
+                          fontFamily: "var(--font-heading)",
+                          color: "var(--text-muted)",
+                          textDecoration: "line-through",
+                        }}
+                      >
+                        {pool.display}
+                      </span>
+                      <span
+                        style={{
+                          fontSize: "0.72rem",
+                          fontWeight: 700,
+                          fontFamily: "var(--font-heading)",
+                          padding: "1px 7px",
+                          borderRadius: "5px",
+                          backgroundColor: "var(--bg-nav)",
+                          color: "var(--fail)",
+                          border: "1px solid var(--fail)",
+                        }}
+                      >
+                        {penalizedDisplay}
+                      </span>
+                    </div>
+                  )}
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      gap: "0.2rem",
+                      flexShrink: 0,
+                    }}
+                  >
+                    <button
+                      onClick={() => {
+                        if (!canRemove) return;
+                        persist({
+                          skillPoints: {
+                            ...(c.skillPoints ?? {}),
+                            [skill]: invested - 1,
+                          },
+                          unspentSkillPoints:
+                            totalAvailableSkill - (totalSpentSkill - 1),
+                        });
+                      }}
+                      disabled={!canRemove}
+                      style={{
+                        width: "18px",
+                        height: "18px",
+                        borderRadius: "50%",
+                        border: "1px solid var(--border)",
+                        backgroundColor: "var(--bg-card)",
+                        cursor: canRemove ? "pointer" : "not-allowed",
+                        fontWeight: 700,
+                        color: "var(--text-muted)",
+                        fontSize: "0.75rem",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      −
+                    </button>
+                    <span
+                      style={{
+                        fontFamily: "var(--font-heading)",
+                        fontWeight: 700,
+                        fontSize: "0.75rem",
+                        minWidth: "14px",
+                        textAlign: "center" as const,
+                        color: "var(--primary)",
+                      }}
+                    >
+                      {invested}
+                    </span>
+                    <button
+                      onClick={() => {
+                        if (!canAdd) return;
+                        persist({
+                          skillPoints: {
+                            ...(c.skillPoints ?? {}),
+                            [skill]: invested + 1,
+                          },
+                          unspentSkillPoints:
+                            totalAvailableSkill - (totalSpentSkill + 1),
+                        });
+                      }}
+                      disabled={!canAdd}
+                      style={{
+                        width: "18px",
+                        height: "18px",
+                        borderRadius: "50%",
+                        border: "1px solid var(--border)",
+                        backgroundColor: "var(--bg-card)",
+                        cursor: canAdd ? "pointer" : "not-allowed",
+                        fontWeight: 700,
+                        color: "var(--text-muted)",
+                        fontSize: "0.75rem",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      +
+                    </button>
+                  </div>
+                </div>
+              );
+            })}
           </div>
-        )}
+        </div>
       </div>
-      <input
-        ref={portraitInputRef}
-        type="file"
-        accept="image/*"
-        style={{ display: "none" }}
-        onChange={(e) => {
-          const file = e.target.files?.[0];
-          if (!file) return;
-          const reader = new FileReader();
-          reader.onload = (ev) => {
-            const url = ev.target?.result as string;
-            localStorage.setItem(`portrait-${c.id}`, url);
-            setPortraitUrl(url);
-          };
-          reader.readAsDataURL(file);
-          e.target.value = "";
-        }}
-      />
 
       {/* Favorites Panel */}
       {(() => {

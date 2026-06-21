@@ -469,9 +469,9 @@ export default function CharacterSheetPage({
   const [showSettings, setShowSettings] = useState(false);
   const { density, setDensity } = useTweaks();
 
-  // Portrait image upload (portraitUrl shared with RightRail + mobile sidebar)
+  // Portrait image upload (thumbnail in header; full modal via portraitOpen)
   const [portraitUrl, setPortraitUrl] = useState<string | null>(null);
-  // portraitCollapsed / favoritesCollapsed → components/rails/RightRail.tsx (R7)
+  const [portraitOpen, setPortraitOpen] = useState(false);
   // conditionsCollapsed → components/tabs/CombatTab.tsx (R5)
   const [vitAdjInput, setVitAdjInput] = useState<string | null>(null);
   const [renownAdjInput, setRenownAdjInput] = useState<string | null>(null);
@@ -2102,7 +2102,42 @@ export default function CharacterSheetPage({
         }}
       >
         {/* LEFT: name + tags + back */}
-        <div>
+        <div style={{ display: "flex", gap: "12px", alignItems: "flex-start" }}>
+          <div
+            className="header-portrait-thumb"
+            onClick={() =>
+              portraitUrl
+                ? setPortraitOpen(true)
+                : portraitInputRef.current?.click()
+            }
+            title={portraitUrl ? "Click to view portrait" : "Click to upload portrait"}
+          >
+            {portraitUrl ? (
+              <img
+                src={portraitUrl}
+                alt={c.name}
+                style={{ width: "100%", height: "100%", objectFit: "cover", objectPosition: "top center" }}
+              />
+            ) : (
+              <div
+                style={{
+                  width: "100%",
+                  height: "100%",
+                  background: "var(--portrait-ph-a, var(--bg-2))",
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "var(--text-muted)",
+                  fontSize: 18,
+                  fontFamily: "var(--font-heading)",
+                  fontWeight: 700,
+                }}
+              >
+                {c.name ? c.name.charAt(0).toUpperCase() : "?"}
+              </div>
+            )}
+          </div>
+          <div>
           <h1
             style={{
               fontFamily: "var(--font-heading)",
@@ -2172,6 +2207,7 @@ export default function CharacterSheetPage({
             >
               ← All Characters
             </Link>
+          </div>
           </div>
         </div>
         {/* RIGHT: tier + renown bar + spell DC + delete */}
@@ -2434,7 +2470,6 @@ export default function CharacterSheetPage({
             effectiveChar={effectiveChar}
             effectiveTier={effectiveTier}
             prof={prof}
-            isArmorProficient={isArmorProficient}
           />
         </div>
         {/* CENTER COLUMN */}
@@ -2448,53 +2483,49 @@ export default function CharacterSheetPage({
           }}
         >
           {/* ──── DEFENSE STAT ROW ──── */}
-          <div
-            className="poa-defense-grid"
-            style={{
-              display: "grid",
-              gridTemplateColumns: "repeat(4, 1fr)",
-              gap: "12px",
-            }}
-          >
-            {(() => {
-              const tempAD = c.tempArmorDef ?? 0;
-              const totalAD = armorDefense + tempAD;
-              const spellArmorOn = !!(c.spellArmorActive && isCaster);
-              const subLabel = spellArmorOn
-                ? `Active`
-                : hasUnarmoredDefense && !equippedBody
-                  ? "Unarmored"
-                  : hasAgile &&
-                      !equippedShield &&
-                      (!equippedBody ||
-                        equippedBody.armorCategory === "Light" ||
-                        !equippedBody.armorCategory)
-                    ? "Agile"
-                    : equippedBody
-                      ? `${equippedBody.name} +${equippedBody.armorBonus}`
-                      : "Base";
-              const btnSm: React.CSSProperties = {
-                width: "16px",
-                height: "16px",
-                borderRadius: "50%",
-                border: "1px solid var(--border)",
-                backgroundColor: "var(--bg-nav)",
-                cursor: "pointer",
-                fontWeight: 700,
-                color: "var(--text-muted)",
-                fontSize: "0.7rem",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-              };
-              return (
+          {(() => {
+            const tempAD = c.tempArmorDef ?? 0;
+            const totalAD = armorDefense + tempAD;
+            const spellArmorOn = !!(c.spellArmorActive && isCaster);
+            const subLabel = spellArmorOn
+              ? `Active`
+              : hasUnarmoredDefense && !equippedBody
+                ? "Unarmored"
+                : hasAgile &&
+                    !equippedShield &&
+                    (!equippedBody ||
+                      equippedBody.armorCategory === "Light" ||
+                      !equippedBody.armorCategory)
+                  ? "Agile"
+                  : equippedBody
+                    ? `${equippedBody.name} +${equippedBody.armorBonus}`
+                    : "Base";
+            const btnSm: React.CSSProperties = {
+              width: "16px",
+              height: "16px",
+              borderRadius: "50%",
+              border: "1px solid var(--border)",
+              backgroundColor: "var(--bg-nav)",
+              cursor: "pointer",
+              fontWeight: 700,
+              color: "var(--text-muted)",
+              fontSize: "0.7rem",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            };
+            return (
+              <div
+                style={{
+                  backgroundColor: spellArmorOn ? "var(--primary-light)" : "var(--bg-card)",
+                  border: `1px solid ${spellArmorOn ? "var(--primary)" : "var(--border)"}`,
+                  borderRadius: "6px",
+                  overflow: "hidden",
+                }}
+              >
+                {/* Top: Armor Defense */}
                 <div
                   style={{
-                    backgroundColor: spellArmorOn
-                      ? "var(--primary-light)"
-                      : "var(--bg-card)",
-                    border: `1px solid ${spellArmorOn ? "var(--primary)" : "var(--border)"}`,
-                    borderRadius: "6px",
                     padding: "14px 12px 10px",
                     textAlign: "center",
                   }}
@@ -2509,12 +2540,12 @@ export default function CharacterSheetPage({
                       marginBottom: "6px",
                     }}
                   >
-                    Defense
+                    Armor Defense
                   </div>
                   <div
                     style={{
                       fontFamily: "var(--font-heading)",
-                      fontSize: "32px",
+                      fontSize: "36px",
                       fontWeight: 700,
                       color: spellArmorOn ? "var(--primary)" : "var(--text)",
                       lineHeight: 1.05,
@@ -2527,9 +2558,7 @@ export default function CharacterSheetPage({
                       fontFamily: "var(--font-heading)",
                       fontSize: "9px",
                       letterSpacing: "0.1em",
-                      color: spellArmorOn
-                        ? "var(--primary)"
-                        : "var(--text-muted)",
+                      color: spellArmorOn ? "var(--primary)" : "var(--text-muted)",
                       marginTop: "2px",
                       marginBottom: "6px",
                     }}
@@ -2590,48 +2619,40 @@ export default function CharacterSheetPage({
                       )}
                     </>
                   )}
-                  {!spellArmorOn &&
-                    equippedBody?.armorCategory === "Medium" && (
-                      <div
-                        style={{
-                          display: "flex",
-                          justifyContent: "center",
-                          gap: "0.2rem",
-                          marginBottom: "6px",
-                        }}
-                      >
-                        {(["brawn", "finesse"] as const).map((stat) => {
-                          const active =
-                            (equippedBody.mediumArmorStat ?? "brawn") === stat;
-                          return (
-                            <button
-                              key={stat}
-                              onClick={() =>
-                                updateItem(equippedBody.id, {
-                                  mediumArmorStat: stat,
-                                })
-                              }
-                              style={{
-                                fontSize: "0.5rem",
-                                fontFamily: "var(--font-heading)",
-                                fontWeight: 700,
-                                padding: "0.1rem 0.3rem",
-                                borderRadius: "0.25rem",
-                                border: `1px solid ${active ? "var(--primary)" : "var(--border)"}`,
-                                backgroundColor: active
-                                  ? "var(--primary)"
-                                  : "var(--bg-card)",
-                                color: active ? "#fff" : "var(--text-muted)",
-                                cursor: "pointer",
-                                textTransform: "capitalize" as const,
-                              }}
-                            >
-                              {stat}
-                            </button>
-                          );
-                        })}
-                      </div>
-                    )}
+                  {!spellArmorOn && equippedBody?.armorCategory === "Medium" && (
+                    <div
+                      style={{
+                        display: "flex",
+                        justifyContent: "center",
+                        gap: "0.2rem",
+                        marginBottom: "6px",
+                      }}
+                    >
+                      {(["brawn", "finesse"] as const).map((stat) => {
+                        const active = (equippedBody.mediumArmorStat ?? "brawn") === stat;
+                        return (
+                          <button
+                            key={stat}
+                            onClick={() => updateItem(equippedBody.id, { mediumArmorStat: stat })}
+                            style={{
+                              fontSize: "0.5rem",
+                              fontFamily: "var(--font-heading)",
+                              fontWeight: 700,
+                              padding: "0.1rem 0.3rem",
+                              borderRadius: "0.25rem",
+                              border: `1px solid ${active ? "var(--primary)" : "var(--border)"}`,
+                              backgroundColor: active ? "var(--primary)" : "var(--bg-card)",
+                              color: active ? "#fff" : "var(--text-muted)",
+                              cursor: "pointer",
+                              textTransform: "capitalize" as const,
+                            }}
+                          >
+                            {stat}
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
                   <div
                     style={{
                       display: "flex",
@@ -2640,12 +2661,7 @@ export default function CharacterSheetPage({
                       gap: "0.2rem",
                     }}
                   >
-                    <button
-                      onClick={() => persist({ tempArmorDef: tempAD - 1 })}
-                      style={btnSm}
-                    >
-                      −
-                    </button>
+                    <button onClick={() => persist({ tempArmorDef: tempAD - 1 })} style={btnSm}>−</button>
                     <span
                       style={{
                         fontSize: "0.6rem",
@@ -2657,85 +2673,87 @@ export default function CharacterSheetPage({
                     >
                       {tempAD === 0 ? "tmp" : tempAD}
                     </span>
-                    <button
-                      onClick={() => persist({ tempArmorDef: tempAD + 1 })}
-                      style={btnSm}
-                    >
-                      +
-                    </button>
+                    <button onClick={() => persist({ tempArmorDef: tempAD + 1 })} style={btnSm}>+</button>
                     {tempAD !== 0 && (
                       <button
                         onClick={() => persist({ tempArmorDef: 0 })}
-                        style={{
-                          fontSize: "0.55rem",
-                          color: "var(--text-muted)",
-                          background: "none",
-                          border: "none",
-                          cursor: "pointer",
-                        }}
+                        style={{ fontSize: "0.55rem", color: "var(--text-muted)", background: "none", border: "none", cursor: "pointer" }}
                       >
                         ✕
                       </button>
                     )}
                   </div>
                 </div>
-              );
-            })()}
-            {(
-              [
-                { label: "Fortitude", value: bodyDef, sub: "brawn" },
-                { label: "Mental", value: mindDef, sub: "mind" },
-                { label: "Will", value: willDef, sub: "will" },
-              ] as const
-            ).map(({ label, value, sub }) => (
-              <div
-                key={label}
-                style={{
-                  backgroundColor: "var(--bg-card)",
-                  border: "1px solid var(--border)",
-                  borderRadius: "6px",
-                  padding: "14px 12px 12px",
-                  textAlign: "center",
-                }}
-              >
+
+                {/* Divider */}
+                <div style={{ borderTop: "1px solid var(--border)", margin: "0 12px" }} />
+
+                {/* Bottom: Fortitude / Mental / Will */}
                 <div
                   style={{
-                    fontFamily: "var(--font-heading)",
-                    fontSize: "10px",
-                    letterSpacing: "0.16em",
-                    textTransform: "uppercase" as const,
-                    color: "var(--text-muted)",
-                    marginBottom: "6px",
+                    display: "grid",
+                    gridTemplateColumns: "repeat(3, 1fr)",
+                    gap: "0",
+                    padding: "10px 12px 12px",
                   }}
                 >
-                  {label}
-                </div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-heading)",
-                    fontSize: "32px",
-                    fontWeight: 700,
-                    color: "var(--text)",
-                    lineHeight: 1.05,
-                  }}
-                >
-                  {value}
-                </div>
-                <div
-                  style={{
-                    fontFamily: "var(--font-heading)",
-                    fontSize: "9px",
-                    letterSpacing: "0.16em",
-                    textTransform: "uppercase" as const,
-                    color: "var(--text-muted)",
-                    marginTop: "2px",
-                  }}
-                >
-                  {sub}
+                  {(
+                    [
+                      { label: "Fortitude", value: bodyDef, sub: "brawn" },
+                      { label: "Mental", value: mindDef, sub: "mind" },
+                      { label: "Will", value: willDef, sub: "will" },
+                    ] as const
+                  ).map(({ label, value, sub }, idx) => (
+                    <div
+                      key={label}
+                      style={{
+                        textAlign: "center",
+                        borderLeft: idx > 0 ? "1px solid var(--border)" : "none",
+                        padding: "4px 8px",
+                      }}
+                    >
+                      <div
+                        style={{
+                          fontFamily: "var(--font-heading)",
+                          fontSize: "9px",
+                          letterSpacing: "0.16em",
+                          textTransform: "uppercase" as const,
+                          color: "var(--text-muted)",
+                          marginBottom: "4px",
+                        }}
+                      >
+                        {label}
+                      </div>
+                      <div
+                        style={{
+                          fontFamily: "var(--font-heading)",
+                          fontSize: "22px",
+                          fontWeight: 700,
+                          color: "var(--text)",
+                          lineHeight: 1.05,
+                        }}
+                      >
+                        {value}
+                      </div>
+                      <div
+                        style={{
+                          fontFamily: "var(--font-heading)",
+                          fontSize: "9px",
+                          letterSpacing: "0.16em",
+                          textTransform: "uppercase" as const,
+                          color: "var(--text-muted)",
+                          marginTop: "2px",
+                        }}
+                      >
+                        {sub}
+                      </div>
+                    </div>
+                  ))}
                 </div>
               </div>
-            ))}
-          </div>
+            );
+          })()}
+
 
           {/* ──── CENTER VITALS GRID ──── */}
           {(() => {
@@ -3287,72 +3305,6 @@ export default function CharacterSheetPage({
                     >
                       <span>{currentRespites} / 3</span>
                       <span>per day</span>
-                    </div>
-                  </div>
-                  <div
-                    style={{
-                      backgroundColor: "var(--bg-card)",
-                      border: "1px solid var(--border)",
-                      borderRadius: "6px",
-                      padding: "10px 14px 12px",
-                    }}
-                  >
-                    <div
-                      style={{
-                        fontFamily: "var(--font-heading)",
-                        fontSize: "10px",
-                        letterSpacing: "0.16em",
-                        textTransform: "uppercase" as const,
-                        color: "var(--primary)",
-                        marginBottom: "8px",
-                      }}
-                    >
-                      Carry
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "baseline",
-                        gap: "6px",
-                      }}
-                    >
-                      <span
-                        style={{
-                          fontFamily: "var(--font-heading)",
-                          fontSize: "22px",
-                          fontWeight: 700,
-                          color: "var(--text)",
-                        }}
-                      >
-                        {totalCarried.toFixed(1)}
-                      </span>
-                      <span
-                        style={{
-                          fontFamily: "var(--font-heading)",
-                          fontSize: "11px",
-                          color: "var(--text-muted)",
-                        }}
-                      >
-                        / {carryWeight} lb
-                      </span>
-                    </div>
-                    <div
-                      style={{
-                        marginTop: "6px",
-                        height: "4px",
-                        borderRadius: "2px",
-                        backgroundColor: "var(--border)",
-                        overflow: "hidden",
-                      }}
-                    >
-                      <div
-                        style={{
-                          height: "100%",
-                          width: `${Math.min(100, carryWeight > 0 ? (totalCarried / carryWeight) * 100 : 0)}%`,
-                          backgroundColor: "var(--primary)",
-                          transition: "width 0.3s",
-                        }}
-                      />
                     </div>
                   </div>
                 </div>
@@ -4206,9 +4158,8 @@ export default function CharacterSheetPage({
             inventory={inventory}
             toggleFavorite={toggleFavorite}
             setFavPopout={setFavPopout}
-            portraitUrl={portraitUrl}
-            setPortraitUrl={setPortraitUrl}
-            portraitInputRef={portraitInputRef}
+            attrs={attrs}
+            isArmorProficient={isArmorProficient}
           />
         </div>
       </div>{" "}
@@ -4884,6 +4835,96 @@ export default function CharacterSheetPage({
           {toast.message}
         </div>
       )}
+
+      {/* Portrait modal */}
+      {portraitOpen && (
+        <div className="portrait-modal-overlay" onClick={() => setPortraitOpen(false)}>
+          <div className="portrait-modal" onClick={(e) => e.stopPropagation()}>
+            {portraitUrl ? (
+              <img
+                src={portraitUrl}
+                alt={c.name}
+                style={{ display: "block", width: "100%", maxHeight: "60vh", objectFit: "contain" }}
+              />
+            ) : (
+              <div
+                style={{
+                  height: 200,
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  color: "var(--text-muted)",
+                  fontFamily: "var(--font-heading)",
+                  fontSize: 14,
+                }}
+              >
+                No portrait uploaded
+              </div>
+            )}
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                padding: "10px 14px",
+                borderTop: "1px solid var(--border)",
+                gap: 8,
+              }}
+            >
+              <span
+                style={{
+                  fontFamily: "var(--font-heading)",
+                  fontStyle: "italic",
+                  fontSize: 16,
+                  color: "var(--gold)",
+                }}
+              >
+                {c.name}
+              </span>
+              <div style={{ display: "flex", gap: 8 }}>
+                <button className="portrait-modal-btn" onClick={() => portraitInputRef.current?.click()}>
+                  Change
+                </button>
+                {portraitUrl && (
+                  <button
+                    className="portrait-modal-btn portrait-modal-btn--danger"
+                    onClick={() => {
+                      localStorage.removeItem(`portrait-${c.id}`);
+                      setPortraitUrl(null);
+                      setPortraitOpen(false);
+                    }}
+                  >
+                    Remove
+                  </button>
+                )}
+                <button className="portrait-modal-btn" onClick={() => setPortraitOpen(false)}>
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Hidden portrait file input */}
+      <input
+        ref={portraitInputRef}
+        type="file"
+        accept="image/*"
+        style={{ display: "none" }}
+        onChange={(e) => {
+          const file = e.target.files?.[0];
+          if (!file) return;
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            const url = ev.target?.result as string;
+            localStorage.setItem(`portrait-${c.id}`, url);
+            setPortraitUrl(url);
+          };
+          reader.readAsDataURL(file);
+          e.target.value = "";
+        }}
+      />
     </div>
   );
 }
