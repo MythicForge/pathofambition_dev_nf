@@ -9,6 +9,7 @@ import FeatsTab from "./tabs/FeatsTab";
 import SpellsTab from "./tabs/SpellsTab";
 import CombatTab from "./tabs/CombatTab";
 import InventoryTab from "./tabs/InventoryTab";
+import ConditionsBar from "./ConditionsBar";
 import LeftRail from "./rails/LeftRail";
 import RightRail from "./rails/RightRail";
 import SettingsPanel from "./SettingsPanel";
@@ -2442,6 +2443,9 @@ export default function CharacterSheetPage({
           </button>
         </div>
       </div>
+      {/* ──── CONDITIONS BAR ──── */}
+      <ConditionsBar c={c} persist={persist} />
+
       {/* ──── 3-COLUMN BODY ──── */}
       <div
         className="poa-sheet-grid"
