@@ -447,6 +447,7 @@ export interface CatalogItem {
   woundBonus?: number;
   shieldType?: "Temporary" | "Light" | "Medium" | "Heavy" | null;
   equippable: boolean;
+  cost?: number; // price in gold pieces (null/undefined = no price)
   // Weapon structured fields
   armamentTags: string[]; // e.g. ["simple", "finesse"]
   damageTypeTags: string[]; // e.g. ["puncture", "slash"]
@@ -506,6 +507,7 @@ export function getItemCatalog(): CatalogItem[] {
       woundBonus: (raw.wound_bonus as number | undefined) ?? 0,
       shieldType: (raw.shield_type as "Temporary" | "Light" | "Medium" | "Heavy" | undefined) ?? null,
       equippable: (raw.equippable as boolean) ?? false,
+      cost: (raw.cost as number | null) ?? undefined,
       armamentTags: groups.map((g) => g.toLowerCase()),
       damageTypeTags: damageTypes
         .map((d) => DAMAGE_CODE_TO_TAG[d.code] ?? d.code.toLowerCase())

@@ -3,7 +3,7 @@
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import MarkdownContent from "./MarkdownContent";
-import { saveCharacter } from "@/lib/characterStorage";
+import { saveCharacter, parseCurrency } from "@/lib/characterStorage";
 import {
   calcStartingVitality,
   calcFortitude,
@@ -922,7 +922,7 @@ export default function CharacterBuilder({
 
     const charData: Omit<Character, "id" | "createdAt" | "updatedAt"> = {
       ...draft,
-      currency: draft.currency || combinedCurrency,
+      currency: parseCurrency(draft.currency || combinedCurrency),
       inventory: startingInventory,
       maxAmbition: ambition.max,
       ambitionDice: ambition.dice,

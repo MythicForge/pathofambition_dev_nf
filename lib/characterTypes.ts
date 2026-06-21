@@ -1,5 +1,11 @@
 export type AttributeKey = "brawn" | "finesse" | "mind" | "will";
 
+export interface StructuredCurrency {
+  gold: number;
+  silver: number;
+  copper: number;
+}
+
 export type InventoryCategory =
   | "Weapon"
   | "Armor"
@@ -12,6 +18,12 @@ export type InventorySlot =
   | "Off Hand"
   | "Two Hands"
   | "Body"
+  | "Head"
+  | "Neck"
+  | "Cloak"
+  | "Gloves"
+  | "Boots"
+  | "Ring"
   | null;
 
 export interface InventoryItem {
@@ -100,7 +112,7 @@ export interface Character {
   // Summary step
   ambition: string;
   inventoryNotes: string;
-  currency: string;
+  currency: StructuredCurrency;
   notes: string;
 
   // Inventory (structured table)
@@ -160,6 +172,28 @@ export interface Character {
 
   // Favorites: items/feats/spells pinned to the right rail quick-access panel
   favorites?: { type: "item" | "feat" | "spell"; id: string }[];
+
+  // Notes tab
+  journal?: JournalEntry[];
+  biography?: BiographyFields;
+}
+
+// ─── Journal & Biography ──────────────────────────────────────────────────────
+
+export interface JournalEntry {
+  id: string;
+  title: string;
+  content: string;
+  createdAt: number; // unix ms
+  updatedAt: number; // unix ms
+}
+
+export interface BiographyFields {
+  personality: string;
+  ideals: string;
+  bonds: string;
+  flaws: string;
+  backstory: string;
 }
 
 // ─── Choice feature resolution ────────────────────────────────────────────────

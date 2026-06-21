@@ -51,6 +51,8 @@ import type {
   InventorySlot,
   ChoiceFeature,
   AttributeKey,
+  JournalEntry,
+  BiographyFields,
 } from "@/lib/characterTypes";
 import type { CatalogItem } from "@/lib/builderData";
 import {
@@ -458,8 +460,7 @@ export default function CharacterSheetPage({
   const router = useRouter();
   const [char, setChar] = useState<Character | null>(null);
   const [mounted, setMounted] = useState(false);
-  const [editingNotes, setEditingNotes] = useState(false);
-  const [notesVal, setNotesVal] = useState("");
+  // editingNotes / notesVal removed — replaced by journal system
 
   const [activeTab, setActiveTab] = useState<TabId>("combat");
 
@@ -503,6 +504,14 @@ export default function CharacterSheetPage({
 
   // Equipment slot picker
   const [pickingSlot, setPickingSlot] = useState<InventorySlot>(null);
+  // Drag-and-drop equip
+  const [dragOverSlot, setDragOverSlot] = useState<InventorySlot>(null);
+  const dragItemId = React.useRef<string | null>(null);
+  // Touch drag state (refs to avoid re-render on every move)
+  const touchGhostRef = React.useRef<HTMLDivElement | null>(null);
+  const touchDragItemId = React.useRef<string | null>(null);
+  const touchDragItemName = React.useRef<string>("");
+  const touchLongPressTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Item notes popover
   const [notePopoverItemId, setNotePopoverItemId] = useState<string | null>(
@@ -579,6 +588,23 @@ export default function CharacterSheetPage({
     type: "item" | "feat" | "spell";
     id: string;
   } | null>(null);
+  const [toast, setToast] = useState<{ message: string; type: "success" | "remove" } | null>(null);
+  const toastTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
+  const [spellArmorConfirmPending, setSpellArmorConfirmPending] = useState(false);
+  const [activeFeatsSource, setActiveFeatsSource] = useState<"all" | "base" | "vocation" | "selected">("all");
+  // Journal state
+  const [journalView, setJournalView] = useState<"list" | "edit">("list");
+  const [activeJournalId, setActiveJournalId] = useState<string | null>(null);
+  const [journalSearch, setJournalSearch] = useState("");
+  const [journalTitle, setJournalTitle] = useState("");
+  const [journalContent, setJournalContent] = useState("");
+  const [journalDeletePending, setJournalDeletePending] = useState<string | null>(null);
+
+  function showToast(message: string, type: "success" | "remove" = "success") {
+    if (toastTimer.current) clearTimeout(toastTimer.current);
+    setToast({ message, type });
+    toastTimer.current = setTimeout(() => setToast(null), 2200);
+  }
 
   useEffect(() => {
     const loaded = getCharacter(id);
@@ -662,7 +688,6 @@ export default function CharacterSheetPage({
       if (inventoryChanged)
         updateCharacter(loaded.id, { inventory: updatedInventory });
       setChar(finalChar);
-      setNotesVal(loaded.notes ?? "");
       // Auto-calculate max vitality if not yet set
       let resolvedMaxVit = loaded.maxVitality;
       if (resolvedMaxVit === null) {
@@ -982,7 +1007,7 @@ export default function CharacterSheetPage({
     setNewMasterworkBonus(0);
   }
 
-  function addItem() {
+  function addItem(silent = false) {
     if (!newName.trim()) return;
     const item: InventoryItem = {
       id: `item_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
@@ -1015,6 +1040,7 @@ export default function CharacterSheetPage({
         : newSlot !== null,
     };
     persist({ inventory: [...inventory, item] });
+    if (!silent) showToast(`${item.name} looted`);
     setNewName("");
     setNewCategory("Misc");
     setNewQty(1);
@@ -1039,7 +1065,9 @@ export default function CharacterSheetPage({
   }
 
   function removeItem(itemId: string) {
+    const removed = inventory.find((i) => i.id === itemId);
     persist({ inventory: inventory.filter((i) => i.id !== itemId) });
+    if (removed) showToast(`${removed.name} removed`, "remove");
   }
 
   function updateItem(itemId: string, updates: Partial<InventoryItem>) {
@@ -1109,6 +1137,45 @@ export default function CharacterSheetPage({
       return i;
     });
     persist({ inventory: updated });
+  }
+
+  // ─── Touch drag-to-equip ─────────────────────────────────────────────────────
+  function startTouchDrag(itemId: string, itemName: string, x: number, y: number) {
+    touchDragItemId.current = itemId;
+    touchDragItemName.current = itemName;
+    dragItemId.current = itemId;
+    const ghost = document.createElement("div");
+    ghost.textContent = itemName;
+    Object.assign(ghost.style, {
+      position: "fixed", left: `${x - 40}px`, top: `${y - 18}px`,
+      padding: "0.3rem 0.7rem", borderRadius: "0.4rem",
+      backgroundColor: "var(--primary)", color: "#fff",
+      fontSize: "0.75rem", fontWeight: "700", pointerEvents: "none",
+      zIndex: "9999", opacity: "0.92", whiteSpace: "nowrap",
+    });
+    document.body.appendChild(ghost);
+    touchGhostRef.current = ghost;
+  }
+  function moveTouchGhost(x: number, y: number) {
+    if (!touchGhostRef.current) return;
+    touchGhostRef.current.style.left = `${x - 40}px`;
+    touchGhostRef.current.style.top = `${y - 18}px`;
+    const el = document.elementFromPoint(x, y);
+    const slotEl = el?.closest("[data-equip-slot]");
+    const slot = (slotEl?.getAttribute("data-equip-slot") ?? null) as InventorySlot;
+    setDragOverSlot(slot);
+  }
+  function endTouchDrag(x: number, y: number) {
+    if (touchLongPressTimer.current) { clearTimeout(touchLongPressTimer.current); touchLongPressTimer.current = null; }
+    if (touchGhostRef.current) { touchGhostRef.current.remove(); touchGhostRef.current = null; }
+    const el = document.elementFromPoint(x, y);
+    const slotEl = el?.closest("[data-equip-slot]");
+    const slot = (slotEl?.getAttribute("data-equip-slot") ?? null) as InventorySlot;
+    const id = touchDragItemId.current;
+    if (id && slot) equipItem(id, slot);
+    touchDragItemId.current = null;
+    dragItemId.current = null;
+    setDragOverSlot(null);
   }
 
   // FEATURE-02: priority-order damage pipeline — Spell > Feat > Shield > Vitality
@@ -1184,6 +1251,12 @@ export default function CharacterSheetPage({
     inventory.find(
       (i) => i.equipped && i.slot === "Off Hand" && i.category === "Shield",
     ) ?? null;
+  const equippedHead = inventory.find((i) => i.equipped && i.slot === "Head") ?? null;
+  const equippedNeck = inventory.find((i) => i.equipped && i.slot === "Neck") ?? null;
+  const equippedCloak = inventory.find((i) => i.equipped && i.slot === "Cloak") ?? null;
+  const equippedGloves = inventory.find((i) => i.equipped && i.slot === "Gloves") ?? null;
+  const equippedBoots = inventory.find((i) => i.equipped && i.slot === "Boots") ?? null;
+  const equippedRing = inventory.find((i) => i.equipped && i.slot === "Ring") ?? null;
   const armorDefense = calcArmorDefense(
     equippedBody,
     equippedShield,
@@ -2643,8 +2716,82 @@ export default function CharacterSheetPage({
       );
     }
 
+    const sourceSections: { key: "base" | "vocation" | "selected"; label: string; color: string; count: number }[] = (
+      [
+        { key: "base" as const, label: c.professionName || "Base", color: "var(--c-prof)", count: baseFeatures.length },
+        { key: "vocation" as const, label: c.vocationName || "Vocation", color: "var(--c-feat)", count: vocationFeatures.length },
+        { key: "selected" as const, label: "Feats", color: "var(--c-origin)", count: selectedFeats.length },
+      ] as const
+    ).filter((s) => s.count > 0) as { key: "base" | "vocation" | "selected"; label: string; color: string; count: number }[];
+
+    const showBase = activeFeatsSource === "all" || activeFeatsSource === "base";
+    const showVocation = activeFeatsSource === "all" || activeFeatsSource === "vocation";
+    const showSelected = activeFeatsSource === "all" || activeFeatsSource === "selected";
+
     return (
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem" }}>
+      <div>
+      <div style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start" }}>
+        {/* Source rail */}
+        <div style={{
+          display: "flex",
+          flexDirection: "column",
+          gap: "0.25rem",
+          minWidth: "90px",
+          flexShrink: 0,
+          position: "sticky",
+          top: "0.5rem",
+        }}>
+          <button
+            onClick={() => setActiveFeatsSource("all")}
+            style={{
+              padding: "0.35rem 0.5rem",
+              textAlign: "left",
+              border: "none",
+              borderRadius: "0.375rem",
+              cursor: "pointer",
+              fontFamily: "var(--font-heading)",
+              fontWeight: 700,
+              fontSize: "0.7rem",
+              backgroundColor: activeFeatsSource === "all" ? "var(--primary-light)" : "transparent",
+              color: activeFeatsSource === "all" ? "var(--primary)" : "var(--text-muted)",
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+            <span>All</span>
+            <span style={{ fontSize: "0.62rem", opacity: 0.7 }}>{baseFeatures.length + vocationFeatures.length + selectedFeats.length}</span>
+          </button>
+          {sourceSections.map(({ key, label, color, count }) => (
+            <button
+              key={key}
+              onClick={() => setActiveFeatsSource(key)}
+              style={{
+                padding: "0.35rem 0.5rem",
+                textAlign: "left",
+                border: "none",
+                borderRadius: "0.375rem",
+                cursor: "pointer",
+                fontFamily: "var(--font-heading)",
+                fontWeight: 700,
+                fontSize: "0.7rem",
+                backgroundColor: activeFeatsSource === key ? `rgb(${color === "var(--c-prof)" ? "var(--c-prof-rgb)" : color === "var(--c-feat)" ? "var(--c-feat-rgb)" : "var(--c-origin-rgb)"} / 0.12)` : "transparent",
+                color: activeFeatsSource === key ? color : "var(--text-muted)",
+                borderLeft: activeFeatsSource === key ? `3px solid ${color}` : "3px solid transparent",
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+              }}
+            >
+              <span style={{ overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", maxWidth: "60px" }}>{label}</span>
+              <span style={{ fontSize: "0.62rem", opacity: 0.7, flexShrink: 0 }}>{count}</span>
+            </button>
+          ))}
+          <div style={{ borderTop: "1px solid var(--border)", marginTop: "0.25rem", paddingTop: "0.25rem" }} />
+        </div>
+
+        {/* Feat list */}
+        <div style={{ flex: 1, minWidth: 0, display: "flex", flexDirection: "column", gap: "0.4rem" }}>
         {/* Purchase Feats button */}
         <div
           style={{
@@ -2671,7 +2818,7 @@ export default function CharacterSheetPage({
           </button>
         </div>
 
-        {baseFeatures.length > 0 && (
+        {baseFeatures.length > 0 && showBase && (
           <>
             <div
               style={{
@@ -2679,9 +2826,11 @@ export default function CharacterSheetPage({
                 fontWeight: 700,
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
-                color: "var(--text-muted)",
+                color: "var(--c-prof)",
                 fontFamily: "var(--font-heading)",
                 marginBottom: "0.2rem",
+                paddingLeft: "0.625rem",
+                borderLeft: "3px solid var(--c-prof)",
               }}
             >
               Base Features
@@ -2699,7 +2848,7 @@ export default function CharacterSheetPage({
             ))}
           </>
         )}
-        {vocationFeatures.length > 0 && (
+        {vocationFeatures.length > 0 && showVocation && (
           <>
             <div
               style={{
@@ -2707,10 +2856,12 @@ export default function CharacterSheetPage({
                 fontWeight: 700,
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
-                color: "var(--text-muted)",
+                color: "var(--c-feat)",
                 fontFamily: "var(--font-heading)",
                 marginTop: "0.5rem",
                 marginBottom: "0.2rem",
+                paddingLeft: "0.625rem",
+                borderLeft: "3px solid var(--c-feat)",
               }}
             >
               Vocation Features
@@ -2728,7 +2879,7 @@ export default function CharacterSheetPage({
             ))}
           </>
         )}
-        {selectedFeats.length > 0 && (
+        {selectedFeats.length > 0 && showSelected && (
           <>
             <div
               style={{
@@ -2736,10 +2887,12 @@ export default function CharacterSheetPage({
                 fontWeight: 700,
                 letterSpacing: "0.08em",
                 textTransform: "uppercase",
-                color: "var(--text-muted)",
+                color: "var(--c-origin)",
                 fontFamily: "var(--font-heading)",
                 marginTop: "0.5rem",
                 marginBottom: "0.2rem",
+                paddingLeft: "0.625rem",
+                borderLeft: "3px solid var(--c-origin)",
               }}
             >
               Selected Feats
@@ -2768,6 +2921,8 @@ export default function CharacterSheetPage({
               No feats or features yet.
             </p>
           )}
+        </div>{/* end feat list col */}
+      </div>{/* end source rail + list flex */}
 
         {/* AMEND-07: Edit Choice Modal */}
         {editChoiceFeatId &&
@@ -3918,15 +4073,22 @@ export default function CharacterSheetPage({
               return (
                 <div key={label}>
                   <div
+                    data-equip-slot={slot ?? undefined}
+                    onDragOver={(e) => { e.preventDefault(); setDragOverSlot(slot); }}
+                    onDragLeave={() => setDragOverSlot(null)}
+                    onDrop={(e) => { e.preventDefault(); const id = dragItemId.current; if (id) equipItem(id, slot); setDragOverSlot(null); }}
                     style={{
                       padding: "0.625rem 0.75rem",
-                      backgroundColor: slotAlert
-                        ? "var(--section-alert-bg)"
-                        : displayItem
-                          ? "var(--primary-light)"
-                          : "var(--bg-nav)",
-                      border: `1.5px solid ${slotAlert ? "rgb(var(--fail-rgb) / 0.70)" : displayItem ? "var(--primary)" : pickerOpen ? "var(--primary)" : "var(--border)"}`,
+                      backgroundColor: dragOverSlot === slot
+                        ? "var(--primary-light)"
+                        : slotAlert
+                          ? "var(--section-alert-bg)"
+                          : displayItem
+                            ? "var(--primary-light)"
+                            : "var(--bg-nav)",
+                      border: `1.5px solid ${dragOverSlot === slot ? "var(--primary)" : slotAlert ? "rgb(var(--fail-rgb) / 0.70)" : displayItem ? "var(--primary)" : pickerOpen ? "var(--primary)" : "var(--border)"}`,
                       borderRadius: pickerOpen ? "0.5rem 0.5rem 0 0" : "0.5rem",
+                      transition: "background-color 0.12s, border-color 0.12s",
                     }}
                   >
                     <div
@@ -4199,6 +4361,80 @@ export default function CharacterSheetPage({
               );
             })}
           </div>
+          {/* Body accessory slots */}
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "0.5rem", marginTop: "0.5rem" }}>
+            {(
+              [
+                { slot: "Head" as InventorySlot, label: "Head", item: equippedHead },
+                { slot: "Neck" as InventorySlot, label: "Neck", item: equippedNeck },
+                { slot: "Cloak" as InventorySlot, label: "Cloak", item: equippedCloak },
+                { slot: "Gloves" as InventorySlot, label: "Gloves", item: equippedGloves },
+                { slot: "Boots" as InventorySlot, label: "Boots", item: equippedBoots },
+                { slot: "Ring" as InventorySlot, label: "Ring", item: equippedRing },
+              ] as { slot: InventorySlot; label: string; item: InventoryItem | null }[]
+            ).map(({ slot, label, item: accItem }) => {
+              const isDragOver = dragOverSlot === slot;
+              const pickerActive = pickingSlot === slot && !accItem;
+              const eligiblePick = pickerActive ? inventory.filter((i) => !i.equipped) : [];
+              return (
+                <div key={label as string}>
+                  <div
+                    data-equip-slot={slot ?? undefined}
+                    onDragOver={(e) => { e.preventDefault(); setDragOverSlot(slot); }}
+                    onDragLeave={() => setDragOverSlot(null)}
+                    onDrop={(e) => { e.preventDefault(); const id = dragItemId.current; if (id) equipItem(id, slot); setDragOverSlot(null); }}
+                    onClick={() => setPickingSlot(pickerActive ? null : slot)}
+                    style={{
+                      padding: "0.5rem 0.6rem",
+                      backgroundColor: isDragOver || accItem ? "var(--primary-light)" : "var(--bg-nav)",
+                      border: `1.5px ${isDragOver ? "dashed" : "solid"} ${isDragOver || accItem || pickerActive ? "var(--primary)" : "var(--border)"}`,
+                      borderRadius: pickerActive ? "0.5rem 0.5rem 0 0" : "0.5rem",
+                      transition: "background-color 0.12s, border-color 0.12s",
+                      cursor: "pointer",
+                      minHeight: "48px",
+                    }}
+                  >
+                    <div style={{ fontSize: "0.58rem", fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.06em", color: accItem ? "var(--primary)" : "var(--text-muted)", fontFamily: "var(--font-heading)", marginBottom: "0.25rem" }}>
+                      {label}
+                    </div>
+                    {accItem ? (
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "0.25rem" }}>
+                        <span style={{ fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: "0.75rem", color: "var(--text)", lineHeight: 1.25 }}>
+                          {accItem.name}
+                        </span>
+                        <button
+                          onClick={(e) => { e.stopPropagation(); updateItem(accItem.id, { equipped: false }); }}
+                          style={{ fontSize: "0.65rem", color: "var(--text-muted)", background: "none", border: "none", cursor: "pointer", padding: 0, flexShrink: 0 }}
+                        >
+                          ✕
+                        </button>
+                      </div>
+                    ) : (
+                      <div style={{ fontSize: "0.7rem", color: "var(--text-muted)", fontStyle: "italic" }}>
+                        {isDragOver ? "Drop to equip" : "Empty"}
+                      </div>
+                    )}
+                  </div>
+                  {pickerActive && (
+                    <div style={{ border: "1.5px solid var(--primary)", borderTop: "none", borderRadius: "0 0 0.5rem 0.5rem", backgroundColor: "var(--bg-nav)", maxHeight: "140px", overflowY: "auto" }}>
+                      {eligiblePick.length === 0 ? (
+                        <div style={{ padding: "0.5rem 0.75rem", fontSize: "0.72rem", color: "var(--text-muted)" }}>No items available</div>
+                      ) : eligiblePick.map((pi) => (
+                        <button
+                          key={pi.id}
+                          onClick={(e) => { e.stopPropagation(); equipItem(pi.id, slot); setPickingSlot(null); }}
+                          style={{ width: "100%", padding: "0.375rem 0.75rem", border: "none", borderBottom: "1px solid var(--border)", backgroundColor: "transparent", cursor: "pointer", textAlign: "left", display: "flex", gap: "0.5rem", alignItems: "center" }}
+                        >
+                          <span style={{ fontFamily: "var(--font-heading)", fontWeight: 600, fontSize: "0.8rem", color: "var(--text)", flex: 1 }}>{pi.name}</span>
+                          <span style={{ fontSize: "0.62rem", color: "var(--text-muted)" }}>{pi.category}</span>
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+          </div>
         </div>
 
         {/* Currency + carry weight */}
@@ -4211,26 +4447,23 @@ export default function CharacterSheetPage({
             flexWrap: "wrap",
           }}
         >
-          <span
-            style={{
-              fontSize: "0.65rem",
-              fontWeight: 700,
-              letterSpacing: "0.06em",
-              textTransform: "uppercase",
-              color: "var(--text-muted)",
-              fontFamily: "var(--font-heading)",
-              whiteSpace: "nowrap",
-            }}
-          >
-            Currency
-          </span>
-          <input
-            type="text"
-            defaultValue={c.currency}
-            onBlur={(e) => persist({ currency: e.target.value })}
-            placeholder="—"
-            style={{ ...inputStyle, width: "140px" }}
-          />
+          {(["gold", "silver", "copper"] as const).map((denom) => (
+            <div key={denom} style={{ display: "flex", alignItems: "center", gap: "0.25rem" }}>
+              <input
+                type="number"
+                min={0}
+                value={c.currency?.[denom] ?? 0}
+                onChange={(e) => {
+                  const v = Math.max(0, parseInt(e.target.value) || 0);
+                  persist({ currency: { ...(c.currency ?? { gold: 0, silver: 0, copper: 0 }), [denom]: v } });
+                }}
+                style={{ ...inputStyle, width: "56px", textAlign: "right" }}
+              />
+              <span style={{ fontSize: "0.65rem", fontWeight: 700, textTransform: "uppercase", color: "var(--text-muted)", fontFamily: "var(--font-heading)" }}>
+                {denom.slice(0, 2).toUpperCase()}
+              </span>
+            </div>
+          ))}
           <span
             style={{
               fontSize: "0.78rem",
@@ -4260,6 +4493,35 @@ export default function CharacterSheetPage({
                 <div key={item.id}>
                   {/* Main row */}
                   <div
+                    draggable={item.equippable}
+                    onDragStart={(e) => {
+                      dragItemId.current = item.id;
+                      e.dataTransfer.setData("text/plain", item.id);
+                      e.dataTransfer.effectAllowed = "move";
+                    }}
+                    onDragEnd={() => { dragItemId.current = null; setDragOverSlot(null); }}
+                    onTouchStart={item.equippable ? (e) => {
+                      const t = e.touches[0];
+                      touchLongPressTimer.current = setTimeout(() => {
+                        startTouchDrag(item.id, item.name, t.clientX, t.clientY);
+                      }, 250);
+                    } : undefined}
+                    onTouchMove={item.equippable ? (e) => {
+                      if (!touchDragItemId.current) { if (touchLongPressTimer.current) { clearTimeout(touchLongPressTimer.current); touchLongPressTimer.current = null; } return; }
+                      e.preventDefault();
+                      const t = e.touches[0];
+                      moveTouchGhost(t.clientX, t.clientY);
+                    } : undefined}
+                    onTouchEnd={item.equippable ? (e) => {
+                      if (!touchDragItemId.current) { if (touchLongPressTimer.current) { clearTimeout(touchLongPressTimer.current); touchLongPressTimer.current = null; } return; }
+                      const t = e.changedTouches[0];
+                      endTouchDrag(t.clientX, t.clientY);
+                    } : undefined}
+                    onTouchCancel={item.equippable ? () => {
+                      if (touchLongPressTimer.current) { clearTimeout(touchLongPressTimer.current); touchLongPressTimer.current = null; }
+                      if (touchGhostRef.current) { touchGhostRef.current.remove(); touchGhostRef.current = null; }
+                      touchDragItemId.current = null; dragItemId.current = null; setDragOverSlot(null);
+                    } : undefined}
                     style={{
                       display: "flex",
                       alignItems: "center",
@@ -4275,6 +4537,7 @@ export default function CharacterSheetPage({
                         : notePopoverItemId === item.id
                           ? "0.375rem 0.375rem 0 0"
                           : "0.375rem",
+                      cursor: item.equippable ? "grab" : undefined,
                     }}
                   >
                     {/* Name + weapon stats + traits inline */}
@@ -6214,46 +6477,91 @@ export default function CharacterSheetPage({
                 </div>
               </div>
             )}
-            <div style={{ display: "flex", gap: "0.5rem" }}>
-              <button
-                onClick={addItem}
-                disabled={!newName.trim()}
-                style={{
-                  padding: "0.375rem 0.875rem",
-                  backgroundColor: newName.trim()
-                    ? "var(--primary)"
-                    : "var(--border)",
-                  color: "var(--text-on-primary)",
-                  border: "none",
-                  borderRadius: "0.375rem",
-                  cursor: newName.trim() ? "pointer" : "not-allowed",
-                  fontFamily: "var(--font-heading)",
-                  fontWeight: 600,
-                  fontSize: "0.8rem",
-                }}
-              >
-                Add
-              </button>
-              <button
-                onClick={() => {
-                  setAddingItem(false);
-                  setNewName("");
-                  setCatalogSearch("");
-                  setCatalogSelected(null);
-                }}
-                style={{
-                  padding: "0.375rem 0.875rem",
-                  backgroundColor: "transparent",
-                  color: "var(--text-muted)",
-                  border: "1px solid var(--border)",
-                  borderRadius: "0.375rem",
-                  cursor: "pointer",
-                  fontSize: "0.8rem",
-                }}
-              >
-                Cancel
-              </button>
-            </div>
+            {(() => {
+              const itemCost = catalogSelected?.cost ?? 0;
+              const cur = c.currency ?? { gold: 0, silver: 0, copper: 0 };
+              const totalGp = cur.gold + cur.silver / 10 + cur.copper / 100;
+              const canAfford = totalGp >= itemCost;
+              return (
+                <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", alignItems: "center" }}>
+                  <button
+                    onClick={() => addItem()}
+                    disabled={!newName.trim()}
+                    style={{
+                      padding: "0.375rem 0.875rem",
+                      backgroundColor: newName.trim() ? "var(--primary)" : "var(--border)",
+                      color: "var(--text-on-primary)",
+                      border: "none",
+                      borderRadius: "0.375rem",
+                      cursor: newName.trim() ? "pointer" : "not-allowed",
+                      fontFamily: "var(--font-heading)",
+                      fontWeight: 700,
+                      fontSize: "0.8rem",
+                    }}
+                  >
+                    + LOOT
+                  </button>
+                  {itemCost > 0 && (
+                    <button
+                      onClick={() => {
+                        if (!canAfford) return;
+                        // Deduct cost in gold (simplest: subtract from gold, borrow from silver/copper if needed)
+                        let remaining = itemCost;
+                        let g = cur.gold, sv = cur.silver, cp = cur.copper;
+                        if (g >= remaining) { g -= remaining; }
+                        else {
+                          remaining -= g; g = 0;
+                          const svNeeded = Math.ceil(remaining * 10);
+                          if (sv >= svNeeded) { sv -= svNeeded; }
+                          else {
+                            remaining -= sv / 10; sv = 0;
+                            cp = Math.max(0, cp - Math.ceil(remaining * 100));
+                          }
+                        }
+                        persist({ currency: { gold: Math.max(0, g), silver: Math.max(0, sv), copper: Math.max(0, cp) } });
+                        addItem(true);
+                        showToast(`Bought ${newName.trim()} · −${itemCost} gp`, "success");
+                      }}
+                      disabled={!newName.trim() || !canAfford}
+                      title={canAfford ? `Spend ${itemCost} gp` : "Not enough gold"}
+                      style={{
+                        padding: "0.375rem 0.875rem",
+                        backgroundColor: canAfford && newName.trim() ? "rgb(var(--gold-rgb) / 0.15)" : "transparent",
+                        color: canAfford && newName.trim() ? "var(--gold)" : "var(--text-muted)",
+                        border: `1px solid ${canAfford && newName.trim() ? "var(--gold)" : "var(--border)"}`,
+                        borderRadius: "0.375rem",
+                        cursor: canAfford && newName.trim() ? "pointer" : "not-allowed",
+                        fontFamily: "var(--font-heading)",
+                        fontWeight: 700,
+                        fontSize: "0.8rem",
+                        opacity: canAfford && newName.trim() ? 1 : 0.5,
+                      }}
+                    >
+                      + BUY ({itemCost} gp)
+                    </button>
+                  )}
+                  <button
+                    onClick={() => {
+                      setAddingItem(false);
+                      setNewName("");
+                      setCatalogSearch("");
+                      setCatalogSelected(null);
+                    }}
+                    style={{
+                      padding: "0.375rem 0.875rem",
+                      backgroundColor: "transparent",
+                      color: "var(--text-muted)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "0.375rem",
+                      cursor: "pointer",
+                      fontSize: "0.8rem",
+                    }}
+                  >
+                    Cancel
+                  </button>
+                </div>
+              );
+            })()}
           </div>
         )}
       </div>
@@ -7450,63 +7758,424 @@ export default function CharacterSheetPage({
   }
 
   function renderNotesTab() {
-    return editingNotes ? (
-      <div>
-        <textarea
-          value={notesVal}
-          onChange={(e) => setNotesVal(e.target.value)}
-          rows={8}
-          style={{
-            width: "100%",
-            padding: "0.5rem 0.75rem",
-            fontSize: "0.875rem",
-            fontFamily: "var(--font-body)",
-            border: "1.5px solid var(--primary)",
-            borderRadius: "0.375rem",
-            backgroundColor: "var(--bg-card)",
-            color: "var(--text)",
-            outline: "none",
-            resize: "vertical",
-          }}
-        />
-        <button
-          onClick={() => {
-            persist({ notes: notesVal });
-            setEditingNotes(false);
-          }}
-          style={{
-            marginTop: "0.5rem",
-            padding: "0.375rem 0.875rem",
-            backgroundColor: "var(--primary)",
-            color: "var(--text-on-primary)",
-            border: "none",
-            borderRadius: "0.375rem",
-            cursor: "pointer",
+    const journal = c.journal ?? [];
+    const bio = c.biography ?? { personality: "", ideals: "", bonds: "", flaws: "", backstory: "" };
+
+    function genJeId() {
+      return `je_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`;
+    }
+
+    function formatEntryDate(ts: number) {
+      return new Date(ts).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+    }
+
+    function excerpt(text: string, max = 72) {
+      const t = text.trim();
+      return t.length <= max ? t : t.slice(0, max).trimEnd() + "…";
+    }
+
+    function openEntry(entry: JournalEntry) {
+      setActiveJournalId(entry.id);
+      setJournalTitle(entry.title);
+      setJournalContent(entry.content);
+      setJournalView("edit");
+    }
+
+    function newEntry() {
+      const now = Date.now();
+      const entry: JournalEntry = { id: genJeId(), title: "", content: "", createdAt: now, updatedAt: now };
+      persist({ journal: [entry, ...journal] });
+      setActiveJournalId(entry.id);
+      setJournalTitle("");
+      setJournalContent("");
+      setJournalView("edit");
+    }
+
+    function saveEntryField(field: "title" | "content", value: string) {
+      if (!activeJournalId) return;
+      persist({
+        journal: journal.map((e) =>
+          e.id === activeJournalId ? { ...e, [field]: value, updatedAt: Date.now() } : e
+        ),
+      });
+    }
+
+    function deleteEntry(id: string) {
+      persist({ journal: journal.filter((e) => e.id !== id) });
+      if (id === activeJournalId) setJournalView("list");
+      setJournalDeletePending(null);
+    }
+
+    function exportEntry(entry: JournalEntry) {
+      const payload = JSON.stringify({
+        type: "poa-journal-entry",
+        version: 1,
+        title: entry.title || "Untitled",
+        content: entry.content,
+        characterName: c.name,
+        exportedAt: Date.now(),
+      }, null, 2);
+      const blob = new Blob([payload], { type: "application/json" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      const slug = (s: string) => s.replace(/[^a-z0-9]/gi, "-").toLowerCase();
+      a.href = url;
+      a.download = `${slug(c.name || "character")}-${slug(entry.title || "entry")}.json`;
+      a.click();
+      URL.revokeObjectURL(url);
+    }
+
+    function importEntry(file: File) {
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          const parsed = JSON.parse(e.target?.result as string);
+          if (parsed.type !== "poa-journal-entry") return;
+          const now = Date.now();
+          const entry: JournalEntry = {
+            id: genJeId(),
+            title: parsed.title ?? "Imported Entry",
+            content: parsed.content ?? "",
+            createdAt: now,
+            updatedAt: now,
+          };
+          persist({ journal: [entry, ...(c.journal ?? [])] });
+        } catch { /* invalid file, ignore */ }
+      };
+      reader.readAsText(file);
+    }
+
+    function updateBio(field: keyof BiographyFields, value: string) {
+      persist({ biography: { ...bio, [field]: value } });
+    }
+
+    const bioSectionStyle: React.CSSProperties = {
+      display: "flex",
+      flexDirection: "column",
+      gap: "0.5rem",
+    };
+
+    const bioLabelStyle: React.CSSProperties = {
+      fontSize: "0.62rem",
+      fontWeight: 700,
+      textTransform: "uppercase",
+      letterSpacing: "0.08em",
+      color: "var(--text-muted)",
+      fontFamily: "var(--font-heading)",
+    };
+
+    const bioTextareaStyle: React.CSSProperties = {
+      width: "100%",
+      padding: "0.5rem 0.75rem",
+      fontSize: "0.85rem",
+      fontFamily: "var(--font-body)",
+      border: "1px solid var(--border)",
+      borderRadius: "0.375rem",
+      backgroundColor: "var(--bg-card)",
+      color: "var(--text)",
+      resize: "vertical",
+      minHeight: "64px",
+      lineHeight: 1.55,
+      boxSizing: "border-box",
+    };
+
+    const filteredEntries = journalSearch.trim()
+      ? journal.filter((e) => {
+          const q = journalSearch.toLowerCase();
+          return e.title.toLowerCase().includes(q) || e.content.toLowerCase().includes(q);
+        })
+      : [...journal].sort((a, b) => b.updatedAt - a.updatedAt);
+
+    // ── Edit view ──
+    if (journalView === "edit" && activeJournalId) {
+      return (
+        <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+            <button
+              onClick={() => setJournalView("list")}
+              style={{
+                background: "none",
+                border: "none",
+                cursor: "pointer",
+                color: "var(--text-muted)",
+                fontFamily: "var(--font-heading)",
+                fontWeight: 600,
+                fontSize: "0.78rem",
+                padding: 0,
+                display: "flex",
+                alignItems: "center",
+                gap: "0.25rem",
+              }}
+            >
+              ← Journal
+            </button>
+            <div style={{ flex: 1 }} />
+            <button
+              onClick={() => {
+                const entry = journal.find((e) => e.id === activeJournalId);
+                if (entry) exportEntry(entry);
+              }}
+              style={{
+                background: "none",
+                border: "1px solid var(--border)",
+                borderRadius: "0.25rem",
+                cursor: "pointer",
+                color: "var(--text-muted)",
+                fontFamily: "var(--font-heading)",
+                fontWeight: 600,
+                fontSize: "0.72rem",
+                padding: "0.2rem 0.5rem",
+              }}
+            >
+              Export
+            </button>
+            <button
+              onClick={() => setJournalDeletePending(activeJournalId)}
+              style={{
+                background: "none",
+                border: "1px solid rgb(var(--fail-rgb) / 0.4)",
+                borderRadius: "0.25rem",
+                cursor: "pointer",
+                color: "var(--fail)",
+                fontFamily: "var(--font-heading)",
+                fontWeight: 600,
+                fontSize: "0.72rem",
+                padding: "0.2rem 0.5rem",
+              }}
+            >
+              Delete
+            </button>
+          </div>
+          {journalDeletePending === activeJournalId && (
+            <div style={{
+              padding: "0.5rem 0.75rem",
+              backgroundColor: "rgb(var(--fail-rgb) / 0.08)",
+              border: "1px solid rgb(var(--fail-rgb) / 0.4)",
+              borderRadius: "0.375rem",
+              display: "flex",
+              alignItems: "center",
+              gap: "0.75rem",
+              fontSize: "0.8rem",
+              color: "var(--fail)",
+              fontFamily: "var(--font-heading)",
+            }}>
+              Delete this entry?
+              <button
+                onClick={() => deleteEntry(activeJournalId)}
+                style={{ background: "none", border: "none", cursor: "pointer", color: "var(--fail)", fontFamily: "var(--font-heading)", fontWeight: 700, fontSize: "0.78rem" }}
+              >Confirm</button>
+              <button
+                onClick={() => setJournalDeletePending(null)}
+                style={{ background: "none", border: "none", cursor: "pointer", color: "var(--text-muted)", fontFamily: "var(--font-heading)", fontWeight: 600, fontSize: "0.78rem" }}
+              >Cancel</button>
+            </div>
+          )}
+          <input
+            type="text"
+            value={journalTitle}
+            onChange={(e) => { setJournalTitle(e.target.value); saveEntryField("title", e.target.value); }}
+            placeholder="Entry title…"
+            style={{
+              width: "100%",
+              padding: "0.5rem 0.75rem",
+              fontSize: "1rem",
+              fontFamily: "var(--font-heading)",
+              fontStyle: "italic",
+              fontWeight: 700,
+              border: "none",
+              borderBottom: "1px solid var(--border)",
+              backgroundColor: "transparent",
+              color: "var(--text)",
+              outline: "none",
+              boxSizing: "border-box",
+            }}
+          />
+          {(() => {
+            const entry = journal.find((e) => e.id === activeJournalId);
+            return (
+              <div style={{ fontSize: "0.7rem", color: "var(--text-muted)", fontFamily: "var(--font-heading)" }}>
+                {entry ? `Last edited ${formatEntryDate(entry.updatedAt)}` : ""}
+              </div>
+            );
+          })()}
+          <textarea
+            value={journalContent}
+            onChange={(e) => { setJournalContent(e.target.value); saveEntryField("content", e.target.value); }}
+            placeholder="Write your entry…"
+            style={{
+              width: "100%",
+              minHeight: "280px",
+              padding: "0.5rem 0.75rem",
+              fontSize: "0.875rem",
+              fontFamily: "var(--font-body)",
+              border: "1px solid var(--border)",
+              borderRadius: "0.375rem",
+              backgroundColor: "var(--bg-card)",
+              color: "var(--text)",
+              outline: "none",
+              resize: "vertical",
+              lineHeight: 1.65,
+              boxSizing: "border-box",
+            }}
+          />
+        </div>
+      );
+    }
+
+    // ── List view ──
+    return (
+      <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+
+        {/* Journal */}
+        <div>
+          <div style={{
+            fontSize: "0.65rem",
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: "var(--c-spell)",
             fontFamily: "var(--font-heading)",
-            fontWeight: 600,
-            fontSize: "0.8rem",
-          }}
-        >
-          Save
-        </button>
-      </div>
-    ) : (
-      <div
-        onClick={() => setEditingNotes(true)}
-        style={{
-          minHeight: "100px",
-          padding: "0.625rem 0.875rem",
-          backgroundColor: "var(--bg-card)",
-          border: "1px dashed var(--border)",
-          borderRadius: "0.375rem",
-          cursor: "text",
-          fontSize: "0.875rem",
-          color: c.notes ? "var(--text)" : "var(--text-muted)",
-          whiteSpace: "pre-wrap",
-          lineHeight: 1.6,
-        }}
-      >
-        {c.notes || "Click to add notes…"}
+            marginBottom: "0.5rem",
+            paddingLeft: "0.625rem",
+            borderLeft: "3px solid var(--c-spell)",
+          }}>
+            Journal
+          </div>
+          <div style={{ display: "flex", gap: "0.5rem", marginBottom: "0.5rem" }}>
+            <input
+              type="text"
+              placeholder="Search entries…"
+              value={journalSearch}
+              onChange={(e) => setJournalSearch(e.target.value)}
+              style={{
+                flex: 1,
+                padding: "0.375rem 0.625rem",
+                fontSize: "0.8rem",
+                fontFamily: "var(--font-body)",
+                border: "1px solid var(--border)",
+                borderRadius: "0.375rem",
+                backgroundColor: "var(--bg-card)",
+                color: "var(--text)",
+                outline: "none",
+              }}
+            />
+            <button
+              onClick={newEntry}
+              style={{
+                padding: "0.375rem 0.75rem",
+                backgroundColor: "var(--primary)",
+                color: "var(--text-on-primary)",
+                border: "none",
+                borderRadius: "0.375rem",
+                cursor: "pointer",
+                fontFamily: "var(--font-heading)",
+                fontWeight: 700,
+                fontSize: "0.78rem",
+                whiteSpace: "nowrap",
+              }}
+            >
+              + New Entry
+            </button>
+            <label style={{ cursor: "pointer" }}>
+              <input
+                type="file"
+                accept=".json"
+                style={{ display: "none" }}
+                onChange={(e) => { if (e.target.files?.[0]) importEntry(e.target.files[0]); e.target.value = ""; }}
+              />
+              <span style={{
+                display: "inline-flex",
+                alignItems: "center",
+                padding: "0.375rem 0.625rem",
+                border: "1px solid var(--border)",
+                borderRadius: "0.375rem",
+                cursor: "pointer",
+                fontFamily: "var(--font-heading)",
+                fontWeight: 600,
+                fontSize: "0.78rem",
+                color: "var(--text-muted)",
+                backgroundColor: "var(--bg-card)",
+              }}>
+                Import
+              </span>
+            </label>
+          </div>
+          {filteredEntries.length === 0 ? (
+            <p style={{ color: "var(--text-muted)", fontSize: "0.85rem", padding: "0.5rem 0" }}>
+              {journalSearch ? "No entries match." : "No journal entries yet."}
+            </p>
+          ) : (
+            <div style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}>
+              {filteredEntries.map((entry) => (
+                <div
+                  key={entry.id}
+                  onClick={() => openEntry(entry)}
+                  style={{
+                    padding: "0.625rem 0.875rem",
+                    backgroundColor: "var(--bg-card)",
+                    border: "1px solid var(--border)",
+                    borderRadius: "0.5rem",
+                    cursor: "pointer",
+                    transition: "border-color 0.12s",
+                  }}
+                  onMouseEnter={(e) => (e.currentTarget.style.borderColor = "var(--primary)")}
+                  onMouseLeave={(e) => (e.currentTarget.style.borderColor = "var(--border)")}
+                >
+                  <div style={{ display: "flex", justifyContent: "space-between", alignItems: "baseline", gap: "0.5rem" }}>
+                    <span style={{
+                      fontFamily: "var(--font-heading)",
+                      fontStyle: "italic",
+                      fontWeight: 700,
+                      fontSize: "0.9rem",
+                      color: "var(--text)",
+                    }}>
+                      {entry.title || "Untitled"}
+                    </span>
+                    <span style={{ fontSize: "0.7rem", color: "var(--text-muted)", fontFamily: "var(--font-heading)", whiteSpace: "nowrap" }}>
+                      {formatEntryDate(entry.updatedAt)}
+                    </span>
+                  </div>
+                  {entry.content && (
+                    <div style={{ fontSize: "0.78rem", color: "var(--text-muted)", marginTop: "0.25rem", lineHeight: 1.4 }}>
+                      {excerpt(entry.content)}
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
+
+        {/* Biography */}
+        <div>
+          <div style={{
+            fontSize: "0.65rem",
+            fontWeight: 700,
+            letterSpacing: "0.08em",
+            textTransform: "uppercase",
+            color: "var(--c-origin)",
+            fontFamily: "var(--font-heading)",
+            marginBottom: "0.75rem",
+            paddingLeft: "0.625rem",
+            borderLeft: "3px solid var(--c-origin)",
+          }}>
+            Biography
+          </div>
+          <div style={{ display: "flex", flexDirection: "column", gap: "0.875rem" }}>
+            {(["personality", "ideals", "bonds", "flaws", "backstory"] as const).map((field) => (
+              <div key={field} style={bioSectionStyle}>
+                <div style={bioLabelStyle}>{field.charAt(0).toUpperCase() + field.slice(1)}</div>
+                <textarea
+                  value={bio[field]}
+                  onChange={(e) => updateBio(field, e.target.value)}
+                  placeholder={`${field.charAt(0).toUpperCase() + field.slice(1)}…`}
+                  style={{ ...bioTextareaStyle, minHeight: field === "backstory" ? "120px" : "64px" }}
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+
       </div>
     );
   }
@@ -9884,28 +10553,58 @@ export default function CharacterSheetPage({
                     {subLabel}
                   </div>
                   {isCaster && (
-                    <button
-                      onClick={() =>
-                        persist({ spellArmorActive: !c.spellArmorActive })
-                      }
-                      style={{
-                        display: "block",
-                        margin: "0 auto 6px",
-                        fontSize: "0.5rem",
-                        fontFamily: "var(--font-heading)",
-                        fontWeight: 700,
-                        padding: "0.1rem 0.3rem",
-                        borderRadius: "0.25rem",
-                        border: `1px solid ${spellArmorOn ? "var(--primary)" : "var(--border)"}`,
-                        backgroundColor: spellArmorOn
-                          ? "var(--primary)"
-                          : "var(--bg-card)",
-                        color: spellArmorOn ? "var(--bg)" : "var(--text-muted)",
-                        cursor: "pointer",
-                      }}
-                    >
-                      {spellArmorOn ? "Spell Armor ON" : "Spell Armor"}
-                    </button>
+                    <>
+                      <button
+                        onClick={() => {
+                          if (!spellArmorOn && equippedBody) {
+                            setSpellArmorConfirmPending(true);
+                          } else {
+                            setSpellArmorConfirmPending(false);
+                            persist({ spellArmorActive: !c.spellArmorActive });
+                          }
+                        }}
+                        style={{
+                          display: "block",
+                          margin: "0 auto 6px",
+                          fontSize: "0.5rem",
+                          fontFamily: "var(--font-heading)",
+                          fontWeight: 700,
+                          padding: "0.1rem 0.3rem",
+                          borderRadius: "0.25rem",
+                          border: `1px solid ${spellArmorOn ? "var(--primary)" : "var(--border)"}`,
+                          backgroundColor: spellArmorOn ? "var(--primary)" : "var(--bg-card)",
+                          color: spellArmorOn ? "var(--bg)" : "var(--text-muted)",
+                          cursor: "pointer",
+                        }}
+                      >
+                        {spellArmorOn ? "Spell Armor ON" : "Spell Armor"}
+                      </button>
+                      {spellArmorConfirmPending && !spellArmorOn && (
+                        <div style={{
+                          margin: "4px 0",
+                          padding: "6px 8px",
+                          backgroundColor: "rgb(var(--gold-rgb) / 0.08)",
+                          border: "1px solid rgb(var(--gold-rgb) / 0.4)",
+                          borderRadius: "4px",
+                          fontSize: "0.55rem",
+                          fontFamily: "var(--font-heading)",
+                          color: "var(--gold-dim)",
+                          textAlign: "center",
+                        }}>
+                          <div style={{ marginBottom: "4px" }}>Replaces armor defense</div>
+                          <div style={{ display: "flex", gap: "4px", justifyContent: "center" }}>
+                            <button
+                              onClick={() => { persist({ spellArmorActive: true }); setSpellArmorConfirmPending(false); }}
+                              style={{ fontSize: "0.55rem", fontFamily: "var(--font-heading)", fontWeight: 700, padding: "1px 6px", borderRadius: "3px", border: "1px solid var(--primary)", backgroundColor: "var(--primary)", color: "var(--bg)", cursor: "pointer" }}
+                            >Confirm</button>
+                            <button
+                              onClick={() => setSpellArmorConfirmPending(false)}
+                              style={{ fontSize: "0.55rem", fontFamily: "var(--font-heading)", fontWeight: 600, padding: "1px 6px", borderRadius: "3px", border: "1px solid var(--border)", backgroundColor: "transparent", color: "var(--text-muted)", cursor: "pointer" }}
+                            >Cancel</button>
+                          </div>
+                        </div>
+                      )}
+                    </>
                   )}
                   {!spellArmorOn &&
                     equippedBody?.armorCategory === "Medium" && (
@@ -12087,6 +12786,30 @@ export default function CharacterSheetPage({
             </div>
           );
         })()}
+      {toast && (
+        <div
+          style={{
+            position: "fixed",
+            bottom: "1.5rem",
+            left: "50%",
+            transform: "translateX(-50%)",
+            backgroundColor: toast.type === "remove" ? "var(--bg-nav)" : "var(--primary)",
+            color: toast.type === "remove" ? "var(--text-muted)" : "var(--text-on-primary)",
+            padding: "0.5rem 1.125rem",
+            borderRadius: "9999px",
+            fontSize: "0.8rem",
+            fontFamily: "var(--font-heading)",
+            fontWeight: 600,
+            border: "1px solid var(--border)",
+            boxShadow: "0 4px 16px rgba(0,0,0,0.35)",
+            zIndex: 9999,
+            pointerEvents: "none",
+            whiteSpace: "nowrap",
+          }}
+        >
+          {toast.message}
+        </div>
+      )}
     </div>
   );
 }

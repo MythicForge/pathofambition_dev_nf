@@ -1,4 +1,21 @@
-import type { Character, InventoryItem } from './characterTypes';
+import type { Character, InventoryItem, StructuredCurrency } from './characterTypes';
+
+function parseCurrencyString(s: string): StructuredCurrency {
+  const g = s.match(/(\d+(?:\.\d+)?)\s*gold/i);
+  const sv = s.match(/(\d+(?:\.\d+)?)\s*silver/i);
+  const cp = s.match(/(\d+(?:\.\d+)?)\s*copper/i);
+  // fallback: bare number with no denomination → gold
+  const bare = !g && !sv && !cp ? s.match(/^\s*(\d+(?:\.\d+)?)\s*$/) : null;
+  return {
+    gold: Math.round(parseFloat((g?.[1] ?? bare?.[1]) ?? "0")) || 0,
+    silver: Math.round(parseFloat(sv?.[1] ?? "0")) || 0,
+    copper: Math.round(parseFloat(cp?.[1] ?? "0")) || 0,
+  };
+}
+
+export function parseCurrency(s: string): StructuredCurrency {
+  return parseCurrencyString(s);
+}
 
 const STORAGE_KEY = 'poa_characters';
 
@@ -208,6 +225,30 @@ export function getCharacter(id: string): Character | null {
   }
   if (typeof cr.currentResonance === "number" && found.customResources.resonance === undefined) {
     found.customResources.resonance = cr.currentResonance;
+  }
+
+  // Migrate currency string → structured { gold, silver, copper }
+  if (typeof (found as unknown as { currency: unknown }).currency === 'string') {
+    (found as Character).currency = parseCurrencyString((found as unknown as { currency: string }).currency);
+  }
+  if (!found.currency) {
+    (found as Character).currency = { gold: 0, silver: 0, copper: 0 };
+  }
+
+  // Migrate notes string → journal entries; backfill biography
+  if (!found.journal) {
+    found.journal = found.notes
+      ? [{
+          id: `je_${Date.now()}_${Math.random().toString(36).slice(2, 6)}`,
+          title: "Notes",
+          content: found.notes,
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+        }]
+      : [];
+  }
+  if (!found.biography) {
+    found.biography = { personality: "", ideals: "", bonds: "", flaws: "", backstory: "" };
   }
 
   return found;
