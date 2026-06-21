@@ -11,6 +11,8 @@ import CombatTab from "./tabs/CombatTab";
 import InventoryTab from "./tabs/InventoryTab";
 import LeftRail from "./rails/LeftRail";
 import RightRail from "./rails/RightRail";
+import SettingsPanel from "./SettingsPanel";
+import { useTweaks } from "@/lib/useTweaks";
 import {
   getCharacter,
   updateCharacter,
@@ -462,6 +464,10 @@ export default function CharacterSheetPage({
   const touchLongPressTimer = React.useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Item notes popover + traits editing state → components/tabs/InventoryTab.tsx (R6)
+
+  // Display settings panel (R8) — useTweaks here applies density on load
+  const [showSettings, setShowSettings] = useState(false);
+  const { density, setDensity } = useTweaks();
 
   // Portrait image upload (portraitUrl shared with RightRail + mobile sidebar)
   const [portraitUrl, setPortraitUrl] = useState<string | null>(null);
@@ -1315,7 +1321,14 @@ export default function CharacterSheetPage({
   ];
 
   return (
-    <div style={{ width: "100%" }}>
+    <div className="poa-sheet-root" style={{ width: "100%" }}>
+      {showSettings && (
+        <SettingsPanel
+          onClose={() => setShowSettings(false)}
+          density={density}
+          setDensity={setDensity}
+        />
+      )}
       {/* Fixed sidebar button group */}
       <div
         style={{
@@ -1329,6 +1342,29 @@ export default function CharacterSheetPage({
           gap: "6px",
         }}
       >
+        {/* Display settings (gear) — always visible */}
+        <button
+          onClick={() => setShowSettings((v) => !v)}
+          aria-label="Display settings"
+          aria-expanded={showSettings}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            width: "40px",
+            height: "40px",
+            backgroundColor: showSettings ? "var(--primary)" : "var(--bg-card)",
+            border: `1.5px solid ${showSettings ? "var(--primary)" : "var(--border)"}`,
+            borderRadius: "0.5rem",
+            cursor: "pointer",
+            boxShadow: "0 2px 8px rgba(0,0,0,0.15)",
+            color: showSettings ? "var(--bg)" : "var(--text-muted)",
+            fontSize: "1.05rem",
+            lineHeight: 1,
+          }}
+        >
+          ⚙
+        </button>
         {/* Portrait button — mobile only (hidden via CSS at >860px) */}
         <button
           className="poa-mobile-sidebar-btn"

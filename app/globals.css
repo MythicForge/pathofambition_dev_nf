@@ -906,3 +906,39 @@ h6 {
     color: var(--c-origin);
     border-color: rgb(var(--c-origin-rgb) / 0.5);
 }
+
+/* ════════════════════════════════════════════════════════════════════
+   R8 — Density tweak (driven by useTweaks → <html data-density>)
+   Reaches the CSS-class chrome (grid, cards, rows, rails). Inline-styled
+   interiors are unaffected until they migrate to classes.
+   ════════════════════════════════════════════════════════════════════ */
+[data-density="compact"] .poa-sheet-root {
+    font-size: 0.94em;
+}
+[data-density="compact"] .poa-sheet-grid {
+    gap: 11px;
+}
+[data-density="compact"] .poa-col-left,
+[data-density="compact"] .poa-col-center,
+[data-density="compact"] .poa-col-right {
+    gap: 11px;
+}
+[data-density="compact"] .poa-card {
+    padding: 9px 11px;
+}
+[data-density="compact"] .poa-card-tight {
+    padding: 8px 10px;
+}
+[data-density="compact"] .poa-card-header {
+    margin-bottom: 8px;
+}
+[data-density="compact"] .poa-feat-row,
+[data-density="compact"] .poa-inv-row,
+[data-density="compact"] .poa-vitals-row {
+    padding-top: 6px;
+    padding-bottom: 6px;
+}
+[data-density="compact"] .poa-tab {
+    padding-top: 10px;
+    padding-bottom: 10px;
+}
